@@ -1137,14 +1137,15 @@ public class Commands {
 
             @Override
             public boolean doInitialization() {
-                super.doInitialization();
-                saveStates(mathObjects);
+
                 for (MathObject obj : mathObjects) {
                     if (obj instanceof Constructible) {
                         Constructible cnstr = (Constructible) obj;
                         cnstr.setFreeMathObject(true);
                     }
                 }
+                super.doInitialization();
+                saveStates(mathObjects);
                 return true;
             }
 
@@ -1244,18 +1245,20 @@ public class Commands {
 
             @Override
             public boolean doInitialization() {
-                super.doInitialization();
+
                 this.mathObjects = Arrays.stream(objects)
                         .filter(Objects::nonNull)
                         .toArray(size -> Arrays.copyOf(objects, size));
-                saveStates(mathObjects);
+
                 for (MathObject obj : mathObjects) {
-                    obj.visible(false);
+//                    obj.visible(false);
                     if (obj instanceof Constructible) {
                         Constructible cnstr = (Constructible) obj;
                         cnstr.setFreeMathObject(true);
                     }
                 }
+                super.doInitialization();
+                saveStates(mathObjects);
                 return true;
             }
 
@@ -1301,6 +1304,7 @@ public class Commands {
 
             @Override
             public void prepareForAnim(double t) {
+
                 addObjectsToscene(mathObjects);
             }
         };
@@ -1597,13 +1601,13 @@ public class Commands {
         ShiftAnimation resul = new ShiftAnimation(runtime, mathObjects) {
             @Override
             public boolean doInitialization() {
-                super.doInitialization();
-                for (MathObject obj : mathObjects) {
+                for (MathObject obj : mathObjects) {//Free constructible objects before saving states
                     if (obj instanceof Constructible) {
                         Constructible cnstr = (Constructible) obj;
                         cnstr.setFreeMathObject(true);
                     }
                 }
+                super.doInitialization();
                 JMathAnimScene.logger.debug("Initialized moveOut animation");
                 // Compute appropiate shift vectors
                 Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
@@ -1619,6 +1623,8 @@ public class Commands {
                         case UPPER:
                         case LOWER:
                             screenAnchor.v.x = objAnchor.v.x;
+                            break;
+                        default:
                             break;
                     }
                     this.setShiftVector(obj, objAnchor.to(screenAnchor));
@@ -1665,14 +1671,14 @@ public class Commands {
         ShiftAnimation resul = new ShiftAnimation(runtime, toAnimateArray) {
             @Override
             public boolean doInitialization() {
-                super.doInitialization();
+
                 for (MathObject obj : toAnimateArray) {
                     if (obj instanceof Constructible) {
                         Constructible cnstr = (Constructible) obj;
                         cnstr.setFreeMathObject(true);
                     }
                 }
-
+                super.doInitialization();
                 addThisAtTheEnd.addAll(Arrays.asList(mathObjects));
                 removeThisAtTheEnd.addAll(toRemove);
                 JMathAnimScene.logger.debug("Initialized moveIn animation");

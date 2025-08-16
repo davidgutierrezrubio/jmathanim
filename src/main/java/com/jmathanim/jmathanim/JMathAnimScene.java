@@ -591,7 +591,7 @@ public abstract class JMathAnimScene {
     public void playAnimation(ArrayList<Animation> anims) {
         List<Animation> listAnims = anims.stream().filter(Objects::nonNull).collect(Collectors.toList());
         for (Animation anim : listAnims) {
-            if (anim.isShouldResetAtReuse()) {
+            if (anim.isShouldResetAtFinish()) {
                 anim.reset();
             }
             anim.setT(0);

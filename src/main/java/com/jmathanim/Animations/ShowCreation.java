@@ -262,6 +262,11 @@ public class ShowCreation extends Animation {
 
                     @Override
                     public void cleanAnimationAt(double t) {
+                        double lt = getLT(t);
+                        if (lt == 0) {//Ended at t=0, nothing remains...
+                            removeObjectsFromScene(del);
+                            return;
+                        }
                     }
 
                     @Override

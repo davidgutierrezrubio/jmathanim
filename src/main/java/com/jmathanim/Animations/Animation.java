@@ -70,7 +70,7 @@ public abstract class Animation {
     protected double allocateStart;
     protected double allocateEnd;
     private String debugName;
-    private boolean shouldResetAtReuse;
+    private boolean shouldResetAtFinish;
     private Status status;
 
     /**
@@ -85,7 +85,7 @@ public abstract class Animation {
         this.runTime = runTime;
         this.useObjectState = true;
         this.shouldAddObjectsToScene = true;
-        this.shouldResetAtReuse = true;
+        this.shouldResetAtFinish = true;
         this.shouldInterpolateStyles = true;
         lambda = JMathAnimConfig.getConfig().getDefaultLambda();
         backups = new HashMap<>();
@@ -515,12 +515,12 @@ public abstract class Animation {
         status = Status.NOT_INITIALIZED;
     }
 
-    public boolean isShouldResetAtReuse() {
-        return shouldResetAtReuse;
+    public boolean isShouldResetAtFinish() {
+        return shouldResetAtFinish;
     }
 
     public <T extends Animation> T setShouldResetAtFinish(boolean shouldResetAtFinish) {
-        this.shouldResetAtReuse = shouldResetAtFinish;
+        this.shouldResetAtFinish = shouldResetAtFinish;
         return (T) this;
     }
 
