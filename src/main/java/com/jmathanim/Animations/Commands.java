@@ -1659,20 +1659,20 @@ public class Commands {
 
         Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
         Renderer rend = JMathAnimConfig.getConfig().getRenderer();
-        ArrayList<MathObject> toAnimateArrayList = new ArrayList<>();
         ArrayList<MathObject> toRemove = new ArrayList<>();
-        for (MathObject obj : mathObjects) {
-            if (obj instanceof Constructible) {
-                Constructible cnstr = (Constructible) obj;
-                cnstr.setFreeMathObject(true);
-            }
-            toAnimateArrayList.add(obj);
-        }
+        ArrayList<MathObject> toAnimateArrayList = new ArrayList<>(Arrays.asList(mathObjects));
         final MathObject[] toAnimateArray = toAnimateArrayList.toArray(new MathObject[0]);
         ShiftAnimation resul = new ShiftAnimation(runtime, toAnimateArray) {
             @Override
             public boolean doInitialization() {
                 super.doInitialization();
+                for (MathObject obj : toAnimateArray) {
+                    if (obj instanceof Constructible) {
+                        Constructible cnstr = (Constructible) obj;
+                        cnstr.setFreeMathObject(true);
+                    }
+                }
+
                 addThisAtTheEnd.addAll(Arrays.asList(mathObjects));
                 removeThisAtTheEnd.addAll(toRemove);
                 JMathAnimScene.logger.debug("Initialized moveIn animation");

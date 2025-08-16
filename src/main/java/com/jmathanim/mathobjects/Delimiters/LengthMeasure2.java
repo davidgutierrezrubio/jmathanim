@@ -3,7 +3,6 @@ package com.jmathanim.mathobjects.Delimiters;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.UsefulLambdas;
-import com.jmathanim.mathobjects.MathObjectUtils;
 import com.jmathanim.mathobjects.NullMathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
@@ -30,16 +29,16 @@ public class LengthMeasure2 extends Delimiter2 {
 
     @Override
     protected void buildDelimiterShape() {
-        delimiterLabel.update(scene);
-        delimiterLabelToDraw = MathObjectUtils.getSafeCopyOf(delimiterLabel);
+
+
         double width = A.to(B).norm();
         double angle = A.to(B).getAngle();
         Point AA = Point.at(0, 0);
         Point BB = Point.at(width, 0);
 
         delimiterShapeToDraw.getPath().clear();
-        groupElementsToBeDrawn.clear();
-        groupElementsToBeDrawn.add(delimiterLabelToDraw, delimiterShapeToDraw);
+//        groupElementsToBeDrawn.clear();
+//        groupElementsToBeDrawn.add(delimiterLabelBackup, delimiterShapeToDraw);
 
         double vCenter = .025 * delimiterScale;
 //        Shape verticalBar = Shape.segment(Point.at(0, 0), Point.at(0, 2 * vCenter));
@@ -55,18 +54,23 @@ public class LengthMeasure2 extends Delimiter2 {
         Shape verticalBar = Shape.polyLine(Point.at(xOffset, -vCenter), Point.at(0, 0), Point.at(xOffset, vCenter));
         delimiterShapeToDraw.getPath().addJMPointsFrom(verticalBar.getPath());
 
-        if (delimiterLabelToDraw instanceof NullMathObject) {
+        if (getLabel() instanceof NullMathObject) {
+            delimiterLabelRigidBox.resetMatrix();
             final Shape segment = Shape.segment(Point.at(0, 0), Point.at(width, 0));
             delimiterShapeToDraw.getPath().addJMPointsFrom(segment.getPath());
         } else {
+            getLabel().update(scene);
+
 //            double realAmplitudeScale = UsefulLambdas.allocateTo(0, minimumWidthToShrink).applyAsDouble(width);
-            double realAmplitudeScale = UsefulLambdas.allocateTo(0, delimiterLabelToDraw.getWidth() * 2.5).applyAsDouble(width);
-
+            double realAmplitudeScale = UsefulLambdas.allocateTo(0, getLabel().getWidth() * 2.5).applyAsDouble(width);
             double gapToUse = hgap * realAmplitudeScale;
-            delimiterLabelToDraw.scale(realAmplitudeScale);
+            double segmentLength = .5 * (width - getLabel().getWidth()) - gapToUse;
 
 
-            double segmentLength = .5 * (width - delimiterLabelToDraw.getWidth()) - gapToUse;
+            delimiterLabelRigidBox.scale(realAmplitudeScale);
+
+
+
 //        segmentLength*=amplitudeScale;
             final Shape segment = Shape.segment(Point.at(0, 0), Point.at(segmentLength, 0));
             delimiterShapeToDraw.getPath().addJMPointsFrom(segment.getPath());
@@ -74,24 +78,24 @@ public class LengthMeasure2 extends Delimiter2 {
             //Manages rotation of label
             switch (rotateLabel) {
                 case FIXED:
-                    delimiterLabelToDraw.rotate(-angle);
+                    delimiterLabelRigidBox.rotate(-angle);
                     break;
                 case ROTATE:
                     break;
                 case SMART:
                     if ((angle > .5 * PI) && (angle < 1.5 * PI)) {
-                        delimiterLabelToDraw.rotate(PI);
+                        delimiterLabelRigidBox.rotate(PI);
                     }
             }
 
-            delimiterLabelToDraw.stackTo(segment, Anchor.Type.RIGHT, gapToUse);
+            delimiterLabelRigidBox.stackTo(segment, Anchor.Type.RIGHT, gapToUse);
 
-            labelMarkPoint.v.copyFrom(delimiterLabelToDraw.getCenter().v);
+            labelMarkPoint.v.copyFrom(delimiterLabelRigidBox.getCenter().v);
             Shape segCopy = segment.copy().stackTo(BB, Anchor.Type.LEFT);
             delimiterShapeToDraw.getPath().addJMPointsFrom(segCopy.getPath());
-            delimiterLabelToDraw.shift(0, +gap * amplitudeScale);
+            delimiterLabelRigidBox.shift(0, +gap * amplitudeScale);
 
-            delimiterLabelToDraw.getMp().copyFrom(mpDelimiter.get(1));
+            delimiterLabelRigidBox.getMp().copyFrom(mpDelimiter.get(1));
         }
         Shape vertCopy = verticalBar.copy().scale(Point.at(0, 0), -1, 1).shift(width, 0);
         delimiterShapeToDraw.getPath().addJMPointsFrom(vertCopy.getPath());
@@ -102,15 +106,14 @@ public class LengthMeasure2 extends Delimiter2 {
 
         if (amplitudeScale != 1) {
             delimiterShapeToDraw.scale(amplitudeScale);
-            delimiterLabelToDraw.scale(amplitudeScale);
+            delimiterLabelRigidBox.scale(amplitudeScale);
             delimiterShapeToDraw.thickness(thicknessShape * amplitudeScale);
         } else {
             thicknessShape = mpDelimiterShape.getThickness();
         }
         delimiterShapeToDraw.fillAlpha(0);
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(AA, BB, A, B, 1);
-        tr.applyTransform(delimiterShapeToDraw);
-        tr.applyTransform(delimiterLabelToDraw);
+        tr.applyTransform(groupElementsToBeDrawn);
     }
 
     public enum TYPE {

@@ -1,5 +1,6 @@
 package com.jmathanim.mathobjects.Delimiters;
 
+import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.*;
 import com.jmathanim.mathobjects.*;
 
@@ -46,8 +47,8 @@ public class ShapeDelimiter2 extends Delimiter2 {
 
         double width = A.to(B).norm() * amplitudeScale;//The final width of the delimiter
         double angle = A.to(B).getAngle();
-        Point AA=A.interpolate(B,.5*(1-amplitudeScale));
-        Point BB=A.interpolate(B,.5*(1+amplitudeScale));
+        Point AA = A.interpolate(B, .5 * (1 - amplitudeScale));
+        Point BB = A.interpolate(B, .5 * (1 + amplitudeScale));
         MultiShapeObject bodyCopy = body.copy();
         delimiterShapeToDraw.getPath().clear();
 
@@ -81,40 +82,38 @@ public class ShapeDelimiter2 extends Delimiter2 {
             delimiterShapeToDraw.merge(bodyCopy.get(0), false, false);
             delimiterShapeToDraw.merge(bodyCopy.get(1).shift(wSpace, 0), true, true);
         }
-        groupElementsToBeDrawn.clear();
-        groupElementsToBeDrawn.add(delimiterShapeToDraw);
+
 
         Rect bb = delimiterShapeToDraw.getBoundingBox();
         delimiterShapeToDraw.shift(0, gap * amplitudeScale);
 
         labelMarkPoint.stackTo(delimiterShapeToDraw, Anchor.Type.UPPER, labelMarkGap * amplitudeScale);
 
-        delimiterLabel.update(scene);
-        delimiterLabelToDraw = MathObjectUtils.getSafeCopyOf(delimiterLabel);
-        if (!(delimiterLabelToDraw instanceof NullMathObject)) {
 
-            delimiterLabelToDraw = delimiterLabel.copy();
+        if (!(getLabel() instanceof NullMathObject)) {
 
-            double labelAmplitudeScale = UsefulLambdas.allocateTo(0, delimiterLabelToDraw.getWidth() * 1.5).applyAsDouble(width);
+            delimiterLabelRigidBox.resetMatrix();
+            getLabel().update(scene);
+            double labelAmplitudeScale = UsefulLambdas.allocateTo(0, getLabel().getWidth() * 1.5).applyAsDouble(width);
 
 //            double gapToUse = hgap * realAmplitudeScale;
-            delimiterLabelToDraw.scale(labelAmplitudeScale);
+            delimiterLabelRigidBox.scale(labelAmplitudeScale);
 
             //Manages rotation of label
             switch (rotateLabel) {
                 case FIXED:
-                    delimiterLabelToDraw.rotate(-angle);
+                    delimiterLabelRigidBox.rotate(-angle);
                     break;
                 case ROTATE:
                     break;
                 case SMART:
 //                delimiterLabelToDraw.rotate(-angle);
                     if ((angle > .5 * PI) && (angle < 1.5 * PI)) {
-                        delimiterLabelToDraw.rotate(PI);
+                        delimiterLabelRigidBox.rotate(PI);
                     }
             }
-            delimiterLabelToDraw.stackTo(Anchor.Type.LOWER, labelMarkPoint, Anchor.Type.UPPER, 0);
-            groupElementsToBeDrawn.add(delimiterLabelToDraw);
+            delimiterLabelRigidBox.stackTo(Anchor.Type.LOWER, labelMarkPoint, Anchor.Type.UPPER, 0);
+//            groupElementsToBeDrawn.add(getLabel());
 //            if (amplitudeScale != 1)
 //                delimiterLabelToDraw.scale(this.amplitudeScale);
         }

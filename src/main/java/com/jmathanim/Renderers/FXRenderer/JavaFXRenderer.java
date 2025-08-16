@@ -77,6 +77,8 @@ public class JavaFXRenderer extends Renderer {
     private static final double XMIN_DEFAULT = -2;
     private static final double XMAX_DEFAULT = 2;
 
+    private final HashMap<JMPath,Path> storedPaths;
+
     private static final double MIN_THICKNESS = .2d;
 
     public final FXPathUtils fXPathUtils;
@@ -104,10 +106,12 @@ public class JavaFXRenderer extends Renderer {
         fxnodes = new ArrayList<>();
         debugFXnodes = new ArrayList<>();
         images = new HashMap<>();
+        storedPaths=new HashMap<>();
         fXPathUtils = new FXPathUtils();
         camera = new Camera(scene, config.mediaW, config.mediaH);
         fixedCamera = new Camera(scene, config.mediaW, config.mediaH);
         correctionThickness = config.mediaW * 1d / 1066;//Correction factor for thickness
+
     }
 
     @Override
@@ -282,7 +286,7 @@ public class JavaFXRenderer extends Renderer {
     public void finish(int frameCount) {
 
         JMathAnimScene.logger.info(
-                String.format("%d frames created, "+LogUtils.GREEN+"%.2fs"+ LogUtils.RESET+" total time", frameCount, (1.f * frameCount) / config.fps));
+                String.format("%d frames created, " + LogUtils.GREEN + "%.2fs" + LogUtils.RESET + " total time", frameCount, (1.f * frameCount) / config.fps));
         if (config.isCreateMovie()) {
             /**
              * Encoders, like decoders, sometimes cache pictures so it can do
@@ -324,10 +328,28 @@ public class JavaFXRenderer extends Renderer {
             cam = getCamera();
             mobj.setCamera(cam);
         }
-        JMPath c = mobj.getPath();
+        JMPath objectPath = mobj.getPath();
 
-        if (c.size() >= 2) {
-            Path path = FXPathUtils.createFXPathFromJMPath(c, cam);
+        if (objectPath.size() >= 2) {
+            Path path;
+//            if (mobj.isRigid()) {
+//                if (false){
+////                if (storedPaths.containsKey(objectPath)){
+//                    path=storedPaths.get(objectPath);
+//                    path.getTransforms().clear();
+//                }else {
+//                    path = FXPathUtils.createFXPathFromJMPath(objectPath, cam);
+//                    storedPaths.put(objectPath,path);
+//                }
+//                path.getTransforms().add(FXPathUtils.camToScreenAffineTransform(mobj.getCamera()));
+//                path.getTransforms().add(new Scale(1, -1));
+//                Affine tr = FXPathUtils.affineJToAffine(mobj.getModelMatrix());
+//                path.getTransforms().add(tr);
+//                path.getTransforms().add(new Scale(1, -1));
+//                path.getTransforms().add(FXPathUtils.screenToCamAffineTransfrom(mobj.getCamera()));
+//            } else {
+                path = FXPathUtils.createFXPathFromJMPath(objectPath, cam);
+//            }
             applyDrawingStyles(path, mobj);
             applyRendererEffects(path, mobj.getRendererEffects());
             path.setClip(new Rectangle(cam.upperLeftX, cam.upperLeftY, cam.screenWidth, cam.screenHeight));
@@ -337,6 +359,7 @@ public class JavaFXRenderer extends Renderer {
             debugText(mobj.getDebugText(), mobj.getCenter().v);
         }
     }
+
 
     private void applyDrawingStyles(Path path, Shape mobj) {
 

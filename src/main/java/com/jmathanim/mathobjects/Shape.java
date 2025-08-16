@@ -36,22 +36,21 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 public class Shape extends MathObject {
 
     protected final JMPath jmpath;
+
     protected boolean showDebugPoints = false;
     protected boolean isConvex = false;
+
 
     public Shape() {
         super();
         this.jmpath = new JMPath();
+
     }
 
     public Shape(JMPath jmpath) {
         super();
         this.jmpath = jmpath;
     }
-
-//    public Shape(JMPath jmpath, MODrawProperties mp) {
-//        super(jmpath,mp);
-//    }
 
     //    @Override
 //    public <T extends MathObject> T shift(Vec shiftVector) {
@@ -71,6 +70,9 @@ public class Shape extends MathObject {
     public static Shape square(Point A, double side) {
         return Shape.rectangle(A, A.add(new Vec(side, side)));
     }
+//    public Shape(JMPath jmpath, MODrawProperties mp) {
+//        super(jmpath,mp);
+//    }
 
     /**
      * Creates a rectangle shape from a Rect object
@@ -105,14 +107,14 @@ public class Shape extends MathObject {
      * @return The created segment.
      */
     public static Shape segment(Point A, Point B, int numPoints) {
-       if (numPoints<2) {
-           numPoints=2;
-       }
-        Point[] points=new Point[numPoints];
-        points[0]=A;
-        points[numPoints-1]=B;
-        for (int i = 1; i < numPoints-1; i++) {
-            points[i]=A.interpolate(B,1d*i/(numPoints-1));
+        if (numPoints < 2) {
+            numPoints = 2;
+        }
+        Point[] points = new Point[numPoints];
+        points[0] = A;
+        points[numPoints - 1] = B;
+        for (int i = 1; i < numPoints - 1; i++) {
+            points[i] = A.interpolate(B, 1d * i / (numPoints - 1));
         }
         return polyLine(points);
     }
@@ -169,8 +171,6 @@ public class Shape extends MathObject {
         return obj;
     }
 
-    // Static methods to build most commons shapes
-
     /**
      * Creates a shape composed of multiple connected segments
      *
@@ -192,6 +192,8 @@ public class Shape extends MathObject {
     public static Shape triangle() {
         return polygon(Point.at(0, 0), Point.at(1, 0), Point.at(0, 1));
     }
+
+    // Static methods to build most commons shapes
 
     /**
      * Generates a regular polygon shape inscribed in a unit circle. The first point of the shape lies in the
@@ -239,14 +241,14 @@ public class Shape extends MathObject {
         JMPath path = new JMPath();
 
         double x1, y1;
-        double step = angle  / (numSegments-1);
-        double cte = 4d / 3 * Math.tan(angle / (numSegments-1));
+        double step = angle / (numSegments - 1);
+        double cte = 4d / 3 * Math.tan(angle / (numSegments - 1));
         double alphaC = 0;
         JMPathPoint jmp = JMPathPoint.make(1, 0, 1, -cte, 1, cte);
         for (int k = 0; k < numSegments; k++) {
-            path.addJMPoint(jmp.copy().rotate(Point.origin(),k*step));
+            path.addJMPoint(jmp.copy().rotate(Point.origin(), k * step));
         }
-        path.get(0).isThisSegmentVisible =false;
+        path.get(0).isThisSegmentVisible = false;
         path.get(0).cpEnter.v.copyFrom(path.get(0).p.v);
         path.get(-1).cpExit.v.copyFrom(path.get(-1).p.v);
         Shape obj = new Shape(path);
@@ -340,12 +342,6 @@ public class Shape extends MathObject {
         return obj;
     }
 
-
-
-
-
-
-
     /**
      * Creates an annulus with the given min and max radius
      *
@@ -373,6 +369,7 @@ public class Shape extends MathObject {
         resul.style("default");
         return resul;
     }
+
 
     /**
      * Returns a new Point object lying in the Shape, at the given position
@@ -446,9 +443,12 @@ public class Shape extends MathObject {
     }
 
     @Override
-    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
-        jmpath.applyAffineTransform(tr);
-        tr.applyTransformsToDrawingProperties(this);
+    public <T extends MathObject> T applyAffineTransform(AffineJTransform transform) {
+        super.applyAffineTransform(transform);
+        if (!isRigid) {
+            jmpath.applyAffineTransform(transform);
+            transform.applyTransformsToDrawingProperties(this);
+        }
         return (T) this;
     }
 
@@ -542,7 +542,7 @@ public class Shape extends MathObject {
      * @param b
      * @return
      */
-    public com.jmathanim.mathobjects.Shape getSubShape(double a, double b) {
+    public Shape getSubShape(double a, double b) {
         Shape subShape = new Shape();
         subShape.getMp().copyFrom(this.getMp());
         if (!jmpath.isEmpty()) {
@@ -629,7 +629,7 @@ public class Shape extends MathObject {
      * @return A Shape with the intersecion
      */
     public <T extends Shape> T intersect(Shape s2) {
-        com.jmathanim.mathobjects.Shape resul = new com.jmathanim.mathobjects.Shape(getIntersectionPath(s2));
+        Shape resul = new Shape(getIntersectionPath(s2));
         resul.getMp().copyFrom(this.getMp());
         return (T) resul;
     }
@@ -643,7 +643,7 @@ public class Shape extends MathObject {
      * @return A Shape with the union
      */
     public <T extends Shape> T union(Shape s2) {
-        com.jmathanim.mathobjects.Shape resul = new com.jmathanim.mathobjects.Shape(getUnionPath(s2));
+        Shape resul = new Shape(getUnionPath(s2));
         resul.getMp().copyFrom(this.getMp());
         return (T) resul;
     }
@@ -657,7 +657,7 @@ public class Shape extends MathObject {
      * @return A Shape with the substraction
      */
     public <T extends Shape> T substract(Shape s2) {
-        com.jmathanim.mathobjects.Shape resul = new com.jmathanim.mathobjects.Shape(getSubstractPath(s2));
+        Shape resul = new Shape(getSubstractPath(s2));
         resul.getMp().copyFrom(this.getMp());
         return (T) resul;
     }
@@ -795,13 +795,16 @@ public class Shape extends MathObject {
     @Override
     public void copyStateFrom(MathObject obj) {
         super.copyStateFrom(obj);
+
         if (!(obj instanceof Shape)) {
             return;
         }
         Shape sh2 = (Shape) obj;
         this.getMp().copyFrom(sh2.getMp());
 
-        getPath().copyStateFrom(sh2.getPath());
+        if (!isRigid) {
+            getPath().copyStateFrom(sh2.getPath());
+        }
         absoluteSize = sh2.absoluteSize;
         isConvex = sh2.isConvex;
         showDebugPoints = sh2.showDebugPoints;

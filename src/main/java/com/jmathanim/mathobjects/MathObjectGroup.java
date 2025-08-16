@@ -41,20 +41,29 @@ import java.util.logging.Logger;
  */
 public class MathObjectGroup extends MathObject implements Iterable<MathObject> {
 
-    /**
-     * Simpe layouts to apply to the group
-     */
-    public enum Layout {
-        CENTER, RIGHT, LEFT, UPPER, LOWER, URIGHT, ULEFT, DRIGHT, DLEFT, RUPPER, LUPPER, RLOWER, LLOWER, DIAG1, DIAG2,
-        DIAG3, DIAG4
+    private final ArrayList<MathObject> objects;
+    private final HashMap<String, MathObject> dict;
+    MODrawPropertiesArray mpArray;
+
+    public MathObjectGroup() {
+        super();
+        mpArray = new MODrawPropertiesArray();
+        this.objects = new ArrayList<>();
+        this.dict = new HashMap<>();
     }
 
-    /**
-     * Orientation (for distribution method)
-     */
-    public enum Orientation {
-        VERTICAL,
-        HORIZONTAL
+    public MathObjectGroup(MathObject... objects) {
+        this(new ArrayList<>(Arrays.asList(objects)));
+    }
+
+    public MathObjectGroup(ArrayList<MathObject> objects) {
+        super();
+        mpArray = new MODrawPropertiesArray();
+        this.dict = new HashMap<>();
+        this.objects = objects;
+        for (MathObject o : objects) {
+            mpArray.add(o);
+        }
     }
 
     public static MathObjectGroup make(MathObject... objects) {
@@ -66,9 +75,9 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
      * sized subgroups. The current group is unaltered.
      *
      * @param size Size of subgroups. Last subgroup created may have less than
-     * this number. For example a group with 17 elements with the division
-     * parameter 5 will return 3 subgroups of 5 elements and 1 subgroup of 2
-     * elements.
+     *             this number. For example a group with 17 elements with the division
+     *             parameter 5 will return 3 subgroups of 5 elements and 1 subgroup of 2
+     *             elements.
      * @return A new MathObjectGroup contanining other MathObjectGroup instance
      * with the divided objects.
      */
@@ -107,31 +116,6 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
             }
         }
         return resul;
-    }
-
-    MODrawPropertiesArray mpArray;
-    private final ArrayList<MathObject> objects;
-    private final HashMap<String, MathObject> dict;
-
-    public MathObjectGroup() {
-        super();
-        mpArray = new MODrawPropertiesArray();
-        this.objects = new ArrayList<>();
-        this.dict = new HashMap<>();
-    }
-
-    public MathObjectGroup(MathObject... objects) {
-        this(new ArrayList<>(Arrays.asList(objects)));
-    }
-
-    public MathObjectGroup(ArrayList<MathObject> objects) {
-        super();
-        mpArray = new MODrawPropertiesArray();
-        this.dict = new HashMap<>();
-        this.objects = objects;
-        for (MathObject o : objects) {
-            mpArray.add(o);
-        }
     }
 
     /**
@@ -183,6 +167,11 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         objects.remove(obj);
     }
 
+    public void remove(String key) {
+        if (dict.containsKey(key))
+            objects.remove(dict.get(key));
+    }
+
     @Override
     public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
         for (MathObject obj : objects) {
@@ -226,14 +215,13 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
 
         this.getMp().copyFrom(mg.getMp());
 
-        if (mg.size()==size()) {
+        if (mg.size() == size()) {
             int n = 0;
             for (MathObject o : getObjects()) {
                 o.copyStateFrom(mg.get(n));
                 n++;
             }
-        }
-        else {
+        } else {
             clear();
             for (MathObject o : mg.getObjects()) {
                 add(o.copy());
@@ -241,7 +229,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         }
     }
 
-//    @Override
+    //    @Override
 //    public void draw(JMathAnimScene scene, Renderer r) {
 //        if (isVisible()) {
 //            for (MathObject obj : this.getObjects()) {
@@ -272,7 +260,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
      * horizontally or vertically. x-order or y-order of objects is respected.
      * Order of objects in MathObjectGroup is unaltered.
      *
-     * @param <T> Calling subclass
+     * @param <T>         Calling subclass
      * @param orientation A value of enum Orientation (HORIZONTAL or VERTICAL)
      */
     public <T extends MathObjectGroup> T distribute(Orientation orientation) {
@@ -283,12 +271,12 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
      * Distribute evenly spaced objects in the group, horizontally or
      * vertically.
      *
-     * @param <T> Calling subclass
-     * @param orientation A value of enum Orientation (HORIZONTAL or VERTICAL)
+     * @param <T>          Calling subclass
+     * @param orientation  A value of enum Orientation (HORIZONTAL or VERTICAL)
      * @param respectOrder If true, current x-order or y-order of objects is
-     * respected. Position of objects in the MathObjectGroup is unaltered. A
-     * value of false in a horizontal distribute por example, always puts the
-     * first element of the group in the left extreme.
+     *                     respected. Position of objects in the MathObjectGroup is unaltered. A
+     *                     value of false in a horizontal distribute por example, always puts the
+     *                     first element of the group in the left extreme.
      * @return This object
      */
     public <T extends MathObjectGroup> T distribute(Orientation orientation, boolean respectOrder) {
@@ -324,7 +312,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
             }
         }
         dstCoord = left;//Starting coordinate (horizontal or vertical)
-        //Compute gap 
+        //Compute gap
         gap = ((right - left) - size) / (size() - 1);
 
         //Move every object
@@ -415,7 +403,6 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         }
         return (T) this;
     }
-
 
     public <T extends MathObjectGroup> T setLayout(GroupLayout layout) {
         layout.applyLayout(this);
@@ -517,7 +504,6 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         return objects.toArray(new MathObject[0]);
     }
 
-
     @Override
     public <T extends MathObject> T visible(boolean visible) {
         for (MathObject obj : objects) {
@@ -554,11 +540,11 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
      * gaps) is computed as the maximum of the bounding boxes of group elements.
      *
      * @param anchorType How to align previous bounding box into the new one
-     * (CENTER, UPPER...)
-     * @param rightGap Right Gap to add.
-     * @param upperGap Upper Gap to add.
-     * @param leftGap Left Gap to add.
-     * @param lowerGap Lower Gap to add.
+     *                   (CENTER, UPPER...)
+     * @param rightGap   Right Gap to add.
+     * @param upperGap   Upper Gap to add.
+     * @param leftGap    Left Gap to add.
+     * @param lowerGap   Lower Gap to add.
      * @return This group
      */
     public MathObjectGroup homogeneizeBoundingBoxes(Anchor.innerType anchorType, double upperGap, double rightGap, double lowerGap, double leftGap) {
@@ -581,13 +567,13 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
      * same width and height
      *
      * @param anchorType How to align previous bounding box into the new one
-     * (CENTER, UPPER...)
-     * @param width Desired width
-     * @param height Desired height
-     * @param upperGap Upper Gap to add.
-     * @param rightGap Right Gap to add.
-     * @param lowerGap Lower Gap to add.
-     * @param leftGap Left Gap to add.
+     *                   (CENTER, UPPER...)
+     * @param width      Desired width
+     * @param height     Desired height
+     * @param upperGap   Upper Gap to add.
+     * @param rightGap   Right Gap to add.
+     * @param lowerGap   Lower Gap to add.
+     * @param leftGap    Left Gap to add.
      * @return This object
      */
     public MathObjectGroup homogeneizeBoundingBoxesTo(Anchor.innerType anchorType, double width, double height, double upperGap, double rightGap, double lowerGap, double leftGap) {
@@ -655,6 +641,22 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
             thi.layer(layer);
         }
         return (T) this;
+    }
+
+    /**
+     * Simpe layouts to apply to the group
+     */
+    public enum Layout {
+        CENTER, RIGHT, LEFT, UPPER, LOWER, URIGHT, ULEFT, DRIGHT, DLEFT, RUPPER, LUPPER, RLOWER, LLOWER, DIAG1, DIAG2,
+        DIAG3, DIAG4
+    }
+
+    /**
+     * Orientation (for distribution method)
+     */
+    public enum Orientation {
+        VERTICAL,
+        HORIZONTAL
     }
 
 }

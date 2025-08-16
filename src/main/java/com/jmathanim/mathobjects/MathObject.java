@@ -54,6 +54,9 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     private Type absoluteAnchorType = Type.CENTER;
     private double leftGap, upperGap, rightGap, lowerGap;
 
+    protected final AffineJTransform modelMatrix;
+    protected boolean isRigid = false;
+
     public MathObject() {
         this(null);
 
@@ -84,9 +87,20 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         lowerGap = 0;
         this.properties = new HashMap<>();
         updaters = new ArrayList<>();
+        modelMatrix = new AffineJTransform();
     }
 
+//    public boolean isRigid() {
+//        return isRigid;
+//    }
+//
+//    public void setRigid(boolean rigid) {
+//        isRigid = rigid;
+//    }
 
+    public AffineJTransform getModelMatrix() {
+        return modelMatrix;
+    }
 
     public Camera getCamera() {
         return camera;
@@ -347,7 +361,9 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         if (this.getRendererEffects() != null) {
             this.getRendererEffects().copyFrom(rendererEffects);
         }
+        this.modelMatrix.copyFrom(obj.modelMatrix);
     }
+
 
     /**
      * Returns the Bounding box with limits of the MathObject
@@ -988,6 +1004,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @return This object
      */
     public <T extends MathObject> T applyAffineTransform(AffineJTransform transform) {
+        if (isRigid) {
+            AffineJTransform compose = modelMatrix.compose(transform);
+            modelMatrix.copyFrom(compose);
+        }
         return (T) this;// By default does nothing
     }
 
