@@ -150,6 +150,7 @@ public class SkijaRenderer extends Renderer {
 
     @Override
     public void clearAndPrepareCanvasForAnotherFrame() {
+        super.clearAndPrepareCanvasForAnotherFrame();
         skijaHandler.clearAndPrepareCanvasForAnotherFrame();
     }
 

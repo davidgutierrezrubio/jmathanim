@@ -56,6 +56,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
 
     protected final AffineJTransform modelMatrix;
     protected boolean isRigid = false;
+    protected boolean hasBeenUpdated = false;
 
     public MathObject() {
         this(null);
@@ -855,9 +856,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     // Updateable methods
     @Override
     public void update(JMathAnimScene scene) {
+        if (hasBeenUpdated) return;//This prevents updaters being called more than once per frame
         for (Updater updater : updaters) {
             updater.update(scene);
         }
+        hasBeenUpdated=true;
     }
 
     @Override

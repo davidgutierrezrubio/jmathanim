@@ -308,6 +308,7 @@ public class JavaFXRenderer extends Renderer {
 
     @Override
     public void clearAndPrepareCanvasForAnotherFrame() {
+        super.clearAndPrepareCanvasForAnotherFrame();
         fxnodes.clear();
         debugFXnodes.clear();
     }

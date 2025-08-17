@@ -27,6 +27,7 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.AbstractJMImage;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MediatorMathObject;
 import com.jmathanim.mathobjects.Shape;
 
 import javax.imageio.ImageIO;
@@ -132,7 +133,11 @@ public abstract class Renderer {
     /**
      * Clear current renderer, with the background color
      */
-    abstract public void clearAndPrepareCanvasForAnotherFrame();
+    public void clearAndPrepareCanvasForAnotherFrame() {
+        for (MathObject obj: scene.getMathObjects()) {
+            MediatorMathObject.setHasBeenUpdated(obj,false);
+        }
+    };
 
     /**
      * Draws the path of a JMPathObject This method will draw most of the

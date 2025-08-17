@@ -187,6 +187,7 @@ public class JOGLRenderer extends Renderer {
 
     @Override
     public void clearAndPrepareCanvasForAnotherFrame() {
+        super.clearAndPrepareCanvasForAnotherFrame();
         //This should delete the JOGL queue
 //        JMathAnimScene.logger.info("JOGLRenderer: Clear frame");
     }

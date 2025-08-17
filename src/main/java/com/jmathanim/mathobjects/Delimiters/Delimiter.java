@@ -1,6 +1,7 @@
 package com.jmathanim.mathobjects.Delimiters;
 
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Enum.RotationType;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.Anchor;
@@ -30,7 +31,7 @@ public abstract class Delimiter extends Constructible {
     protected double amplitudeScale;
     protected TextUpdaterFactory textUpdaterFactory;
     protected double labelMarkGap;
-    protected Delimiter.Rotation rotateLabel;
+    protected RotationType rotateLabel;
     protected double delimiterScale;
     protected double minimumWidthToShrink;
 
@@ -61,7 +62,7 @@ public abstract class Delimiter extends Constructible {
 
 
         labelMarkPoint = Point.at(0, 0);
-        this.rotateLabel = Delimiter.Rotation.SMART;
+        this.rotateLabel = RotationType.SMART;
         this.delimiterLabel = new NullMathObject();
         delimiterLabelRigidBox=new RigidBox(this.delimiterLabel);
         this.mpDelimiter.add(delimiterLabelRigidBox);
@@ -92,6 +93,7 @@ public abstract class Delimiter extends Constructible {
             case BRACE:
             case PARENTHESIS:
             case BRACKET:
+            case INVISIBLE:
                 resul = ShapeDelimiter.make(A, B, type, gap);
                 break;
             case LENGTH_ARROW:
@@ -217,7 +219,7 @@ public abstract class Delimiter extends Constructible {
      * @param rotateLabel True if label should be rotated, false otherwise.
      * @return This object
      */
-    public <T extends Delimiter> T setRotationType(Rotation rotateLabel) {
+    public <T extends Delimiter> T setRotationType(RotationType rotateLabel) {
         this.rotateLabel = rotateLabel;
         return (T) this;
     }
@@ -368,13 +370,6 @@ public abstract class Delimiter extends Constructible {
 
 
     /**
-     * Type of label rotation
-     */
-    public enum Rotation {
-        FIXED, SMART, ROTATE
-    }
-
-    /**
      * Type of delimiter
      */
     public enum Type {
@@ -397,7 +392,8 @@ public abstract class Delimiter extends Constructible {
         /**
          * Simple arrow addLengthLabel length
          */
-        LENGTH_ARROW
+        LENGTH_ARROW,
+        INVISIBLE
     }
 
     @Override

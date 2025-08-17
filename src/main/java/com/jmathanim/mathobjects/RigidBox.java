@@ -73,6 +73,9 @@ public class RigidBox extends MathObject {
         super.update(scene);
         mathObject.update(scene);
     }
+    public MathObject getTransformedCopyObject() {
+        return   mathObject.copy().applyAffineTransform(modelMatrix);
+    }
 
     @Override
     public String toString() {

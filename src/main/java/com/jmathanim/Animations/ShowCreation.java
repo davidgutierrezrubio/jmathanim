@@ -28,17 +28,12 @@ import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import java.util.function.DoubleUnaryOperator;
 
 /**
- * Animation that shows the creation of a MathObject. The precise strategy for
- * creating depends on the type of MathObject
+ * Animation that shows the creation of a MathObject. The precise strategy for creating depends on the type of
+ * MathObject
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public class ShowCreation extends Animation {
-
-    public enum ShowCreationStrategy {
-        NONE, FIRST_DRAW_AND_THEN_FILL, SIMPLE_SHAPE_CREATION, MULTISHAPE_CREATION, LATEX_CREATION, LINE_CREATION, RAY_CREATION,
-        ARROW_CREATION, DELIMITER_CREATION, GROUP_CREATION, AXES_CREATION, POINT_CREATION
-    }
 
     protected final Point[] pencilPosition;
     MathObject mobj;//Mathobject that will be created
@@ -47,25 +42,10 @@ public class ShowCreation extends Animation {
     private ShowCreationStrategy strategyType = ShowCreationStrategy.NONE;
 
     /**
-     * Static constructor. Creates an animation that shows the creation of the
-     * specified MathObject.
-     *
-     * @param runtime Run time in seconds
-     * @param mobj Mathobject to animate
-     * @return The animation ready to play with playAnim method
-     */
-    public static ShowCreation make(double runtime, MathObject mobj) {
-        if (mobj == null) {
-            return null;
-        }
-        return new ShowCreation(runtime, mobj);
-    }
-
-    /**
      * Creates an animation that shows the creation of the specified MathObject.
      *
      * @param runtime Run time in seconds
-     * @param mobj Mathobject to animate
+     * @param mobj    Mathobject to animate
      */
     public ShowCreation(double runtime, MathObject mobj) {
         super(runtime);
@@ -88,6 +68,20 @@ public class ShowCreation extends Animation {
         pencilPosition = new Point[]{Point.origin(), Point.origin()};
     }
 
+    /**
+     * Static constructor. Creates an animation that shows the creation of the specified MathObject.
+     *
+     * @param runtime Run time in seconds
+     * @param mobj    Mathobject to animate
+     * @return The animation ready to play with playAnim method
+     */
+    public static ShowCreation make(double runtime, MathObject mobj) {
+        if (mobj == null) {
+            return null;
+        }
+        return new ShowCreation(runtime, mobj);
+    }
+
     @Override
     public boolean doInitialization() {
         super.doInitialization();
@@ -103,7 +97,7 @@ public class ShowCreation extends Animation {
             creationStrategy.initialize(scene);
         } catch (NullPointerException | ClassCastException e) {
             JMathAnimScene.logger.error("Couldn't create ShowCreation strategy for "
-                    + this.mobj.getClass().getCanonicalName() + ". Animation will not be done. (" + e + ")");
+                    + this.mobj.getClass().getCanonicalName() + ". No animation will be done. (" + e + ")");
         }
         return true;
     }
@@ -111,6 +105,7 @@ public class ShowCreation extends Animation {
     @Override
     public void doAnim(double t) {
         super.doAnim(t);
+        if (creationStrategy == null) return;
         creationStrategy.doAnim(t);
         try {
             if (creationStrategy instanceof CreationStrategy) {
@@ -123,11 +118,11 @@ public class ShowCreation extends Animation {
         }
     }
 
-//    @Override
+    //    @Override
 //    public boolean processAnimation() {
 //        if ((creationStrategy != null)) {
 //            boolean ret = creationStrategy.processAnimation();
-//          
+//
 //            return ret;
 //        } else {
 //            return true;
@@ -145,8 +140,7 @@ public class ShowCreation extends Animation {
     /**
      * Determines the strategy to animate the creation of the object
      *
-     * @param mobj MathObject which will be animated. Its type determines the
-     * type of animation to perform.
+     * @param mobj MathObject which will be animated. Its type determines the type of animation to perform.
      */
     private void determineCreationStrategy(MathObject mobj) {
 
@@ -200,7 +194,7 @@ public class ShowCreation extends Animation {
     /**
      * Sets the animation strategy
      *
-     * @param <T> This class
+     * @param <T>          This class
      * @param strategyType Strategy, chosen from enum ShowCreationStrategy
      * @return This object
      */
@@ -212,8 +206,7 @@ public class ShowCreation extends Animation {
     /**
      * Creates the strategy object
      *
-     * @throws ClassCastException If the current object cannot be cast to the
-     * required class.
+     * @throws ClassCastException If the current object cannot be cast to the required class.
      */
     private void createStrategy() throws ClassCastException {
         switch (this.strategyType) {
@@ -301,6 +294,9 @@ public class ShowCreation extends Animation {
                 break;
             case AXES_CREATION:
                 creationStrategy = new AxesCreationAnimation(runTime, (Axes) mobj);
+//            case NONE:
+//                creationStrategy = Commands.fadeIn(runTime, mobj);
+//                JMathAnimScene.logger.warn("Couldn't create strategy for ShowCreation method: Will use FadeIn instead");
             default:
                 break;
         }
@@ -309,9 +305,8 @@ public class ShowCreation extends Animation {
     /**
      * Sets the strategy used to create the object
      *
-     * @param <T> Calling subclass
-     * @param strategyType Strategy type. A value from the enum
-     * ShowCreationStrategy
+     * @param <T>          Calling subclass
+     * @param strategyType Strategy type. A value from the enum ShowCreationStrategy
      * @return This object
      */
     public <T extends ShowCreation> T setStrategyType(ShowCreationStrategy strategyType) {
@@ -322,8 +317,8 @@ public class ShowCreation extends Animation {
     /**
      * Returns a reference to the "pencil" position.
      *
-     * @return An array with 2 point objects. The 0 index stores the previous
-     * position of the pencil and 1 stores the current direction
+     * @return An array with 2 point objects. The 0 index stores the previous position of the pencil and 1 stores the
+     * current direction
      */
     public Point[] getPencilPosition() {
         return pencilPosition;
@@ -333,26 +328,27 @@ public class ShowCreation extends Animation {
     @Override
     public <T extends Animation> T setLambda(DoubleUnaryOperator lambda) {
         super.setLambda(lambda);
-        try {
-            creationStrategy.setLambda(lambda);
-        } catch (NullPointerException e) {
-        }
+        if (creationStrategy == null) return (T) this;
+        creationStrategy.setLambda(lambda);
         return (T) this;
     }
 
     @Override
     public void cleanAnimationAt(double t) {
+        if (creationStrategy == null) return;
         creationStrategy.cleanAnimationAt(t);
         removeObjectsFromScene(removeThisAtTheEnd);
     }
 
     @Override
     public void prepareForAnim(double t) {
+        if (creationStrategy == null) return;
         creationStrategy.prepareForAnim(t);
     }
 
     @Override
     public MathObject getIntermediateObject() {
+        if (creationStrategy == null) return new NullMathObject();
         return creationStrategy.getIntermediateObject();
     }
 
@@ -361,8 +357,14 @@ public class ShowCreation extends Animation {
         super.reset();
         if (getStatus() != Status.NOT_INITIALIZED) {
             //This is to prevent calling the next line when the strategy is null
+            if (creationStrategy == null) return;
             creationStrategy.reset();
         }
+    }
+
+    public enum ShowCreationStrategy {
+        NONE, FIRST_DRAW_AND_THEN_FILL, SIMPLE_SHAPE_CREATION, MULTISHAPE_CREATION, LATEX_CREATION, LINE_CREATION, RAY_CREATION,
+        ARROW_CREATION, DELIMITER_CREATION, GROUP_CREATION, AXES_CREATION, POINT_CREATION
     }
 
 }

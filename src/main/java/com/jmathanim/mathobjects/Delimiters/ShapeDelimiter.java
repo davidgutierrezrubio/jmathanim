@@ -22,18 +22,22 @@ public class ShapeDelimiter extends Delimiter {
         ShapeDelimiter resul = new ShapeDelimiter(A, B, type, gap);
         ResourceLoader rl = new ResourceLoader();
         String name;
-        switch (type) {
+        switch (resul.type) {
             case PARENTHESIS:
                 name = "#parenthesis.svg";
                 break;
             case BRACKET:
                 name = "#bracket.svg";
                 break;
+            case INVISIBLE:
+                name = "#braces.svg";//Use this, make it invisible
             default:
                 name = "#braces.svg";
                 break;
         }
-        resul.body = new SVGMathObject(rl.getResource(name, "shapeResources/delimiters"));
+        if (name != null) {
+            resul.body = new SVGMathObject(rl.getResource(name, "shapeResources/delimiters"));
+        } else resul.body = null;
 //        resul.mpDelimiter.add(resul.body);
         resul.style("latexdefault");
         return resul;
@@ -52,7 +56,7 @@ public class ShapeDelimiter extends Delimiter {
         Point AA = A.interpolate(B, .5 * (1 - amplitudeScale));
         Point BB = A.interpolate(B, .5 * (1 + amplitudeScale));
         MultiShapeObject bodyCopy = body.copy();
-        delimiterShapeToDraw.getPath().clear();
+            delimiterShapeToDraw.getPath().clear();
 
         if (type == Delimiter.Type.BRACE) {
             minimumWidthToShrink = .5;
@@ -121,6 +125,10 @@ public class ShapeDelimiter extends Delimiter {
         }
 
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(bb.getDL(), bb.getDR(), AA, BB, 1);
+
+        if (this.type==Type.INVISIBLE) {
+            delimiterShapeToDraw.visible(false);
+        }
 
 
 //        if (amplitudeScale != 1)

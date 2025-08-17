@@ -32,9 +32,9 @@ import static java.lang.Math.sqrt;
  */
 public class Vec implements Stateable, HasDirection {
 
+    public static final double PI2 = 2 * PI;
     public double x, y, z;
     public double xState, yState, zState;
-    public static final double PI2 = 2 * PI;
 
     /**
      * Returns a new Vec with the given coordinates
@@ -60,6 +60,14 @@ public class Vec implements Stateable, HasDirection {
 
     }
 
+    public static Vec to(double x, double y, double z) {
+        return new Vec(x, y, z);
+    }
+
+    public static Vec to(double x, double y) {
+        return new Vec(x, y);
+    }
+
     /**
      * Computes the dot product of this vector and a given one
      *
@@ -81,8 +89,8 @@ public class Vec implements Stateable, HasDirection {
     }
 
     /**
-     * Multiplies the vector by a scalar and stores the resul. The original
-     * vector is altered and the method returns this object.
+     * Multiplies the vector by a scalar and stores the resul. The original vector is altered and the method returns
+     * this object.
      *
      * @param lambda The scalar to multiply
      * @return This vector
@@ -95,8 +103,7 @@ public class Vec implements Stateable, HasDirection {
     }
 
     /**
-     * Returns a new vector representing this vector scaled by a factor. The
-     * current vector is unaltered.
+     * Returns a new vector representing this vector scaled by a factor. The current vector is unaltered.
      *
      * @param lambda The factor
      * @return The new vector
@@ -106,8 +113,8 @@ public class Vec implements Stateable, HasDirection {
     }
 
     /**
-     * Adds the given vector to this and stores the resul. The original vector
-     * is altered and the method returns this object.
+     * Adds the given vector to this and stores the resul. The original vector is altered and the method returns this
+     * object.
      *
      * @param b The vector to add
      * @return This vector
@@ -120,8 +127,8 @@ public class Vec implements Stateable, HasDirection {
     }
 
     /**
-     * Substracts the given vector to this and stores the resul. The original
-     * vector is altered and the method returns this object.
+     * Substracts the given vector to this and stores the resul. The original vector is altered and the method returns
+     * this object.
      *
      * @param b The vector to substract
      * @return This vector
@@ -134,8 +141,7 @@ public class Vec implements Stateable, HasDirection {
     }
 
     /**
-     * Substracts the given vector to this and return the result. The original
-     * vector is unaltered.
+     * Substracts the given vector to this and return the result. The original vector is unaltered.
      *
      * @param b The vector to substract
      * @return The substraction result
@@ -145,8 +151,7 @@ public class Vec implements Stateable, HasDirection {
     }
 
     /**
-     * Add the given vector to this and return the result. The original vector
-     * is unaltered.
+     * Add the given vector to this and return the result. The original vector is unaltered.
      *
      * @param b The vector to add
      * @return The sum result
@@ -162,10 +167,9 @@ public class Vec implements Stateable, HasDirection {
     /**
      * Returns a new point between this and v2, given by the parameter
      *
-     * @param v2 The other point to interpolate
-     * @param alpha Parameter of interpolation. 0 gives this point. 1 gives v2.
-     * 0.5 returns the middle point. Values less than 0 and greater than 1 are
-     * allowed.
+     * @param v2    The other point to interpolate
+     * @param alpha Parameter of interpolation. 0 gives this point. 1 gives v2. 0.5 returns the middle point. Values
+     *              less than 0 and greater than 1 are allowed.
      * @return The interpolated point
      */
     public Vec interpolate(Vec v2, double alpha) {
@@ -217,13 +221,8 @@ public class Vec implements Stateable, HasDirection {
      */
     public double getAngle() {
         double angle = Math.atan2(this.y, this.x);
-
-        while (angle < 0) {
-            angle += PI2;
-        }
-        while (angle > PI2) {
-            angle -= PI2;
-        }
+        angle %= PI2;
+        if (angle < 0) angle += PI2;
         return angle;
     }
 
@@ -237,8 +236,7 @@ public class Vec implements Stateable, HasDirection {
     }
 
     /**
-     * Rotates the vector the specified angle, storing the result in the
-     * original vector (2d version)
+     * Rotates the vector the specified angle, storing the result in the original vector (2d version)
      *
      * @param angle Rotation angle
      * @return This vector
@@ -254,8 +252,7 @@ public class Vec implements Stateable, HasDirection {
     }
 
     /**
-     * Rotates the vector the specified angle, and returns the result.The
-     * original vector is unaltered (2d version).
+     * Rotates the vector the specified angle, and returns the result.The original vector is unaltered (2d version).
      *
      * @param angle Rotation angle
      * @return A new vector with the resul
@@ -296,23 +293,14 @@ public class Vec implements Stateable, HasDirection {
 
     @Override
     public String toString() {
-        return "Vec(" + x + ", " + y + ", "+z+')';
-    }
-
-    public static Vec to(double x, double y, double z) {
-        return new Vec(x, y, z);
-    }
-
-    public static Vec to(double x, double y) {
-        return new Vec(x, y);
+        return "Vec(" + x + ", " + y + ", " + z + ')';
     }
 
     /**
-     * Return the normalized vector, with modulus 1. If the vector is the null
-     * vector, does nothing. The original vector is unaltered.
+     * Return the normalized vector, with modulus 1. If the vector is the null vector, does nothing. The original vector
+     * is unaltered.
      *
-     * @return The normalized vector if the modulus is positive. The original
-     * otherwise.
+     * @return The normalized vector if the modulus is positive. The original otherwise.
      */
     public Vec normalize() {
         double norm = this.norm();
@@ -338,8 +326,7 @@ public class Vec implements Stateable, HasDirection {
     }
 
     /**
-     * Applies an affine transform to the vector. the transformed vector. The
-     * original vector is altered.
+     * Applies an affine transform to the vector. the transformed vector. The original vector is altered.
      *
      * @param tr Affine transform
      * @return This object, with the transform applied
@@ -368,8 +355,7 @@ public class Vec implements Stateable, HasDirection {
     }
 
     /**
-     * Returns a scaled version of the vector. The original vector is not
-     * modified
+     * Returns a scaled version of the vector. The original vector is not modified
      *
      * @param scx X scale
      * @param scy Y scale
