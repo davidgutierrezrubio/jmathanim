@@ -163,7 +163,7 @@ public class UsefulLambdas {
     /**
      * Lambda smooth operator. The parameter determines the smoothness.
      *
-     * @param smoothness Smoothness level. 0 means straigt line, 1 fully smoothed.
+     * @param smoothness Smoothness level. 0 means straight line, 1 fully smoothed.
      * @return The lambda function
      */
     public static DoubleUnaryOperator smooth(double smoothness) {

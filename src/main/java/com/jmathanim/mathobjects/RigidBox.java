@@ -31,6 +31,7 @@ public class RigidBox extends MathObject {
     public void setMathObjectReference(MathObject mathObjectReference) {
 
         this.mathObjectReference = (mathObjectReference == null ? new NullMathObject() : mathObjectReference);
+        this.mathObjectCopyToDraw = this.mathObjectReference.copy();
     }
 
     public MathObject getMathObjectCopyToDraw() {

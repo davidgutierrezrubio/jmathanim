@@ -609,9 +609,9 @@ public abstract class JMathAnimScene {
                     anim.finishAnimation();
                 }
             }
-            if (!finished) {//If all animations are finished, no need to advance frame
+//            if (!finished) {//If all animations are finished, no need to advance frame
                 advanceFrame();
-            }
+//            }
         }
     }
 

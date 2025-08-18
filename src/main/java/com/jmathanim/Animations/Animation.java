@@ -191,11 +191,13 @@ public abstract class Animation {
         if (status == Status.INITIALIZED) {
             t += dt;
         }
+        if (t > 1) t=1;
+        if (t <0) t=0;
         boolean resul;
         if (t <= 1 && t >= 0) {
             this.doAnim(t);
             if (printProgressBar && config.isPrintProgressBar()) LogUtils.printProgressBar(t);
-            resul = false;
+            resul = (t==1);
         } else {
             resul = true;
         }
@@ -204,6 +206,8 @@ public abstract class Animation {
         if ((t < 1) && (1 - t < dt)) {
             t = 1;
         }
+        //if t>1, do it 1
+        if (t>1) t=1;
         return resul;
     }
 
