@@ -37,7 +37,7 @@ public class ShowCreation extends Animation {
 
     protected final Point[] pencilPosition;
     MathObject mobj;//Mathobject that will be created
-    Constructible origObj;//Original constructible object, in case
+    MathObject origObj;//Original constructible object, in case
     private Animation creationStrategy;
     private ShowCreationStrategy strategyType = ShowCreationStrategy.NONE;
 
@@ -50,22 +50,9 @@ public class ShowCreation extends Animation {
     public ShowCreation(double runtime, MathObject mobj) {
         super(runtime);
         setDebugName("showCreation");
-
-        if (mobj instanceof Delimiter) {
-            this.mobj = mobj;
-            addThisAtTheEnd.add(mobj);
-        }
-        // If the object is a constructible one, get its visible object to animate
-        else if (mobj instanceof Constructible) {
-            origObj = (Constructible) mobj;
-            this.mobj = origObj.getMathObject();
-            removeThisAtTheEnd.add(this.mobj);
-            addThisAtTheEnd.add(mobj);
-        } else {
-            this.mobj = mobj;
-            addThisAtTheEnd.add(mobj);
-        }
         pencilPosition = new Point[]{Point.origin(), Point.origin()};
+        this.mobj=mobj;
+        this.origObj=mobj;
     }
 
     /**
@@ -82,9 +69,37 @@ public class ShowCreation extends Animation {
         return new ShowCreation(runtime, mobj);
     }
 
+    private boolean extractMathObjectToCreate(MathObject mobj) {
+        if (mobj instanceof Delimiter) {
+            this.mobj = mobj;
+            addThisAtTheEnd.add(origObj);
+            return true;
+        }
+        if (mobj instanceof Constructible) {
+            this.mobj = ((Constructible) mobj).getMathObject();
+            removeThisAtTheEnd.add(this.mobj);
+            addThisAtTheEnd.add(origObj);
+            return false;//Needs further inspecting
+        }
+
+        if (mobj instanceof RigidBox) {
+            this.mobj = ((RigidBox) mobj).getMathObjectCopyToDraw();
+            removeObjectsFromScene(origObj);
+            removeThisAtTheEnd.add(this.mobj);
+            addThisAtTheEnd.add(origObj);
+            return false;//Needs further inspecting
+        }
+        this.mobj = mobj;
+        addThisAtTheEnd.add(origObj);
+        return true;
+
+    }
+
     @Override
     public boolean doInitialization() {
         super.doInitialization();
+        //First, extract MathObjects if passed object is a container (RigidBox, Constructible, etc.)
+        while (!extractMathObjectToCreate(this.mobj));
         try {
             if (strategyType == ShowCreationStrategy.NONE) {
                 determineCreationStrategy(this.mobj);

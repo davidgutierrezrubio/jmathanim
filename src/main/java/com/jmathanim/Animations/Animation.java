@@ -23,8 +23,8 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.jmathanim.LogUtils;
 import com.jmathanim.mathobjects.MathObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.function.DoubleUnaryOperator;
 
 /**
@@ -34,8 +34,8 @@ import java.util.function.DoubleUnaryOperator;
  */
 public abstract class Animation {
 
-    protected final ArrayList<MathObject> removeThisAtTheEnd;
-    protected final ArrayList<MathObject> addThisAtTheEnd;
+    protected final HashSet<MathObject> removeThisAtTheEnd;
+    protected final HashSet<MathObject> addThisAtTheEnd;
     private final JMathAnimConfig config;
     private final HashMap<MathObject, MathObject> backups;
     protected double lastTComputed;
@@ -89,8 +89,8 @@ public abstract class Animation {
         this.shouldInterpolateStyles = true;
         lambda = JMathAnimConfig.getConfig().getDefaultLambda();
         backups = new HashMap<>();
-        addThisAtTheEnd = new ArrayList<>();
-        removeThisAtTheEnd = new ArrayList<>();
+        addThisAtTheEnd = new HashSet<>();
+        removeThisAtTheEnd = new HashSet<>();
         allocateStart = 0d;
         allocateEnd = 1d;
         config = JMathAnimConfig.getConfig();
@@ -369,11 +369,11 @@ public abstract class Animation {
         }
     }
 
-    protected void removeObjectsFromScene(ArrayList<MathObject> objectsToRemove) {
+    protected void removeObjectsFromScene(HashSet<MathObject> objectsToRemove) {
         removeObjectsFromScene(objectsToRemove.toArray(new MathObject[0]));
     }
 
-    protected void addObjectsToscene(ArrayList<MathObject> objectsToAdd) {
+    protected void addObjectsToscene(HashSet<MathObject> objectsToAdd) {
         addObjectsToscene(objectsToAdd.toArray(new MathObject[0]));
     }
 

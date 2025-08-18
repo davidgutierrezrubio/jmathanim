@@ -8,30 +8,42 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 public class RigidBox extends MathObject {
-    private MathObject mathObject;
+    private MathObject mathObjectReference;
+    private MathObject mathObjectCopyToDraw;
+    private boolean isCopyToDrawTransformedByMatrix;
 
     public RigidBox(MathObject mathObject) {
-        this.mathObject = mathObject;
+        this.mathObjectReference = mathObject;
+        this.mathObjectCopyToDraw = mathObject.copy();
+        isCopyToDrawTransformedByMatrix = false;
         setObjectLabel("rigidbox");
     }
 
     @Override
     public Stylable getMp() {
-        return mathObject.getMp();
+        return mathObjectReference.getMp();
     }
 
-    public MathObject getMathObject() {
-        return mathObject;
+    public MathObject getReferenceMathObject() {
+        return mathObjectReference;
     }
 
-    public void setMathObject(MathObject mathObject) {
+    public void setMathObjectReference(MathObject mathObjectReference) {
 
-        this.mathObject = (mathObject == null ? new NullMathObject() : mathObject);
+        this.mathObjectReference = (mathObjectReference == null ? new NullMathObject() : mathObjectReference);
+    }
+
+    public MathObject getMathObjectCopyToDraw() {
+        if (!isCopyToDrawTransformedByMatrix) {
+            mathObjectCopyToDraw.applyAffineTransform(modelMatrix);
+            mathObjectCopyToDraw.getMp().copyFrom(mathObjectReference.getMp());
+        }
+        return mathObjectCopyToDraw;
     }
 
     @Override
     public RigidBox copy() {
-        RigidBox copy = new RigidBox(mathObject);
+        RigidBox copy = new RigidBox(mathObjectReference);
         copy.setObjectLabel(this.objectLabel + "_copy");
         copy.copyStateFrom(this);
         return copy;
@@ -45,40 +57,40 @@ public class RigidBox extends MathObject {
             RigidBox rigidBox = (RigidBox) obj;
             modelMatrix.copyFrom(rigidBox.modelMatrix);
         }
-
     }
 
     @Override
     protected Rect computeBoundingBox() {
-        return mathObject.getBoundingBox().getTransformedRect(modelMatrix);
+        return mathObjectReference.getBoundingBox().getTransformedRect(modelMatrix);
     }
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r, Camera camera) {
-            mathObject.copy().applyAffineTransform(modelMatrix).draw(scene, r, camera);
+        mathObjectCopyToDraw.copyStateFrom(mathObjectReference);
+        mathObjectCopyToDraw.applyAffineTransform(modelMatrix).draw(scene, r, camera);
+        isCopyToDrawTransformedByMatrix = true;
     }
 
     public <T extends MathObject> T applyAffineTransform(AffineJTransform transform) {
         AffineJTransform compose = modelMatrix.compose(transform);
         modelMatrix.copyFrom(compose);
+        isCopyToDrawTransformedByMatrix = false;
         return (T) this;// By default does nothing
     }
 
     public void resetMatrix() {
         modelMatrix.copyFrom(new AffineJTransform());
+        isCopyToDrawTransformedByMatrix = false;
     }
 
     @Override
     public void update(JMathAnimScene scene) {
         super.update(scene);
-        mathObject.update(scene);
-    }
-    public MathObject getTransformedCopyObject() {
-        return   mathObject.copy().applyAffineTransform(modelMatrix);
+        mathObjectReference.update(scene);
     }
 
     @Override
     public String toString() {
-        return "RigidBox[" + mathObject + ']';
+        return "RigidBox[" + mathObjectReference + ']';
     }
 }

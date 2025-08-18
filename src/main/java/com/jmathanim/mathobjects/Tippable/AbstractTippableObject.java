@@ -51,6 +51,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
     private Anchor.Type anchor;
     private AnchorTypeUsed anchorType;
     private boolean alreadyRebuildingShape = false;
+    private Point anchorPoint;
 
     protected AbstractTippableObject(Shape shape, MathObject tipObject, double location) {
         correctionAngle = PI / 2;
@@ -88,15 +89,24 @@ public abstract class AbstractTippableObject extends Constructible implements ha
     }
 
     private void computePivotPointRefMathObject() {
-        this.pivotPointRefMathObject.v.copyFrom(Anchor.getAnchorPoint(tipObjectRigidBox, Anchor.reverseAnchorPoint(this.anchor)).v);
+        if (this.anchor == Anchor.Type.BY_POINT) {
+            if (anchorPoint == null) {
+                anchorPoint = Anchor.getAnchorPoint(tipObjectRigidBox, Anchor.Type.CENTER);
+            }
+            this.pivotPointRefMathObject.v.copyFrom(anchorPoint.v);
+        } else {
+            this.pivotPointRefMathObject.v.copyFrom(Anchor.getAnchorPoint(tipObjectRigidBox, this.anchor).v);
+        }
     }
 
     public <T extends AbstractTippableObject> T setAnchorPoint(Point anchorPoint) {
+        this.anchorPoint = anchorPoint;
         this.pivotPointRefMathObject.v.copyFrom(anchorPoint.v);
         anchorType = AnchorTypeUsed.FIXED_POINT;
         rebuildShape();
         return (T) this;
     }
+
 
 //    private <T extends AbstractTippableObject> T setRotationAngleAroundCenterOfMathObject(double rotationAngleAroundCenterOfMathObject) {
 //        this.rotationAngleAroundCenterOfMathObject = rotationAngleAroundCenterOfMathObject;
@@ -123,6 +133,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
 
     public <T extends AbstractTippableObject> T setRotationType(RotationType rotationType) {
         this.rotationType = rotationType;
+        rebuildShape();
         return (T) this;
     }
 
@@ -162,7 +173,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
             pivotPointRefMathObject.v.copyFrom(nt.pivotPointRefMathObject.v);
             correctionAngle = nt.correctionAngle;
             this.tipObjectRigidBox.copyStateFrom(nt.tipObjectRigidBox);
-            this.tipObjectRigidBox.getMathObject().copyStateFrom(nt.tipObjectRigidBox.getMathObject());
+            this.tipObjectRigidBox.getReferenceMathObject().copyStateFrom(nt.tipObjectRigidBox.getReferenceMathObject());
             this.pivotPointRefMathObject.copyStateFrom(nt.pivotPointRefMathObject);
             this.locationParameterOnShape = nt.locationParameterOnShape;
             this.distanceToShape = nt.distanceToShape;
@@ -212,7 +223,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
                 break;
             case SMART:
 //                System.out.println(tangent.getAngle()*180/PI);
-                if ((tangentAngle>PI/2)&&(tangentAngle<3*PI/2))
+                if ((tangentAngle > PI / 2) && (tangentAngle < 3 * PI / 2))
                     if (anchorType == AnchorTypeUsed.ANCHOR) {
                         tipObjectRigidBox.rotate(PI);
                         computePivotPointRefMathObject();

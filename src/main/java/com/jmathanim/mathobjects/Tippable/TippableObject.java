@@ -16,11 +16,14 @@
  */
 package com.jmathanim.mathobjects.Tippable;
 
+import com.jmathanim.Enum.RotationType;
 import com.jmathanim.Enum.SlopeDirectionType;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.mathobjects.*;
+
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
 /**
  * Convenience static constructors for some common tippable objects
@@ -59,7 +62,7 @@ public class TippableObject extends AbstractTippableObject {
         return resul;
     }
 
-    public static TippableObject arrowHead(Shape shape, double location, SlopeDirectionType dir, Arrow.ArrowType type) {
+    public static TippableObject arrowHead(Shape shape, double location,  Arrow.ArrowType type) {
         Shape arrowHead = Arrow.buildArrowHead(type);
         Renderer r = JMathAnimConfig.getConfig().getScene().getRenderer();
 //        arrowHead.setAbsoluteSize(Anchor.Type.CENTER);
@@ -68,9 +71,12 @@ public class TippableObject extends AbstractTippableObject {
 //        arrowHead.
         arrowHead.fillColor(shape.getMp().getDrawColor());
         arrowHead.drawColor(shape.getMp().getDrawColor());
-        TippableObject resul = new TippableObject(shape, arrowHead, location); // shape,location,slopeDirectionType.POSITIVE,equalLengthTip);
-        resul.setAnchor(Anchor.Type.UPPER);
-        resul.setSlopeDirection(dir);
+        TippableObject resul = new TippableObject(shape, arrowHead, location);
+        resul.setAnchor(Anchor.Type.CENTER);
+        resul.setSlopeDirection(SlopeDirectionType.POSITIVE);
+        resul.setDistanceToShape(0d);
+        resul.setRotationType(RotationType.ROTATE);
+        resul.correctionAngle=-.5*PI;
         return resul;
     }
 

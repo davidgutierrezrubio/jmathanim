@@ -16,6 +16,7 @@
  */
 package com.jmathanim.mathobjects.Tippable;
 
+import com.jmathanim.Enum.RotationType;
 import com.jmathanim.Enum.SlopeDirectionType;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -71,10 +72,10 @@ public class LabelTip extends AbstractTippableObject implements hasArguments {
         LabelTip resul = makeLabelTip(shape, locationParameter, LaTeXMathObject.make(latexText), upSide);
         if (!upSide) {
             resul.setSlopeDirection(SlopeDirectionType.NEGATIVE)
-                    .setAnchor(Anchor.Type.UPPER);
+                    .setAnchor(Anchor.Type.LOWER);
         }
         resul.correctionAngle=0;
-        resul.rebuildShape();
+        resul.setRotationType(RotationType.SMART);
         return resul;
     }
 

@@ -318,7 +318,7 @@ public abstract class Delimiter extends Constructible {
         this.labelMarkGap = labelGap;
         this.delimiterLabel = label;
 
-        this.delimiterLabelRigidBox.setMathObject(label);
+        this.delimiterLabelRigidBox.setMathObjectReference(label);
 
         rebuildShape();
         return (T) this;
