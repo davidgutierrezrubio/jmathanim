@@ -73,14 +73,12 @@ public class JavaFXRenderer extends Renderer {
 
     private static final double XMIN_DEFAULT = -2;
     private static final double XMAX_DEFAULT = 2;
-
-    private final HashMap<JMPath,Path> storedPaths;
-
     private static final double MIN_THICKNESS = .2d;
-
+    private static final double THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH=5000;
     public final FXPathUtils fXPathUtils;
     protected final ArrayList<Node> fxnodes;
     protected final ArrayList<Node> debugFXnodes;
+    private final HashMap<JMPath, Path> storedPaths;
     private final HashMap<String, Image> images;
     public Camera camera;
     public Camera fixedCamera;
@@ -103,11 +101,11 @@ public class JavaFXRenderer extends Renderer {
         fxnodes = new ArrayList<>();
         debugFXnodes = new ArrayList<>();
         images = new HashMap<>();
-        storedPaths=new HashMap<>();
+        storedPaths = new HashMap<>();
         fXPathUtils = new FXPathUtils();
         camera = new Camera(scene, config.mediaW, config.mediaH);
         fixedCamera = new Camera(scene, config.mediaW, config.mediaH);
-        correctionThickness = config.mediaW * 1d / 1066;//Correction factor for thickness
+        correctionThickness = config.mediaW * 1d / THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH;//Correction factor for thickness
 
     }
 
@@ -346,7 +344,7 @@ public class JavaFXRenderer extends Renderer {
 //                path.getTransforms().add(new Scale(1, -1));
 //                path.getTransforms().add(FXPathUtils.screenToCamAffineTransfrom(mobj.getCamera()));
 //            } else {
-                path = FXPathUtils.createFXPathFromJMPath(objectPath, cam);
+            path = FXPathUtils.createFXPathFromJMPath(objectPath, cam);
 //            }
             applyDrawingStyles(path, mobj);
             applyRendererEffects(path, mobj.getRendererEffects());
@@ -417,10 +415,19 @@ public class JavaFXRenderer extends Renderer {
     }
 
     public double computeThickness(MathObject mobj) {
+
         Camera cam = (mobj.getMp().isAbsoluteThickness() ? fixedCamera : camera);
         //We use the correction factor mediaW/1066 in order to obtain the same apparent thickness
         //regardless of the resolution chosen. The reference value 1066 is the width in the preview settings
-        return Math.max(mobj.getMp().getThickness() / cam.getMathView().getWidth() * correctionThickness, MIN_THICKNESS);
+//        double th1 = Math.max(mobj.getMp().getThickness() / cam.getMathView().getWidth() * correctionThickness, MIN_THICKNESS);
+
+        double width = cam.getMathView().getWidth();
+        double th = Math.max(
+                mobj.getMp().getThickness() * correctionThickness / width * 4d
+                , MIN_THICKNESS);
+        return th;
+
+
 //        return Math.max(mobj.getMp().getThickness() / cam.getMathView().getWidth() * 2.5d, MIN_THICKNESS);
     }
 
@@ -428,12 +435,17 @@ public class JavaFXRenderer extends Renderer {
     public double MathWidthToThickness(double w) {
 //        return mathScalar * config.mediaW / (xmax - ymin);
 //        return camera.mathToScreen(w) / 1.25 * camera.getMathView().getWidth() / 2d;
-        return w * 1066;
+//        return w * 1066;
+        return w*THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH/camera.getMathView().getWidth();
     }
 
     @Override
     public double ThicknessToMathWidth(double th) {
-        return th / 1066;
+
+        return th*fixedCamera.getMathView().getWidth()/ THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH;
+
+//        return th / 1066;
+
     }
 
     @Override
@@ -451,10 +463,9 @@ public class JavaFXRenderer extends Renderer {
     }
 
     /**
-     * Returns equivalent position from default camera to fixed camera. For
-     * example if you pass the Vec (1,1) to this method, it will return a new
-     * set of coordinates so that, when rendered with the fixed camera, appears
-     * in the same position as (1,1) with default camera.
+     * Returns equivalent position from default camera to fixed camera. For example if you pass the Vec (1,1) to this
+     * method, it will return a new set of coordinates so that, when rendered with the fixed camera, appears in the same
+     * position as (1,1) with default camera.
      *
      * @param v Vector that marks the position
      * @return The coordinates to be used with the fixed camera
