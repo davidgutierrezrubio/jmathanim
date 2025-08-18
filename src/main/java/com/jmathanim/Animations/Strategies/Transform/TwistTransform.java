@@ -8,14 +8,13 @@ import com.jmathanim.mathobjects.Shape;
 import java.util.function.DoubleUnaryOperator;
 
 /**
- * A transformation strategy that transforms one shape into another by "twisting" it. The transformation is centered
- * around a "pivotal segment". The process involves: 1. Aligning the pivotal segment of the origin shape with the
- * corresponding segment of the destiny shape (translation, rotation, and scaling). 2. Iteratively aligning the
- * remaining segments by rotating and scaling parts of the shape that extend from the current segment's endpoint. This
- * creates an effect of the shape twisting and stretching into its final form.
+ * A transformation strategy that transforms one polygonal shape into another by "twisting" it. The transformation is
+ * centered around a "pivotal segment", which creates an effect of the shape twisting and stretching into its final
+ * form. If origin-destiny segments have the same length, measures are preserved in the intermediate steps.
  * <p>
  * The transformation can be controlled separately for the parts of the shape before and after the pivotal segment using
  * custom timing functions (lambdaForward and lambdaBackward).
+ * This animation doesn't work properly with curved shapes.
  */
 public class TwistTransform extends TransformShape2ShapeStrategy {
 
@@ -58,13 +57,13 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
 
 
     /**
-     * A timing function to control the scaling (stretch/shrink) of the pivotal segment.
-     * If null, the default animation timing is used.
+     * A timing function to control the scaling (stretch/shrink) of the pivotal segment. If null, the default animation
+     * timing is used.
      */
     private DoubleUnaryOperator lambdaScalePivotal;
     /**
-     * A timing function to control the initial translation and rotation of the pivotal segment.
-     * If null, the default animation timing is used.
+     * A timing function to control the initial translation and rotation of the pivotal segment. If null, the default
+     * animation timing is used.
      */
     private DoubleUnaryOperator lambdaShiftPivotal;
     /**
@@ -147,6 +146,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
 
     /**
      * Sets the timing function for the pivotal segment's scaling.
+     *
      * @param lambdaScalePivotal A DoubleUnaryOperator that maps the animation time [0,1] to a custom progress value.
      */
     public void setLambdaScalePivotal(DoubleUnaryOperator lambdaScalePivotal) {
@@ -185,7 +185,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
 
 
         //Check that the pivotal segment number is appropiate
-        int pivotRange = getIntermediateObject().size()-1;
+        int pivotRange = getIntermediateObject().size() - 1;
         if (numPivotalSegment < 0 || numPivotalSegment >= pivotRange) {
             int oldN = numPivotalSegment;
             // The modulo operator can be negative in Java, so we add the size and take the modulo again
@@ -301,8 +301,9 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
 
     /**
      * Applies scaling to the pivotal segment by shifting all subsequent points.
+     *
      * @param pivotPoint The point that starts the pivotal segment.
-     * @param lt The interpolated time, from 0 to 1.
+     * @param lt         The interpolated time, from 0 to 1.
      */
     private void applyPivotalScale(Point pivotPoint, double lt) {
         Shape inter = getIntermediateObject();
@@ -321,9 +322,9 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
     }
 
     /**
-     * Iteratively applies transformations to the points *after* the pivotal segment.
-     * For each vertex `i`, it applies a rotation and a scaling (as a shift) to all subsequent points `j > i`.
-     * This method has a time complexity of O(N^2) per frame, which may be slow for shapes with many points.
+     * Iteratively applies transformations to the points *after* the pivotal segment. For each vertex `i`, it applies a
+     * rotation and a scaling (as a shift) to all subsequent points `j > i`. This method has a time complexity of O(N^2)
+     * per frame, which may be slow for shapes with many points.
      *
      * @param numPivotalSegment The index of the point starting the pivotal segment.
      * @param lt                The interpolated time, from 0 to 1.
@@ -359,9 +360,9 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
     }
 
     /**
-     * Iteratively applies transformations to the points *before* the pivotal segment.
-     * For each vertex `i`, it applies a rotation and a scaling (as a shift) to all preceding points `j < i`.
-     * This method has a time complexity of O(N^2) per frame.
+     * Iteratively applies transformations to the points *before* the pivotal segment. For each vertex `i`, it applies a
+     * rotation and a scaling (as a shift) to all preceding points `j < i`. This method has a time complexity of O(N^2)
+     * per frame.
      *
      * @param numPivotalSegment The index of the point starting the pivotal segment.
      * @param lt                The interpolated time, from 0 to 1.

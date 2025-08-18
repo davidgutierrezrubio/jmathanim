@@ -226,7 +226,6 @@ public abstract class Animation {
             if (doInitialization()) {//If initialization returned sucess...
                 setFps(scene.getConfig().fps);
                 status = Status.INITIALIZED;
-
                 return true;
             } else {
                 JMathAnimScene.logger.error("Error initializating animation " + getDebugName());
