@@ -369,7 +369,7 @@ public class Arrow2D extends MathObject {
     }
     
     @Override
-    public Rect computeBoundingBox() {
+    protected Rect computeBoundingBox() {
         updateDrawableParts();
         Rect r = body.getBoundingBox();
         update(JMathAnimConfig.getConfig().getScene());

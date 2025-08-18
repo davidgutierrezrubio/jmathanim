@@ -42,7 +42,7 @@ public abstract class AbstractJMImage extends MathObject {
     
     
     @Override
-    public Rect computeBoundingBox() {
+    protected Rect computeBoundingBox() {
         return bbox.getTransformedRect(currentViewTransform);
     }
 

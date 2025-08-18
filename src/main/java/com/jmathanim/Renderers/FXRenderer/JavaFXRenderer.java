@@ -29,10 +29,7 @@ import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.jmathanim.LogUtils;
-import com.jmathanim.mathobjects.AbstractJMImage;
-import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
@@ -356,8 +353,9 @@ public class JavaFXRenderer extends Renderer {
             path.setClip(new Rectangle(cam.upperLeftX, cam.upperLeftY, cam.screenWidth, cam.screenHeight));
             fxnodes.add(path);
         }
-        if (!"".equals(mobj.getDebugText())) {
-            debugText(mobj.getDebugText(), mobj.getCenter().v);
+        String debugText = MediatorMathObject.getDebugText(mobj);
+        if (!"".equals(debugText)) {
+            debugText(debugText, mobj.getCenter().v);
         }
     }
 

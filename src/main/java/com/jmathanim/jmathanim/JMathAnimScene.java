@@ -72,13 +72,13 @@ public abstract class JMathAnimScene {
      * This class is used to easily access to most common animations
      */
     public final PlayAnim play;
+    protected final JMathAnimScene scene;
     /**
      * List of sceneObjects which needs to be updated (not necessarily drawn)
      */
     final ArrayList<Updateable> objectsToBeUpdated;
     /**
-     * List of sceneObjects which needs to be removed immediately after
-     * rendering
+     * List of sceneObjects which needs to be removed immediately after rendering
      */
     final ArrayList<MathObject> objectsToBeRemoved;
     /**
@@ -94,7 +94,6 @@ public abstract class JMathAnimScene {
      * A dictionary containing all loaded styles
      */
     private final HashMap<String, MODrawProperties> styles;
-    protected final JMathAnimScene scene;
     /**
      * Configuration
      */
@@ -104,8 +103,7 @@ public abstract class JMathAnimScene {
      */
     public long nanoTime;
     /**
-     * Previous nanotime in the last measure, used to control frame rate in
-     * preview window
+     * Previous nanotime in the last measure, used to control frame rate in preview window
      */
     public long previousNanoTime;
     /**
@@ -149,7 +147,7 @@ public abstract class JMathAnimScene {
      * Creates a new Scene with default settings.
      */
     public JMathAnimScene() {
-        scene=this;
+        scene = this;
         sceneObjects = new ArrayList<>();
         objectsAlreadydrawn = new HashSet<>();
         config = JMathAnimConfig.getConfig();
@@ -227,12 +225,12 @@ public abstract class JMathAnimScene {
         } catch (Exception ex) {
             java.util.logging.Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
         }
-        double secondsElapsed = (System.currentTimeMillis()-startTime) * 1d / 1000d;
-        DecimalFormat df=new DecimalFormat("0.00");
-        logger.info("Elapsed time "+ df.format(secondsElapsed)
-                +" seconds ("
-                +df.format(frameCount*1d/secondsElapsed)
-                +" fps)");
+        double secondsElapsed = (System.currentTimeMillis() - startTime) * 1d / 1000d;
+        DecimalFormat df = new DecimalFormat("0.00");
+        logger.info("Elapsed time " + df.format(secondsElapsed)
+                + " seconds ("
+                + df.format(frameCount * 1d / secondsElapsed)
+                + " fps)");
         if (exitCode != 0) {
             logger.error("An error ocurred. Check the logs.");
         }
@@ -249,8 +247,7 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Returns the list of objects to be updated. Note that this doesn't
-     * necessarily matchs with objects drawn
+     * Returns the list of objects to be updated. Note that this doesn't necessarily matchs with objects drawn
      *
      * @return An ArrayList of MathObject
      */
@@ -259,17 +256,15 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * An abstract method to be overridden. Actual animations are implemented
-     * here.
+     * An abstract method to be overridden. Actual animations are implemented here.
      *
-     * @throws Exception Any exception which may occur while performing the
-     *                   animations
+     * @throws Exception Any exception which may occur while performing the animations
      */
     public abstract void runSketch() throws Exception;
 
     /**
-     * Register the given objects to be updated. Any class that implements the
-     * interface {@link Updateable} may be added here.
+     * Register the given objects to be updated. Any class that implements the interface {@link Updateable} may be added
+     * here.
      *
      * @param objs {@link Updateable} sceneObjects (varargs)
      */
@@ -283,8 +278,8 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Unregister the given objects to be updated. Any class that implements the
-     * interface {@link Updateable} may be added here.
+     * Unregister the given objects to be updated. Any class that implements the interface {@link Updateable} may be
+     * added here.
      *
      * @param objs {@link Updateable} sceneObjects (varargs)
      */
@@ -293,8 +288,8 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Adds the objects to scene but mark them for removal immediately after the
-     * frame is drawn. This method is used mostly for frame-by-frame animations
+     * Adds the objects to scene but mark them for removal immediately after the frame is drawn. This method is used
+     * mostly for frame-by-frame animations
      *
      * @param objs Objects to be drawn
      */
@@ -340,7 +335,7 @@ public abstract class JMathAnimScene {
                     }
                 }
                 registerUpdateable(obj);
-                obj.addToSceneHook(this);
+                MediatorMathObject.addToSceneHook(obj, this);
                 Camera cam = (obj.getCamera() == null ? renderer.getCamera() : obj.getCamera());
                 if (obj instanceof shouldUdpateWithCamera) {
                     cam.registerUpdateable((shouldUdpateWithCamera) obj);
@@ -389,7 +384,7 @@ public abstract class JMathAnimScene {
 
                 sceneObjects.remove(obj);
 
-                obj.removedFromSceneHook(this);
+                MediatorMathObject.removedFromSceneHook(obj, this);
                 unregisterUpdateable(obj);
             }
             if (obj instanceof shouldUdpateWithCamera) {
@@ -399,9 +394,8 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * This method performs the necessary drawing methods. First updates all
-     * updateable objects, apply links, and draw all objects added to the scene.
-     * Objects are sorted by layer, so that lower layers means drawing under.
+     * This method performs the necessary drawing methods. First updates all updateable objects, apply links, and draw
+     * all objects added to the scene. Objects are sorted by layer, so that lower layers means drawing under.
      */
     protected final void doDraws() {
         objectsAlreadydrawn.clear();
@@ -489,9 +483,8 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Saves the current image into a file. Format is guessed from the extension
-     * of the file name. Formats supported depends on renderer used. If no
-     * extension supplied, a png format is used. The file wil be saved in
+     * Saves the current image into a file. Format is guessed from the extension of the file name. Formats supported
+     * depends on renderer used. If no extension supplied, a png format is used. The file wil be saved in
      * project_home/media directory.
      *
      * @param filename Name of the file to be saved.
@@ -517,8 +510,7 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Save the current frame using the renderer. Renderer should save the frame
-     * to video, or any other format.
+     * Save the current frame using the renderer. Renderer should save the frame to video, or any other format.
      */
     private void saveMPFrame() {
 
@@ -530,11 +522,10 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Plays the specified sound at the current frame.Sound files are loaded
-     * using the ResourceLoader class, so usual modifiers can be used
+     * Plays the specified sound at the current frame.Sound files are loaded using the ResourceLoader class, so usual
+     * modifiers can be used
      *
-     * @param soundName Name of sound file. By default it looks in
-     *                  user_project/resources/sounds
+     * @param soundName Name of sound file. By default it looks in user_project/resources/sounds
      * @param pitch
      */
     public void playSound(String soundName, double pitch) {
@@ -571,8 +562,7 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Play the given animations, generating new frames automatically until all
-     * animations have finished.
+     * Play the given animations, generating new frames automatically until all animations have finished.
      *
      * @param anims Animations to play, with a variable number or arguments
      */
@@ -583,8 +573,7 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Play the given animations, generating new frames automatically until all
-     * animations have finished.
+     * Play the given animations, generating new frames automatically until all animations have finished.
      *
      * @param anims An ArrayList with Animation sceneObjects.
      */
@@ -600,7 +589,7 @@ public abstract class JMathAnimScene {
             }
             anim.initialize(this);// Perform needed steps immediately before playing
             if (!"".equals(anim.getDebugName())) {
-                JMathAnimScene.logger.info("Begin animation: " + LogUtils.CYAN+ anim.getDebugName() + LogUtils.RESET+" [" + LogUtils.GREEN+anim.getRunTime() + "s"+LogUtils.RESET+"]");
+                JMathAnimScene.logger.info("Begin animation: " + LogUtils.CYAN + anim.getDebugName() + LogUtils.RESET + " [" + LogUtils.GREEN + anim.getRunTime() + "s" + LogUtils.RESET + "]");
             }
 
             if (animationIsDisabled) {
@@ -635,12 +624,12 @@ public abstract class JMathAnimScene {
         if (animationIsDisabled) {
             return;
         }
-        JMathAnimScene.logger.info("Waiting " + LogUtils.GREEN+time + "s"+LogUtils.RESET);
+        JMathAnimScene.logger.info("Waiting " + LogUtils.GREEN + time + "s" + LogUtils.RESET);
         int numFrames = (int) (time * fps);
         for (int n = 0; n < numFrames; n++) {
             try {
-                if (config.isPrintProgressBar())  {
-                    LogUtils.printProgressBar(1d*n/(numFrames-1));
+                if (config.isPrintProgressBar()) {
+                    LogUtils.printProgressBar(1d * n / (numFrames - 1));
                 }
 
                 advanceFrame();
@@ -686,7 +675,7 @@ public abstract class JMathAnimScene {
         for (LaTeXMathObject lat : texes) {
             int k = 0;
             for (Shape sh : lat) {
-                sh.debugText("" + k);
+                MediatorMathObject.setDebugText(sh, "" + k);
                 k++;
             }
             group.add(lat);
@@ -701,8 +690,8 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Disable animations. If you invoke this method, subsequent drawings,
-     * animations and movie generating will be disabled
+     * Disable animations. If you invoke this method, subsequent drawings, animations and movie generating will be
+     * disabled
      */
     public void disableAnimations() {
         this.animationIsDisabled = true;
@@ -740,8 +729,7 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Returns an Array with all objects added to the scene that are in the
-     * specified layers
+     * Returns an Array with all objects added to the scene that are in the specified layers
      *
      * @param layers Layers to retrieve objects from (varargs)
      * @return A MathObject[] array containing the objects
@@ -780,8 +768,7 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Reset the scene, deleting all objects, unregistering updaters, and
-     * setting the camera to its default values
+     * Reset the scene, deleting all objects, unregistering updaters, and setting the camera to its default values
      */
     public void reset() {
         logger.info("Resetting scene");
@@ -793,8 +780,7 @@ public abstract class JMathAnimScene {
         for (Updateable upd : updateables) {
             unregisterUpdateable(upd);
         }
-        for (Link link: linksToBeDone)
-        {
+        for (Link link : linksToBeDone) {
             unregisterLink(link);
         }
         renderer.getCamera().reset();
@@ -816,10 +802,9 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Convenience function. Returns the width of the current math view. Can be
-     * used to quicky acces to this parameter if you need to perform measures
-     * relative to the math view rather than math units, so .1*mw() stands for
-     * 10% of screen width.
+     * Convenience function. Returns the width of the current math view. Can be used to quicky acces to this parameter
+     * if you need to perform measures relative to the math view rather than math units, so .1*mw() stands for 10% of
+     * screen width.
      *
      * @return The current mathview width, in math units.
      */
@@ -828,8 +813,8 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Check if an object is in the scene. MathObjectGroup objects are
-     * considered to be in the scene if all their elements are.
+     * Check if an object is in the scene. MathObjectGroup objects are considered to be in the scene if all their
+     * elements are.
      *
      * @param mathobject Object to check
      * @return True if object is in the scene. False otherwise.
@@ -859,8 +844,8 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Register a new Link to be done at every frame. A double value will be
-     * extracted from the origin object and applied to the destiny
+     * Register a new Link to be done at every frame. A double value will be extracted from the origin object and
+     * applied to the destiny
      *
      * @param origin      Origin object
      * @param originType  Origin link
@@ -875,15 +860,14 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Register a new Link to be done at every frame. A double value will be
-     * extracted from the origin object and applied to the destiny
+     * Register a new Link to be done at every frame. A double value will be extracted from the origin object and
+     * applied to the destiny
      *
      * @param origin      Origin object
      * @param originType  Origin link.
      * @param destiny     Destiny object
      * @param destinyType Destiny link
-     * @param function    Function to apply to the value before applying to the
-     *                    destiny object
+     * @param function    Function to apply to the value before applying to the destiny object
      * @return The created link
      */
     public LinkArguments registerLink(Linkable origin, LinkArguments.LinkType originType, Linkable destiny, LinkArguments.LinkType destinyType, DoubleUnaryOperator function) {

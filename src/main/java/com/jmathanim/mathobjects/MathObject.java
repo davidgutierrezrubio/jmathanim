@@ -25,7 +25,6 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import com.jmathanim.mathobjects.updaters.Updater;
 import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeLineJoin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +37,8 @@ import java.util.HashSet;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class MathObject implements Drawable, Updateable, Stateable, Boxable, StyleHookable, Linkable {
+public abstract class MathObject implements Drawable, Updateable, Stateable, Boxable, Linkable {
+    protected final AffineJTransform modelMatrix;
     private final MODrawProperties mp;
     private final HashSet<MathObject> dependents;
     private final RendererEffects rendererEffects;
@@ -48,15 +48,13 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public boolean absoluteSize = false;
     public Point absoluteAnchorPoint;
     protected JMathAnimScene scene;
+    protected boolean isRigid = false;
+    protected boolean hasBeenUpdated = false;
     private Camera camera;
     private int updateLevel;
     private String debugText = "";
     private Type absoluteAnchorType = Type.CENTER;
     private double leftGap, upperGap, rightGap, lowerGap;
-
-    protected final AffineJTransform modelMatrix;
-    protected boolean isRigid = false;
-    protected boolean hasBeenUpdated = false;
 
     public MathObject() {
         this(null);
@@ -576,7 +574,27 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         absoluteAnchorType = Type.BY_POINT;
         absoluteSize = true;
         return (T) this;
+    }
 
+    /**
+     * Marks this object with the absolute size flag.In this case, it will be drawn using a fixed camera, so that it
+     * will appear with the same size regardless of the zoom applied to the camera. The specified anchor will be used as
+     * reference point to position the object.
+     *
+     * @param <T>        Mathobject subclass
+     * @param anchorType {@link Anchor} type
+     * @return The current object
+     */
+    public <T extends MathObject> T setAbsoluteSize(Type anchorType) {
+        absoluteSize = true;
+        absoluteAnchorType = anchorType;
+        absoluteSize = true;
+        return (T) this;
+    }
+
+    public <T extends MathObject> T setRelativeSize() {
+        absoluteSize = false;
+        return (T) this;
     }
 
     /**
@@ -756,42 +774,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         return moveTo(Point.at(x, y));
     }
 
-    /**
-     * Marks this object with the absolute size flag. In this case, it will be drawn using a fixed camera, so that it
-     * will appear with the same size regardless of the zoom applied to the camera. The center of the object will be
-     * used as reference point to position the object.
-     *
-     * @param <T> Mathobject subclass
-     * @return The current object
-     */
-    public <T extends MathObject> T setAbsoluteSize() {
-        return setAbsoluteSize(Type.CENTER);
-    }
 
     /**
-     * Marks this object with the absolute size flag.In this case, it will be drawn using a fixed camera, so that it
-     * will appear with the same size regardless of the zoom applied to the camera. The specified anchor will be used as
-     * reference point to position the object.
-     *
-     * @param <T>        Mathobject subclass
-     * @param anchorType {@link Anchor} type
-     * @return The current object
-     */
-    public <T extends MathObject> T setAbsoluteSize(Type anchorType) {
-        absoluteSize = true;
-        absoluteAnchorType = anchorType;
-        absoluteSize = true;
-        return (T) this;
-    }
-
-    public <T extends MathObject> T setRelativeSize() {
-        absoluteSize = false;
-        return (T) this;
-    }
-
-    /**
-     * Sets the layer where this object belongs. Lower layers means that the object will be drawn first and appear
-     * under other objects. The number can be any integer
+     * Sets the layer where this object belongs. Lower layers means that the object will be drawn first and appear under
+     * other objects. The number can be any integer
      *
      * @param <T>   MathObject subclass
      * @param layer Layer number
@@ -849,7 +835,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public <T extends MathObject> T registerUpdater(Updater updater) {
         updater.setMathObject(this);
         updaters.add(updater);
-        setUpdateLevel(getUpdateLevel());//Refresh update level (TODO: check possible infinite recursion problems)
+        setUpdateLevel(getUpdateLevel());
         return (T) this;
     }
 
@@ -860,13 +846,13 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         for (Updater updater : updaters) {
             updater.update(scene);
         }
-        hasBeenUpdated=true;
+        hasBeenUpdated = true;
     }
 
     @Override
     public final int getUpdateLevel() {
         if (updateLevel == -1) {//-1 means no update level has been defined yet
-            registerUpdateableHook(scene);//TODO: Remove coupling
+            registerUpdateableHook(scene);
             if (updateLevel == -1) {//If it is still undefined, make it 0, to avoid infinite recursion
                 updateLevel = 0;
             }
@@ -877,17 +863,21 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     @Override
     public void setUpdateLevel(int level) {
         int maxUpdaterLevel = updaters.stream().mapToInt(Updater::getUpdateLevel).max().orElse(-1);
-
         updateLevel = Math.max(level, maxUpdaterLevel + 1);
     }
 
-    public String getDebugText() {
+    protected String getDebugText() {
         return debugText;
     }
 
-    public <T extends MathObject> T debugText(String debugText) {
+    /**
+     * Set debug text that the renderer will draw over the object for debugging purposes. This method cannot be accesed
+     * directly, it has to be accessed through the MediatorMathObject.setDebugText static method
+     *
+     * @param debugText The debug text
+     */
+    protected void setDebugText(String debugText) {
         this.debugText = debugText;
-        return (T) this;
     }
 
     /**
@@ -1020,7 +1010,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      *
      * @param scene Scene where the object is added
      */
-    public void addToSceneHook(JMathAnimScene scene) {
+    protected void addToSceneHook(JMathAnimScene scene) {
         this.scene = scene;
         if (camera == null) {
             camera = scene.getCamera();
@@ -1034,7 +1024,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      *
      * @param scene Scene from where the object is removed
      */
-    public void removedFromSceneHook(JMathAnimScene scene) {
+    protected void removedFromSceneHook(JMathAnimScene scene) {
         this.scene = null;
         setProperty("scene", null);
     }
@@ -1047,14 +1037,14 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public void unregisterUpdateableHook(JMathAnimScene scene) {
     }
 
-    /**
-     * Returns the set of objects that depend on this to be properly updated
-     *
-     * @return A HashSet of the dependent MathObjects
-     */
-    public HashSet<MathObject> getDependentObjects() {
-        return dependents;
-    }
+//    /**
+//     * Returns the set of objects that depend on this to be properly updated
+//     *
+//     * @return A HashSet of the dependent MathObjects
+//     */
+//    public HashSet<MathObject> getDependentObjects() {
+//        return dependents;
+//    }
 
     /**
      * Register dependence of this MathObject to other Mathobjects. This is done to ensure proper updating order.
@@ -1142,7 +1132,8 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
 
     /**
      * Move the object the minimum so that fits inside the given bounding box object and given gaps. If the bounding box
-     * of the object is already inside the bounding box, this method has no effect.
+     * of the object is already inside the bounding box, this method has no effect. If the bounding box of the object is
+     * wider or taller than the container box, nothing is done.
      *
      * @param <T>           Calling subclass
      * @param containerBox  Boxable to smash object. May be a Rect, MathObject or Camera
@@ -1169,42 +1160,42 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         return smash(containerBox, 0, 0);
     }
 
-    //Style hooks
-    @Override
-    public void on_setDrawColor(PaintStyle color) {
-    }
-
-    @Override
-    public void on_setDrawAlpha(double alpha) {
-    }
-
-    @Override
-    public void on_setFillColor(PaintStyle color) {
-    }
-
-    @Override
-    public void on_setFillAlpha(double alpha) {
-    }
-
-    @Override
-    public void on_setThickness(double thickness) {
-    }
-
-    @Override
-    public void on_setVisible(boolean visible) {
-    }
-
-    @Override
-    public void on_setDashStyle(MODrawProperties.DashStyle style) {
-    }
-
-    @Override
-    public void on_setLineCap(StrokeLineCap linecap) {
-    }
-
-    @Override
-    public void on_setLineJoin(StrokeLineJoin linejoin) {
-    }
+//    //Style hooks
+//    @Override
+//    public void on_setDrawColor(PaintStyle color) {
+//    }
+//
+//    @Override
+//    public void on_setDrawAlpha(double alpha) {
+//    }
+//
+//    @Override
+//    public void on_setFillColor(PaintStyle color) {
+//    }
+//
+//    @Override
+//    public void on_setFillAlpha(double alpha) {
+//    }
+//
+//    @Override
+//    public void on_setThickness(double thickness) {
+//    }
+//
+//    @Override
+//    public void on_setVisible(boolean visible) {
+//    }
+//
+//    @Override
+//    public void on_setDashStyle(MODrawProperties.DashStyle style) {
+//    }
+//
+//    @Override
+//    public void on_setLineCap(StrokeLineCap linecap) {
+//    }
+//
+//    @Override
+//    public void on_setLineJoin(StrokeLineJoin linejoin) {
+//    }
 
     @Override
     public RendererEffects getRendererEffects() {

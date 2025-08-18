@@ -326,7 +326,7 @@ public class Point extends MathObject {
     }
 
     @Override
-    public Rect computeBoundingBox() {
+    protected Rect computeBoundingBox() {
         return new Rect(v.x, v.y, v.z, v.x, v.y, v.z);
     }
 

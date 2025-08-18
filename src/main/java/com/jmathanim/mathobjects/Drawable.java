@@ -29,6 +29,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  */
 public interface Drawable {
 
-	void draw(JMathAnimScene scene, Renderer r, Camera camera);
-        RendererEffects getRendererEffects();
+    void draw(JMathAnimScene scene, Renderer r, Camera camera);
+
+    RendererEffects getRendererEffects();
 }

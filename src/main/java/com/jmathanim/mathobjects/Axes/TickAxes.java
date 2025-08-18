@@ -133,7 +133,7 @@ public class TickAxes extends MathObject {
     }
 
     @Override
-    public Rect computeBoundingBox() {
+    protected Rect computeBoundingBox() {
         return Rect.union(tick.getBoundingBox(), legend.getBoundingBox());
     }
 

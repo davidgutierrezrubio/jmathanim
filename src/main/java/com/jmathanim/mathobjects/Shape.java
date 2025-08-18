@@ -453,7 +453,7 @@ public class Shape extends MathObject {
     }
 
     @Override
-    public Rect computeBoundingBox() {
+    protected Rect computeBoundingBox() {
         return jmpath.getBoundingBox();
     }
 

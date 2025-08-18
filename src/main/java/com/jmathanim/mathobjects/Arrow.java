@@ -506,7 +506,7 @@ public class Arrow extends Constructible {
     }
 
     @Override
-    public Rect computeBoundingBox() {
+    protected Rect computeBoundingBox() {
         rebuildShape();
         return shapeToDraw.getPath().getBoundingBox();
     }

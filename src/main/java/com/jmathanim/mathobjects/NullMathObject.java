@@ -50,11 +50,15 @@ public class NullMathObject extends Constructible {
 
     @Override
     public void copyStateFrom(MathObject obj) {
-
     }
 
     @Override
-    public Rect computeBoundingBox() {
+    public boolean isEmpty() {
+        return true;
+    }
+
+    @Override
+    protected Rect computeBoundingBox() {
         return new EmptyRect();
     }
 

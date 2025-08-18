@@ -54,7 +54,7 @@ public class Scalar extends Constructible implements hasScalarParameter{
     }
 
     @Override
-    public Rect computeBoundingBox() {
+    protected Rect computeBoundingBox() {
         return new EmptyRect();// Nothing
     }
 

@@ -82,15 +82,15 @@ public class MODrawProperties implements Stylable, Stateable {
      * Returns Dash Style, from its name, using reflection. Used when loading
      * config files.
      *
-     * @param textContent Name of the dash patterns
+     * @param dashPatternString Name of the dash patterns
      * @return The dash style
      */
-    static DashStyle parseDashStyle(String str) {
+    static DashStyle parseDashStyle(String dashPatternString) {
         DashStyle resul = DashStyle.SOLID; // default dash
         try {
-            resul = DashStyle.valueOf(str.toUpperCase());
+            resul = DashStyle.valueOf(dashPatternString.toUpperCase());
         } catch (IllegalArgumentException e) {
-            JMathAnimScene.logger.error("Dash pattern {} not recognized, using default {}", str, resul);
+            JMathAnimScene.logger.error("Dash pattern {} not recognized, using default {}", dashPatternString, resul);
         }
 
         return resul;
@@ -260,9 +260,9 @@ public class MODrawProperties implements Stylable, Stateable {
         }
         if (this.drawColor != drawColor) {
             this.drawColor = drawColor.copy();
-            if (parent != null) {
-                parent.on_setDrawColor(this.drawColor);
-            }
+//            if (parent != null) {
+//                parent.on_setDrawColor(this.drawColor);
+//            }
         }
     }
 
@@ -280,9 +280,9 @@ public class MODrawProperties implements Stylable, Stateable {
     public void setFillAlpha(double alpha) {
         if (this.fillColor.getAlpha() != alpha) {
             this.fillColor.setAlpha(alpha);
-            if (parent != null) {
-                parent.on_setFillAlpha(alpha);
-            }
+//            if (parent != null) {
+//                parent.on_setFillAlpha(alpha);
+//            }
         }
     }
 
@@ -298,9 +298,9 @@ public class MODrawProperties implements Stylable, Stateable {
         }
         if (this.fillColor != fillColor) {
             this.fillColor = fillColor.copy();
-            if (parent != null) {
-                parent.on_setFillColor(this.fillColor);
-            }
+//            if (parent != null) {
+//                parent.on_setFillColor(this.fillColor);
+//            }
         }
     }
 
@@ -339,9 +339,9 @@ public class MODrawProperties implements Stylable, Stateable {
         }
         if (this.linecap != linecap) {
             this.linecap = linecap;
-            if (parent != null) {
-                parent.on_setLineCap(this.linecap);
-            }
+//            if (parent != null) {
+//                parent.on_setLineCap(this.linecap);
+//            }
         }
     }
 
@@ -351,9 +351,9 @@ public class MODrawProperties implements Stylable, Stateable {
         }
         if (this.linejoin != linejoin) {
             this.linejoin = linejoin;
-            if (parent != null) {
-                parent.on_setLineJoin(this.linejoin);
-            }
+//            if (parent != null) {
+//                parent.on_setLineJoin(this.linejoin);
+//            }
         }
     }
 
@@ -371,9 +371,9 @@ public class MODrawProperties implements Stylable, Stateable {
     public void setThickness(Double thickness) {
         if (!Objects.equals(this.thickness, thickness)) {
             this.thickness = thickness;
-            if (parent != null) {
-                parent.on_setThickness(thickness);
-            }
+//            if (parent != null) {
+//                parent.on_setThickness(thickness);
+//            }
         }
     }
 
@@ -381,9 +381,9 @@ public class MODrawProperties implements Stylable, Stateable {
     public void setVisible(Boolean visible) {
         if (!Objects.equals(this.visible, visible)) {
             this.visible = visible;
-            if (parent != null) {
-                parent.on_setVisible(visible);
-            }
+//            if (parent != null) {
+//                parent.on_setVisible(visible);
+//            }
         }
     }
 

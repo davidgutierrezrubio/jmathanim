@@ -21,7 +21,6 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.PaintStyle;
-import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
@@ -193,12 +192,12 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         if (value) {
             int k = 0;
             for (Shape sh : shapes) {
-                sh.debugText("" + k);
+                sh.setDebugText("" + k);
                 k++;
             }
         } else {
             for (Shape sh : shapes) {
-                sh.debugText("");
+                sh.setDebugText("");
             }
         }
         return (T) this;

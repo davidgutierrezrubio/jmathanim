@@ -26,6 +26,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
+import com.jmathanim.mathobjects.MediatorMathObject;
 
 /**
  * This class representas a constructible object, derived from another ones. For example a circle that pass for 3 points
@@ -97,9 +98,14 @@ public abstract class Constructible extends MathObject {
     abstract public void rebuildShape();
 
     @Override
-    public Rect computeBoundingBox() {
+    protected Rect computeBoundingBox() {
         rebuildShape();
         return getMathObject().getBoundingBox();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return getMathObject().isEmpty();
     }
 
     @Override
@@ -161,15 +167,15 @@ public abstract class Constructible extends MathObject {
     }
 
     @Override
-    public void addToSceneHook(JMathAnimScene scene) {
+    protected void addToSceneHook(JMathAnimScene scene) {
         super.addToSceneHook(scene);
-        getMathObject().addToSceneHook(scene);
+        MediatorMathObject.addToSceneHook(getMathObject(),scene);
     }
 
     @Override
-    public void removedFromSceneHook(JMathAnimScene scene) {
+    protected void removedFromSceneHook(JMathAnimScene scene) {
         super.removedFromSceneHook(scene);
-        getMathObject().removedFromSceneHook(scene);
+        MediatorMathObject.removedFromSceneHook(getMathObject(),scene);
     }
 
 }
