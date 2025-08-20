@@ -47,6 +47,7 @@ public class Arrow extends Constructible {
     protected final MODrawPropertiesArray mpArrow;
     private final Point Acopy, Bcopy;
     private final Shape shapeToDraw;
+    protected final MathObjectGroup groupElementsToBeDrawn;
     private final Shape head1, head2;
     private double amplitudeScale;
     private double angle;
@@ -82,6 +83,7 @@ public class Arrow extends Constructible {
         Bcopy = B.copy();
         mpArrow = new MODrawPropertiesArray();
         mpArrow.add(shapeToDraw);
+        groupElementsToBeDrawn = MathObjectGroup.make(shapeToDraw);
         getMp().loadFromStyle("ARROWDEFAULT");
     }
 
@@ -178,7 +180,7 @@ public class Arrow extends Constructible {
 
     @Override
     public MathObject getMathObject() {
-        return shapeToDraw;
+        return groupElementsToBeDrawn;
     }
 
     private void loadModels() {
@@ -211,16 +213,14 @@ public class Arrow extends Constructible {
 
     @Override
     public void rebuildShape() {
-//        if (isThisMathObjectFree()) return;
+        if (isFreeMathObject()) return;
         if (scene == null) {
             return;
         }
         //The distScale manages which scale should be the arrow drawn. It is used mostly by ShowCreation animation
 
-        if (!isFreeMathObject()) {
-            Acopy.v.copyFrom(A.v);
-            Bcopy.v.copyFrom(A.interpolate(B, getAmplitudeScale()).v);
-        }
+        Acopy.v.copyFrom(A.v);
+        Bcopy.v.copyFrom(A.interpolate(B, getAmplitudeScale()).v);
         Shape h1A = head1.copy();
         Shape h1B = head2.copy();
         double dist = Acopy.to(Bcopy).norm();
@@ -339,10 +339,9 @@ public class Arrow extends Constructible {
         AffineJTransform tr;
         boolean is3D = scene.getCamera() instanceof Camera3D;
         if (is3D) {
-             tr = AffineJTransform.createDirect3DIsomorphic(startPoint, endPoint, z1, Acopy, Bcopy, C, 1);
-        }
-        else {
-             tr = AffineJTransform.createDirect2DIsomorphic(startPoint, endPoint, Acopy, Bcopy, 1);
+            tr = AffineJTransform.createDirect3DIsomorphic(startPoint, endPoint, z1, Acopy, Bcopy, C, 1);
+        } else {
+            tr = AffineJTransform.createDirect2DIsomorphic(startPoint, endPoint, Acopy, Bcopy, 1);
         }
 
         shapeToDraw.getPath().applyAffineTransform(tr);
@@ -507,14 +506,15 @@ public class Arrow extends Constructible {
 
     @Override
     public Arrow applyAffineTransform(AffineJTransform tr) {
-        super.applyAffineTransform(tr);
-        Acopy.applyAffineTransform(tr);
-        Bcopy.applyAffineTransform(tr);
+        if (isFreeMathObject())
+            super.applyAffineTransform(tr);
+//        Acopy.applyAffineTransform(tr);
+//        Bcopy.applyAffineTransform(tr);
 //        if (!isFreeMathObject()) {
 //            A.applyAffineTransform(tr);
 //            B.applyAffineTransform(tr);
 //        }
-        rebuildShape();
+//        rebuildShape();
         return this;
     }
 
@@ -650,6 +650,8 @@ public class Arrow extends Constructible {
 
         LaTeXMathObject t = arrowLabel.getLaTeXObject();
         t.setArgumentsFormat(format);
+        groupElementsToBeDrawn.clear();
+        groupElementsToBeDrawn.add(shapeToDraw, arrowLabel);
 
         t.registerUpdater(new Updater() {
 //            @Override
@@ -698,7 +700,8 @@ public class Arrow extends Constructible {
             }
         });
 
-
+        groupElementsToBeDrawn.clear();
+        groupElementsToBeDrawn.add(shapeToDraw, arrowLabel);
         return label;
 //        return (LaTeXMathObject) arrowLabel.getRefMathObject();
     }
@@ -706,7 +709,7 @@ public class Arrow extends Constructible {
     @Override
     public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
         super.draw(scene, r, cam);
-        if (arrowLabel != null) arrowLabel.draw(scene, r, cam);
+
     }
 
     /**
@@ -760,5 +763,14 @@ public class Arrow extends Constructible {
     //Añadir gap interno para modificar punto al que señalan flechas
     public enum ArrowType {
         NONE_BUTT, NONE_ROUND, NONE_SQUARE, ARROW1, ARROW2, ARROW3, SQUARE, BULLET
+    }
+
+    @Override
+    public <T extends Constructible> T setFreeMathObject(boolean isMathObjectFree) {
+        super.setFreeMathObject(isMathObjectFree);
+        if (getLabel()!=null) {
+            getLabel().setFreeMathObject(isMathObjectFree);
+        }
+        return (T) this;
     }
 }

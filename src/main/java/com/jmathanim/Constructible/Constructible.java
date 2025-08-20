@@ -134,20 +134,24 @@ public abstract class Constructible extends MathObject {
     public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
         MathObject obj = getMathObject();
 
-        //As MathObjectGroup does not have a draw method implemented by design, do a recursive search
-        if (obj instanceof MathObjectGroup) {
-            processDrawMathObjectGroup((MathObjectGroup) obj, scene, r, cam);
-        } else {
-            obj.draw(scene, r, cam);
-        }
-    }
-
-    private void processDrawMathObjectGroup(MathObjectGroup group, JMathAnimScene scene, Renderer r, Camera cam) {
-        for (MathObject obj: group) {
+        if (obj != null) {
+            //As MathObjectGroup does not have a draw method implemented by design, do a recursive search
             if (obj instanceof MathObjectGroup) {
                 processDrawMathObjectGroup((MathObjectGroup) obj, scene, r, cam);
             } else {
                 obj.draw(scene, r, cam);
+            }
+        }
+    }
+
+    private void processDrawMathObjectGroup(MathObjectGroup group, JMathAnimScene scene, Renderer r, Camera cam) {
+        for (MathObject obj : group) {
+            if (obj != null) {
+                if (obj instanceof MathObjectGroup) {
+                    processDrawMathObjectGroup((MathObjectGroup) obj, scene, r, cam);
+                } else {
+                    obj.draw(scene, r, cam);
+                }
             }
         }
     }
@@ -169,13 +173,13 @@ public abstract class Constructible extends MathObject {
     @Override
     protected void addToSceneHook(JMathAnimScene scene) {
         super.addToSceneHook(scene);
-        MediatorMathObject.addToSceneHook(getMathObject(),scene);
+        MediatorMathObject.addToSceneHook(getMathObject(), scene);
     }
 
     @Override
     protected void removedFromSceneHook(JMathAnimScene scene) {
         super.removedFromSceneHook(scene);
-        MediatorMathObject.removedFromSceneHook(getMathObject(),scene);
+        MediatorMathObject.removedFromSceneHook(getMathObject(), scene);
     }
 
 }
