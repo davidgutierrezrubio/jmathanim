@@ -53,6 +53,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
     private boolean alreadyRebuildingShape = false;
     private Point anchorPoint;
 
+
     protected AbstractTippableObject(Shape shape, MathObject tipObject, double location) {
         correctionAngle = PI / 2;
         this.shape = shape;
@@ -99,7 +100,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         }
     }
 
-    public <T extends AbstractTippableObject> T setAnchorPoint(Point anchorPoint) {
+    protected <T extends AbstractTippableObject> T setAnchorPoint(Point anchorPoint) {
         this.anchorPoint = anchorPoint;
         this.pivotPointRefMathObject.v.copyFrom(anchorPoint.v);
         anchorType = AnchorTypeUsed.FIXED_POINT;
@@ -152,6 +153,9 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         if (isFreeMathObject()) {
             getMathObject().applyAffineTransform(transform);
         }
+        else {
+            tipObjectRigidBox.applyAffineTransformToBaseTransform(transform);
+        }
         return this;
     }
 
@@ -182,6 +186,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
             this.markPoint.copyStateFrom(nt.markPoint);
             this.pivotPointRefShape.copyStateFrom(nt.pivotPointRefShape);
             this.isParametrized = nt.isParametrized;
+            this.slopeDirectionType=nt.slopeDirectionType;
             rebuildShape();
         }
 
@@ -232,6 +237,10 @@ public abstract class AbstractTippableObject extends Constructible implements ha
 
 
         }
+
+        //Compute the variable this.pivotPointRefMathObject
+        computePivotPointRefMathObject();
+
         tipObjectRigidBox.rotate(pivotPointRefMathObject, totalRotationAngle);
 
 
@@ -285,4 +294,9 @@ public abstract class AbstractTippableObject extends Constructible implements ha
 
     private enum AnchorTypeUsed {ANCHOR, FIXED_POINT}
 
+    @Override
+    public void update(JMathAnimScene scene) {
+        super.update(scene);
+        rebuildShape();
+    }
 }

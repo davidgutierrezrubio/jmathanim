@@ -11,11 +11,13 @@ public class RigidBox extends MathObject {
     private MathObject mathObjectReference;
     private MathObject mathObjectCopyToDraw;
     private boolean isCopyToDrawTransformedByMatrix;
+    protected final AffineJTransform baseModelMatrix;
 
     public RigidBox(MathObject mathObject) {
         this.mathObjectReference = mathObject;
         this.mathObjectCopyToDraw = mathObject.copy();
         isCopyToDrawTransformedByMatrix = false;
+        baseModelMatrix = new AffineJTransform();
         setObjectLabel("rigidbox");
     }
 
@@ -57,6 +59,7 @@ public class RigidBox extends MathObject {
         if (obj instanceof RigidBox) {
             RigidBox rigidBox = (RigidBox) obj;
             modelMatrix.copyFrom(rigidBox.modelMatrix);
+            baseModelMatrix.copyFrom(rigidBox.baseModelMatrix);
         }
     }
 
@@ -76,11 +79,19 @@ public class RigidBox extends MathObject {
         AffineJTransform compose = modelMatrix.compose(transform);
         modelMatrix.copyFrom(compose);
         isCopyToDrawTransformedByMatrix = false;
-        return (T) this;// By default does nothing
+        return (T) this;
     }
 
+    public <T extends MathObject> T applyAffineTransformToBaseTransform(AffineJTransform transform) {
+        AffineJTransform compose = baseModelMatrix.compose(transform);
+        baseModelMatrix.copyFrom(compose);
+        return (T) this;
+    }
+
+
+
     public void resetMatrix() {
-        modelMatrix.copyFrom(new AffineJTransform());
+        modelMatrix.copyFrom(baseModelMatrix);
         isCopyToDrawTransformedByMatrix = false;
     }
 
@@ -88,10 +99,22 @@ public class RigidBox extends MathObject {
     public void update(JMathAnimScene scene) {
         super.update(scene);
         mathObjectReference.update(scene);
+        setHasBeenUpdated(true);
     }
 
     @Override
     public String toString() {
         return "RigidBox[" + mathObjectReference + ']';
+    }
+
+    @Override
+    protected boolean isHasBeenUpdated() {
+        return super.isHasBeenUpdated() && mathObjectReference.isHasBeenUpdated();
+    }
+
+    @Override
+    protected void setHasBeenUpdated(boolean hasBeenUpdated) {
+        super.setHasBeenUpdated(hasBeenUpdated);
+        if (!hasBeenUpdated) mathObjectReference.setHasBeenUpdated(hasBeenUpdated);
     }
 }

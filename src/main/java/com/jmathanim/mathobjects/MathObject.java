@@ -49,7 +49,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public Point absoluteAnchorPoint;
     protected JMathAnimScene scene;
     protected boolean isRigid = false;
-    protected boolean hasBeenUpdated = false;
+    private boolean hasBeenUpdated = false;
     private Camera camera;
     private int updateLevel;
     private String debugText = "";
@@ -842,11 +842,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     // Updateable methods
     @Override
     public void update(JMathAnimScene scene) {
-        if (hasBeenUpdated) return;//This prevents updaters being called more than once per frame
+        if (isHasBeenUpdated()) return;//This prevents updaters being called more than once per frame
         for (Updater updater : updaters) {
             updater.update(scene);
         }
-        hasBeenUpdated = true;
+//       setHasBeenUpdated(true);
     }
 
     @Override
@@ -1037,7 +1037,15 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public void unregisterUpdateableHook(JMathAnimScene scene) {
     }
 
-//    /**
+    protected boolean isHasBeenUpdated() {
+        return hasBeenUpdated;
+    }
+
+    protected void setHasBeenUpdated(boolean hasBeenUpdated) {
+        this.hasBeenUpdated = hasBeenUpdated;
+    }
+
+    //    /**
 //     * Returns the set of objects that depend on this to be properly updated
 //     *
 //     * @return A HashSet of the dependent MathObjects

@@ -7,11 +7,11 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  */
 public class MediatorMathObject {
     public static void setHasBeenUpdated(MathObject obj, boolean hasBeenUpdated) {
-        obj.hasBeenUpdated = hasBeenUpdated;
+        obj.setHasBeenUpdated(hasBeenUpdated);
     }
 
     public static boolean isHasBeenUpdated(MathObject obj) {
-        return obj.hasBeenUpdated;
+        return obj.isHasBeenUpdated();
     }
 
     public static String getDebugText(MathObject obj) {

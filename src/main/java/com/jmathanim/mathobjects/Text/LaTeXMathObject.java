@@ -33,24 +33,34 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArguments {
 
+    public final HashMap<Integer, Scalar> variables;
+    DecimalFormat df;
     private Point anchor3DA;
     private Point anchor3DC;
     private Point anchor3DD;
-
-    DecimalFormat df;
     private String origText;
-    public final HashMap<Integer, Scalar> variables;
+
+    /**
+     * Creates a new LaTeX generated text
+     */
+    protected LaTeXMathObject(Anchor.Type anchor) {
+        super(anchor);
+        df = new DecimalFormat("0.00");
+        df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.UK));
+        variables = new HashMap<>();
+        for (int n = 0; n < 9; n++) {
+            variables.put(n, Scalar.make(0));
+        }
+    }
 
     /**
      * Static constructor
      *
-     * @param text LaTex text to compile. By default this text is compiled using
-     * the compile mode JLaTexMath.
+     * @param text LaTex text to compile. By default this text is compiled using the compile mode JLaTexMath.
      * @return The LaTexMathObject
      */
     public static LaTeXMathObject make(String text) {
@@ -60,10 +70,9 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
     /**
      * Static constructor
      *
-     * @param text LaTex text to compile. By default this text is compiled using
-     * the compile mode JLaTexMath.
-     * @param anchor Anchor to align. Default is CENTER. If LEFT, text will be
-     * anchored in its left margin to the reference point
+     * @param text   LaTex text to compile. By default this text is compiled using the compile mode JLaTexMath.
+     * @param anchor Anchor to align. Default is CENTER. If LEFT, text will be anchored in its left margin to the
+     *               reference point
      * @return The LaTexMathObject
      */
     public static LaTeXMathObject make(String text, Anchor.Type anchor) {
@@ -73,11 +82,10 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
     /**
      * Static constructor
      *
-     * @param text LaTex text to compile
-     * @param compileMode How to generate the shapes from LaTeX string. A value
-     * from the enum CompileMode.
-     * @param anchor Anchor to align. Default is CENTER. If LEFT, text will be
-     * anchored in its left margin to the reference point
+     * @param text        LaTex text to compile
+     * @param compileMode How to generate the shapes from LaTeX string. A value from the enum CompileMode.
+     * @param anchor      Anchor to align. Default is CENTER. If LEFT, text will be anchored in its left margin to the
+     *                    reference point
      * @return The LaTexMathObject
      */
     public static LaTeXMathObject make(String text, CompileMode compileMode, Anchor.Type anchor) {
@@ -96,23 +104,9 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
     }
 
     /**
-     * Creates a new LaTeX generated text
-     */
-    protected LaTeXMathObject(Anchor.Type anchor) {
-        super(anchor);
-        df = new DecimalFormat("0.00");
-        df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.UK));
-        variables = new HashMap<>();
-        for (int n = 0; n < 9; n++) {
-            variables.put(n, Scalar.make(0));
-        }
-    }
-
-    /**
-     * Changes the current LaTeX expression, updating the whole object as
-     * needed.The JMNumber for example, uses this.The new formula generated will
-     * be center-aligned with the replaced one. In case the old formula was
-     * empty (no shapes) it will be centered on the screen.
+     * Changes the current LaTeX expression, updating the whole object as needed.The JMNumber for example, uses this.The
+     * new formula generated will be center-aligned with the replaced one. In case the old formula was empty (no shapes)
+     * it will be centered on the screen.
      *
      * @param text The new LaTeX string
      * @return This object
@@ -130,6 +124,7 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
         }
         return text;
     }
+
     @Override
     public LaTeXMathObject copy() {
         LaTeXMathObject resul = new LaTeXMathObject(this.anchor);
@@ -145,16 +140,17 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
             this.origText = copy.origText;
             this.anchor = copy.anchor;
             //copy all variable values
-            for (Map.Entry<Integer,Scalar> pair : copy.variables.entrySet()) {
+            for (Map.Entry<Integer, Scalar> pair : copy.variables.entrySet()) {
                 variables.get(pair.getKey()).setScalar(pair.getValue().value);
             }
         }
-        
+
     }
 
     @Override
     public void update(JMathAnimScene scene) {
         super.update(scene);
+        if (isHasBeenUpdated()) return;
         if (origText == null) {
             origText = getText();
         }
@@ -178,9 +174,9 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
             Point anchor3DCdest = anchor3DA.copy().shift(cam.up);
             Point anchor3DDdest = anchor3DA.copy().shift(cam.look.to(cam.eye));
             AffineJTransform tr = AffineJTransform.createDirect3DIsomorphic(
-                anchor3DA, anchor3DD, anchor3DC,
-                anchor3DA.copy(), anchor3DDdest, anchor3DCdest,
-                1);
+                    anchor3DA, anchor3DD, anchor3DC,
+                    anchor3DA.copy(), anchor3DDdest, anchor3DCdest,
+                    1);
             tr.applyTransform(this);
 //            tr.applyTransform(anchor3DA);
             tr.applyTransform(anchor3DC);
@@ -210,7 +206,6 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
         }
         return variables.get(n);
     }
-
 
 
     @Override

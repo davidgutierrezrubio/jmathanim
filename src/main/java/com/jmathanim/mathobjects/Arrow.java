@@ -23,6 +23,7 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Lines.CTLine;
 import com.jmathanim.Constructible.Lines.CTPerpBisector;
 import com.jmathanim.Constructible.Points.CTIntersectionPoint;
+import com.jmathanim.Enum.SlopeDirectionType;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
@@ -41,7 +42,8 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
  */
 public class Arrow extends Constructible {
 
-    public final Shape labelArc;
+    public final Shape labelArcUpside;
+    public final Shape labelArcDownside;
     protected final MODrawPropertiesArray mpArrow;
     private final Point Acopy, Bcopy;
     private final Shape shapeToDraw;
@@ -59,16 +61,15 @@ public class Arrow extends Constructible {
     private double arrowThickness;
     private ArrowType typeA, typeB;
     private LabelTip arrowLabel;
-    private enum labelTypeEnum {NORMAL, DISTANCE,COORDS}
     private labelTypeEnum labelType;
-
     private String stringFormat;
 
     private Arrow(Point A, Point B) {
         this.A = A;
         this.B = B;
         labelType = labelTypeEnum.NORMAL;
-        this.labelArc = new Shape();
+        this.labelArcUpside = new Shape();
+        this.labelArcDownside = new Shape();
         this.arrowLabel = null;
         head1 = new Shape();
         head2 = new Shape();
@@ -223,8 +224,11 @@ public class Arrow extends Constructible {
         Shape h1A = head1.copy();
         Shape h1B = head2.copy();
         double dist = Acopy.to(Bcopy).norm();
-        if (arrowLabel != null)
+        if (arrowLabel != null) {
+            arrowLabel.update(scene);
             arrowLabel.getMathObject().scale(arrowLabel.pivotPointRefMathObject, getAmplitudeScale());
+
+        }
 
 
         //Scale heads to adjust to thickness
@@ -255,11 +259,15 @@ public class Arrow extends Constructible {
             shapeToDraw.getPath().addJMPointsFrom(h1A.getPath());
             shapeToDraw.merge(h1B, true, true);
 
-            labelArc.getPath().clear();
-            labelArc.getPath().addPoint(h1A.get(0).p.copy());
-            labelArc.getPath().addPoint(h1B.get(-1).p.copy());
+            labelArcUpside.getPath().clear();
+            labelArcUpside.getPath().addPoint(h1A.get(0).p.copy());
+            labelArcUpside.getPath().addPoint(h1B.get(-1).p.copy());
+            labelArcUpside.get(0).isThisSegmentVisible = false;
 
-            labelArc.get(0).isThisSegmentVisible = false;
+            labelArcDownside.getPath().clear();
+            labelArcDownside.getPath().addPoint(h1A.get(-1).p.copy());
+            labelArcDownside.getPath().addPoint(h1B.get(0).p.copy());
+            labelArcDownside.get(0).isThisSegmentVisible = false;
 
         } else {
 
@@ -302,8 +310,11 @@ public class Arrow extends Constructible {
             } else {
                 shArc1.reverse();
             }
-            labelArc.getPath().clear();
-            labelArc.getPath().copyStateFrom(shArc2.getPath());
+            labelArcUpside.getPath().clear();
+            labelArcUpside.getPath().copyStateFrom(shArc1.getPath());
+            labelArcDownside.getPath().clear();
+            labelArcDownside.getPath().copyStateFrom(shArc2.getPath());
+            labelArcDownside.getPath().reverse();
 
             //Build the shape, adding h1c and merging with h2cF
             shapeToDraw.getPath().addJMPointsFrom(h1A.getPath());
@@ -325,18 +336,30 @@ public class Arrow extends Constructible {
         } else {
             C = Acopy.copy().shift(0, 0, 1);
         }
-        AffineJTransform tr = AffineJTransform.createDirect3DIsomorphic(startPoint, endPoint, z1, Acopy, Bcopy, C, 1);
+        AffineJTransform tr;
+        boolean is3D = scene.getCamera() instanceof Camera3D;
+        if (is3D) {
+             tr = AffineJTransform.createDirect3DIsomorphic(startPoint, endPoint, z1, Acopy, Bcopy, C, 1);
+        }
+        else {
+             tr = AffineJTransform.createDirect2DIsomorphic(startPoint, endPoint, Acopy, Bcopy, 1);
+        }
+
         shapeToDraw.getPath().applyAffineTransform(tr);
-        labelArc.getPath().applyAffineTransform(tr);
+        labelArcUpside.getPath().applyAffineTransform(tr);
+        labelArcDownside.getPath().applyAffineTransform(tr);
+
+
         //Now, rotate to face camera3d..
-        if (scene.getCamera() instanceof Camera3D) {
+        if (is3D) {
             Camera3D cam = (Camera3D) scene.getCamera();
 //            Point C = A.copy().shift(0, 0, 1);
             v = cam.look.to(cam.eye);
             Point C2 = Acopy.copy().shift(v);
             tr = AffineJTransform.createDirect3DIsomorphic(Acopy, Bcopy, C, Acopy, Bcopy, C2, 1);
             shapeToDraw.applyAffineTransform(tr);
-            labelArc.applyAffineTransform(tr);
+            labelArcUpside.applyAffineTransform(tr);
+            labelArcDownside.applyAffineTransform(tr);
         }
     }
 
@@ -344,14 +367,18 @@ public class Arrow extends Constructible {
     public Arrow copy() {
         Arrow copy = new Arrow(A.copy(), B.copy());
         if (arrowLabel != null) {
+            boolean upperSide = true;
+            Object upperObj = arrowLabel.getProperty("upperSide");
+            if (upperObj != null) upperSide = (boolean) upperObj;
             if (labelType == labelTypeEnum.DISTANCE) {
-                copy.addLengthLabel(arrowLabel.distanceToShape, stringFormat);
+                copy.addLengthLabel(arrowLabel.distanceToShape, stringFormat, upperSide);
             }
-            if (labelType==labelTypeEnum.COORDS) {
-                copy.addVecLabel(arrowLabel.distanceToShape, stringFormat);
+            if (labelType == labelTypeEnum.COORDS) {
+                copy.addVecLabel(arrowLabel.distanceToShape, stringFormat, upperSide);
             }
-            copy.copyStateFrom(this);
+
         }
+        copy.copyStateFrom(this);
         return copy;
     }
 
@@ -423,8 +450,7 @@ public class Arrow extends Constructible {
     }
 
     /**
-     * Sets the thickness of the arrow line. Arrow head sizes are computed
-     * accordingly.
+     * Sets the thickness of the arrow line. Arrow head sizes are computed accordingly.
      *
      * @param arrowThickness The thickness
      * @return This object.
@@ -481,20 +507,20 @@ public class Arrow extends Constructible {
 
     @Override
     public Arrow applyAffineTransform(AffineJTransform tr) {
-
+        super.applyAffineTransform(tr);
         Acopy.applyAffineTransform(tr);
         Bcopy.applyAffineTransform(tr);
-        if (!isFreeMathObject()) {
-            A.applyAffineTransform(tr);
-            B.applyAffineTransform(tr);
-        }
+//        if (!isFreeMathObject()) {
+//            A.applyAffineTransform(tr);
+//            B.applyAffineTransform(tr);
+//        }
         rebuildShape();
         return this;
     }
 
     /**
-     * Sets the curvature of the arrow. A value of 0 gives a straight arrow. A
-     * value of PI/2 gives an arrow with a semicircle shape
+     * Sets the curvature of the arrow. A value of 0 gives a straight arrow. A value of PI/2 gives an arrow with a
+     * semicircle shape
      *
      * @param angle Angle in radians of curvature
      * @return This object
@@ -603,24 +629,26 @@ public class Arrow extends Constructible {
     }
 
     /**
-     * Adds a label with the length.The points mark the beginning and end of the
-     * delimiter.The delimiter lies at the "left" of vector AB.
+     * Adds a label with the length.The points mark the beginning and end of the delimiter.The delimiter lies at the
+     * "left" of vector AB.
      *
      * @param gap    Gap between control delimiter and label
      * @param format Format to print the length, for example "0.00"
      * @return The Label, a LatexMathObject
      */
     public LabelTip addLengthLabel(double gap,
-                                   String format) {
+                                   String format, boolean upperSide) {
 
-        LabelTip label = LabelTip.makeLabelTip(labelArc, .5, "${#0}$");
+        LabelTip label = LabelTip.makeLabelTip((upperSide ? labelArcUpside : labelArcDownside), .5, "${#0}$");
+        label.setProperty("upperSide", upperSide);//This will be useful when copying labels
         label.distanceToShape = gap;
+        label.setSlopeDirection((upperSide ? SlopeDirectionType.POSITIVE : SlopeDirectionType.NEGATIVE));
         label.setAnchor(Anchor.Type.LOWER);
         setLabel(label);
         labelType = labelTypeEnum.DISTANCE;
         this.stringFormat = format;
 
-        LaTeXMathObject t = (LaTeXMathObject) arrowLabel.getMathObject();
+        LaTeXMathObject t = arrowLabel.getLaTeXObject();
         t.setArgumentsFormat(format);
 
         t.registerUpdater(new Updater() {
@@ -639,21 +667,24 @@ public class Arrow extends Constructible {
     }
 
     /**
-     * Adds a label with the vector coordinates.The points mark the beginning and end of the
-     * delimiter.The delimiter lies at the "left" of vector AB.
+     * Adds a label with the vector coordinates.The points mark the beginning and end of the delimiter.The delimiter
+     * lies at the "left" of vector AB.
      *
      * @param gap    Gap between control delimiter and label
      * @param format Format to print the numbers, for example "0.00"
      * @return The Label, a LatexMathObject
      */
-    public LabelTip addVecLabel(double gap, String format) {
-        LabelTip label = LabelTip.makeLabelTip(labelArc, .5, "$({#0},{#1})$");
+    public LabelTip addVecLabel(double gap, String format, boolean upperSide) {
+        LabelTip label = LabelTip.makeLabelTip((upperSide ? labelArcUpside : labelArcDownside), .5, "$({#0},{#1})$");
+        label.setProperty("upperSide", upperSide);//This will be useful when copying labels
         label.distanceToShape = gap;
         label.setAnchor(Anchor.Type.LOWER);
-        LaTeXMathObject t = (LaTeXMathObject) label.getMathObject();
+        setLabel(label);
+        labelType = labelTypeEnum.COORDS;
+        LaTeXMathObject t = arrowLabel.getLaTeXObject();
         t.setArgumentsFormat(format);
         this.stringFormat = format;
-        t.registerUpdater(new Updater() {
+        arrowLabel.registerUpdater(new Updater() {
 //            @Override
 //            public void computeUpdateLevel() {
 //                this.updateLevel = Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1;
@@ -666,8 +697,7 @@ public class Arrow extends Constructible {
                 t.getArg(1).setScalar(vAB.y);
             }
         });
-        setLabel(label);
-        labelType = labelTypeEnum.COORDS;
+
 
         return label;
 //        return (LaTeXMathObject) arrowLabel.getRefMathObject();
@@ -689,10 +719,9 @@ public class Arrow extends Constructible {
     }
 
     /**
-     * Returns the scale of the amplitude of arrow. A value of 1 draws the
-     * arrow from one anchor point to another. Smaller values scales the
-     * arrow in the same proportion. This value is used mainly for
-     * showCreation animations-like.
+     * Returns the scale of the amplitude of arrow. A value of 1 draws the arrow from one anchor point to another.
+     * Smaller values scales the arrow in the same proportion. This value is used mainly for showCreation
+     * animations-like.
      *
      * @return The amplitude scale. A value from 0 to 1
      */
@@ -701,10 +730,8 @@ public class Arrow extends Constructible {
     }
 
     /**
-     * Sets the scale of the amplitude of arrow. A value of 1 draws the
-     * arrow from one anchor point to another. Smaller values scales the
-     * arrow in the same proportion. This value is used mainly for
-     * showCreation animations-like.
+     * Sets the scale of the amplitude of arrow. A value of 1 draws the arrow from one anchor point to another. Smaller
+     * values scales the arrow in the same proportion. This value is used mainly for showCreation animations-like.
      *
      * @param amplitudeScale The delimiter scale, from 0 to 1. Values are automatically cropped to this interval.
      */
@@ -721,6 +748,8 @@ public class Arrow extends Constructible {
     public Shape getArrowShape() {
         return shapeToDraw;
     }
+
+    private enum labelTypeEnum {NORMAL, DISTANCE, COORDS}
 
     //TODO:
     //Hacer que sea / no sea zoom-independent

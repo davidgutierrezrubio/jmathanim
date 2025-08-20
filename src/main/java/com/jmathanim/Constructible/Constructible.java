@@ -92,7 +92,7 @@ public abstract class Constructible extends MathObject {
     @Override
     public void update(JMathAnimScene scene) {
         super.update(scene);
-        rebuildShape();
+        setHasBeenUpdated(true);
     }
 
     abstract public void rebuildShape();

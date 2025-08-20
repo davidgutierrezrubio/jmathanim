@@ -20,11 +20,8 @@ import com.jmathanim.Enum.RotationType;
 import com.jmathanim.Enum.SlopeDirectionType;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Scalar;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.*;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
-import com.jmathanim.mathobjects.hasArguments;
 import com.jmathanim.mathobjects.updaters.Updater;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
@@ -110,7 +107,7 @@ public class LabelTip extends AbstractTippableObject implements hasArguments {
         LabelTip resul = new LabelTip(Shape.segment(A, B), t, Anchor.Type.LOWER, .5);
         if (!upSide) {
             resul.setSlopeDirection(SlopeDirectionType.NEGATIVE)
-                    .setAnchor(Anchor.Type.UPPER);
+                    .setAnchor(Anchor.Type.LOWER);
         }
         t.registerUpdater(new Updater() {
             @Override
@@ -118,7 +115,8 @@ public class LabelTip extends AbstractTippableObject implements hasArguments {
                 t.getArg(0).setScalar(A.to(B).norm());
             }
         });
-        resul.correctionAngle=PI;
+        resul.setRotationType(RotationType.SMART);
+//        resul.correctionAngle=PI;
         resul.rebuildShape();
         return resul;
     }
@@ -166,5 +164,18 @@ public class LabelTip extends AbstractTippableObject implements hasArguments {
     public Scalar getArg(int n) {
         return laTeXMathObject.getArg(n);
     }
+
+    @Override
+    protected boolean isHasBeenUpdated() {
+        return super.isHasBeenUpdated() && MediatorMathObject.isHasBeenUpdated(laTeXMathObject);
+    }
+
+    @Override
+    protected void setHasBeenUpdated(boolean hasBeenUpdated) {
+        super.setHasBeenUpdated(hasBeenUpdated);
+        if (!hasBeenUpdated) MediatorMathObject.setHasBeenUpdated(laTeXMathObject,hasBeenUpdated);
+    }
+
+
 
 }
