@@ -287,13 +287,13 @@ public abstract class Animation {
      */
     public abstract void prepareForAnim(double t);
 
-    /**
-     * Returns the smooth function
-     *
-     * @return A lambda operator with the smooth function
-     */
     public DoubleUnaryOperator getTotalLambda() {
         return lambda.compose(UsefulLambdas.allocateTo(allocateStart, allocateEnd));
+    }
+    protected double allocateT(double t) {
+        double rt = (t < 0 ? 0 : t);
+        rt = (rt > 1 ? 1 : rt);
+        return UsefulLambdas.allocateTo(allocateStart, allocateEnd).applyAsDouble(rt);
     }
 
     protected double getLT(double t) {

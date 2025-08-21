@@ -147,7 +147,7 @@ public class PointInterpolationCanonical extends TransformStrategy {
 
         }
         if (isShouldInterpolateStyles()) {
-            getIntermediateObject().getMp().interpolateFrom(getOriginObject().getMp(), getOriginObject().getMp(), lt);
+         getIntermediateObject().getMp().interpolateFrom(getOriginObject().getMp(), getDestinyObject().getMp(), lt);
         }
 
         // Transform effects

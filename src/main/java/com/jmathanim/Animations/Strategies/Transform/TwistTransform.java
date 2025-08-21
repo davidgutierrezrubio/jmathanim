@@ -152,8 +152,9 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
      *
      * @param stepByStep The step flag
      */
-    public void setStepByStep(boolean stepByStep) {
+    public <T extends TwistTransform> T setStepByStep(boolean stepByStep) {
         isStepByStep = stepByStep;
+        return (T) this;
     }
 
     public DoubleUnaryOperator getLambdaShiftPivotal() {
@@ -318,10 +319,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
         super.doAnim(t);
         // Get the interpolated time, respecting the animation's rate function.
         double lt = getLT(t);
-        double rt;
-        rt = (t < 0 ? 0 : t);
-        rt = (rt > 1 ? 1 : rt); // Raw time, clamped to [0,1] for lambda functions
-
+        double rt = allocateT(t);// Raw time, clamped to [0,1], allocated with delay effect
 
         Shape intermediateObject = getIntermediateObject();
         // Restore the intermediate object to its original state (the origin shape) before applying the new frame's transformation.
@@ -338,8 +336,8 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
 
         applyTransformForwardPoints(numPivotalSegment, rt);
 
-        double ltb = (lambdaBackward == null ? lt : lambdaBackward.applyAsDouble(rt));
-        applyTransformBackwardPoints(numPivotalSegment, ltb);
+//        double ltb = (lambdaBackward == null ? lt : lambdaBackward.applyAsDouble(rt));
+        applyTransformBackwardPoints(numPivotalSegment, rt);
 
         // Interpolate visual properties like color and stroke width.
         if (isShouldInterpolateStyles()) {
@@ -444,9 +442,9 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
      * per frame.
      *
      * @param numPivotalSegment The index of the point starting the pivotal segment.
-     * @param lt                The interpolated time, from 0 to 1.
+     * @param t                The interpolated time, from 0 to 1.
      */
-    private void applyTransformBackwardPoints(int numPivotalSegment, double lt) {
+    private void applyTransformBackwardPoints(int numPivotalSegment, double t) {
         Shape inter = getIntermediateObject();
         if (numPivotalSegment <= 0) {
             return; // No backward points to transform

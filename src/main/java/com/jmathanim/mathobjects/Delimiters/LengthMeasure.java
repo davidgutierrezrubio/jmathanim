@@ -77,7 +77,7 @@ public class LengthMeasure extends Delimiter {
             delimiterShapeToDraw.getPath().addJMPointsFrom(segment.getPath());
 
             //Manages rotation of label
-            switch (rotateLabel) {
+            switch (rotationType) {
                 case FIXED:
                     delimiterLabelRigidBox.rotate(-angle);
                     break;

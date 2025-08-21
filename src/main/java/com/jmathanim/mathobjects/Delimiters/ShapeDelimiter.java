@@ -1,7 +1,10 @@
 package com.jmathanim.mathobjects.Delimiters;
 
 import com.jmathanim.Enum.AnchorType;
-import com.jmathanim.Utils.*;
+import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.Rect;
+import com.jmathanim.Utils.ResourceLoader;
+import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.NullMathObject;
 import com.jmathanim.mathobjects.Point;
@@ -107,7 +110,7 @@ public class ShapeDelimiter extends Delimiter {
             delimiterLabelRigidBox.scale(labelAmplitudeScale);
 
             //Manages rotation of label
-            switch (rotateLabel) {
+            switch (rotationType) {
                 case FIXED:
                     delimiterLabelRigidBox.rotate(-angle);
                     break;

@@ -32,7 +32,7 @@ public abstract class Delimiter extends Constructible {
     protected double amplitudeScale;
     protected TextUpdaterFactory textUpdaterFactory;
     protected double labelMarkGap;
-    protected RotationType rotateLabel;
+    protected RotationType rotationType;
     protected double delimiterScale;
     protected double minimumWidthToShrink;
 
@@ -63,7 +63,7 @@ public abstract class Delimiter extends Constructible {
 
 
         labelMarkPoint = Point.at(0, 0);
-        this.rotateLabel = RotationType.SMART;
+        this.rotationType = RotationType.SMART;
         this.delimiterLabel = new NullMathObject();
         delimiterLabelRigidBox=new RigidBox(this.delimiterLabel);
         this.mpDelimiter.add(delimiterLabelRigidBox);
@@ -217,11 +217,12 @@ public abstract class Delimiter extends Constructible {
      * Sets the rotate flag. If true, label will be rotated according to
      * delimiter.
      *
-     * @param rotateLabel True if label should be rotated, false otherwise.
+     * @param rotationType True if label should be rotated, false otherwise.
      * @return This object
      */
-    public <T extends Delimiter> T setRotationType(RotationType rotateLabel) {
-        this.rotateLabel = rotateLabel;
+    public <T extends Delimiter> T setRotationType(RotationType rotationType) {
+        this.rotationType = rotationType;
+        rebuildShape();
         return (T) this;
     }
 
@@ -259,6 +260,7 @@ public abstract class Delimiter extends Constructible {
         Delimiter del = (Delimiter) obj;
         delimiterShapeToDraw.copyStateFrom(del.delimiterShapeToDraw);
         delimiterLabelRigidBox.copyStateFrom(del.delimiterLabelRigidBox);
+
         this.A.copyStateFrom(del.A);
         this.B.copyStateFrom(del.B);
         getMp().copyFrom(obj.getMp());
@@ -284,7 +286,7 @@ public abstract class Delimiter extends Constructible {
             getLabel().getMp().copyFrom(del.getLabel().getMp());
         }
         labelMarkGap=del.labelMarkGap;
-        rotateLabel = del.rotateLabel;
+        rotationType = del.rotationType;
         minimumWidthToShrink = del.minimumWidthToShrink;
         amplitudeScale = del.amplitudeScale;
         delimiterScale = del.delimiterScale;
@@ -299,16 +301,6 @@ public abstract class Delimiter extends Constructible {
     }
 
     protected abstract void buildDelimiterShape();
-
-    public void debugInfo() {
-//    System.out.println(this.getObjectLabel()+":  groupElementsToBeDrawn size: "+groupElementsToBeDrawn.size());
-//    System.out.println(this.getObjectLabel()+":  is Label a NullMathObject: "+(groupElementsToBeDrawn.get(1) instanceof  NullMathObject));
-//    System.out.println(this.getObjectLabel()+":  is FreeMathObject: "+this.isFreeMathObject());
-//    for (MathObject o: groupElementsToBeDrawn) {
-//        System.out.println(this.getObjectLabel()+":  groupElementsToBeDrawn elements: "+o);
-//    }
-//        System.out.println(this.delimiterShapeToDraw.getMp() + " " + this.mpDelimiterShape);
-    }
 
 
     public Delimiter setLabel(String text, double labelGap) {

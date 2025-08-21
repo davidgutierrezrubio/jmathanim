@@ -182,6 +182,7 @@ public class PathUtils {
         //First point
         Point p = Point.origin();
         resul.getPath().addPoint(p);
+        resul.get(0).isThisSegmentVisible=false;
         for (int i = 1; i < sh2.getPath().size(); i++) {
             double dist = sh2.getPoint(i - 1).to(sh2.getPoint(i)).norm();
             p = p.copy().shift(dist, 0);
@@ -195,7 +196,6 @@ public class PathUtils {
         while (pivotalSegment >= shSize) {
             pivotalSegment -= shSize;
         }
-        System.out.println("pivotalSegment: "+pivotalSegment);
         Point A = resul.getPoint(pivotalSegment);
         Point B = resul.getPoint(pivotalSegment + 1);
         Point C = sh2.getPoint(pivotalSegment);
