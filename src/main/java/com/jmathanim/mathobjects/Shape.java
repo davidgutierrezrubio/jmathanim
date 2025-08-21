@@ -242,7 +242,7 @@ public class Shape extends MathObject {
 
         double x1, y1;
         double step = angle / (numSegments - 1);
-        double cte = 4d / 3 * Math.tan(angle / (numSegments - 1));
+        double cte = 4d / 3 * Math.tan(angle/4 / (numSegments - 1));
         double alphaC = 0;
         JMPathPoint jmp = JMPathPoint.make(1, 0, 1, -cte, 1, cte);
         for (int k = 0; k < numSegments; k++) {
@@ -257,13 +257,13 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Creates an arc shape with radius 1 and center origin. First point is (1,0). Default value of 32 segments.
+     * Creates an arc shape with radius 1 and center origin. First point is (1,0). Default value of 4 segments.
      *
      * @param angle Angle in radians of the arc
      * @return The created arc
      */
     public static Shape arc(double angle) {
-        return arc(angle, 32);
+        return arc(angle, 4);
     }
 
     /**
