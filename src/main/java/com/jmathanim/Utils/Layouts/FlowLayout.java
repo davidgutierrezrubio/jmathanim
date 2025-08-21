@@ -17,7 +17,8 @@
  */
 package com.jmathanim.Utils.Layouts;
 
-import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Enum.AnchorType;
+import com.jmathanim.Enum.BoxDirection;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
@@ -32,34 +33,34 @@ import java.util.function.IntToDoubleFunction;
 public class FlowLayout extends AbstractBoxLayout {
 
 	public IntToDoubleFunction rowLength;
-	BoxLayout.Direction direction;
+	BoxDirection boxDirection;
 
 	/**
 	 * Creates a new FlowLayout
 	 * @param corner
 	 * @param width
-	 * @param direction
+	 * @param boxDirection
 	 * @param inRowGap
 	 * @param inColGap
 	 */
-	public FlowLayout(Point corner, double width, BoxLayout.Direction direction, double inRowGap, double inColGap) {
+	public FlowLayout(Point corner, double width, BoxDirection boxDirection, double inRowGap, double inColGap) {
 		super(corner, inRowGap, inColGap);
 		rowLength = (int row) -> width;
-		this.direction = direction;
-		computeDirections(direction);
+		this.boxDirection = boxDirection;
+		computeDirections(boxDirection);
 	}
 
-	public FlowLayout(Point corner, IntToDoubleFunction widthFunction, BoxLayout.Direction direction, double inRowGap,
-			double inColGap) {
+	public FlowLayout(Point corner, IntToDoubleFunction widthFunction, BoxDirection boxDirection, double inRowGap,
+					  double inColGap) {
 		super(corner, inRowGap, inColGap);
 		rowLength = widthFunction;
-		this.direction = direction;
-		computeDirections(direction);
+		this.boxDirection = boxDirection;
+		computeDirections(boxDirection);
 	}
 
 	private double getAppropiateSize(MathObject obj) {
 		double resul = 0;
-		switch (direction) {
+		switch (boxDirection) {
 		case DOWN_LEFT:
 		case DOWN_RIGHT:
 		case UP_LEFT:
@@ -80,7 +81,7 @@ public class FlowLayout extends AbstractBoxLayout {
 	public void executeLayout(MathObjectGroup group) {
 		ArrayList<MathObjectGroup> rowGroups = getRowGroups(group);
 
-		rowGroups.get(0).get(0).stackTo(firstElementStack, this.corner, Anchor.Type.CENTER, 0);
+		rowGroups.get(0).get(0).stackTo(firstElementStack, this.corner, AnchorType.CENTER, 0);
 		for (int n = 1; n < rowGroups.get(0).size(); n++) {
 			rowGroups.get(0).get(n).stackTo(rowGroups.get(0).get(n - 1), inRowStack, inRowGap);
 		}
@@ -91,7 +92,7 @@ public class FlowLayout extends AbstractBoxLayout {
 				rowGroups.get(k).get(n).stackTo(rowGroups.get(k).get(n - 1), inRowStack, inRowGap);
 			}
 			MathObject.Align align = null;
-			switch (direction) {
+			switch (boxDirection) {
 			case RIGHT_UP:
 			case RIGHT_DOWN:
 				align = MathObject.Align.LEFT;
@@ -143,9 +144,9 @@ public class FlowLayout extends AbstractBoxLayout {
 	@Override
 	public FlowLayout copy() {
 		if (this.corner != null) {
-			return new FlowLayout(corner.copy(), this.rowLength, direction, inRowGap, inColGap);
+			return new FlowLayout(corner.copy(), this.rowLength, boxDirection, inRowGap, inColGap);
 		} else {
-			return new FlowLayout(null, this.rowLength, direction, inRowGap, inColGap);
+			return new FlowLayout(null, this.rowLength, boxDirection, inRowGap, inColGap);
 		}
 	}
 }

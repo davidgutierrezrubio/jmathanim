@@ -16,6 +16,7 @@
  */
 package com.jmathanim.mathobjects.Text;
 
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
@@ -51,14 +52,14 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
     // character has
     public static final double DEFAULT_SCALE_FACTOR = .05;
     protected final AffineJTransform modelMatrix;
-    protected Anchor.Type anchor;
+    protected AnchorType anchor;
     protected LatexParser latexParser;
     protected String text;
     protected File latexFile;
     protected String baseFileName;
     protected File outputDir;
     CompileMode mode = CompileMode.JLaTexMath;
-    protected AbstractLaTeXMathObject(Anchor.Type anchor) {
+    protected AbstractLaTeXMathObject(AnchorType anchor) {
         super();
         this.anchor = anchor;
         modelMatrix = new AffineJTransform();
@@ -198,7 +199,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
                 break;
 
         }
-        //this.stackTo(anchor,Point.origin(), Anchor.Type.CENTER,0);
+        //this.stackTo(anchor,Point.origin(), Type.CENTER,0);
 
         shift(v);
 

@@ -16,6 +16,7 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.Enum.LatexTokenType;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.mathobjects.Text.AbstractLaTeXMathObject;
@@ -40,7 +41,7 @@ public class LatexStyle {
         return new LatexStyle();
     }
 
-    public LatexStyle setColorTo(LatexToken.TokenType type, Integer secType, String name, String colorName) {
+    public LatexStyle setColorTo(LatexTokenType type, Integer secType, String name, String colorName) {
         LatexStyleItem colorizerItem = new LatexStyleItem();
         LatexToken token = LatexToken.make().setType(type).setSecondaryTypeFlag(secType).setString(name);
         colorizerItem.mustMatchTo(token);
@@ -70,7 +71,7 @@ public class LatexStyle {
      */
     public LatexStyle setColorToChar(String charStr, PaintStyle paintStyle) {
         LatexStyleItem latexStyleItem = new LatexStyleItem();
-        LatexToken token = LatexToken.make().setType(LatexToken.TokenType.CHAR).setString(charStr);
+        LatexToken token = LatexToken.make().setType(LatexTokenType.CHAR).setString(charStr);
         latexStyleItem.mustMatchTo(token);
         latexStyleItem.setColor(paintStyle);
         latexStyleItems.add(latexStyleItem);

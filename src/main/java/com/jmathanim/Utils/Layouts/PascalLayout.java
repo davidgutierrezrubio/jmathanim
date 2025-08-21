@@ -17,6 +17,8 @@
  */
 package com.jmathanim.Utils.Layouts;
 
+import com.jmathanim.Enum.AnchorType;
+import com.jmathanim.Enum.LayoutType;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.mathobjects.MathObject;
@@ -92,20 +94,20 @@ public class PascalLayout extends GroupLayout {
 				counter++;
 				rowCounter++;
 			}
-			grRow.setLayout(MathObjectGroup.Layout.RIGHT, 0);
+			grRow.setLayout(LayoutType.RIGHT, 0);
 			rows.add(grRow);
 			rowSize++;
 			rowCounter = 0;
 		}
-		rows.setLayout(MathObjectGroup.Layout.LOWER, 0);
+		rows.setLayout(LayoutType.LOWER, 0);
 
 		// Now that the rectangles are properly located, move the original objects so
 		// that their centers match those of the workgroup
 		for (int n = 0; n < group.size(); n++) {
-			group.get(n).stackTo(workGroup.get(n), Anchor.Type.CENTER);
+			group.get(n).stackTo(workGroup.get(n), AnchorType.CENTER);
 		}
 		// Move now so that the top center point of first element match the Point top.
-		Point A = Anchor.getAnchorPoint(group.get(0), Anchor.Type.UPPER);
+		Point A = Anchor.getAnchorPoint(group.get(0), AnchorType.UPPER);
 		if (top != null) {
 			group.shift(A.to(top));
 		}

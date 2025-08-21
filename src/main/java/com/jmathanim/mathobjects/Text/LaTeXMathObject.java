@@ -18,8 +18,8 @@
 package com.jmathanim.mathobjects.Text;
 
 import com.jmathanim.Cameras.Camera3D;
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.Anchor;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
@@ -47,7 +47,7 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
     /**
      * Creates a new LaTeX generated text
      */
-    protected LaTeXMathObject(Anchor.Type anchor) {
+    protected LaTeXMathObject(AnchorType anchor) {
         super(anchor);
         df = new DecimalFormat("0.00");
         df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.UK));
@@ -64,7 +64,7 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
      * @return The LaTexMathObject
      */
     public static LaTeXMathObject make(String text) {
-        return make(text, CompileMode.JLaTexMath, Anchor.Type.CENTER);
+        return make(text, CompileMode.JLaTexMath, AnchorType.CENTER);
     }
 
     /**
@@ -75,7 +75,7 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
      *               reference point
      * @return The LaTexMathObject
      */
-    public static LaTeXMathObject make(String text, Anchor.Type anchor) {
+    public static LaTeXMathObject make(String text, AnchorType anchor) {
         return make(text, CompileMode.JLaTexMath, anchor);
     }
 
@@ -88,7 +88,7 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
      *                    reference point
      * @return The LaTexMathObject
      */
-    public static LaTeXMathObject make(String text, CompileMode compileMode, Anchor.Type anchor) {
+    public static LaTeXMathObject make(String text, CompileMode compileMode, AnchorType anchor) {
 
         LaTeXMathObject resul = new LaTeXMathObject(anchor);
         resul.getMp().loadFromStyle("latexdefault");

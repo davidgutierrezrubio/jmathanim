@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.Enum.JumpType;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
@@ -85,7 +86,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
      * @param t parameter to evaluate
      * @return The new parameter rescaled
      */
-    public double allocateToNewTime(double a, double b, double t) {
+    protected double allocateToNewTime(double a, double b, double t) {
         if (t < a) {
             return 0;
         }
@@ -99,10 +100,11 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
     public void doAnim(double t) {
          super.doAnim(t);
         int size = mathObjects.length;
-        double lt = getLT(t);
+        double getLt = getLT(t);
         restoreStates(mathObjects);
         double b = (1 - delayPercentage);
         for (MathObject obj : mathObjects) {
+            double lt=getLt;
             Vec v = shiftVectors.get(obj);// Gets the shift vector for this object
             if ((size > 1) && (delayPercentage > 0)) {
                 double a = beginningTimes.get(obj);
@@ -188,7 +190,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
      * @return This object
      */
     public ShiftAnimation addJumpEffect(MathObject obj, double jumpHeight,
-            AnimationEffect.JumpType jumpType) {
+            JumpType jumpType) {
         if (!effects.containsKey(obj)) {
             effects.put(obj, new AnimationEffect());
         }
@@ -206,7 +208,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
      * @return This object
      */
     public <T extends ShiftAnimation> T addJumpEffect(MathObject obj, double jumpHeight) {
-        addJumpEffect(obj, jumpHeight, AnimationEffect.JumpType.PARABOLICAL);
+        addJumpEffect(obj, jumpHeight, JumpType.PARABOLICAL);
         return (T) this;
     }
 
@@ -231,7 +233,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
      * @param jumpType
      * @return This object
      */
-    public ShiftAnimation addJumpEffect(double jumpHeight, AnimationEffect.JumpType jumpType) {
+    public ShiftAnimation addJumpEffect(double jumpHeight, JumpType jumpType) {
         for (MathObject obj : mathObjects) {
             addJumpEffect(obj, jumpHeight, jumpType);
         }

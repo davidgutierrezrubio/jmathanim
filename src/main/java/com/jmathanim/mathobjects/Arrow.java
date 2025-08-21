@@ -23,6 +23,7 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Lines.CTLine;
 import com.jmathanim.Constructible.Lines.CTPerpBisector;
 import com.jmathanim.Constructible.Points.CTIntersectionPoint;
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.SlopeDirectionType;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
@@ -643,7 +644,7 @@ public class Arrow extends Constructible {
         label.setProperty("upperSide", upperSide);//This will be useful when copying labels
         label.distanceToShape = gap;
         label.setSlopeDirection((upperSide ? SlopeDirectionType.POSITIVE : SlopeDirectionType.NEGATIVE));
-        label.setAnchor(Anchor.Type.LOWER);
+        label.setAnchor(AnchorType.LOWER);
         setLabel(label);
         labelType = labelTypeEnum.DISTANCE;
         this.stringFormat = format;
@@ -680,7 +681,7 @@ public class Arrow extends Constructible {
         LabelTip label = LabelTip.makeLabelTip((upperSide ? labelArcUpside : labelArcDownside), .5, "$({#0},{#1})$");
         label.setProperty("upperSide", upperSide);//This will be useful when copying labels
         label.distanceToShape = gap;
-        label.setAnchor(Anchor.Type.LOWER);
+        label.setAnchor(AnchorType.LOWER);
         setLabel(label);
         labelType = labelTypeEnum.COORDS;
         LaTeXMathObject t = arrowLabel.getLaTeXObject();

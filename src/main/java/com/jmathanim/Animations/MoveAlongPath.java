@@ -17,8 +17,8 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.Anchor.Type;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.*;
 
@@ -33,7 +33,7 @@ public class MoveAlongPath extends Animation {
 
     private final JMPath path;
     private final MathObject mobjTransformed;
-    private final Type anchorType;
+    private final AnchorType anchorType;
     boolean shouldRotate;
     boolean parametrized;
 
@@ -55,7 +55,7 @@ public class MoveAlongPath extends Animation {
      * segments.
      * @return The created animation
      */
-    public static MoveAlongPath make(double runtime, JMPath path, MathObject mobjTransformed, Type anchorType, boolean shouldRotate, boolean parametrized) {
+    public static MoveAlongPath make(double runtime, JMPath path, MathObject mobjTransformed, AnchorType anchorType, boolean shouldRotate, boolean parametrized) {
         MoveAlongPath resul = new MoveAlongPath(runtime, path, mobjTransformed, anchorType, shouldRotate, parametrized);
         return resul;
     }
@@ -78,12 +78,12 @@ public class MoveAlongPath extends Animation {
      * segments.
      * @return The created animation
      */
-    public static MoveAlongPath make(double runtime, Shape sh, MathObject mobjTransformed, Type anchorType, boolean shouldRotate, boolean parametrized) {
+    public static MoveAlongPath make(double runtime, Shape sh, MathObject mobjTransformed, AnchorType anchorType, boolean shouldRotate, boolean parametrized) {
         MoveAlongPath resul = new MoveAlongPath(runtime, sh.getPath(), mobjTransformed, anchorType, shouldRotate, parametrized);
         return resul;
     }
 
-    private MoveAlongPath(double runtime, JMPath path, MathObject mobjTransformed, Type anchorType, boolean shouldRotate, boolean parametrized) {
+    private MoveAlongPath(double runtime, JMPath path, MathObject mobjTransformed, AnchorType anchorType, boolean shouldRotate, boolean parametrized) {
         super(runtime);
         this.path = path;
         this.mobjTransformed = mobjTransformed;

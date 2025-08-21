@@ -142,14 +142,14 @@
 
 <!ELEMENT conditions (equals|equalsPrev|equalsAfter|differs|differsPrev|differsAfter)*>
 
-<!ELEMENT equals (type|subtype|string)*>
-<!ELEMENT equalsPrev (type|subtype|string)*>
-<!ELEMENT equalsAfter (type|subtype|string)*>
-<!ELEMENT differs (type|subtype|string)*>
-<!ELEMENT differsPrev (type|subtype|string)*>
-<!ELEMENT differsAfter (type|subtype|string)*>
+<!ELEMENT equals (anchorType|subtype|string)*>
+<!ELEMENT equalsPrev (anchorType|subtype|string)*>
+<!ELEMENT equalsAfter (anchorType|subtype|string)*>
+<!ELEMENT differs (anchorType|subtype|string)*>
+<!ELEMENT differsPrev (anchorType|subtype|string)*>
+<!ELEMENT differsAfter (anchorType|subtype|string)*>
 
-<!ELEMENT type (#PCDATA)>
+<!ELEMENT anchorType (#PCDATA)>
 <!ELEMENT subtype (#PCDATA)>
 <!ELEMENT string (#PCDATA)>
 

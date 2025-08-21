@@ -19,6 +19,7 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Animations.Strategies.ShowCreation.*;
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Enum.ShowCreationStrategy;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
 import com.jmathanim.mathobjects.Axes.Axes;
@@ -377,9 +378,6 @@ public class ShowCreation extends Animation {
         }
     }
 
-    public enum ShowCreationStrategy {
-        NONE, FIRST_DRAW_AND_THEN_FILL, SIMPLE_SHAPE_CREATION, MULTISHAPE_CREATION, LATEX_CREATION, LINE_CREATION, RAY_CREATION,
-        ARROW_CREATION, DELIMITER_CREATION, GROUP_CREATION, AXES_CREATION, POINT_CREATION
-    }
+
 
 }

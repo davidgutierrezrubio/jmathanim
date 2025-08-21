@@ -46,7 +46,7 @@
 <!--                <artifactId>lwjgl-bom</artifactId>-->
 <!--                <version>${lwjgl.version}</version>-->
 <!--                <scope>import</scope>-->
-<!--                <type>pom</type>-->
+<!--                <anchorType>pom</anchorType>-->
 <!--            </dependency>-->
 <!--        </dependencies>-->
 <!--    </dependencyManagement>-->
@@ -537,7 +537,7 @@
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
             <version>3.0.24</version>
-            <type>pom</type>
+            <anchorType>pom</anchorType>
         </dependency>
     </dependencies>
     <build>

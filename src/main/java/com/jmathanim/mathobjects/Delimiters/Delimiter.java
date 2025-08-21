@@ -1,6 +1,7 @@
 package com.jmathanim.mathobjects.Delimiters;
 
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.RotationType;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
@@ -38,14 +39,14 @@ public abstract class Delimiter extends Constructible {
     /**
      * Type of delimiter to draw (bracket, parenthesis, length_arrow, etc.)
      */
-    protected Delimiter.Type type;
+    protected DelimiterType type;
     /**
      * Gap to apply between control points and delimiter
      */
     protected double gap;
 
 
-    public Delimiter(Point A, Point B, Delimiter.Type type, double gap) {
+    public Delimiter(Point A, Point B, DelimiterType type, double gap) {
         super();
         this.A = A;
         this.B = B;
@@ -83,11 +84,11 @@ public abstract class Delimiter extends Constructible {
      *
      * @param A    Beginning point
      * @param B    Ending point
-     * @param type Type of delimiter, one enum {@link Delimiter.Type}
+     * @param type Type of delimiter, one enum {@link DelimiterType}
      * @param gap  Gap between control points and delimiter
      * @return The delimiter
      */
-    public static Delimiter make(Point A, Point B, Delimiter.Type type, double gap) {
+    public static Delimiter make(Point A, Point B, DelimiterType type, double gap) {
         Delimiter resul = null;
         switch (type) {
             case BRACE:
@@ -119,25 +120,25 @@ public abstract class Delimiter extends Constructible {
      * @param gap           Gap to put between anchor points and delimiter
      * @return The delimiter
      */
-    public static Delimiter makeStacked(MathObject obj, Anchor.Type anchorType, Type delimiterType, double gap) {
+    public static Delimiter makeStacked(MathObject obj, AnchorType anchorType, DelimiterType delimiterType, double gap) {
         JMathAnimScene sce = JMathAnimConfig.getConfig().getScene();//This should be better implemented, avoid static singletons
-        Anchor.Type anchorA, anchorB;
+        AnchorType anchorA, anchorB;
         switch (anchorType) {
             case UPPER:
-                anchorA = Anchor.Type.ULEFT;
-                anchorB = Anchor.Type.URIGHT;
+                anchorA = AnchorType.ULEFT;
+                anchorB = AnchorType.URIGHT;
                 break;
             case LOWER:
-                anchorA = Anchor.Type.DRIGHT;
-                anchorB = Anchor.Type.DLEFT;
+                anchorA = AnchorType.DRIGHT;
+                anchorB = AnchorType.DLEFT;
                 break;
             case RIGHT:
-                anchorA = Anchor.Type.URIGHT;
-                anchorB = Anchor.Type.DRIGHT;
+                anchorA = AnchorType.URIGHT;
+                anchorB = AnchorType.DRIGHT;
                 break;
             case LEFT:
-                anchorA = Anchor.Type.DLEFT;
-                anchorB = Anchor.Type.ULEFT;
+                anchorA = AnchorType.DLEFT;
+                anchorB = AnchorType.ULEFT;
                 break;
             default:
                 JMathAnimScene.logger.error("Invalid anchor for delimiter object " + anchorType.name());
@@ -146,8 +147,8 @@ public abstract class Delimiter extends Constructible {
         Point A = Anchor.getAnchorPoint(obj, anchorA);
         Point B = Anchor.getAnchorPoint(obj, anchorB);
         //Register points A and B as updateable
-        sce.registerUpdateable(new AnchoredMathObject(A, Anchor.Type.CENTER, obj, anchorA));
-        sce.registerUpdateable(new AnchoredMathObject(B, Anchor.Type.CENTER, obj, anchorB));
+        sce.registerUpdateable(new AnchoredMathObject(A, AnchorType.CENTER, obj, anchorA));
+        sce.registerUpdateable(new AnchoredMathObject(B, AnchorType.CENTER, obj, anchorB));
 
         Delimiter resul = Delimiter.make(A, B, delimiterType, gap);
         return resul;
@@ -372,7 +373,7 @@ public abstract class Delimiter extends Constructible {
     /**
      * Type of delimiter
      */
-    public enum Type {
+    public enum DelimiterType {
         /**
          * Brace {
          */

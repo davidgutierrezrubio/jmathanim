@@ -18,6 +18,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.PaintStyle;
@@ -157,7 +158,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     }
 
     @Override
-    public <T extends MathObject> T setAbsoluteSize(Anchor.Type anchorType) {
+    public <T extends MathObject> T setAbsoluteSize(AnchorType anchorType) {
         super.setAbsoluteSize(anchorType);
         Point p = Anchor.getAnchorPoint(this, anchorType);
         for (Shape sh : shapes) {
@@ -188,20 +189,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         scene.markAsAlreadydrawn(this);
     }
 
-    public <T extends MultiShapeObject> T setShowDebugIndices(boolean value) {
-        if (value) {
-            int k = 0;
-            for (Shape sh : shapes) {
-                sh.setDebugText("" + k);
-                k++;
-            }
-        } else {
-            for (Shape sh : shapes) {
-                sh.setDebugText("");
-            }
-        }
-        return (T) this;
-    }
+
 
     @Override
     protected Rect computeBoundingBox() {

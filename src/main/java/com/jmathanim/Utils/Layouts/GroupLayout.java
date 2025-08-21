@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Utils.Layouts;
 
-import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Enum.InnerAnchorType;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
@@ -34,7 +34,7 @@ import java.util.ArrayList;
 public abstract class GroupLayout {
 
     private final ArrayList<double[]> backupGaps;
-    private Anchor.innerType innerAnchor;
+    private InnerAnchorType innerAnchor;
     private double ugap, rgap, logap, lgap;
 
     public GroupLayout() {
@@ -111,7 +111,7 @@ public abstract class GroupLayout {
      * @param leftGap  Left gap to add
      * @return This object
      */
-    public <T extends GroupLayout> T homogenize(Anchor.innerType anchor, double upperGap, double rightGap, double lowerGap, double leftGap) {
+    public <T extends GroupLayout> T homogenize(InnerAnchorType anchor, double upperGap, double rightGap, double lowerGap, double leftGap) {
         innerAnchor = anchor;
         this.ugap = upperGap;
         this.rgap = rightGap;

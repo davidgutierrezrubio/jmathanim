@@ -20,7 +20,6 @@ package com.jmathanim.Animations.Strategies.Transform;
 import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.OptimizePathsStrategy;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Shape;
 
 /**
  *
@@ -32,7 +31,7 @@ public abstract class TransformStrategy extends AnimationWithEffects {
     private MathObject origin;
     private MathObject destiny;
     private MathObject intermediate;
-    private boolean destinyWasAddedAtFirst, originWasAddedAtFirst;
+    protected boolean destinyWasAddedAtFirst, originWasAddedAtFirst;
 
     public TransformStrategy(double runTime) {
         super(runTime);
@@ -87,21 +86,33 @@ public abstract class TransformStrategy extends AnimationWithEffects {
     public void cleanAnimationAt(double t) {
         double lt = getLT(t);
         if (lt == 0) {
-            removeObjectsFromScene(getIntermediateObject(), getDestinyObject());
-            if (originWasAddedAtFirst) {
-                addObjectsToscene(getOriginObject());
-            } else {
-                removeObjectsFromScene(getOriginObject());
-            }
+            cleanAt0();
             return;
         }
         if (lt == 1) {
-            removeObjectsFromScene(getIntermediateObject(), getOriginObject());
-            addObjectsToscene(getDestinyObject());
+            cleanAt1();
             return;
         }
+        cleanAtIntermediate();
+    }
+
+    protected void cleanAtIntermediate() {
         removeObjectsFromScene(getDestinyObject(), getOriginObject());
         addObjectsToscene(getIntermediateObject());
+    }
+
+    protected void cleanAt1() {
+        removeObjectsFromScene(getIntermediateObject(), getOriginObject());
+        addObjectsToscene(getDestinyObject());
+    }
+
+    protected void cleanAt0() {
+        removeObjectsFromScene(getIntermediateObject(), getDestinyObject());
+        if (originWasAddedAtFirst) {
+            addObjectsToscene(getOriginObject());
+        } else {
+            removeObjectsFromScene(getOriginObject());
+        }
     }
 
     @Override

@@ -20,6 +20,8 @@ package com.jmathanim.Animations;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Enum.AnchorType;
+import com.jmathanim.Enum.LayoutType;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
@@ -50,8 +52,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 public class Commands {
 
     /**
-     * A shift animation. Animates the objects moving them with the given
-     * vector.
+     * A shift animation. Animates the objects moving them with the given vector.
      *
      * @param runtime
      * @param dx
@@ -95,9 +96,8 @@ public class Commands {
     }
 
     /**
-     * Creates an animation that scales back and forth the specified objets up
-     * to 50%. The center of the scale will be the same for all objects, and
-     * equals to the center of combined bounding box.
+     * Creates an animation that scales back and forth the specified objets up to 50%. The center of the scale will be
+     * the same for all objects, and equals to the center of combined bounding box.
      *
      * @param runtime Duration in seconds
      * @param objects Objects to highlight
@@ -108,12 +108,10 @@ public class Commands {
     }
 
     /**
-     * Creates an animation that scales back and forth the specified objets up
-     * to given scale.
+     * Creates an animation that scales back and forth the specified objets up to given scale.
      *
-     * @param runtime Duration in seconds
-     * @param scale The factor to scale. A value of 1.5 will scale the objecs up
-     * to 50% more.
+     * @param runtime     Duration in seconds
+     * @param scale       The factor to scale. A value of 1.5 will scale the objecs up to 50% more.
      * @param mathObjects Objects to highlight
      * @return The animation, ready to play with the playAnim method
      */
@@ -151,8 +149,8 @@ public class Commands {
     }
 
     /**
-     * Similar to the highlight animation, but adds a little twist of 15 degrees
-     * to the objects. The factor scale applied is 1.5.
+     * Similar to the highlight animation, but adds a little twist of 15 degrees to the objects. The factor scale
+     * applied is 1.5.
      *
      * @param runtime Duration in seconds positive and negative direction
      * @param objects Objects to animate
@@ -163,14 +161,11 @@ public class Commands {
     }
 
     /**
-     * Similar to the highlight animation, but adds a little twist to the
-     * objects
+     * Similar to the highlight animation, but adds a little twist to the objects
      *
-     * @param runtime Duration in seconds
-     * @param scale The factor to scale. A value of 1.5 will scale the objecs up
-     * to 50% more.
-     * @param twistAngle Max angle of rotation. The twist will perform to
-     * positive and negative direction
+     * @param runtime     Duration in seconds
+     * @param scale       The factor to scale. A value of 1.5 will scale the objecs up to 50% more.
+     * @param twistAngle  Max angle of rotation. The twist will perform to positive and negative direction
      * @param mathObjects Objects to animate
      * @return The animation, ready to play with the playAnim method
      */
@@ -211,8 +206,8 @@ public class Commands {
     /**
      * Animates a uniform scale change from centers of objects
      *
-     * @param runtime Duration in seconds
-     * @param sc Scale to apply
+     * @param runtime     Duration in seconds
+     * @param sc          Scale to apply
      * @param mathObjects Objects to animate
      * @return The animation, ready to play with the playAnim method
      */
@@ -228,9 +223,9 @@ public class Commands {
     /**
      * Animates a scale change from centers of objects
      *
-     * @param runtime Duration in seconds
-     * @param scx X scale to apply
-     * @param scy Y scale to apply
+     * @param runtime     Duration in seconds
+     * @param scx         X scale to apply
+     * @param scy         Y scale to apply
      * @param mathObjects Objects to animate
      * @return The animation, ready to play with the playAnim method
      */
@@ -385,8 +380,8 @@ public class Commands {
             final double anglex = angx;
             final double angley = angy;
             final double anglez = angz;
-            Point rotationCenter = null;
             final MathObject[] mathObjects = objects;
+            Point rotationCenter = null;
 
             @Override
             public MathObjectGroup getIntermediateObject() {
@@ -438,17 +433,17 @@ public class Commands {
      * Animates an affine transformation that maps A,B,C into D,E,F
      *
      * @param runtime
-     * @param A First origin point
-     * @param B Second origin point
-     * @param C Third origin point
-     * @param D Image of first origin point
-     * @param E Image of second origin point
-     * @param F Image of third origin point
+     * @param A       First origin point
+     * @param B       Second origin point
+     * @param C       Third origin point
+     * @param D       Image of first origin point
+     * @param E       Image of second origin point
+     * @param F       Image of third origin point
      * @param objects
      * @return The transform
      */
     public static AnimationWithEffects affineTransform(double runtime, Point A, Point B, Point C, Point D, Point E,
-            Point F, MathObject... objects) {
+                                                       Point F, MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
             final Point orig1 = A.copy();
             final Point orig2 = B.copy();
@@ -508,20 +503,19 @@ public class Commands {
     }// End of affineTransform command
 
     /**
-     * Deprecated. Animation command that transforms a MathObject through an
-     * isomorphism. This is left for compatibility reasons. Use isomorphism
-     * instead.
+     * Deprecated. Animation command that transforms a MathObject through an isomorphism. This is left for compatibility
+     * reasons. Use isomorphism instead.
      *
      * @param runtime Run time (in seconds)
-     * @param a First origin point
-     * @param b Second origin point
-     * @param c First destiny point
-     * @param d Second destiny point
+     * @param a       First origin point
+     * @param b       Second origin point
+     * @param c       First destiny point
+     * @param d       Second destiny point
      * @param objects Objects to animate (varargs)
      * @return Animation to run playAnimation method method
      */
     public static AnimationWithEffects homothecy(double runtime, Point a, Point b, Point c, Point d,
-            MathObject... objects) {
+                                                 MathObject... objects) {
         return isomorphism(runtime, a, b, c, d, objects);
     }
 
@@ -530,27 +524,26 @@ public class Commands {
     }
 
     /**
-     * Animation command that transforms a MathObject through a direct
-     * isomorphism. Isomorphism is specified by 2 pairs of points
-     * (origin-destiny)
+     * Animation command that transforms a MathObject through a direct isomorphism. Isomorphism is specified by 2 pairs
+     * of points (origin-destiny)
      *
      * @param runtime Run time (in seconds)
-     * @param a First origin point
-     * @param b Second origin point
-     * @param c First destiny point
-     * @param d Second destiny point
+     * @param a       First origin point
+     * @param b       Second origin point
+     * @param c       First destiny point
+     * @param d       Second destiny point
      * @param objects Objects to animate (varargs)
      * @return Animation to run playAnimation method method
      */
     public static AnimationWithEffects isomorphism(double runtime, Point a, Point b, Point c, Point d,
-            MathObject... objects) {
+                                                   MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
             final Point A = a.copy();
             final Point B = b.copy();
             final Point C = c.copy();
             final Point D = d.copy();
-            AffineJTransform tr;
             final MathObject[] mathObjects = objects;
+            AffineJTransform tr;
 
             @Override
             public boolean doInitialization() {
@@ -601,7 +594,7 @@ public class Commands {
     }// End of Isomorphism command
 
     public static AnimationWithEffects isomorphism3d(double runtime, Point a, Point b1, Point b2, Point c, Point d1, Point d2,
-            MathObject... objects) {
+                                                     MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
             final Point A = a.copy();
             final Point B1 = b1.copy();
@@ -609,8 +602,8 @@ public class Commands {
             final Point C = c.copy();
             final Point D1 = d1.copy();
             final Point D2 = d2.copy();
-            AffineJTransform tr;
             final MathObject[] mathObjects = objects;
+            AffineJTransform tr;
 
             @Override
             public boolean doInitialization() {
@@ -661,27 +654,26 @@ public class Commands {
     }// End of Isomorphism command
 
     /**
-     * Animation command that transforms a MathObject through a inverse
-     * isomorphism. Isomorphism is specified by 2 pairs of points
-     * (origin-destiny)
+     * Animation command that transforms a MathObject through a inverse isomorphism. Isomorphism is specified by 2 pairs
+     * of points (origin-destiny)
      *
      * @param runtime Run time (in seconds)
-     * @param a First origin point
-     * @param b Second origin point
-     * @param c First destiny point
-     * @param d Second destiny point
+     * @param a       First origin point
+     * @param b       Second origin point
+     * @param c       First destiny point
+     * @param d       Second destiny point
      * @param objects Objects to animate (varargs)
      * @return Animation to run playAnimation method method
      */
     public static AnimationWithEffects inverseIsomorphism(double runtime, Point a, Point b, Point c, Point d,
-            MathObject... objects) {
+                                                          MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
             final Point A = a.copy();
             final Point B = b.copy();
             final Point C = c.copy();
             final Point D = d.copy();
-            AffineJTransform tr;
             final MathObject[] mathObjects = objects;
+            AffineJTransform tr;
 
             @Override
             public boolean doInitialization() {
@@ -735,8 +727,8 @@ public class Commands {
      * Animation command that perfoms a reflection that maps A into B
      *
      * @param runtime Duration in seconds
-     * @param A Origin point
-     * @param B Destiny point
+     * @param A       Origin point
+     * @param B       Destiny point
      * @param objects Objects to animate (varargs)
      * @return Animation to run with playAnim method
      */
@@ -799,9 +791,8 @@ public class Commands {
      * Animation command that perfoms a reflection specified by 2 points
      *
      * @param runtime Duration in seconds
-     * @param a first axis point
-     * @param b second axis point
-     *
+     * @param a       first axis point
+     * @param b       second axis point
      * @param objects Objects to animate (varargs)
      * @return Animation to run with playAnim method
      */
@@ -861,14 +852,13 @@ public class Commands {
     }// End of reflectionByAxis command
 
     /**
-     * Changes the draw color and fill color of the objects to the given one. If
-     * one of the colors is null, the colors are not changed Thus, if you want
-     * to change only drawColor, you should set fillColor to null.
+     * Changes the draw color and fill color of the objects to the given one. If one of the colors is null, the colors
+     * are not changed Thus, if you want to change only drawColor, you should set fillColor to null.
      *
-     * @param runtime Duration in seconds
+     * @param runtime   Duration in seconds
      * @param drawColor Color to be the drawColor
      * @param fillColor Color to be the fillColor
-     * @param objects MathObjects to animate (varargs)
+     * @param objects   MathObjects to animate (varargs)
      * @return The animation to be played with the playAnimation method
      */
     public static Animation setColor(double runtime, PaintStyle drawColor, PaintStyle fillColor, MathObject... objects) {
@@ -887,11 +877,10 @@ public class Commands {
     }
 
     /**
-     * Animation command that changes the math drawing properties of given
-     * object, interpolating
+     * Animation command that changes the math drawing properties of given object, interpolating
      *
      * @param runtime Time duration in seconds
-     * @param mp Destination {@link MODrawProperties}
+     * @param mp      Destination {@link MODrawProperties}
      * @param objects Objects to animate (varargs)
      * @return Animation to run with playAnim method
      */
@@ -944,10 +933,9 @@ public class Commands {
     /**
      * Animation command that changes the style of given object, interpolating
      *
-     * @param runtime Time duration in seconds
+     * @param runtime   Time duration in seconds
      * @param styleName Name of destination style
-     * @param objects Objects to animate (varargs)
-     *
+     * @param objects   Objects to animate (varargs)
      * @return Animation to run with playAnim method
      */
     public static Animation setStyle(double runtime, String styleName, MathObject... objects) {
@@ -957,12 +945,12 @@ public class Commands {
     }
 
     /**
-     * Animation command that pans and zooms the camera to the selected objects.
-     * Gaps are automatically added to (via the camera.setGaps method).
+     * Animation command that pans and zooms the camera to the selected objects. Gaps are automatically added to (via
+     * the camera.setGaps method).
      *
      * @param runtime Duration (in seconds)
-     * @param camera Camera to animate
-     * @param objs Mathobjects to zoom to (varargs)
+     * @param camera  Camera to animate
+     * @param objs    Mathobjects to zoom to (varargs)
      * @return Animation to run with playAnim method
      */
     public static Animation cameraZoomToObjects(double runtime, Camera camera, MathObject... objs) {
@@ -975,11 +963,10 @@ public class Commands {
     }
 
     /**
-     * Animation command that zooms the camera to a given area specified by a
-     * {@link Rect}
+     * Animation command that zooms the camera to a given area specified by a {@link Rect}
      *
-     * @param runtime Time duration in seconds
-     * @param camera Camera to zoom
+     * @param runtime    Time duration in seconds
+     * @param camera     Camera to zoom
      * @param rectToZoom Area to zoom
      * @return Animation to run with playAnim method
      */
@@ -1042,10 +1029,9 @@ public class Commands {
     /**
      * Animation that pans the {@link Camera} by a given vector
      *
-     * @param runtime Time duration in seconds
-     * @param camera Camera to pan
+     * @param runtime     Time duration in seconds
+     * @param camera      Camera to pan
      * @param shiftVector Shift vector
-     *
      * @return Animation to run with playAnim method
      */
     public static Animation cameraShift(double runtime, Camera camera, Vec shiftVector) {
@@ -1077,10 +1063,6 @@ public class Commands {
         return resul;
     }
 
-    public enum Axis {
-        X, Y, Z
-    }
-
     public static Animation camera3DRotate(double runtime, Camera3D cam, double angle) {
         return camera3DRotate(runtime, cam, angle, Axis.Z);
     }
@@ -1095,8 +1077,8 @@ public class Commands {
     }
 
     /**
-     * Animation command that reduces the size and alpha of the MathObject.After
-     * finishing the animation, object is removed from the current scene.
+     * Animation command that reduces the size and alpha of the MathObject.After finishing the animation, object is
+     * removed from the current scene.
      *
      * @param runtime Run time (in seconds)
      * @param objects Objects to animate (varargs)
@@ -1107,11 +1089,10 @@ public class Commands {
     }
 
     /**
-     * Animation command that reduces the size and alpha of the MathObject.A
-     * rotation of a given angle is performed meanwhile.After finishing the
-     * animation, object is removed from the current scene.
+     * Animation command that reduces the size and alpha of the MathObject.A rotation of a given angle is performed
+     * meanwhile.After finishing the animation, object is removed from the current scene.
      *
-     * @param angle Angle to rotate, in radians
+     * @param angle   Angle to rotate, in radians
      * @param runtime Duration time in seconds
      * @param objects Objects to animate (varargs)
      * @return Animation to run with playAnim method
@@ -1121,14 +1102,13 @@ public class Commands {
     }
 
     /**
-     * Animation command that reduces the size and alpha of the MathObject.A
-     * rotation of a given angle is performed meanwhile.After finishing the
-     * animation, object is removed from the current scene.
+     * Animation command that reduces the size and alpha of the MathObject.A rotation of a given angle is performed
+     * meanwhile.After finishing the animation, object is removed from the current scene.
      *
-     * @param angle Angle to rotate, in radians
-     * @param runtime Duration time in seconds
+     * @param angle      Angle to rotate, in radians
+     * @param runtime    Duration time in seconds
      * @param shrinkType How to shrink, HORIZONTAL, VERTICAL or BOTH
-     * @param objects Objects to animate (varargs)
+     * @param objects    Objects to animate (varargs)
      * @return Animation to run with playAnim method
      */
     public static Animation shrinkOut(double runtime, double angle, OrientationType shrinkType, MathObject... objects) {
@@ -1202,9 +1182,7 @@ public class Commands {
     }// End of shrinkOut command
 
     /**
-     * Performs the inverse animation than shrinkOut, that its, scale
-     * the size and alpha of the object from zero.
-     *
+     * Performs the inverse animation than shrinkOut, that its, scale the size and alpha of the object from zero.
      *
      * @param runtime Duration time in seconds
      * @param objects Objects to animate
@@ -1215,11 +1193,10 @@ public class Commands {
     }
 
     /**
-     * Performs the inverse animation than shrinkOut, that its, scale
-     * the size and alpha of the object from zero. An inverse rotation from
-     * given angle to 0 is performed.
+     * Performs the inverse animation than shrinkOut, that its, scale the size and alpha of the object from zero. An
+     * inverse rotation from given angle to 0 is performed.
      *
-     * @param angle Rotation angle
+     * @param angle   Rotation angle
      * @param runtime Duration time in seconds
      * @param objects Objects to animate (varargs)
      * @return Animation to run with playAnim method
@@ -1229,19 +1206,18 @@ public class Commands {
     }
 
     /**
-     * Performs the inverse animation than shrinkOut, that its, scale
-     * the size and alpha of the object from zero. An inverse rotation from
-     * given angle to 0 is performed.
+     * Performs the inverse animation than shrinkOut, that its, scale the size and alpha of the object from zero. An
+     * inverse rotation from given angle to 0 is performed.
      *
-     * @param angle Rotation angle
-     * @param runtime Duration time in seconds
+     * @param angle    Rotation angle
+     * @param runtime  Duration time in seconds
      * @param growType Scale type: HORIZONTAL, VERTICAL or BOTH
-     * @param objects Objects to animate (varargs)
+     * @param objects  Objects to animate (varargs)
      * @return Animation to run with playAnim method
      */
     public static Animation growIn(double runtime, double angle, OrientationType growType, MathObject... objects) {
         Animation anim = new Animation(runtime) {
-             MathObject[] mathObjects = objects;
+            MathObject[] mathObjects = objects;
 
             @Override
             public boolean doInitialization() {
@@ -1314,8 +1290,8 @@ public class Commands {
     }// End of growIn command
 
     /**
-     * Performs an animation modifying the alpha of the object from 0 to the
-     * original alpha of object. Both drawAlpha and fillAlpha are animated.
+     * Performs an animation modifying the alpha of the object from 0 to the original alpha of object. Both drawAlpha
+     * and fillAlpha are animated.
      *
      * @param runtime Duration time in seconds
      * @param objects Objects to animate (varargs)
@@ -1384,9 +1360,8 @@ public class Commands {
     }// End of fadeIn command
 
     /**
-     * Performs an animation modifying the alpha of the object to 0. Both
-     * drawAlpha and fillAlpha are animated. Object is removed from current
-     * scene after finishing animation.
+     * Performs an animation modifying the alpha of the object to 0. Both drawAlpha and fillAlpha are animated. Object
+     * is removed from current scene after finishing animation.
      *
      * @param runtime Duration time in seconds
      * @param objects Object to animate
@@ -1453,18 +1428,16 @@ public class Commands {
      * Animated version of method setLayout for MathObjectGroup instances
      *
      * @param runtime Duration in seconds
-     * @param corner Corner to layout from. If null, first object of the group
-     * will be used
-     * @param layout Type of anchor to apply layout as defined in the enum
-     * Anchor.Type
-     * @param gap Gap to apply between elements, in math units
-     * @param group MathObjectGroup instance to apply the layout
+     * @param corner  Corner to layout from. If null, first object of the group will be used
+     * @param layoutType  Type of anchor to apply layout as defined in the enum Type
+     * @param gap     Gap to apply between elements, in math units
+     * @param group   MathObjectGroup instance to apply the layout
      * @return Animation to run with playAnim method
      */
-    public static ShiftAnimation setLayout(double runtime, MathObject corner, MathObjectGroup.Layout layout, double gap,
-            MathObjectGroup group) {
+    public static ShiftAnimation setLayout(double runtime, MathObject corner, LayoutType layoutType, double gap,
+                                           MathObjectGroup group) {
         group.saveState();
-        group.setLayout(corner, layout, gap);
+        group.setLayout(corner, layoutType, gap);
         HashMap<MathObject, Point> centers = new HashMap<>();
         int n = 0;
         for (MathObject ob : group) {
@@ -1500,8 +1473,8 @@ public class Commands {
      * Animated version of method setLayout for MathObjectGroup instances
      *
      * @param runtime Duration in seconds
-     * @param layout A GroupLayout subclass
-     * @param group MathObjectGroup instance to apply the layout
+     * @param layout  A GroupLayout subclass
+     * @param group   MathObjectGroup instance to apply the layout
      * @return Animation to run with playAnim method
      */
     public static ShiftAnimation setLayout(double runtime, GroupLayout layout, MathObjectGroup group) {
@@ -1533,8 +1506,8 @@ public class Commands {
     }
 
     /**
-     * Animates a change in the alpha fill of the objects. The precise change is
-     * given by the lambda function used in the animation
+     * Animates a change in the alpha fill of the objects. The precise change is given by the lambda function used in
+     * the animation
      *
      * @param runTime Duration in seconds
      * @param objects MathObjects to apply the animation (varargs)
@@ -1589,15 +1562,14 @@ public class Commands {
     }
 
     /**
-     * Performs an exit animation of an object(s). When finished, removes the
-     * objects from the scene.
+     * Performs an exit animation of an object(s). When finished, removes the objects from the scene.
      *
-     * @param runtime Duration in seconds
-     * @param exitAnchor Exit direction. A vaue of Anchor.Type
+     * @param runtime     Duration in seconds
+     * @param exitAnchor  Exit direction. A vaue of Type
      * @param mathObjects Objects to exit (varargs)
      * @return this animation, ready to play with the playAnimation method
      */
-    public static ShiftAnimation moveOut(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
+    public static ShiftAnimation moveOut(double runtime, AnchorType exitAnchor, MathObject... mathObjects) {
         ShiftAnimation resul = new ShiftAnimation(runtime, mathObjects) {
             @Override
             public boolean doInitialization() {
@@ -1653,15 +1625,14 @@ public class Commands {
     }
 
     /**
-     * Performs an enter animation of an object(s).The object(s) are added
-     * automatically to the scene.
+     * Performs an enter animation of an object(s).The object(s) are added automatically to the scene.
      *
-     * @param runtime Duration in seconds
-     * @param enterAnchor Enter direction. A vaue of Anchor.Type
+     * @param runtime     Duration in seconds
+     * @param enterAnchor Enter direction. A vaue of Type
      * @param mathObjects Objects to enter (varargs)
      * @return this animation, ready to play with the playAnimation method
      */
-    public static ShiftAnimation moveIn(double runtime, Anchor.Type enterAnchor, MathObject... mathObjects) {
+    public static ShiftAnimation moveIn(double runtime, AnchorType enterAnchor, MathObject... mathObjects) {
 
         Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
         Renderer rend = JMathAnimConfig.getConfig().getRenderer();
@@ -1684,7 +1655,7 @@ public class Commands {
                 JMathAnimScene.logger.debug("Initialized moveIn animation");
                 for (MathObject obj : toAnimateArray) {
                     double gap = rend.ThicknessToMathWidth(obj) * 2;
-                    final Anchor.Type reverseAnchor = Anchor.reverseAnchorPoint(enterAnchor);
+                    final AnchorType reverseAnchor = Anchor.reverseAnchorPoint(enterAnchor);
                     Point p = Anchor.getAnchorPoint(obj, reverseAnchor);
                     Shape rectMathView = Shape.rectangle(r.copy().addGap(gap, gap));
                     Point q = Anchor.getAnchorPoint(rectMathView, enterAnchor);
@@ -1730,11 +1701,10 @@ public class Commands {
     /**
      * Transforms one object to another, animating a flip effect
      *
-     * @param runtime Duration in seconds
-     * @param ob1 Origin object
-     * @param ob2 Destiny object
-     * @param horizontal If true, an horizontal flipping is done, vertical
-     * otherwise
+     * @param runtime    Duration in seconds
+     * @param ob1        Origin object
+     * @param ob2        Destiny object
+     * @param horizontal If true, an horizontal flipping is done, vertical otherwise
      * @return The animation
      */
     public static FlipTransform flipTransform(double runtime, boolean horizontal, MathObject ob1, MathObject ob2) {
@@ -1745,14 +1715,14 @@ public class Commands {
     /**
      * Animated version of the align method
      *
-     * @param runtime time in seconds
-     * @param dst Destiny object to align with
-     * @param type Type of align, a value of MathObject.Align enum
+     * @param runtime     time in seconds
+     * @param dst         Destiny object to align with
+     * @param type        Type of align, a value of MathObject.Align enum
      * @param mathobjects Mathobjects to animate
      * @return The created animation
      */
     public static ShiftAnimation align(double runtime, MathObject dst, MathObject.Align type,
-            MathObject... mathobjects) {
+                                       MathObject... mathobjects) {
         ShiftAnimation resul = new ShiftAnimation(runtime, mathobjects) {
             @Override
             public boolean doInitialization() {
@@ -1771,19 +1741,18 @@ public class Commands {
     }
 
     /**
-     * Animated version of the stackTo method.The destination point is computed
-     * at the initialize() method so it cab ne safely concatenated. If several
-     * objects are animated, the second will be stacked to the first, and so on
+     * Animated version of the stackTo method.The destination point is computed at the initialize() method so it cab ne
+     * safely concatenated. If several objects are animated, the second will be stacked to the first, and so on
      *
-     * @param runtime time in seconds
-     * @param dst Destiny object to align with
-     * @param type Type of stack, a value of Anchor.Type enum
-     * @param gap Gap between the stacked objects
+     * @param runtime     time in seconds
+     * @param dst         Destiny object to align with
+     * @param anchorType        Type of stack, a value of Type enum
+     * @param gap         Gap between the stacked objects
      * @param mathobjects Mathobjects to animate
      * @return The created animation
      */
-    public static ShiftAnimation stackTo(double runtime, MathObject dst, Anchor.Type type, double gap,
-            MathObject... mathobjects) {
+    public static ShiftAnimation stackTo(double runtime, MathObject dst, AnchorType anchorType, double gap,
+                                         MathObject... mathobjects) {
         ShiftAnimation resul = new ShiftAnimation(runtime, mathobjects) {
             @Override
             public boolean doInitialization() {
@@ -1791,7 +1760,7 @@ public class Commands {
                 MathObject previous = dst;
 
                 for (MathObject obj : mathobjects) {
-                    MathObject objc = Shape.rectangle(obj.getBoundingBox()).stackTo(previous, type, gap);
+                    MathObject objc = Shape.rectangle(obj.getBoundingBox()).stackTo(previous, anchorType, gap);
                     setShiftVector(obj, obj.getCenter().to(objc.getCenter()));
                     previous = objc;
                 }
@@ -1803,11 +1772,10 @@ public class Commands {
     }
 
     /**
-     * Animates a crossout. The size of the crossout is computed from the
-     * bounding box of the crossed object
+     * Animates a crossout. The size of the crossout is computed from the bounding box of the crossed object
      *
      * @param runtime Duration in seconds
-     * @param obj Object to cross out
+     * @param obj     Object to cross out
      * @return The created animation
      */
     public static Animation crossOut(double runtime, MathObject obj) {
@@ -1854,6 +1822,10 @@ public class Commands {
         resul.add(ShowCreation.make(2, cross).setLambda(UsefulLambdas.restrictTo(.1, 1)));
         resul.add(Commands.shrinkOut(1, obj, cross));
         return resul;
+    }
+
+    public enum Axis {
+        X, Y, Z
     }
 
 }

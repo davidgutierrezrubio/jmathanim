@@ -16,9 +16,9 @@
  */
 package com.jmathanim.mathobjects.Tippable;
 
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.RotationType;
 import com.jmathanim.Enum.SlopeDirectionType;
-import com.jmathanim.Utils.Anchor;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
@@ -36,7 +36,7 @@ public class LabelTip extends AbstractTippableObject implements hasArguments {
 
     private final LaTeXMathObject laTeXMathObject;
 
-    protected LabelTip(Shape shape, LaTeXMathObject tipLabel, Anchor.Type anchor, double locationParameter) {
+    protected LabelTip(Shape shape, LaTeXMathObject tipLabel, AnchorType anchor, double locationParameter) {
         super(shape, tipLabel, locationParameter);
         setAnchor(anchor);
         laTeXMathObject = tipLabel;
@@ -69,7 +69,7 @@ public class LabelTip extends AbstractTippableObject implements hasArguments {
         LabelTip resul = makeLabelTip(shape, locationParameter, LaTeXMathObject.make(latexText), upSide);
         if (!upSide) {
             resul.setSlopeDirection(SlopeDirectionType.NEGATIVE)
-                    .setAnchor(Anchor.Type.LOWER);
+                    .setAnchor(AnchorType.LOWER);
         }
         resul.correctionAngle=0;
         resul.setRotationType(RotationType.SMART);
@@ -104,10 +104,10 @@ public class LabelTip extends AbstractTippableObject implements hasArguments {
      */
     public static LabelTip makeLengthLabel(Point A, Point B, String format, boolean upSide) {
         LaTeXMathObject t = LaTeXMathObject.make("${#0}$");
-        LabelTip resul = new LabelTip(Shape.segment(A, B), t, Anchor.Type.LOWER, .5);
+        LabelTip resul = new LabelTip(Shape.segment(A, B), t, AnchorType.LOWER, .5);
         if (!upSide) {
             resul.setSlopeDirection(SlopeDirectionType.NEGATIVE)
-                    .setAnchor(Anchor.Type.LOWER);
+                    .setAnchor(AnchorType.LOWER);
         }
         t.registerUpdater(new Updater() {
             @Override
@@ -137,11 +137,11 @@ public class LabelTip extends AbstractTippableObject implements hasArguments {
      */
     public static LabelTip makeLabelTip(Shape shape, double locationParameter, LaTeXMathObject tipLabel, boolean upSide) {
 
-        LabelTip resul = new LabelTip(shape, tipLabel, Anchor.Type.LOWER, locationParameter);
+        LabelTip resul = new LabelTip(shape, tipLabel, AnchorType.LOWER, locationParameter);
         resul.setDistanceToShape(tipLabel.getHeight() * .25);
         if (!upSide) {
             resul.setSlopeDirection(SlopeDirectionType.NEGATIVE)
-                    .setAnchor(Anchor.Type.UPPER);
+                    .setAnchor(AnchorType.UPPER);
         }
         resul.correctionAngle=PI;
         resul.rebuildShape();

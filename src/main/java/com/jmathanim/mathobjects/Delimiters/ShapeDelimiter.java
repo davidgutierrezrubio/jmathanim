@@ -1,5 +1,6 @@
 package com.jmathanim.mathobjects.Delimiters;
 
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Utils.*;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.NullMathObject;
@@ -13,12 +14,12 @@ public class ShapeDelimiter extends Delimiter {
     private SVGMathObject body;
 
 
-    protected ShapeDelimiter(Point A, Point B, Type type, double gap) {
+    protected ShapeDelimiter(Point A, Point B, DelimiterType type, double gap) {
         super(A, B, type, gap);
         minimumWidthToShrink = .5;
     }
 
-    public static ShapeDelimiter make(Point A, Point B, Delimiter.Type type, double gap) {
+    public static ShapeDelimiter make(Point A, Point B, DelimiterType type, double gap) {
         ShapeDelimiter resul = new ShapeDelimiter(A, B, type, gap);
         ResourceLoader rl = new ResourceLoader();
         String name;
@@ -58,7 +59,7 @@ public class ShapeDelimiter extends Delimiter {
         MultiShapeObject bodyCopy = body.copy();
             delimiterShapeToDraw.getPath().clear();
 
-        if (type == Delimiter.Type.BRACE) {
+        if (type == DelimiterType.BRACE) {
             minimumWidthToShrink = .5;
             double wr = .25 * delimiterScale * UsefulLambdas.allocateTo(0, minimumWidthToShrink).applyAsDouble(width);
             bodyCopy.setWidth(wr);
@@ -70,7 +71,7 @@ public class ShapeDelimiter extends Delimiter {
                     .merge(bodyCopy.get(1).shift(2 * wSpace, 0), true, false)
                     .merge(bodyCopy.get(3).shift(wSpace, 0), true, true);
         }
-        if (type == Delimiter.Type.BRACKET) {
+        if (type == DelimiterType.BRACKET) {
             minimumWidthToShrink = .5;
             double wr = .8 * delimiterScale * UsefulLambdas.allocateTo(0, minimumWidthToShrink).applyAsDouble(width);
             bodyCopy.setWidth(wr);
@@ -79,7 +80,7 @@ public class ShapeDelimiter extends Delimiter {
             delimiterShapeToDraw.merge(bodyCopy.get(0), false, false);
             delimiterShapeToDraw.merge(bodyCopy.get(1).shift(wSpace, 0), true, true);
         }
-        if (type == Delimiter.Type.PARENTHESIS) {
+        if (type == DelimiterType.PARENTHESIS) {
             minimumWidthToShrink = .5;
             double wr = 0.48 * delimiterScale * UsefulLambdas.allocateTo(0, minimumWidthToShrink).applyAsDouble(width);
             bodyCopy.setWidth(wr);
@@ -93,7 +94,7 @@ public class ShapeDelimiter extends Delimiter {
         Rect bb = delimiterShapeToDraw.getBoundingBox();
         delimiterShapeToDraw.shift(0, gap * amplitudeScale);
 
-        labelMarkPoint.stackTo(delimiterShapeToDraw, Anchor.Type.UPPER, labelMarkGap * amplitudeScale);
+        labelMarkPoint.stackTo(delimiterShapeToDraw, AnchorType.UPPER, labelMarkGap * amplitudeScale);
 
 
         if (!(getLabel() instanceof NullMathObject)) {
@@ -118,7 +119,7 @@ public class ShapeDelimiter extends Delimiter {
                         delimiterLabelRigidBox.rotate(PI);
                     }
             }
-            delimiterLabelRigidBox.stackTo(Anchor.Type.LOWER, labelMarkPoint, Anchor.Type.UPPER, 0);
+            delimiterLabelRigidBox.stackTo(AnchorType.LOWER, labelMarkPoint, AnchorType.UPPER, 0);
 //            groupElementsToBeDrawn.add(getLabel());
 //            if (amplitudeScale != 1)
 //                delimiterLabelToDraw.scale(this.amplitudeScale);
@@ -126,7 +127,7 @@ public class ShapeDelimiter extends Delimiter {
 
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(bb.getDL(), bb.getDR(), AA, BB, 1);
 
-        if (this.type==Type.INVISIBLE) {
+        if (this.type== DelimiterType.INVISIBLE) {
             delimiterShapeToDraw.visible(false);
         }
 

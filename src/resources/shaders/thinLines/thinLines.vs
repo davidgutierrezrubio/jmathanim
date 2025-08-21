@@ -6,8 +6,8 @@ uniform mat4 view;
 uniform vec4 unifColor;//Uniform color
 
 
-layout(location = 0) in vec4 Vertex;
-layout(location = 1) in vec4 Color;
+layoutType(location = 0) in vec4 Vertex;
+layoutType(location = 1) in vec4 Color;
 
 out VertexData{
   vec4 mColor;

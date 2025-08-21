@@ -74,8 +74,10 @@ public class GroovyExecutor extends Scene2D {
         }
         boolean isJavaFXRunning = false;
         for (String arg : args) {
-            logger.info("Running Groovy Script " + LogUtils.BLUE + arg + RESET);
-            JMathAnimScene tr = new GroovyExecutor(arg);
+            File file = new File(arg);
+            String absPath = file.getAbsolutePath();
+            logger.info("Running Groovy Script " + LogUtils.BLUE + absPath + RESET);
+            JMathAnimScene tr = new GroovyExecutor(absPath);
             tr.getConfig().setScriptMode(true);
             tr.execute();
             if (tr.getConfig().isJavaFXRunning()) {

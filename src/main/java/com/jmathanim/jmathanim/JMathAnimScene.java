@@ -25,6 +25,8 @@ import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.PlayAnim;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Constructible.GeogebraLoader;
+import com.jmathanim.Enum.LayoutType;
+import com.jmathanim.Enum.LinkType;
 import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawProperties;
@@ -680,7 +682,7 @@ public abstract class JMathAnimScene {
             }
             group.add(lat);
         }
-        group.setLayout(MathObjectGroup.Layout.LOWER, .2);
+        group.setLayout(LayoutType.LOWER, .2);
         renderer.getCamera().zoomToObjects(group);
         add(group);
     }
@@ -853,7 +855,7 @@ public abstract class JMathAnimScene {
      * @param destinyType Destiny link
      * @return The created link
      */
-    public LinkArguments registerLink(Object origin, LinkArguments.LinkType originType, Linkable destiny, LinkArguments.LinkType destinyType) {
+    public LinkArguments registerLink(Object origin, LinkType originType, Linkable destiny, LinkType destinyType) {
         LinkArguments link = LinkArguments.make(origin, originType, destiny, destinyType);
         linksToBeDone.add(link);
         return link;
@@ -870,7 +872,7 @@ public abstract class JMathAnimScene {
      * @param function    Function to apply to the value before applying to the destiny object
      * @return The created link
      */
-    public LinkArguments registerLink(Linkable origin, LinkArguments.LinkType originType, Linkable destiny, LinkArguments.LinkType destinyType, DoubleUnaryOperator function) {
+    public LinkArguments registerLink(Linkable origin, LinkType originType, Linkable destiny, LinkType destinyType, DoubleUnaryOperator function) {
         LinkArguments link = LinkArguments.make(origin, originType, destiny, destinyType, function);
         linksToBeDone.add(link);
         return link;

@@ -7,8 +7,8 @@ uniform float MiterLimit;
 uniform vec3 eye;
 uniform vec3 lookAt;
 
-layout(lines_adjacency) in;
-layout(triangle_strip, max_vertices = 85) out;
+layoutType(lines_adjacency) in;
+layoutType(triangle_strip, max_vertices = 85) out;
 
 in VertexData{
     vec4 mColor;

@@ -18,6 +18,7 @@
 package com.jmathanim.Animations.MathTransform;
 
 import com.jmathanim.Animations.AnimationEffect;
+import com.jmathanim.Enum.JumpType;
 
 /**
  *
@@ -27,7 +28,7 @@ public class TransformMathExpressionParameters {
 
 	private double jumpHeight;
 	private double alphaMult;
-	private AnimationEffect.JumpType jumptype;
+	private JumpType jumptype;
 	private double scale;
 	private int numTurns;
 	private TransformMathExpression.RemoveType removingStyle;
@@ -80,7 +81,7 @@ public class TransformMathExpressionParameters {
 	 */
 	public TransformMathExpressionParameters addJumpEffect(double heightJump) {
 		this.jumpHeight = heightJump;
-		this.jumptype = AnimationEffect.JumpType.SEMICIRCLE;
+		this.jumptype = JumpType.SEMICIRCLE;
 		return this;
 	}
 
@@ -91,10 +92,10 @@ public class TransformMathExpressionParameters {
 	 * shape.
 	 *
 	 * @param heightJump Height jump
-	 * @param jumpType   Jump type, a value of the enum AnimationEffect.JumpType
+	 * @param jumpType   Jump type, a value of the enum JumpType
 	 * @return This object
 	 */
-	public TransformMathExpressionParameters addJumpEffect(double heightJump, AnimationEffect.JumpType jumpType) {
+	public TransformMathExpressionParameters addJumpEffect(double heightJump, JumpType jumpType) {
 		this.jumpHeight = heightJump;
 		this.jumptype = jumpType;
 		return this;
@@ -163,7 +164,7 @@ public class TransformMathExpressionParameters {
 		return this;
 	}
 
-	protected AnimationEffect.JumpType getJumptype() {
+	protected JumpType getJumptype() {
 		return jumptype;
 	}
 

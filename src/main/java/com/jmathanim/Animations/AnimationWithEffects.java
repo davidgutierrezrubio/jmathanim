@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.Enum.JumpType;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 
@@ -43,7 +44,7 @@ public abstract class AnimationWithEffects extends Animation {
         return (T) this;
     }
 
-    public <T extends AnimationWithEffects> T addJumpEffect(double height, AnimationEffect.JumpType type) {
+    public <T extends AnimationWithEffects> T addJumpEffect(double height, JumpType type) {
         effect.addJumpEffect(height, type);
         return (T) this;
     }

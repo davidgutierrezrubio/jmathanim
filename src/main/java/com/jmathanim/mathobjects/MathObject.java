@@ -18,9 +18,10 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Enum.AnchorType;
+import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Styling.*;
 import com.jmathanim.Utils.*;
-import com.jmathanim.Utils.Anchor.Type;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import com.jmathanim.mathobjects.updaters.Updater;
@@ -53,7 +54,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     private Camera camera;
     private int updateLevel;
     private String debugText = "";
-    private Type absoluteAnchorType = Type.CENTER;
+    private AnchorType absoluteAnchorAnchorType = AnchorType.CENTER;
     private double leftGap, upperGap, rightGap, lowerGap;
 
     public MathObject() {
@@ -255,7 +256,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @return The same object
      */
     public final <T extends MathObject> T center() {
-        this.stackToScreen(Type.CENTER);
+        this.stackToScreen(AnchorType.CENTER);
         return (T) this;
     }
 
@@ -528,13 +529,13 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     }
 
     /**
-     * Sets the dashStyle, from one of the types defined in the enum MODrawProperties.DashStyle
+     * Sets the dashStyle, from one of the types defined in the enum DashStyle
      *
      * @param <T>       Subclass of MathObject that calls the method
-     * @param dashStyle A value from enum MODrawProperties.DashStyle
+     * @param dashStyle A value from enum DashStyle
      * @return This MathObject subclass
      */
-    public <T extends MathObject> T dashStyle(MODrawProperties.DashStyle dashStyle) {
+    public <T extends MathObject> T dashStyle(DashStyle dashStyle) {
         getMp().setDashStyle(dashStyle);
         return (T) this;
     }
@@ -553,7 +554,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     }
 
     public Point getAbsoluteAnchor() {
-        return Anchor.getAnchorPoint(this, absoluteAnchorType);
+        return Anchor.getAnchorPoint(this, absoluteAnchorAnchorType);
     }
 
     public Point getAbsoluteAnchorPoint() {
@@ -571,7 +572,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      */
     public <T extends MathObject> T setAbsoluteSize(Point p) {
         this.absoluteAnchorPoint = p;
-        absoluteAnchorType = Type.BY_POINT;
+        absoluteAnchorAnchorType = AnchorType.BY_POINT;
         absoluteSize = true;
         return (T) this;
     }
@@ -585,9 +586,9 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @param anchorType {@link Anchor} type
      * @return The current object
      */
-    public <T extends MathObject> T setAbsoluteSize(Type anchorType) {
+    public <T extends MathObject> T setAbsoluteSize(AnchorType anchorType) {
         absoluteSize = true;
-        absoluteAnchorType = anchorType;
+        absoluteAnchorAnchorType = anchorType;
         absoluteSize = true;
         return (T) this;
     }
@@ -607,7 +608,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @param anchorType {@link Anchor} type
      * @return The current object
      */
-    public final <T extends MathObject> T stackTo(Boxable obj, Type anchorType) {
+    public final <T extends MathObject> T stackTo(Boxable obj, AnchorType anchorType) {
         return stackTo(obj, anchorType, 0);
     }
 
@@ -623,7 +624,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      *                      computed using origin anchor as reference.
      * @return This object
      */
-    public <T extends MathObject> T stackTo(Type originAnchor, Boxable destinyObject, Type destinyAnchor, double originGap) {
+    public <T extends MathObject> T stackTo(AnchorType originAnchor, Boxable destinyObject, AnchorType destinyAnchor, double originGap) {
         return stackTo(originAnchor, destinyObject, destinyAnchor, originGap, 0);
     }
 
@@ -639,7 +640,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @param destinyGap    Amount of gap to leave in destiny anchor, in math units
      * @return This object
      */
-    public <T extends MathObject> T stackTo(Type originAnchor, Boxable destinyObject, Type destinyAnchor, double originGap, double destinyGap) {
+    public <T extends MathObject> T stackTo(AnchorType originAnchor, Boxable destinyObject, AnchorType destinyAnchor, double originGap, double destinyGap) {
         if (!destinyObject.isEmpty()) {
             Point B = Anchor.getAnchorPoint(destinyObject, destinyAnchor, destinyGap);
             Point A = Anchor.getAnchorPoint(this, originAnchor, originGap);
@@ -660,7 +661,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @param gap        Amount of gap, relative to this object width, to leave between the anchors, in math units.
      * @return This object
      */
-    public <T extends MathObject> T stackToRW(Type anchorObj, Boxable dstObj, Type anchorType, double gap) {
+    public <T extends MathObject> T stackToRW(AnchorType anchorObj, Boxable dstObj, AnchorType anchorType, double gap) {
         return stackTo(anchorObj, dstObj, anchorType, gap * this.getWidth());
     }
 
@@ -676,7 +677,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @param gap        Amount of gap, relative to this object height, to leave between the anchors, in math units.
      * @return This object
      */
-    public <T extends MathObject> T stackToRH(Type anchorObj, Boxable dstObj, Type anchorType, double gap) {
+    public <T extends MathObject> T stackToRH(AnchorType anchorObj, Boxable dstObj, AnchorType anchorType, double gap) {
         return stackTo(anchorObj, dstObj, anchorType, gap * this.getHeight());
     }
 
@@ -691,7 +692,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @param gap        Amount of gap, relative to this object height, to leave between the anchors, in math units.
      * @return This object
      */
-    public <T extends MathObject> T stackToRH(Boxable dstObj, Type anchorType, double gap) {
+    public <T extends MathObject> T stackToRH(Boxable dstObj, AnchorType anchorType, double gap) {
         return stackToRH(Anchor.reverseAnchorPoint(anchorType), dstObj, anchorType, gap);
     }
 
@@ -706,7 +707,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @param gap        Amount of gap, relative to this object width, to leave between the anchors, in math units.
      * @return This object
      */
-    public <T extends MathObject> T stackToRW(Boxable dstObj, Type anchorType, double gap) {
+    public <T extends MathObject> T stackToRW(Boxable dstObj, AnchorType anchorType, double gap) {
         return stackToRW(Anchor.reverseAnchorPoint(anchorType), dstObj, anchorType, gap);
     }
 
@@ -721,7 +722,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @param gap        Amount of gap to leave between the anchors, in math units
      * @return The current object
      */
-    public <T extends MathObject> T stackTo(Boxable obj, Type anchorType, double gap) {
+    public <T extends MathObject> T stackTo(Boxable obj, AnchorType anchorType, double gap) {
         return stackTo(Anchor.reverseAnchorPoint(anchorType), obj, anchorType, gap);
     }
 
@@ -732,7 +733,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @param anchorType {@link Anchor} type
      * @return The current object
      */
-    public final <T extends MathObject> T stackToScreen(Type anchorType) {
+    public final <T extends MathObject> T stackToScreen(AnchorType anchorType) {
         return stackToScreen(anchorType, 0, 0);
     }
 
@@ -745,7 +746,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @param yMargin    y margin
      * @return The current object
      */
-    public <T extends MathObject> T stackToScreen(Type anchorType, double xMargin, double yMargin) {
+    public <T extends MathObject> T stackToScreen(AnchorType anchorType, double xMargin, double yMargin) {
         Point B = Anchor.getScreenAnchorPoint(getCamera(), anchorType, xMargin, yMargin);
         Point A = Anchor.getAnchorPoint(this, anchorType);
         return this.shift(A.to(B));
@@ -759,7 +760,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @return The current object
      */
     public final <T extends MathObject> T moveTo(Point p) {
-        return stackTo(p, Type.CENTER);
+        return stackTo(p, AnchorType.CENTER);
     }
 
     /**
@@ -1194,7 +1195,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
 //    }
 //
 //    @Override
-//    public void on_setDashStyle(MODrawProperties.DashStyle style) {
+//    public void on_setDashStyle(DashStyle style) {
 //    }
 //
 //    @Override

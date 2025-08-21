@@ -18,6 +18,7 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 
@@ -29,81 +30,19 @@ import com.jmathanim.mathobjects.Point;
  */
 public class Anchor {
 
-    public enum Type {
-        /**
-         * Anchor is specified by a given point
-         */
-        BY_POINT,
-        /**
-         * Anchor determined by the center of the object
-         */
-        CENTER,
-        /**
-         * Right anchor point. Vertically centered.
-         */
-        RIGHT,
-        /**
-         * Upper anchor point. Horizontally centered
-         */
-        UPPER,
-        /**
-         * Left anchor point. Vertically centered.
-         */
-        LEFT,
-        /**
-         * Lower anchor point. Horizontally centered
-         */
-        LOWER,
-        /**
-         * Down-Right anchor point
-         */
-        DRIGHT,
-        /**
-         * Up-Right anchor point
-         */
-        URIGHT,
-        /**
-         * Up-Left anchor point
-         */
-        ULEFT,
-        /**
-         * Down-Left anchor point
-         */
-        DLEFT,
-        RLOWER,
-        RUPPER,
-        LLOWER,
-        LUPPER,
-        DIAG1,
-        DIAG2,
-        DIAG3,
-        DIAG4,
-        ZTOP,
-        ZBOTTOM
-    }
 
-    public enum innerType {
-        CENTER,
-        UPPER,
-        RUPPER,
-        RIGHT,
-        RLOWER,
-        LOWER,
-        LLOWER,
-        LEFT,
-        LUPPER
-    }
+
 
     /**
      * Return a {@link Point} object that represents the given anchor. For
-     * example getAnchorPoint(obj, Anchor.LEFT) returns the upper point of the
+     * example getAnchorPoint(obj, LEFT) returns the upper point of the
      * object (determined by its bounding box)
      *
      * @param obj Object to get anchor point
-     * @param anchor Type of anchor defined in the enum Anchor.Type
+     * @param anchor Type of anchor defined in the enum Type
      * @return The anchor point
      */
-    public static Point getAnchorPoint(Boxable obj, Type anchor) {
+    public static Point getAnchorPoint(Boxable obj, AnchorType anchor) {
         return getAnchorPoint(obj, anchor, 0, 0, 0);
     }
 
@@ -114,11 +53,11 @@ public class Anchor {
      * added, equal in x and y direction.
      *
      * @param obj Object to get anchor point
-     * @param anchor Type of anchor defined in the enum Anchor.Type
+     * @param anchor Type of anchor defined in the enum Type
      * @param gap Gap to add to the anchor
      * @return The anchor point
      */
-    public static Point getAnchorPoint(Boxable obj, Type anchor, double gap) {
+    public static Point getAnchorPoint(Boxable obj, AnchorType anchor, double gap) {
         return getAnchorPoint(obj, anchor, gap, gap, gap);
     }
 
@@ -129,14 +68,14 @@ public class Anchor {
      * added, specified both by its x component and y component.
      *
      * @param obj Object to get anchor point
-     * @param anchor Type of anchor defined in the enum Anchor.Type
+     * @param anchor Type of anchor defined in the enum Type
      * @param xgap Horizontal gap. Applied to LEFT RIGHT, URIGHT, ULEFT, DRIGHT,
      * DLEFT anchors
      * @param ygap Vertical gap. Applied to UPPER, LOWER,
      * @param zgap Z Gap. Applied to ZTOP and ZBOTTOM
      * @return The anchor point
      */
-    public static Point getAnchorPoint(Boxable obj, Type anchor, double xgap, double ygap, double zgap) {
+    public static Point getAnchorPoint(Boxable obj, AnchorType anchor, double xgap, double ygap, double zgap) {
         Point resul = new Point();
         final Rect bb = obj.getBoundingBox();
         switch (anchor) {
@@ -223,70 +162,70 @@ public class Anchor {
      * @param anchorPoint Anchor to compute reverse
      * @return Reversed anchor
      */
-    public static Type reverseAnchorPoint(Type anchorPoint) {
-        Type resul = Type.CENTER;// Default
+    public static AnchorType reverseAnchorPoint(AnchorType anchorPoint) {
+        AnchorType resul = AnchorType.CENTER;// Default
         switch (anchorPoint) {
             case BY_POINT:
-                resul = Type.BY_POINT;
+                resul = AnchorType.BY_POINT;
                 break;
             case CENTER:
-                resul = Type.CENTER;
+                resul = AnchorType.CENTER;
                 break;
 
             case LEFT:
-                resul = Type.RIGHT;
+                resul = AnchorType.RIGHT;
                 break;
             case RIGHT:
-                resul = Type.LEFT;
+                resul = AnchorType.LEFT;
                 break;
             case LOWER:
-                resul = Type.UPPER;
+                resul = AnchorType.UPPER;
                 break;
             case UPPER:
-                resul = Type.LOWER;
+                resul = AnchorType.LOWER;
                 break;
 
             case ULEFT:
-                resul = Type.URIGHT;
+                resul = AnchorType.URIGHT;
                 break;
             case URIGHT:
-                resul = Type.ULEFT;
+                resul = AnchorType.ULEFT;
                 break;
             case DLEFT:
-                resul = Type.DRIGHT;
+                resul = AnchorType.DRIGHT;
                 break;
             case DRIGHT:
-                resul = Type.DLEFT;
+                resul = AnchorType.DLEFT;
                 break;
             case RLOWER:
-                resul = Type.RUPPER;
+                resul = AnchorType.RUPPER;
                 break;
             case RUPPER:
-                resul = Type.RLOWER;
+                resul = AnchorType.RLOWER;
                 break;
             case LLOWER:
-                resul = Type.LUPPER;
+                resul = AnchorType.LUPPER;
                 break;
             case LUPPER:
-                resul = Type.LLOWER;
+                resul = AnchorType.LLOWER;
                 break;
             case DIAG1:
-                resul = Type.DIAG3;
+                resul = AnchorType.DIAG3;
                 break;
             case DIAG2:
-                resul = Type.DIAG4;
+                resul = AnchorType.DIAG4;
                 break;
             case DIAG3:
-                resul = Type.DIAG1;
+                resul = AnchorType.DIAG1;
                 break;
             case DIAG4:
-                resul = Type.DIAG2;
+                resul = AnchorType.DIAG2;
                 break;
             case ZTOP:
-                resul = Type.ZBOTTOM;
+                resul = AnchorType.ZBOTTOM;
                 break;
             case ZBOTTOM:
-                resul = Type.ZTOP;
+                resul = AnchorType.ZTOP;
                 break;
         }
         return resul;
@@ -302,7 +241,7 @@ public class Anchor {
      * @param yMargin y margin to apply to the anchor
      * @return A {@link Point} located at the current anchor
      */
-    public static Point getScreenAnchorPoint(Camera camera, Type anchor, double xMargin, double yMargin) {
+    public static Point getScreenAnchorPoint(Camera camera, AnchorType anchor, double xMargin, double yMargin) {
         if (camera == null) {
             //If not set, use default
             camera = JMathAnimConfig.getConfig().getCamera();

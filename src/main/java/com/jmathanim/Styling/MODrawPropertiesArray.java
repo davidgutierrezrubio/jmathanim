@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Styling;
 
+import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.LatexStyle;
 import com.jmathanim.Utils.Vec;
@@ -559,10 +560,10 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     /**
      * Retrieves the dash style property from the referenced MODrawProperties.
      *
-     * @return The dash style of type {@link MODrawProperties.DashStyle}.
+     * @return The dash style of type {@link DashStyle}.
      */
     @Override
-    public MODrawProperties.DashStyle getDashStyle() {
+    public DashStyle getDashStyle() {
         return mpRef.getDashStyle();
     }
 
@@ -572,7 +573,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      * @param dashStyle The dash style to apply. This defines the pattern of dashes for drawing lines.
      */
     @Override
-    public void setDashStyle(MODrawProperties.DashStyle dashStyle) {
+    public void setDashStyle(DashStyle dashStyle) {
         for (MathObject obj : objects) {
             obj.getMp().setDashStyle(dashStyle);
         }

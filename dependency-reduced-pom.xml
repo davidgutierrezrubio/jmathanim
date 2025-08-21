@@ -138,7 +138,7 @@
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy-all</artifactId>
       <version>3.0.24</version>
-      <type>pom</type>
+      <anchorType>pom</anchorType>
       <scope>compile</scope>
     </dependency>
   </dependencies>

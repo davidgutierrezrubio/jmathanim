@@ -17,6 +17,7 @@
  */
 package com.jmathanim.mathobjects.updateableObjects;
 
+import com.jmathanim.Enum.BooleanOperation;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.MathObject;
@@ -28,25 +29,22 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class BooleanShape extends Shape {
 
-    private Operation operation;
+    private BooleanOperation booleanOperation;
 
-    public enum Operation {
-        UNION, INTERSECTION, SUBSTRACTION
-    }
 
     Shape shape1, shape2;
 
-    public BooleanShape(Operation operation, Shape shape1, Shape shape2) {
+    public BooleanShape(BooleanOperation booleanOperation, Shape shape1, Shape shape2) {
         this.shape1 = shape1;
         this.shape2 = shape2;
-        this.operation = operation;
+        this.booleanOperation = booleanOperation;
     }
 
     @Override
     public void update(JMathAnimScene scene) {
         super.update(scene);
         JMPath newPath = null;
-        switch (this.operation) {
+        switch (this.booleanOperation) {
             case UNION:
                 newPath = shape1.getUnionPath(shape2);
                 break;
@@ -69,7 +67,7 @@ public class BooleanShape extends Shape {
 
     @Override
     public Shape copy() {
-        BooleanShape copy = new BooleanShape(this.operation, shape1.copy(), shape2.copy());
+        BooleanShape copy = new BooleanShape(this.booleanOperation, shape1.copy(), shape2.copy());
         copy.copyStateFrom(this);
         return this;
     }
@@ -81,7 +79,7 @@ public class BooleanShape extends Shape {
             BooleanShape bs = (BooleanShape) obj;
             this.shape1.copyStateFrom(bs.shape1);
             this.shape2.copyStateFrom(bs.shape2);
-            this.operation = bs.operation;
+            this.booleanOperation = bs.booleanOperation;
 
         }
     }

@@ -16,6 +16,7 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.Enum.LatexTokenType;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
@@ -185,9 +186,9 @@ public class LatexStyleItem {
 
         for (int i = 0; i < latex.size(); i++) {
             Shape latexShape = latex.get(i);
-            LatexToken tokPrev = (i > 0 ? tokens.get(i - 1) : LatexToken.make(LatexToken.TokenType.NONE, LatexToken.SEC_NONE, ""));
+            LatexToken tokPrev = (i > 0 ? tokens.get(i - 1) : LatexToken.make(LatexTokenType.NONE, LatexToken.SEC_NONE, ""));
             LatexToken token = tokens.get(i);
-            LatexToken tokAfter = (i < tokens.size() - 1 ? tokens.get(i + 1) : LatexToken.make(LatexToken.TokenType.NONE, LatexToken.SEC_NONE, ""));
+            LatexToken tokAfter = (i < tokens.size() - 1 ? tokens.get(i + 1) : LatexToken.make(LatexTokenType.NONE, LatexToken.SEC_NONE, ""));
 
             if (match(tokPrev, token, tokAfter)) {
                 latexShape.getMp().copyFrom(style);

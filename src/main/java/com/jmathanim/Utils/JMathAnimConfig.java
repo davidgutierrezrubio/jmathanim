@@ -19,6 +19,7 @@ package com.jmathanim.Utils;
 
 import ch.qos.logback.classic.Level;
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -303,7 +304,7 @@ public class JMathAnimConfig {
         defaultMP.setFillColor(JMColor.GRAY);
         defaultMP.setFillAlpha(0);// No filling by default
         defaultMP.setThickness(4d);
-        defaultMP.setDashStyle(MODrawProperties.DashStyle.SOLID);
+        defaultMP.setDashStyle(DashStyle.SOLID);
         defaultMP.setAbsoluteThickness(false);
         styles.put("DEFAULT", defaultMP);
 

@@ -29,4 +29,56 @@ public class MediatorMathObject {
     public static void removedFromSceneHook(MathObject mathObject, JMathAnimScene scene) {
         mathObject.removedFromSceneHook(scene);
     }
+
+    public static void setShowDebugPoints(MathObject mathObject, boolean showDebugPoints) {
+        if (mathObject instanceof Shape) {
+            Shape sh = (Shape) mathObject;
+            sh.setShowDebugPoints(showDebugPoints);
+            return;
+        }
+        if (mathObject instanceof MathObjectGroup) {
+            MathObjectGroup mg = (MathObjectGroup) mathObject;
+            for (MathObject obj : mg) {
+                setShowDebugPoints(obj, showDebugPoints);
+            }
+        }
+        if (mathObject instanceof MultiShapeObject) {
+            MultiShapeObject msh = (MultiShapeObject) mathObject;
+            for (Shape obj : msh) {
+                setShowDebugPoints(obj, showDebugPoints);
+            }
+        }
+
+    }
+    public static void setShowDebugIndices(MathObject obj,boolean value) {
+        if (obj instanceof MathObjectGroup) {
+            MathObjectGroup objs= (MathObjectGroup) obj;
+            if (value) {
+                int k = 0;
+                for (MathObject o : objs) {
+                    setDebugText(o,"" + k);
+                    k++;
+                }
+            } else {
+                for (MathObject o : objs) {
+                    setDebugText(o,"");
+                }
+            }
+        }
+        if (obj instanceof MultiShapeObject) {
+            MultiShapeObject objs= (MultiShapeObject) obj;
+            if (value) {
+                int k = 0;
+                for (MathObject o : objs) {
+                    setDebugText(o,"" + k);
+                    k++;
+                }
+            } else {
+                for (MathObject o : objs) {
+                    setDebugText(o,"");
+                }
+            }
+        }
+    }
+
 }

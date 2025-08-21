@@ -19,6 +19,7 @@ package com.jmathanim.mathobjects.Tippable;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Enum.RotationType;
 import com.jmathanim.Enum.SlopeDirectionType;
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
@@ -48,7 +49,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
     protected double correctionAngle;
     protected SlopeDirectionType slopeDirectionType;
     protected RotationType rotationType;
-    private Anchor.Type anchor;
+    private AnchorType anchor;
     private AnchorTypeUsed anchorType;
     private boolean alreadyRebuildingShape = false;
     private Point anchorPoint;
@@ -64,7 +65,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         rotationType = RotationType.ROTATE;
 //        rotationAngleAroundPivotPoint = 0;
         rotationAngleAroundCenterOfMathObject = 0;
-        anchor = Anchor.Type.UPPER;
+        anchor = AnchorType.UPPER;
         anchorType = AnchorTypeUsed.ANCHOR;
         pivotPointRefMathObject = new Point();
 
@@ -79,7 +80,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         mpArray.add(tipObjectRigidBox);
     }
 
-    public <T extends AbstractTippableObject> T setAnchor(Anchor.Type anchor) {
+    public <T extends AbstractTippableObject> T setAnchor(AnchorType anchor) {
         this.anchor = anchor;
         tipObjectRigidBox.resetMatrix();
         tipObjectRigidBox.rotate(rotationAngleAroundCenterOfMathObject);
@@ -90,9 +91,9 @@ public abstract class AbstractTippableObject extends Constructible implements ha
     }
 
     private void computePivotPointRefMathObject() {
-        if (this.anchor == Anchor.Type.BY_POINT) {
+        if (this.anchor == AnchorType.BY_POINT) {
             if (anchorPoint == null) {
-                anchorPoint = Anchor.getAnchorPoint(tipObjectRigidBox, Anchor.Type.CENTER);
+                anchorPoint = Anchor.getAnchorPoint(tipObjectRigidBox, AnchorType.CENTER);
             }
             this.pivotPointRefMathObject.v.copyFrom(anchorPoint.v);
         } else {

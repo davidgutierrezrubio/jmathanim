@@ -18,11 +18,13 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Enum.AnchorType;
+import com.jmathanim.Enum.LayoutType;
+import com.jmathanim.Enum.InnerAnchorType;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.EmptyRect;
 import com.jmathanim.Utils.Layouts.GroupLayout;
 import com.jmathanim.Utils.Rect;
@@ -225,19 +227,6 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         }
     }
 
-    //    @Override
-//    public void draw(JMathAnimScene scene, Renderer r) {
-//        if (isVisible()) {
-//            for (MathObject obj : this.getObjects()) {
-//                // As a MathObject can belong to many MathObjectGroups, we must prevent to draw
-//                // it twice
-//                if (!scene.isAlreadydrawn(obj)) {
-//                    obj.draw(scene, r);
-//                }
-//            }
-//        }
-//        scene.markAsAlreadydrawn(this);
-//    }
     @Override
     public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
         scene.markAsAlreadydrawn(this);
@@ -390,7 +379,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     @Override
-    public <T extends MathObject> T setAbsoluteSize(Anchor.Type anchorType) {
+    public <T extends MathObject> T setAbsoluteSize(AnchorType anchorType) {
         for (MathObject obj : objects) {
             obj.setAbsoluteSize(anchorType);
         }
@@ -402,65 +391,65 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         return (T) this;
     }
 
-    public <T extends MathObjectGroup> T setLayout(Layout layout, double gap) {
-        return setLayout(null, layout, gap);
+    public <T extends MathObjectGroup> T setLayout(LayoutType layoutType, double gap) {
+        return setLayout(null, layoutType, gap);
     }
 
-    public <T extends MathObjectGroup> T setLayout(MathObject corner, Layout layout, double gap) {
-        Anchor.Type anchor = Anchor.Type.CENTER;
+    public <T extends MathObjectGroup> T setLayout(MathObject corner, LayoutType layoutType, double gap) {
+        AnchorType anchor = AnchorType.CENTER;
 
-        switch (layout) {
+        switch (layoutType) {
             case CENTER:
-                anchor = Anchor.Type.CENTER;
+                anchor = AnchorType.CENTER;
                 gap = 0;
                 break;
             case RIGHT:
-                anchor = Anchor.Type.RIGHT;
+                anchor = AnchorType.RIGHT;
                 break;
             case LEFT:
-                anchor = Anchor.Type.LEFT;
+                anchor = AnchorType.LEFT;
                 break;
             case UPPER:
-                anchor = Anchor.Type.UPPER;
+                anchor = AnchorType.UPPER;
                 break;
             case LOWER:
-                anchor = Anchor.Type.LOWER;
+                anchor = AnchorType.LOWER;
                 break;
             case URIGHT:
-                anchor = Anchor.Type.URIGHT;
+                anchor = AnchorType.URIGHT;
                 break;
             case ULEFT:
-                anchor = Anchor.Type.ULEFT;
+                anchor = AnchorType.ULEFT;
                 break;
             case DRIGHT:
-                anchor = Anchor.Type.DRIGHT;
+                anchor = AnchorType.DRIGHT;
                 break;
             case DLEFT:
-                anchor = Anchor.Type.DLEFT;
+                anchor = AnchorType.DLEFT;
                 break;
             case RUPPER:
-                anchor = Anchor.Type.RUPPER;
+                anchor = AnchorType.RUPPER;
                 break;
             case LUPPER:
-                anchor = Anchor.Type.LUPPER;
+                anchor = AnchorType.LUPPER;
                 break;
             case RLOWER:
-                anchor = Anchor.Type.RLOWER;
+                anchor = AnchorType.RLOWER;
                 break;
             case LLOWER:
-                anchor = Anchor.Type.LLOWER;
+                anchor = AnchorType.LLOWER;
                 break;
             case DIAG1:
-                anchor = Anchor.Type.DIAG1;
+                anchor = AnchorType.DIAG1;
                 break;
             case DIAG2:
-                anchor = Anchor.Type.DIAG2;
+                anchor = AnchorType.DIAG2;
                 break;
             case DIAG3:
-                anchor = Anchor.Type.DIAG3;
+                anchor = AnchorType.DIAG3;
                 break;
             case DIAG4:
-                anchor = Anchor.Type.DIAG4;
+                anchor = AnchorType.DIAG4;
                 break;
             default:
                 JMathAnimScene.logger.error("Layout not recognized, reverting to CENTER");
@@ -538,7 +527,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
      * @param lowerGap   Lower Gap to add.
      * @return This group
      */
-    public MathObjectGroup homogeneizeBoundingBoxes(Anchor.innerType anchorType, double upperGap, double rightGap, double lowerGap, double leftGap) {
+    public MathObjectGroup homogeneizeBoundingBoxes(InnerAnchorType anchorType, double upperGap, double rightGap, double lowerGap, double leftGap) {
         double hmax = 0;
         double wmax = 0;
         for (MathObject ob : this) {//Compute max of widths and heights
@@ -565,7 +554,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
      * @param leftGap    Left Gap to add.
      * @return This object
      */
-    public MathObjectGroup homogeneizeBoundingBoxesTo(Anchor.innerType anchorType, double width, double height, double upperGap, double rightGap, double lowerGap, double leftGap) {
+    public MathObjectGroup homogeneizeBoundingBoxesTo(InnerAnchorType anchorType, double width, double height, double upperGap, double rightGap, double lowerGap, double leftGap) {
         for (MathObject ob : this) {//Now add proper gaps
             double rGap = 0, lGap = 0, uGap = 0, loGap = 0;
             double w = ob.getWidth();
@@ -641,14 +630,6 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
             }
         }
         return toString;
-    }
-
-    /**
-     * Simpe layouts to apply to the group
-     */
-    public enum Layout {
-        CENTER, RIGHT, LEFT, UPPER, LOWER, URIGHT, ULEFT, DRIGHT, DLEFT, RUPPER, LUPPER, RLOWER, LLOWER, DIAG1, DIAG2,
-        DIAG3, DIAG4
     }
 
     /**

@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Utils.Layouts;
 
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
@@ -45,7 +46,7 @@ public class SpiralLayout extends GroupLayout {
     }
 
     Orientation orientation;
-    Anchor.Type[] stacks;
+    AnchorType[] stacks;
 
     public static SpiralLayout make() {
         return make(Orientation.RIGHT_CLOCKWISE, 0);
@@ -119,28 +120,28 @@ public class SpiralLayout extends GroupLayout {
     private void computeStacks(Orientation orientation1) {
         switch (orientation1) {
             case LEFT_CLOCKWISE:
-                stacks = new Anchor.Type[]{Anchor.Type.LEFT, Anchor.Type.UPPER, Anchor.Type.RIGHT, Anchor.Type.LOWER};
+                stacks = new AnchorType[]{AnchorType.LEFT, AnchorType.UPPER, AnchorType.RIGHT, AnchorType.LOWER};
                 break;
             case RIGHT_CLOCKWISE:
-                stacks = new Anchor.Type[]{Anchor.Type.RIGHT, Anchor.Type.LOWER, Anchor.Type.LEFT, Anchor.Type.UPPER};
+                stacks = new AnchorType[]{AnchorType.RIGHT, AnchorType.LOWER, AnchorType.LEFT, AnchorType.UPPER};
                 break;
             case UPPER_CLOCKWISE:
-                stacks = new Anchor.Type[]{Anchor.Type.UPPER, Anchor.Type.RIGHT, Anchor.Type.LOWER, Anchor.Type.LEFT};
+                stacks = new AnchorType[]{AnchorType.UPPER, AnchorType.RIGHT, AnchorType.LOWER, AnchorType.LEFT};
                 break;
             case LOWER_CLOCKWISE:
-                stacks = new Anchor.Type[]{Anchor.Type.LOWER, Anchor.Type.LEFT, Anchor.Type.UPPER, Anchor.Type.RIGHT};
+                stacks = new AnchorType[]{AnchorType.LOWER, AnchorType.LEFT, AnchorType.UPPER, AnchorType.RIGHT};
                 break;
             case LEFT_COUNTERCLOCKWISE:
-                stacks = new Anchor.Type[]{Anchor.Type.LEFT, Anchor.Type.LOWER, Anchor.Type.RIGHT, Anchor.Type.UPPER};
+                stacks = new AnchorType[]{AnchorType.LEFT, AnchorType.LOWER, AnchorType.RIGHT, AnchorType.UPPER};
                 break;
             case RIGHT_COUNTERCLOCKWISE:
-                stacks = new Anchor.Type[]{Anchor.Type.RIGHT, Anchor.Type.UPPER, Anchor.Type.LEFT, Anchor.Type.LOWER};
+                stacks = new AnchorType[]{AnchorType.RIGHT, AnchorType.UPPER, AnchorType.LEFT, AnchorType.LOWER};
                 break;
             case UPPER_COUNTERCLOCKWISE:
-                stacks = new Anchor.Type[]{Anchor.Type.UPPER, Anchor.Type.LEFT, Anchor.Type.LOWER, Anchor.Type.RIGHT};
+                stacks = new AnchorType[]{AnchorType.UPPER, AnchorType.LEFT, AnchorType.LOWER, AnchorType.RIGHT};
                 break;
             case LOWER_COUNTERCLOCKWISE:
-                stacks = new Anchor.Type[]{Anchor.Type.LOWER, Anchor.Type.RIGHT, Anchor.Type.UPPER, Anchor.Type.LEFT};
+                stacks = new AnchorType[]{AnchorType.LOWER, AnchorType.RIGHT, AnchorType.UPPER, AnchorType.LEFT};
                 break;
         }
     }
@@ -151,14 +152,14 @@ public class SpiralLayout extends GroupLayout {
         int[] turns = new int[]{0, 0};//Experimental, to control horizontal/vertical ratio
         int ii = 0;
         if (this.center != null) {// Stack first element to the center
-            group.get(0).stackTo(this.center, Anchor.Type.CENTER);
+            group.get(0).stackTo(this.center, AnchorType.CENTER);
         }
         int stackType = 0;// Index to the array of used stacks
         int numberOfStacks = Math.max(1, spiralGap);// This variable holds how many objects should I stack before doing
         // a "turn"
         int turnNumber = 1;
         for (int n = 1; n < group.size(); n++) {
-            Anchor.Type stack = stacks[stackType];
+            AnchorType stack = stacks[stackType];
             group.get(n).stackTo(Anchor.reverseAnchorPoint(stack), group.get(n - 1), stack, this.horizontalGap,
                     this.verticalGap);
             numberOfStacks--;

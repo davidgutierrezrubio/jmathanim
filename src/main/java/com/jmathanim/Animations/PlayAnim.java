@@ -18,6 +18,7 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -189,7 +190,7 @@ public class PlayAnim {
      * Anchor.UPPER will move the objects to the upper side of the math view.
      * @param mathObjects Mathobjects to animate (varargs)
      */
-    public void moveOut(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
+    public void moveOut(double runtime, AnchorType exitAnchor, MathObject... mathObjects) {
         scene.playAnimation(Commands.moveOut(runtime, exitAnchor, mathObjects));
     }
 
@@ -202,7 +203,7 @@ public class PlayAnim {
      * Anchor.UPPER will move the objects to the upper side of the math view.
      * @param mathObjects Mathobjects to animate (varargs)
      */
-    public void moveOut(Anchor.Type exitAnchor, MathObject... mathObjects) {
+    public void moveOut(AnchorType exitAnchor, MathObject... mathObjects) {
         scene.playAnimation(Commands.moveOut(defaultRunTimeMoveOut, exitAnchor, mathObjects));
     }
 
@@ -215,7 +216,7 @@ public class PlayAnim {
      * Anchor.UPPER will move the objects from the upper side of the math view.
      * @param mathObjects Mathobjects to animate (varargs)
      */
-    public void moveIn(double runtime, Anchor.Type enterAnchor, MathObject... mathObjects) {
+    public void moveIn(double runtime, AnchorType enterAnchor, MathObject... mathObjects) {
         scene.playAnimation(Commands.moveIn(runtime, enterAnchor, mathObjects));
     }
 
@@ -228,7 +229,7 @@ public class PlayAnim {
      * Anchor.UPPER will move the objects from the upper side of the math view.
      * @param mathObjects Mathobjects to animate (varargs)
      */
-    public void moveIn(Anchor.Type enterAnchor, MathObject... mathObjects) {
+    public void moveIn(AnchorType enterAnchor, MathObject... mathObjects) {
         scene.playAnimation(Commands.moveIn(defaultRunTimeMoveIn, enterAnchor, mathObjects));
     }
 
@@ -716,12 +717,12 @@ public class PlayAnim {
      *
      * @param runtime time in seconds
      * @param dst Destiny object to align with
-     * @param type Type of stack, a value of Anchor.Type enum
+     * @param anchorType Type of stack, a value of Type enum
      * @param gap Gap between the stacked objects
      * @param mobjects Mathobjects to animate
      */
-    public void stackTo(double runtime, MathObject dst, Anchor.Type type, double gap, MathObject... mobjects) {
-        scene.playAnimation(Commands.stackTo(runtime, dst, type, gap, mobjects));
+    public void stackTo(double runtime, MathObject dst, AnchorType anchorType, double gap, MathObject... mobjects) {
+        scene.playAnimation(Commands.stackTo(runtime, dst, anchorType, gap, mobjects));
     }
 
     /**

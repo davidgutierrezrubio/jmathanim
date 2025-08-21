@@ -18,7 +18,7 @@
 package com.jmathanim.Animations.MathTransform;
 
 import com.jmathanim.Animations.*;
-import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Utils.OrientationType;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
@@ -280,16 +280,16 @@ public class TransformMathExpression extends Animation {
                 group.add(Commands.shrinkOut(runTime, 0, OrientationType.VERTICAL, sh));
                 break;
             case MOVE_OUT_UP:
-                group.add(Commands.moveOut(runTime, Anchor.Type.UPPER, sh).setLambda(getTotalLambda()));
+                group.add(Commands.moveOut(runTime, AnchorType.UPPER, sh).setLambda(getTotalLambda()));
                 break;
             case MOVE_OUT_LEFT:
-                group.add(Commands.moveOut(runTime, Anchor.Type.LEFT, sh).setLambda(getTotalLambda()));
+                group.add(Commands.moveOut(runTime, AnchorType.LEFT, sh).setLambda(getTotalLambda()));
                 break;
             case MOVE_OUT_RIGHT:
-                group.add(Commands.moveOut(runTime, Anchor.Type.RIGHT, sh).setLambda(getTotalLambda()));
+                group.add(Commands.moveOut(runTime, AnchorType.RIGHT, sh).setLambda(getTotalLambda()));
                 break;
             case MOVE_OUT_DOWN:
-                group.add(Commands.moveOut(runTime, Anchor.Type.LOWER, sh).setLambda(getTotalLambda()));
+                group.add(Commands.moveOut(runTime, AnchorType.LOWER, sh).setLambda(getTotalLambda()));
                 break;
         }
         if (par.getNumTurns() != 0) {
@@ -323,16 +323,16 @@ public class TransformMathExpression extends Animation {
                 break;
 
             case MOVE_IN_UP:
-                animations.add(Commands.moveIn(runTime, Anchor.Type.UPPER, sh).setLambda(getTotalLambda()));
+                animations.add(Commands.moveIn(runTime, AnchorType.UPPER, sh).setLambda(getTotalLambda()));
                 break;
             case MOVE_IN_LEFT:
-                animations.add(Commands.moveIn(runTime, Anchor.Type.LEFT, sh).setLambda(getTotalLambda()));
+                animations.add(Commands.moveIn(runTime, AnchorType.LEFT, sh).setLambda(getTotalLambda()));
                 break;
             case MOVE_IN_RIGHT:
-                animations.add(Commands.moveIn(runTime, Anchor.Type.RIGHT, sh).setLambda(getTotalLambda()));
+                animations.add(Commands.moveIn(runTime, AnchorType.RIGHT, sh).setLambda(getTotalLambda()));
                 break;
             case MOVE_IN_DOWN:
-                animations.add(Commands.moveIn(runTime, Anchor.Type.LOWER, sh).setLambda(getTotalLambda()));
+                animations.add(Commands.moveIn(runTime, AnchorType.LOWER, sh).setLambda(getTotalLambda()));
                 break;
         }
         if (par.getNumTurns() != 0) {

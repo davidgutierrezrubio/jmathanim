@@ -18,11 +18,11 @@
 package com.jmathanim.mathobjects.Axes;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -374,7 +374,7 @@ public class Axes extends MathObject {
                 TickAxes copy = xticksBase.get(n).copy();
                 copy.tick.scale(scale);
                 copy.legend.scale(scale);
-                copy.legend.stackTo(copy.tick, Anchor.Type.LOWER, LEGEND_TICKS_GAP * copy.legend.getHeight());
+                copy.legend.stackTo(copy.tick, AnchorType.LOWER, LEGEND_TICKS_GAP * copy.legend.getHeight());
                 xticks.add(copy);
             }
         }
@@ -385,7 +385,7 @@ public class Axes extends MathObject {
                 TickAxes copy = yticksBase.get(n).copy();
                 copy.tick.scale(scale);
                 copy.legend.scale(scale);
-                copy.legend.stackTo(copy.tick, Anchor.Type.LEFT, LEGEND_TICKS_GAP * copy.legend.getHeight());
+                copy.legend.stackTo(copy.tick, AnchorType.LEFT, LEGEND_TICKS_GAP * copy.legend.getHeight());
                 yticks.add(copy);
             }
         }

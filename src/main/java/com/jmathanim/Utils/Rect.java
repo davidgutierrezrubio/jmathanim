@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Stateable;
 
@@ -638,10 +639,10 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
     /**
      * Return the specified boundary point given by an anchor
      *
-     * @param anchor A value from Enum type Anchor.Type
+     * @param anchor A value from Enum type Type
      * @return The specified boundary point
      */
-    public Point getFromAnchor(Anchor.Type anchor) {
+    public Point getFromAnchor(AnchorType anchor) {
         switch (anchor) {
             case UPPER:
                 return getUpper();

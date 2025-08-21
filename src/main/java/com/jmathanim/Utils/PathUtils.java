@@ -19,7 +19,7 @@ package com.jmathanim.Utils;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera3D;
-import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
@@ -39,12 +39,10 @@ public class PathUtils {
     public static final double DEFAULT_TENSION = 0.7d;
 
     /**
-     * Overloaded method. Generate control points from a bezier cubic curve, so
-     * that control points of point n are parallel to the line from point n-1
-     * and n+1.The distance from point n to the control points is multiplied by
-     * the 0 to 1 tension parameter. A 1 tension means straight lines. If first
-     * and last point are not connected, an approximation is used based on the
-     * control point of their neighbour points. Default tension 0.7 is used
+     * Overloaded method. Generate control points from a bezier cubic curve, so that control points of point n are
+     * parallel to the line from point n-1 and n+1.The distance from point n to the control points is multiplied by the
+     * 0 to 1 tension parameter. A 1 tension means straight lines. If first and last point are not connected, an
+     * approximation is used based on the control point of their neighbour points. Default tension 0.7 is used
      *
      * @param path Path to compute control points
      */
@@ -53,14 +51,12 @@ public class PathUtils {
     }
 
     /**
-     * Generate control points from a bezier cubic curve, so that control points
-     * of point n are parallel to the line from point n-1 and n+1.The distance
-     * from point n to the control points is multiplied by the 0 to 1 tension
-     * parameter. A 1 tension means straight lines. If first and last point are
-     * not connected, an approximation is used based on the control point of
-     * their neighbour points
+     * Generate control points from a bezier cubic curve, so that control points of point n are parallel to the line
+     * from point n-1 and n+1.The distance from point n to the control points is multiplied by the 0 to 1 tension
+     * parameter. A 1 tension means straight lines. If first and last point are not connected, an approximation is used
+     * based on the control point of their neighbour points
      *
-     * @param path Path to compute control points
+     * @param path    Path to compute control points
      * @param tension The tension to apply to the curve
      */
     public static void generateControlPointsBySimpleSlopes(JMPath path, double tension) // For now, only one method
@@ -139,6 +135,77 @@ public class PathUtils {
         }
     }
 
+    public static void addJMPathPointsToScene(JMPath path, JMathAnimScene scene) {
+        for (int i = 0; i < path.size(); i++) {
+            addJMPathPointToScene(path.get(i), scene);
+        }
+    }
+
+    private static void addJMPathPointToScene(JMPathPoint p, JMathAnimScene scene) {
+        scene.add(p.p.drawColor("green"));//Point of the curve
+        scene.add(p.cpEnter.dotStyle(Point.DotSyle.CROSS).drawColor("blue"));//Control point that "enters" into the point
+        scene.add(p.cpExit.dotStyle(Point.DotSyle.PLUS).drawColor("red"));//Control point that "exits" from the point
+        scene.add(Shape.segment(p.p, p.cpExit)
+                .dashStyle(DashStyle.DASHED)
+                .drawColor("gray"));
+        scene.add(Shape.segment(p.p, p.cpEnter)
+                .dashStyle(DashStyle.DASHED)
+                .drawColor("gray"));
+    }
+
+    public static double pathLength(JMPath path) {
+        double resul = 0;
+        for (int i = 1; i < path.size(); i++) {
+            resul += path.get(i - 1).p.to(path.get(i).p).norm();
+        }
+        return resul;
+    }
+
+    /**
+     * Rectify given path, removing curvature flag and settings control points to curve points
+     *
+     * @param path Path to rectify
+     */
+    public static void rectifyPath(JMPath path) {
+        for (JMPathPoint jmp : path) {
+            jmp.isCurved = false;
+            jmp.cpEnter.v.copyFrom(jmp.p.v);
+            jmp.cpExit.v.copyFrom(jmp.p.v);
+        }
+    }
+
+    public static Shape convertToStraightSegment(Shape sh, int pivotalSegment) {
+
+        Shape resul = new Shape();
+        Shape sh2 = sh.copy();
+        sh2.getPath().openPath();
+        //First point
+        Point p = Point.origin();
+        resul.getPath().addPoint(p);
+        for (int i = 1; i < sh2.getPath().size(); i++) {
+            double dist = sh2.getPoint(i - 1).to(sh2.getPoint(i)).norm();
+            p = p.copy().shift(dist, 0);
+            resul.getPath().addPoint(p);
+        }
+        int shSize = sh2.size()-1;
+
+        while (pivotalSegment < 0) {
+            pivotalSegment += shSize;
+        }
+        while (pivotalSegment >= shSize) {
+            pivotalSegment -= shSize;
+        }
+        System.out.println("pivotalSegment: "+pivotalSegment);
+        Point A = resul.getPoint(pivotalSegment);
+        Point B = resul.getPoint(pivotalSegment + 1);
+        Point C = sh2.getPoint(pivotalSegment);
+        Point D = sh2.getPoint(pivotalSegment + 1);
+        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(A, B, C, D, 1);
+        resul.applyAffineTransform(tr);
+
+        return resul;
+    }
+
     public JMPathPoint getInterpolatedPoint(JMPathPoint jmp1, JMPathPoint jmp2, double alpha) {
         JMPathPoint interpolate;
         if (jmp2.isCurved) {
@@ -174,18 +241,18 @@ public class PathUtils {
     public Shape rectify(Camera cam, Shape shape) {
         ArrayList<ArrayList<Point>> arPoints = computePolygonalPieces(cam, shape.getPath());
         int size = 0;
-        ArrayList<Point> flattened=new ArrayList<>();
+        ArrayList<Point> flattened = new ArrayList<>();
         for (int i = 0; i < arPoints.size(); i++) {
             ArrayList<Point> subArray = arPoints.get(i);
-            for (int j = 0; j < subArray.size()-1; j++) {//TODO: -1 if closed path!!
+            for (int j = 0; j < subArray.size() - 1; j++) {//TODO: -1 if closed path!!
                 Point point = subArray.get(j);
                 flattened.add(point);
             }
-            
+
         }
         Point[] pointsArray = flattened.toArray(new Point[0]);
-        
-       
+
+
         Shape resul = Shape.polygon(pointsArray);//TODO: Add invisible points here
         return resul;
     }
@@ -258,42 +325,4 @@ public class PathUtils {
     }
 
 
-
-    public static void addJMPathPointsToScene(Shape sh, JMathAnimScene scene) {
-        for (int i = 0; i < sh.size(); i++) {
-            addJMPathPointToScene(sh.get(i),scene);
-        }
-    }
-
-    private static void addJMPathPointToScene(JMPathPoint p,JMathAnimScene scene) {
-        scene.add(p.p.drawColor("green"));//Point of the curve
-        scene.add(p.cpEnter.dotStyle(Point.DotSyle.CROSS).drawColor("blue"));//Control point that "enters" into the point
-        scene.add(p.cpExit.dotStyle(Point.DotSyle.PLUS).drawColor("red"));//Control point that "exits" from the point
-        scene.add(Shape.segment(p.p, p.cpExit)
-                .dashStyle(MODrawProperties.DashStyle.DASHED)
-                .drawColor("gray"));
-        scene.add(Shape.segment(p.p, p.cpEnter)
-                .dashStyle(MODrawProperties.DashStyle.DASHED)
-                .drawColor("gray"));
-    }
-
-    public static double pathLength(JMPath path) {
-        double resul=0;
-        for (int i = 1; i < path.size(); i++) {
-            resul+=path.get(i-1).p.to(path.get(i).p).norm();
-        }
-        return resul;
-    }
-
-    /**
-     * Rectify given path, removing curvature flag and settings control points to curve points
-     * @param path Path to rectify
-     */
-    public static void rectifyPath(JMPath path) {
-        for (JMPathPoint jmp: path) {
-            jmp.isCurved=false;
-            jmp.cpEnter.v.copyFrom(jmp.p.v);
-            jmp.cpExit.v.copyFrom(jmp.p.v);
-        }
-    }
 }

@@ -16,6 +16,7 @@
  */
 package com.jmathanim.mathobjects.Tippable;
 
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.RotationType;
 import com.jmathanim.Enum.SlopeDirectionType;
 import com.jmathanim.Renderers.Renderer;
@@ -32,7 +33,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
  */
 public class TippableObject extends AbstractTippableObject {
 
-    //    public static AbstractTippableObject makeLabel(Shape shape, String text, Anchor.Type anchor, double location) {
+    //    public static AbstractTippableObject makeLabel(Shape shape, String text, Type anchor, double location) {
 //        LaTeXMathObject tipObject = LaTeXMathObject.make(text);
 //        Point anchorPoint = Anchor.getAnchorPoint(tipObject, anchor);
 //        AbstractTippableObject resul = new TippableObject(shape, tipObject, anchorPoint, location);
@@ -56,23 +57,23 @@ public class TippableObject extends AbstractTippableObject {
             parallelSign.add(Shape.segment(Point.at(0, i), Point.at(2, i)));
         }
         parallelSign.setWidth(.05);
-        parallelSign.setAbsoluteSize(Anchor.Type.CENTER);
-        //(Shape shape,double location, SlopeDirectionType dir,MathObject tipObject, Anchor.Type anchor ) {
-        TippableObject resul = TippableObject.make(shape, location, SlopeDirectionType.POSITIVE, parallelSign, Anchor.Type.CENTER);
+        parallelSign.setAbsoluteSize(AnchorType.CENTER);
+        //(Shape shape,double location, SlopeDirectionType dir,MathObject tipObject, Type anchor ) {
+        TippableObject resul = TippableObject.make(shape, location, SlopeDirectionType.POSITIVE, parallelSign, AnchorType.CENTER);
         return resul;
     }
 
     public static TippableObject arrowHead(Shape shape, double location,  Arrow.ArrowType type) {
         Shape arrowHead = Arrow.buildArrowHead(type);
         Renderer r = JMathAnimConfig.getConfig().getScene().getRenderer();
-//        arrowHead.setAbsoluteSize(Anchor.Type.CENTER);
+//        arrowHead.setAbsoluteSize(Type.CENTER);
 //        arrowHead.thickness(0);
         arrowHead.setWidth(r.ThicknessToMathWidth(shape.getMp().getThickness() * 5));
 //        arrowHead.
         arrowHead.fillColor(shape.getMp().getDrawColor());
         arrowHead.drawColor(shape.getMp().getDrawColor());
         TippableObject resul = new TippableObject(shape, arrowHead, location);
-        resul.setAnchor(Anchor.Type.CENTER);
+        resul.setAnchor(AnchorType.CENTER);
         resul.setSlopeDirection(SlopeDirectionType.POSITIVE);
         resul.setDistanceToShape(0d);
         resul.setRotationType(RotationType.ROTATE);
@@ -81,10 +82,10 @@ public class TippableObject extends AbstractTippableObject {
     }
 
     public static TippableObject make(Shape shape, double location, SlopeDirectionType dir, MathObject tipObject) {
-        return make(shape, location, dir, tipObject, Anchor.Type.CENTER);
+        return make(shape, location, dir, tipObject, AnchorType.CENTER);
     }
 
-    public static TippableObject make(Shape shape, double location, SlopeDirectionType dir, MathObject tipObject, Anchor.Type anchor) {
+    public static TippableObject make(Shape shape, double location, SlopeDirectionType dir, MathObject tipObject, AnchorType anchor) {
         Point anchorPoint = Anchor.getAnchorPoint(tipObject, anchor);
         TippableObject resul = new TippableObject(shape, tipObject,  location);
         resul.setDistanceToShape(0d);

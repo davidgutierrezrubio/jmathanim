@@ -22,7 +22,7 @@ import com.jmathanim.mathobjects.Stateable;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 
-import static com.jmathanim.jmathanim.JMathAnimScene.PI;
+import static com.jmathanim.jmathanim.JMathAnimScene.PI2;
 import static java.lang.Math.sqrt;
 
 /**
@@ -32,7 +32,6 @@ import static java.lang.Math.sqrt;
  */
 public class Vec implements Stateable, HasDirection {
 
-    public static final double PI2 = 2 * PI;
     public double x, y, z;
     public double xState, yState, zState;
 

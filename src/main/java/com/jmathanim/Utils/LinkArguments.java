@@ -20,6 +20,7 @@ import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Constructible.Lines.CTSegment;
 import com.jmathanim.Constructible.Others.CTAngleMark;
+import com.jmathanim.Enum.LinkType;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
 
@@ -33,11 +34,7 @@ import java.util.function.DoubleUnaryOperator;
  */
 public final class LinkArguments extends Link {
 
-    public enum LinkType {
-        X, Y, VALUE, COUNT,
-        WIDTH, HEIGHT, XMIN, XMAX, YMIN, YMAX,
-        ARG0, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7, ARG8, ARG9
-    }
+
 
     public Object origin;
     public LinkType originLinkType;

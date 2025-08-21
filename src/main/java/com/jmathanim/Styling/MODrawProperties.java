@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Styling;
 
+import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -500,9 +501,7 @@ public class MODrawProperties implements Stylable, Stateable {
         return scaleArrowHead2;
     }
 
-    public enum DashStyle {
-        SOLID, DASHED, DOTTED, DASHDOTTED
-    }
+
 
     /**
      * Returns a new MODrawProperties object with all values null except for

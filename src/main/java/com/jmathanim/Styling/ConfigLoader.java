@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Styling;
 
+import com.jmathanim.Enum.LatexTokenType;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
@@ -371,16 +372,16 @@ public class ConfigLoader {
         String string = getFirstChildValueByName(el, "string");
         String delDepthStr = getFirstChildValueByName(el, "delimiterDepth");
 
-        LatexToken.TokenType tokenType = null;
+        LatexTokenType latexTokenType = null;
 
         if (type != null) {
             //Convert String type to the corresponding enum value, catching possible errors
             type=type.toUpperCase();
             try {
-                tokenType = LatexToken.TokenType.valueOf(type);
+                latexTokenType = LatexTokenType.valueOf(type);
             } catch (IllegalArgumentException e) {
                 JMathAnimScene.logger.warn("Token type " + type + " not recognized parsing LatexToken config file");
-                tokenType = null;
+                latexTokenType = null;
             }
         }
 
@@ -405,7 +406,7 @@ public class ConfigLoader {
         }
         Integer delimiterDepth=((delDepthStr==null)||("".equals(delDepthStr)) ? null: Integer.valueOf(delDepthStr));
         return LatexToken.make()
-                .setType(tokenType)
+                .setType(latexTokenType)
                 .setSecondaryTypeFlag(tokenSubType)
                 .setString(string)
                 .setDelimiterDepth(delimiterDepth);

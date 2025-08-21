@@ -28,7 +28,7 @@ public class GroovyUtils {
                 int lineGap=countLines(userCode)-countLines(userCodeWithoutImports);
                 String[] scriptLines = userCode.split("\n");
                 logger.error("At line " + LogUtils.PURPLE+(lineNumber-lineGap) + RESET+": "+" " + LogUtils.PURPLE+ scriptLines[lineNumber - 1].trim()+RESET);
-                logger.error(e.getMessage());
+                logger.error(LogUtils.RED+e.getMessage()+RESET);
                 break;
             }
         }

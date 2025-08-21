@@ -1,7 +1,7 @@
 package com.jmathanim.mathobjects.Delimiters;
 
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.mathobjects.NullMathObject;
 import com.jmathanim.mathobjects.Point;
@@ -14,14 +14,14 @@ public class LengthMeasure extends Delimiter {
     private final double hgap;
     private Double thicknessShape;
 
-    public LengthMeasure(Point A, Point B, Delimiter.Type type, double gap) {
+    public LengthMeasure(Point A, Point B, DelimiterType type, double gap) {
         super(A, B, type, gap);
         this.gap = gap;
         hgap = .05;
         minimumWidthToShrink = .75;
     }
 
-    public static LengthMeasure make(Point A, Point B, Delimiter.Type type, double gap) {
+    public static LengthMeasure make(Point A, Point B, DelimiterType type, double gap) {
         LengthMeasure resul = new LengthMeasure(A, B, type, gap);
         resul.buildDelimiterShape();
         return resul;
@@ -89,10 +89,10 @@ public class LengthMeasure extends Delimiter {
                     }
             }
 
-            delimiterLabelRigidBox.stackTo(segment, Anchor.Type.RIGHT, gapToUse);
+            delimiterLabelRigidBox.stackTo(segment, AnchorType.RIGHT, gapToUse);
 
             labelMarkPoint.v.copyFrom(delimiterLabelRigidBox.getCenter().v);
-            Shape segCopy = segment.copy().stackTo(BB, Anchor.Type.LEFT);
+            Shape segCopy = segment.copy().stackTo(BB, AnchorType.LEFT);
             delimiterShapeToDraw.getPath().addJMPointsFrom(segCopy.getPath());
             delimiterLabelRigidBox.shift(0, +gap * amplitudeScale);
 

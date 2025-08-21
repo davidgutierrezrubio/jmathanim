@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Styling;
 
+import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Point;
 import javafx.scene.shape.StrokeLineCap;
@@ -115,9 +116,9 @@ public interface Stylable {
 
     Point.DotSyle getDotStyle();
 
-    void setDashStyle(MODrawProperties.DashStyle dashStyle);
+    void setDashStyle(DashStyle dashStyle);
 
-    MODrawProperties.DashStyle getDashStyle();
+    DashStyle getDashStyle();
 
     Boolean isAbsoluteThickness();
 

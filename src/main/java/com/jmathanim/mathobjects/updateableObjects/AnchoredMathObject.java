@@ -17,7 +17,7 @@
  */
 package com.jmathanim.mathobjects.updateableObjects;
 
-import com.jmathanim.Utils.Anchor.Type;
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 
@@ -29,20 +29,20 @@ public class AnchoredMathObject implements Updateable {
 
     private final MathObject mobj;
     private final MathObject dstObject;
-    private Type dstType;
-    private final Type origType;
+    private AnchorType dstAnchorType;
+    private final AnchorType origAnchorType;
     private double gap;
     private int updateLevel;
 
-    public AnchoredMathObject(MathObject mobj, Type origType, MathObject dstObject, Type dstType) {
-        this(mobj, origType, dstObject, dstType, 0);
+    public AnchoredMathObject(MathObject mobj, AnchorType origAnchorType, MathObject dstObject, AnchorType dstAnchorType) {
+        this(mobj, origAnchorType, dstObject, dstAnchorType, 0);
     }
 
-    public AnchoredMathObject(MathObject mobj, Type origType, MathObject dstObject, Type dstType, double gap) {
+    public AnchoredMathObject(MathObject mobj, AnchorType origAnchorType, MathObject dstObject, AnchorType dstAnchorType, double gap) {
         this.mobj = mobj;
         this.dstObject = dstObject;
-        this.origType = origType;
-        this.dstType = dstType;
+        this.origAnchorType = origAnchorType;
+        this.dstAnchorType = dstAnchorType;
         this.gap = gap;
     }
 
@@ -62,15 +62,15 @@ public class AnchoredMathObject implements Updateable {
     @Override
     public void update(JMathAnimScene scene) {
         
-        mobj.stackTo(origType, dstObject, dstType, gap);
+        mobj.stackTo(origAnchorType, dstObject, dstAnchorType, gap);
     }
 
-    public Type getAnchorType() {
-        return dstType;
+    public AnchorType getAnchorType() {
+        return dstAnchorType;
     }
 
-    public void setAnchorType(Type anchorType) {
-        this.dstType = anchorType;
+    public void setAnchorType(AnchorType anchorType) {
+        this.dstAnchorType = anchorType;
     }
 
     @Override

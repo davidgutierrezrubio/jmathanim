@@ -103,7 +103,7 @@ public class Shape extends MathObject {
      *
      * @param A         First point
      * @param B         Second point
-     * @param numPoints Number of points. A number greater or equal than 2
+     * @param numPoints Number of points, including start an ending point. A number greater or equal than 2.
      * @return The created segment.
      */
     public static Shape segment(Point A, Point B, int numPoints) {
@@ -708,9 +708,8 @@ public class Shape extends MathObject {
      * @param showDebugPoints
      * @return This object
      */
-    public Shape setShowDebugPoints(boolean showDebugPoints) {
+    protected void setShowDebugPoints(boolean showDebugPoints) {
         this.showDebugPoints = showDebugPoints;
-        return this;
     }
 
     /**

@@ -28,9 +28,10 @@ import com.jmathanim.Constructible.Points.CTPointOnObject;
 import com.jmathanim.Constructible.Transforms.CTMirrorPoint;
 import com.jmathanim.Constructible.Transforms.CTRotatedPoint;
 import com.jmathanim.Constructible.Transforms.CTTranslatedPoint;
+import com.jmathanim.Enum.AnchorType;
+import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
-import com.jmathanim.Utils.Anchor;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
 import org.w3c.dom.Element;
@@ -174,28 +175,28 @@ class GeogebraCommandParser {
             double thickness = Double.valueOf(lineStyle.getAttribute("thickness"));
             resul.setThickness(thickness);
             //Dash Style
-            //0 :         MODrawProperties.DashStyle.SOLID
-            //10,15:         MODrawProperties.DashStyle.DASHED
-            //20:        MODrawProperties.DashStyle.DOTTED
-            //30:         MODrawProperties.DashStyle.DASHDOTTED
-            MODrawProperties.DashStyle dashStyle;
+            //0 :         DashStyle.SOLID
+            //10,15:         DashStyle.DASHED
+            //20:        DashStyle.DOTTED
+            //30:         DashStyle.DASHDOTTED
+            DashStyle dashStyle;
             int dashType = Integer.valueOf(lineStyle.getAttribute("type"));
             switch (dashType) {
                 case 0:
-                    dashStyle = MODrawProperties.DashStyle.SOLID;
+                    dashStyle = DashStyle.SOLID;
                     break;
                 case 10:
                 case 15:
-                    dashStyle = MODrawProperties.DashStyle.DASHED;
+                    dashStyle = DashStyle.DASHED;
                     break;
                 case 20:
-                    dashStyle = MODrawProperties.DashStyle.DOTTED;
+                    dashStyle = DashStyle.DOTTED;
                     break;
                 case 30:
-                    dashStyle = MODrawProperties.DashStyle.DASHDOTTED;
+                    dashStyle = DashStyle.DASHDOTTED;
                     break;
                 default:
-                    dashStyle = MODrawProperties.DashStyle.SOLID;
+                    dashStyle = DashStyle.SOLID;
             }
             resul.setDashStyle(dashStyle);
         }
@@ -344,7 +345,7 @@ class GeogebraCommandParser {
             size = 5d / 36;//Assume size is "small"
         }
 
-        CTLaTeX cTLaTeX = CTLaTeX.make(text, anchorPoint, Anchor.Type.ULEFT, 0).scale(size);
+        CTLaTeX cTLaTeX = CTLaTeX.make(text, anchorPoint, AnchorType.ULEFT, 0).scale(size);
         registerGeogebraElement(label, cTLaTeX);
     }
 

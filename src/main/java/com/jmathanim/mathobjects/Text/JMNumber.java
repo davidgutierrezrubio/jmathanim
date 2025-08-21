@@ -16,7 +16,7 @@
  */
 package com.jmathanim.mathobjects.Text;
 
-import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.hasScalarParameter;
 
@@ -41,7 +41,7 @@ public class JMNumber extends LaTeXMathObject implements hasScalarParameter {
     }
 
     protected JMNumber(double value) {
-        super(Anchor.Type.LEFT);
+        super(AnchorType.LEFT);
         formatter = new DecimalFormat();
         format = "";
     }

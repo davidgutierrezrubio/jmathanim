@@ -19,6 +19,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera3D;
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.*;
 import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
@@ -999,16 +1000,16 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
      * Gets the points of the shape that lies in the boundary of the bounding
      * box
      *
-     * @param type What side of the bounding box: UPPER, LOWER, RIGHT or LEFT.
+     * @param anchorType What side of the bounding box: UPPER, LOWER, RIGHT or LEFT.
      *             The other types return null.
      * @return A List with all the points that lies in the specified side of the
      * boundary box
      */
-    public List<Point> getBorderPoints(Anchor.Type type) {
+    public List<Point> getBorderPoints(AnchorType anchorType) {
         Stream<Point> stream = getCriticalPoints().stream();
         Rect bb = getBoundingBox();
         List<Point> li = null;
-        switch (type) {
+        switch (anchorType) {
             case UPPER:
                 li = stream.filter(p -> p.v.y == bb.ymax).collect(Collectors.toList());
                 break;
