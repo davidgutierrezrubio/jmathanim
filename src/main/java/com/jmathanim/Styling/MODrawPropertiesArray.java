@@ -18,11 +18,11 @@
 package com.jmathanim.Styling;
 
 import com.jmathanim.Enum.DashStyle;
+import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.LatexStyle;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Stateable;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
@@ -540,7 +540,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      * @return The current DotStyle as defined in the referenced object.
      */
     @Override
-    public Point.DotSyle getDotStyle() {
+    public DotStyle getDotStyle() {
         return mpRef.getDotStyle();
     }
 
@@ -550,7 +550,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      * @param dotStyle The dot style to apply. This parameter is of type Point.DotStyle, which determines the style of dots to be set.
      */
     @Override
-    public void setDotStyle(Point.DotSyle dotStyle) {
+    public void setDotStyle(DotStyle dotStyle) {
         for (MathObject obj : objects) {
             obj.getMp().setDotStyle(dotStyle);
         }

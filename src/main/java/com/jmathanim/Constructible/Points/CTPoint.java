@@ -18,6 +18,7 @@
 package com.jmathanim.Constructible.Points;
 
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.MathObject;
@@ -118,7 +119,7 @@ public class CTPoint extends Constructible {
         return this.getObjectLabel() + ":" + String.format("CTPoint[%.2f, %.2f]", this.v.x, this.v.y);
     }
     
-    public CTPoint dotStyle(Point.DotSyle dotStyle) {
+    public CTPoint dotStyle(DotStyle dotStyle) {
         p.dotStyle(dotStyle);
         return this;
     }

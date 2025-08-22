@@ -18,8 +18,8 @@
 package com.jmathanim.Styling;
 
 import com.jmathanim.Enum.DashStyle;
+import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.Point;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 
@@ -112,9 +112,9 @@ public interface Stylable {
 
     void setThickness(Double thickness);
 
-    void setDotStyle(Point.DotSyle dotStyle);
+    void setDotStyle(DotStyle dotStyle);
 
-    Point.DotSyle getDotStyle();
+    DotStyle getDotStyle();
 
     void setDashStyle(DashStyle dashStyle);
 

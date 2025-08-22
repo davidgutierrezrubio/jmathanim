@@ -30,6 +30,7 @@ import com.jmathanim.Constructible.Transforms.CTRotatedPoint;
 import com.jmathanim.Constructible.Transforms.CTTranslatedPoint;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.DashStyle;
+import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -270,16 +271,16 @@ class GeogebraCommandParser {
 
         Element pointStyle = firstElementWithTag(el, "pointStyle");
         Integer dotStyleCode = Integer.valueOf(pointStyle.getAttribute("val"));
-        Point.DotSyle dotStyle;
+        DotStyle dotStyle;
         switch (dotStyleCode) {
             case 1:
-                dotStyle = Point.DotSyle.CROSS;
+                dotStyle = DotStyle.CROSS;
                 break;
             case 3:
-                dotStyle = Point.DotSyle.PLUS;
+                dotStyle = DotStyle.PLUS;
                 break;
             default:
-                dotStyle = Point.DotSyle.CIRCLE;
+                dotStyle = DotStyle.CIRCLE;
         }
         resul.dotStyle(dotStyle);
         resul.objectLabel = label;

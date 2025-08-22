@@ -18,6 +18,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.AffineJTransform;
@@ -52,13 +53,6 @@ public class Point extends MathObject {
         return (T) this;
     }
 
-    public enum DotSyle {
-        CIRCLE, CROSS, PLUS, RING
-    }
-
-    public enum ShadingStyle {
-        NO_SHADING, FLAT, SMOOTH, PHONG, GOURAUD
-    }
 
     /**
      * Static method. Returns a new point at (0,0), with default style
@@ -226,7 +220,7 @@ public class Point extends MathObject {
      *                 DOT_STYLE_PLUS
      * @return The object
      */
-    public Point dotStyle(DotSyle dotStyle) {
+    public Point dotStyle(DotStyle dotStyle) {
         this.getMp().setDotStyle(dotStyle);
         return this;
     }
@@ -268,7 +262,7 @@ public class Point extends MathObject {
      *
      * @return A value of enum DotStyle: CIRCLE, CROSS, PLUS
      */
-    public DotSyle getDotStyle() {
+    public DotStyle getDotStyle() {
         return getMp().getDotStyle();
     }
 

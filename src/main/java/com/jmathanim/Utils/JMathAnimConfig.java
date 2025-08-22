@@ -20,11 +20,11 @@ package com.jmathanim.Utils;
 import ch.qos.logback.classic.Level;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Enum.DashStyle;
+import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 
 import java.io.File;
 import java.net.URL;
@@ -311,7 +311,7 @@ public class JMathAnimConfig {
         MODrawProperties defaultDotMP = new MODrawProperties();
         defaultDotMP.setDrawColor(JMColor.WHITE);
         defaultDotMP.setFillColor(JMColor.GRAY);
-        defaultDotMP.setDotStyle(Point.DotSyle.CIRCLE);
+        defaultDotMP.setDotStyle(DotStyle.CIRCLE);
         defaultDotMP.setThickness(30d);
         styles.put("DOTDEFAULT", defaultMP);
 

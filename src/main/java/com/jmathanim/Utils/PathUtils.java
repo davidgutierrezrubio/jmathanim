@@ -20,6 +20,7 @@ package com.jmathanim.Utils;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Enum.DashStyle;
+import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
@@ -143,8 +144,8 @@ public class PathUtils {
 
     private static void addJMPathPointToScene(JMPathPoint p, JMathAnimScene scene) {
         scene.add(p.p.drawColor("green"));//Point of the curve
-        scene.add(p.cpEnter.dotStyle(Point.DotSyle.CROSS).drawColor("blue"));//Control point that "enters" into the point
-        scene.add(p.cpExit.dotStyle(Point.DotSyle.PLUS).drawColor("red"));//Control point that "exits" from the point
+        scene.add(p.cpEnter.dotStyle(DotStyle.CROSS).drawColor("blue"));//Control point that "enters" into the point
+        scene.add(p.cpExit.dotStyle(DotStyle.PLUS).drawColor("red"));//Control point that "exits" from the point
         scene.add(Shape.segment(p.p, p.cpExit)
                 .dashStyle(DashStyle.DASHED)
                 .drawColor("gray"));

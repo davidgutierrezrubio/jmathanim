@@ -18,11 +18,11 @@
 package com.jmathanim.Styling;
 
 import com.jmathanim.Enum.DashStyle;
+import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point.DotSyle;
 import com.jmathanim.mathobjects.Stateable;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
@@ -97,10 +97,10 @@ public class MODrawProperties implements Stylable, Stateable {
         return resul;
     }
 
-    static DotSyle parseDotStyle(String str) {
-        DotSyle resul = DotSyle.CIRCLE; // default dash
+    static DotStyle parseDotStyle(String str) {
+        DotStyle resul = DotStyle.CIRCLE; // default dash
         try {
-            resul = DotSyle.valueOf(str.toUpperCase());
+            resul = DotStyle.valueOf(str.toUpperCase());
         } catch (IllegalArgumentException e) {
             JMathAnimScene.logger.error("Dot style {} not recognized, using default {}", str, resul);
         }
@@ -129,7 +129,7 @@ public class MODrawProperties implements Stylable, Stateable {
     private DashStyle dashStyle = DashStyle.SOLID;
     // Styles used for specified objects
     // Point
-    private DotSyle dotStyle = DotSyle.CIRCLE;
+    private DotStyle dotStyle = DotStyle.CIRCLE;
 
     private PaintStyle drawColor;
     private PaintStyle fillColor;
@@ -235,12 +235,12 @@ public class MODrawProperties implements Stylable, Stateable {
     }
 
     @Override
-    public DotSyle getDotStyle() {
+    public DotStyle getDotStyle() {
         return dotStyle;
     }
 
     @Override
-    public void setDotStyle(DotSyle dotStyle) {
+    public void setDotStyle(DotStyle dotStyle) {
         this.dotStyle = dotStyle;
     }
 
