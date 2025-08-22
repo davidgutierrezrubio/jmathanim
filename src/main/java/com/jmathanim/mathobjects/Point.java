@@ -198,7 +198,7 @@ public class Point extends MathObject {
 
     @Override
     public Point getCenter() {
-        return this.copy();
+        return new Point(v.x,v.y,v.z);
     }
 
     @Override

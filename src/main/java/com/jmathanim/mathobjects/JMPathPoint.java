@@ -48,8 +48,8 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         super();
         this.p = p;
 //        this.p.visibleFlag = false;
-        cpExit = p.copy();
-        cpEnter = p.copy();
+        cpExit=Point.at(p.v);
+        cpEnter=Point.at(p.v);
         isCurved = false;// By default, is not curved
         this.isThisSegmentVisible = isVisible;
         this.type = type;

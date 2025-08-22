@@ -329,16 +329,24 @@ public class Arrow extends Constructible {
 //        AffineJTransform trRotate = AffineJTransform.create2DRotationTransform(Acopy, Acopy.to(Bcopy).getAngle() + .5 * PI);
 //        shapeToDraw.getPath().applyAffineTransform(trShift);
 //        shapeToDraw.getPath().applyAffineTransform(trRotate);
-        Point z1 = startPoint.copy().shift(0, 0, 1);
-        Point C;
-        Vec v = Acopy.to(Bcopy);
-        if ((v.x == 0) && (v.y == 0)) {
-            C = Acopy.copy().shift(0, 1, 0);
-        } else {
-            C = Acopy.copy().shift(0, 0, 1);
-        }
+
+        Point C=null;
+        Point z1=null;
         AffineJTransform tr;
         boolean is3D = scene.getCamera() instanceof Camera3D;
+        if (is3D){
+            z1 = startPoint.copy().shift(0, 0, 1);
+
+            Vec v = Acopy.to(Bcopy);
+            if ((v.x == 0) && (v.y == 0)) {
+                C = Acopy.copy().shift(0, 1, 0);
+            } else {
+                C = Acopy.copy().shift(0, 0, 1);
+            }
+        }
+
+
+
         if (is3D) {
             tr = AffineJTransform.createDirect3DIsomorphic(startPoint, endPoint, z1, Acopy, Bcopy, C, 1);
         } else {
@@ -354,7 +362,7 @@ public class Arrow extends Constructible {
         if (is3D) {
             Camera3D cam = (Camera3D) scene.getCamera();
 //            Point C = A.copy().shift(0, 0, 1);
-            v = cam.look.to(cam.eye);
+            Vec v = cam.look.to(cam.eye);
             Point C2 = Acopy.copy().shift(v);
             tr = AffineJTransform.createDirect3DIsomorphic(Acopy, Bcopy, C, Acopy, Bcopy, C2, 1);
             shapeToDraw.applyAffineTransform(tr);

@@ -49,12 +49,12 @@ public abstract class AffineTransformStrategy extends TransformStrategy {
     @Override
     public boolean doInitialization() {
         super.doInitialization();
-        A = shOrigin.getPoint(0).copy();
-        B = shOrigin.getPoint(1).copy();
-        C = shOrigin.getPoint(2).copy();
-        D = shDestiny.getPoint(0).copy();
-        E = shDestiny.getPoint(1).copy();
-        F = shDestiny.getPoint(2).copy();
+        A = Point.at(shOrigin.getPoint(0).v);
+        B =  Point.at(shOrigin.getPoint(1).v);;//shOrigin.getPoint(1).copy();
+        C =  Point.at(shOrigin.getPoint(2).v);//shOrigin.getPoint(2).copy();
+        D =  Point.at(shDestiny.getPoint(0).v);//shDestiny.getPoint(0).copy();
+        E = Point.at(shDestiny.getPoint(1).v);//shDestiny.getPoint(1).copy();
+        F = Point.at(shDestiny.getPoint(2).v);//shDestiny.getPoint(2).copy();
         saveStates(getIntermediateObject());
         AffineJTransform tr = createIntermediateTransform(1);
         Point center = getIntermediateObject().getCenter();

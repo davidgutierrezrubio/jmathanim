@@ -800,7 +800,6 @@ public class Shape extends MathObject {
             return;
         }
         Shape sh2 = (Shape) obj;
-        this.getMp().copyFrom(sh2.getMp());
 
         if (!isRigid) {
             getPath().copyStateFrom(sh2.getPath());

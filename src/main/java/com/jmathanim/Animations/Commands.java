@@ -445,12 +445,12 @@ public class Commands {
     public static AnimationWithEffects affineTransform(double runtime, Point A, Point B, Point C, Point D, Point E,
                                                        Point F, MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
-            final Point orig1 = A.copy();
-            final Point orig2 = B.copy();
-            final Point orig3 = C.copy();
-            final Point dst1 = D.copy();
-            final Point dst2 = E.copy();
-            final Point dst3 = F.copy();
+            final Point orig1 = Point.at(A.v);
+            final Point orig2 = Point.at(B.v);
+            final Point orig3 = Point.at(C.v);
+            final Point dst1 = Point.at(D.v);
+            final Point dst2 = Point.at(E.v);
+            final Point dst3 = Point.at(F.v);
             final MathObject[] mathObjects = objects;
             AffineJTransform tr;
 
@@ -538,10 +538,10 @@ public class Commands {
     public static AnimationWithEffects isomorphism(double runtime, Point a, Point b, Point c, Point d,
                                                    MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
-            final Point A = a.copy();
-            final Point B = b.copy();
-            final Point C = c.copy();
-            final Point D = d.copy();
+            final Point A = Point.at(a.v);
+            final Point B = Point.at(b.v);
+            final Point C = Point.at(c.v);
+            final Point D = Point.at(d.v);
             final MathObject[] mathObjects = objects;
             AffineJTransform tr;
 
@@ -596,12 +596,12 @@ public class Commands {
     public static AnimationWithEffects isomorphism3d(double runtime, Point a, Point b1, Point b2, Point c, Point d1, Point d2,
                                                      MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
-            final Point A = a.copy();
-            final Point B1 = b1.copy();
-            final Point B2 = b2.copy();
-            final Point C = c.copy();
-            final Point D1 = d1.copy();
-            final Point D2 = d2.copy();
+            final Point A = Point.at(a.v);
+            final Point B1 = Point.at(b1.v);
+            final Point B2 = Point.at(b2.v);
+            final Point C =  Point.at(c.v);
+            final Point D1 =  Point.at(d1.v);
+            final Point D2 =  Point.at(d2.v);
             final MathObject[] mathObjects = objects;
             AffineJTransform tr;
 
@@ -668,10 +668,10 @@ public class Commands {
     public static AnimationWithEffects inverseIsomorphism(double runtime, Point a, Point b, Point c, Point d,
                                                           MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
-            final Point A = a.copy();
-            final Point B = b.copy();
-            final Point C = c.copy();
-            final Point D = d.copy();
+            final Point A =  Point.at(a.v);
+            final Point B =  Point.at(b.v);
+            final Point C =  Point.at(c.v);
+            final Point D =  Point.at(d.v);
             final MathObject[] mathObjects = objects;
             AffineJTransform tr;
 
@@ -735,8 +735,8 @@ public class Commands {
     public static AnimationWithEffects reflection(double runtime, Point A, Point B, MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
             final MathObject[] mathObjects = objects;
-            final Point axis1 = A.copy();
-            final Point axis2 = B.copy();
+            final Point axis1 =  Point.at(A.v);
+            final Point axis2 =  Point.at(B.v);
             AffineJTransform tr;
 
             @Override
@@ -791,16 +791,16 @@ public class Commands {
      * Animation command that perfoms a reflection specified by 2 points
      *
      * @param runtime Duration in seconds
-     * @param a       first axis point
-     * @param b       second axis point
+     * @param A       first axis point
+     * @param B       second axis point
      * @param objects Objects to animate (varargs)
      * @return Animation to run with playAnim method
      */
-    public static AnimationWithEffects reflectionByAxis(double runtime, Point a, Point b, MathObject... objects) {
+    public static AnimationWithEffects reflectionByAxis(double runtime, Point A, Point B, MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
             final MathObject[] mathObjects = objects;
-            final Point axisPoint1 = a.copy();
-            final Point axisPoint2 = b.copy();
+            final Point axisPoint1 = Point.at(A.v);
+            final Point axisPoint2 =  Point.at(B.v);
             AffineJTransform tr;
 
             @Override
