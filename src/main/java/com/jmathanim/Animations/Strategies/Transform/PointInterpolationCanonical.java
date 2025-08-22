@@ -135,14 +135,14 @@ public class PointInterpolationCanonical extends TransformStrategy {
                 interPoint.p.v.z = (1 - lt) * basePoint.p.v.z + lt * dstPoint.p.v.z;
 
                 // Interpolate control point 1
-                interPoint.cpExit.v.x = (1 - lt) * basePoint.cpExit.v.x + lt * dstPoint.cpExit.v.x;
-                interPoint.cpExit.v.y = (1 - lt) * basePoint.cpExit.v.y + lt * dstPoint.cpExit.v.y;
-                interPoint.cpExit.v.z = (1 - lt) * basePoint.cpExit.v.z + lt * dstPoint.cpExit.v.z;
+                interPoint.cpExit.x = (1 - lt) * basePoint.cpExit.x + lt * dstPoint.cpExit.x;
+                interPoint.cpExit.y = (1 - lt) * basePoint.cpExit.y + lt * dstPoint.cpExit.y;
+                interPoint.cpExit.z = (1 - lt) * basePoint.cpExit.z + lt * dstPoint.cpExit.z;
 
                 // Interpolate control point 2
-                interPoint.cpEnter.v.x = (1 - lt) * basePoint.cpEnter.v.x + lt * dstPoint.cpEnter.v.x;
-                interPoint.cpEnter.v.y = (1 - lt) * basePoint.cpEnter.v.y + lt * dstPoint.cpEnter.v.y;
-                interPoint.cpEnter.v.z = (1 - lt) * basePoint.cpEnter.v.z + lt * dstPoint.cpEnter.v.z;
+                interPoint.cpEnter.x = (1 - lt) * basePoint.cpEnter.x + lt * dstPoint.cpEnter.x;
+                interPoint.cpEnter.y = (1 - lt) * basePoint.cpEnter.y + lt * dstPoint.cpEnter.y;
+                interPoint.cpEnter.z = (1 - lt) * basePoint.cpEnter.z + lt * dstPoint.cpEnter.z;
             }
 
         }

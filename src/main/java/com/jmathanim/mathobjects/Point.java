@@ -57,13 +57,17 @@ public class Point extends MathObject {
 
 
     /**
-     * Creates a new point copying coordinates from given vector, with default style.
+     * Creates a new point linking coordinates from given vector, with default style.
      *
      * @param v Vector with coordinates
      */
     public Point(Vec v) {
-        this(v.x, v.y, v.z);
+        super();
+        this.v = v;
+        previousVecPosition = this.v.copy();
+        this.dotShape = new Shape();
     }
+
 
     /**
      * Overloaded method. Creates a new Point with coordinates x,y, with default style. The z coordinates is set to 0.
@@ -309,7 +313,7 @@ public class Point extends MathObject {
 
     @Override
     public Point copy() {
-        Point resul = new Point(v);
+        Point resul = new Point(v.x,v.y);
         resul.copyStateFrom(this);
         return resul;
     }
@@ -354,7 +358,7 @@ public class Point extends MathObject {
      */
     public Point interpolate(Point p2, double alpha) {
         Vec w = v.interpolate(p2.v, alpha);
-        return new Point(w);
+        return new Point(w.x,w.y,w.z);
 
     }
 
@@ -407,8 +411,7 @@ public class Point extends MathObject {
     }
 
     public boolean isEquivalentTo(Point p2, double epsilon) {
-        boolean resul = (Math.abs(v.x - p2.v.x) <= epsilon) & (Math.abs(v.y - p2.v.y) <= epsilon) & (Math.abs(v.z - p2.v.z) <= epsilon);
-        return resul;
+        return v.isEquivalentTo(p2.v, epsilon);
     }
 
 }

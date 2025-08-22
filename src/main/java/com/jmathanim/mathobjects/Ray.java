@@ -151,10 +151,10 @@ public class Ray extends Shape implements HasDirection {
             bp2.p.v.x = intersectLine[2];
             bp2.p.v.y = intersectLine[3];
         }
-        bp2.cpExit.v.x = bp2.p.v.x;
-        bp2.cpExit.v.y = bp2.p.v.y;
-        bp2.cpEnter.v.x = bp2.p.v.x;
-        bp2.cpEnter.v.y = bp2.p.v.y;
+        bp2.cpExit.x = bp2.p.v.x;
+        bp2.cpExit.y = bp2.p.v.y;
+        bp2.cpEnter.x = bp2.p.v.x;
+        bp2.cpEnter.y = bp2.p.v.y;
 
     }
 

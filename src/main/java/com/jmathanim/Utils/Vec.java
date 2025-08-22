@@ -364,4 +364,9 @@ public class Vec implements Stateable, HasDirection {
         return this.copy().scaleInSite(scx, scy);
     }
 
+
+    public boolean isEquivalentTo(Vec v2, double epsilon) {
+        boolean resul = (Math.abs(x - v2.x) <= epsilon) & (Math.abs(y - v2.y) <= epsilon) & (Math.abs(z - v2.z) <= epsilon);
+        return resul;
+    }
 }

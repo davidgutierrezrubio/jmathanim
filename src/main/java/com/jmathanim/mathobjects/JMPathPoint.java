@@ -33,7 +33,7 @@ import java.text.DecimalFormat;
 public class JMPathPoint extends MathObject implements Updateable, Stateable {
 
     public final Point p; // The vertex point
-    public final Point cpExit, cpEnter; // Exit and Enter control points for Bezier curves
+    public final Vec cpExit, cpEnter; // Exit and Enter control points for Bezier curves
     public Vec cpExitvBackup, cpEntervBackup;// Backup values, to restore after removing interpolation points
     /**
      * If false, the segment from the previous point to this one is not visible.
@@ -48,8 +48,8 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         super();
         this.p = p;
 //        this.p.visibleFlag = false;
-        cpExit=Point.at(p.v);
-        cpEnter=Point.at(p.v);
+        cpExit=p.v.copy();
+        cpEnter=p.v.copy();
         isCurved = false;// By default, is not curved
         this.isThisSegmentVisible = isVisible;
         this.type = type;
@@ -69,10 +69,10 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
      */
     public static JMPathPoint make(double x1, double y1, double enterx, double entery, double exitx, double exity) {
         JMPathPoint resul = curveTo(Point.at(x1, y1));
-        resul.cpEnter.v.x = enterx;
-        resul.cpEnter.v.y = entery;
-        resul.cpExit.v.x = exitx;
-        resul.cpExit.v.y = exity;
+        resul.cpEnter.x = enterx;
+        resul.cpEnter.y = entery;
+        resul.cpExit.x = exitx;
+        resul.cpExit.y = exity;
         return resul;
     }
 
@@ -105,8 +105,8 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
 
     public void copyStateFrom(JMPathPoint jp) {
         p.copyStateFrom(jp.p);
-        cpExit.copyStateFrom(jp.cpExit);
-        cpEnter.copyStateFrom(jp.cpEnter);
+        cpExit.copyFrom(jp.cpExit);
+        cpEnter.copyFrom(jp.cpEnter);
         isCurved = jp.isCurved;
         isThisSegmentVisible = jp.isThisSegmentVisible;
         try { // cp1vBackup and cp2vBackup may be null, so I enclose with a try-catch
@@ -215,8 +215,8 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
 
     public void copyFrom(JMPathPoint jmPoint) {
         this.p.v.copyFrom(jmPoint.p.v);
-        this.cpExit.v.copyFrom(jmPoint.cpExit.v);
-        this.cpEnter.v.copyFrom(jmPoint.cpEnter.v);
+        this.cpExit.copyFrom(jmPoint.cpExit);
+        this.cpEnter.copyFrom(jmPoint.cpEnter);
     }
 
     @Override
@@ -228,8 +228,8 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
 
         JMPathPoint jmp2 = (JMPathPoint) obj;
         this.p.copyStateFrom(jmp2.p);
-        this.cpExit.copyStateFrom(jmp2.cpExit);
-        this.cpEnter.copyStateFrom(jmp2.cpEnter);
+        this.cpExit.copyFrom(jmp2.cpExit);
+        this.cpEnter.copyFrom(jmp2.cpEnter);
     }
 
     public boolean isEquivalentTo(JMPathPoint p2, double epsilon) {
@@ -247,14 +247,11 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
 
     @Override
     public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
-        JMPathPoint pSrc = this.copy();
-        Point pDst = tr.getTransformedObject(pSrc.p);
-        Point cp1Dst = tr.getTransformedObject(pSrc.cpExit);
-        Point cp2Dst = tr.getTransformedObject(pSrc.cpEnter);
+//        JMPathPoint pSrc = this.copy();
 
         this.p.v.applyAffineTransform(tr);
-        this.cpExit.v.applyAffineTransform(tr);
-        this.cpEnter.v.applyAffineTransform(tr);
+        this.cpExit.applyAffineTransform(tr);
+        this.cpEnter.applyAffineTransform(tr);
 
         return (T) this;
     }
@@ -292,19 +289,20 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         if (q.isCurved) {
             // De Casteljau's Algorithm:
             // https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
-            Point E = this.p.interpolate(this.cpExit, alpha); // New cp1 of v1
-            Point G = q.cpEnter.interpolate(q.p, alpha); // New cp2 of v2
-            Point F = this.cpExit.interpolate(q.cpEnter, alpha);
-            Point H = E.interpolate(F, alpha);// cp2 of interpolation point
-            Point J = F.interpolate(G, alpha);// cp1 of interpolation point
-            Point K = H.interpolate(J, alpha); // Interpolation point
-            interpolate = new JMPathPoint(K, q.isThisSegmentVisible, JMPathPointType.INTERPOLATION_POINT);
-            interpolate.cpExit.v.copyFrom(J.v);
-            interpolate.cpEnter.v.copyFrom(H.v);
+            Vec E = this.p.v.interpolate(this.cpExit, alpha); // New cp1 of v1
+            Vec G = q.cpEnter.interpolate(q.p.v, alpha); // New cp2 of v2
+            Vec F = this.cpExit.interpolate(q.cpEnter, alpha);
+            Vec H = E.interpolate(F, alpha);// cp2 of interpolation point
+            Vec J = F.interpolate(G, alpha);// cp1 of interpolation point
+            Vec K = H.interpolate(J, alpha); // Interpolation point
+            interpolate = new JMPathPoint(Point.at(K), q.isThisSegmentVisible, JMPathPointType.INTERPOLATION_POINT);
+            interpolate.cpExit.copyFrom(J);
+            interpolate.cpEnter.copyFrom(H);
 
         } else {
             // Straight interpolation
-            Point interP = new Point(this.p.v.interpolate(q.p.v, alpha));
+            Vec vInterp = this.p.v.interpolate(q.p.v, alpha);
+            Point interP = new Point(vInterp.x,vInterp.y);
             // Interpolation point is visible iff v2 is visible
             // Control points are by default the same as v1 and v2 (straight line)
             interpolate = new JMPathPoint(interP, q.isThisSegmentVisible, JMPathPointType.INTERPOLATION_POINT);
@@ -315,9 +313,9 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        int m = Math.max(p.getUpdateLevel(), cpEnter.getUpdateLevel());
-        m = Math.max(m, cpExit.getUpdateLevel());
-        setUpdateLevel(m + 1);
+//        int m = Math.max(p.getUpdateLevel(), cpEnter.getUpdateLevel());
+//        m = Math.max(m, cpExit.getUpdateLevel());
+        setUpdateLevel(p.getUpdateLevel());
 
     }
 

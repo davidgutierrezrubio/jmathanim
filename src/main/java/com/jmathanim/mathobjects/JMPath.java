@@ -101,20 +101,20 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
 //		if (v1.isCurved) {
             // De Casteljau's Algorithm:
             // https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
-            Point E = v1.p.interpolate(v1.cpExit, t); // New cpEnter of v1
-            Point G = v2.cpEnter.interpolate(v2.p, t); // New cpExit of v2
-            Point F = v1.cpExit.interpolate(v2.cpEnter, t);
-            Point H = E.interpolate(F, t);// cpEnter of interpolation point
-            Point J = F.interpolate(G, t);// cpExit of interpolation point
+            Vec E = v1.p.v.interpolate(v1.cpExit, t); // New cpEnter of v1
+            Vec G = v2.cpEnter.interpolate(v2.p.v, t); // New cpExit of v2
+            Vec F = v1.cpExit.interpolate(v2.cpEnter, t);
+            Vec H = E.interpolate(F, t);// cpEnter of interpolation point
+            Vec J = F.interpolate(G, t);// cpExit of interpolation point
 //            resul = H.interpolate(J, t); //Interpolation point
-            resul = JMPathPoint.curveTo(H.interpolate(J, t));
+            resul = JMPathPoint.curveTo(Point.at(H.interpolate(J, t)));
 
-            resul.cpExit.v.copyFrom(J.v);
-            resul.cpEnter.v.copyFrom(H.v);
+            resul.cpExit.copyFrom(J);
+            resul.cpEnter.copyFrom(H);
         } else {
             resul = JMPathPoint.lineTo(v1.p.interpolate(v2.p, t));
-            resul.cpExit.v.copyFrom(v1.p.v);
-            resul.cpEnter.v.copyFrom(v2.p.v);
+            resul.cpExit.copyFrom(v1.p.v);
+            resul.cpEnter.copyFrom(v2.p.v);
         }
         return resul;
     }
@@ -394,30 +394,31 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         if (jmp2.isCurved) {//TODO: Replace this with interpolation method from JMPathPoint
             // De Casteljau's Algorithm:
             // https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
-            Point E = jmp1.p.interpolate(jmp1.cpExit, alpha); // New cp1 of v1
-            Point G = jmp2.cpEnter.interpolate(jmp2.p, alpha); // New cp2 of v2
-            Point F = jmp1.cpExit.interpolate(jmp2.cpEnter, alpha);
-            Point H = E.interpolate(F, alpha);// cp2 of interpolation point
-            Point J = F.interpolate(G, alpha);// cp1 of interpolation point
-            Point K = H.interpolate(J, alpha); // Interpolation point
-            interpolate = new JMPathPoint(K, jmp2.isThisSegmentVisible, JMPathPointType.INTERPOLATION_POINT);
-            interpolate.cpExit.v.copyFrom(J.v);
-            interpolate.cpEnter.v.copyFrom(H.v);
+            Vec E = jmp1.p.v.interpolate(jmp1.cpExit, alpha); // New cp1 of v1
+            Vec G = jmp2.cpEnter.interpolate(jmp2.p.v, alpha); // New cp2 of v2
+            Vec F = jmp1.cpExit.interpolate(jmp2.cpEnter, alpha);
+            Vec H = E.interpolate(F, alpha);// cp2 of interpolation point
+            Vec J = F.interpolate(G, alpha);// cp1 of interpolation point
+            Vec K = H.interpolate(J, alpha); // Interpolation point
+            interpolate = new JMPathPoint(Point.at(K), jmp2.isThisSegmentVisible, JMPathPointType.INTERPOLATION_POINT);
+            interpolate.cpExit.copyFrom(J);
+            interpolate.cpEnter.copyFrom(H);
             // Change control points from v1 and v2,save
             // backup values to restore after removing interpolation points
             if (jmp1.cpExitvBackup == null) {
-                jmp1.cpExitvBackup = jmp1.cpExit.v;
+                jmp1.cpExitvBackup = jmp1.cpExit;
             }
             if (jmp2.cpEntervBackup == null) {
-                jmp2.cpEntervBackup = jmp2.cpEnter.v;
+                jmp2.cpEntervBackup = jmp2.cpEnter;
             }
 
-            jmp1.cpExit.v.copyFrom(E.v);
-            jmp2.cpEnter.v.copyFrom(G.v);
+            jmp1.cpExit.copyFrom(E);
+            jmp2.cpEnter.copyFrom(G);
 
         } else {
             // Straight interpolation
-            Point interP = new Point(jmp1.p.v.interpolate(jmp2.p.v, alpha));
+            Vec interpolate1 = jmp1.p.v.interpolate(jmp2.p.v, alpha);
+            Point interP = new Point(interpolate1.x,interpolate1.y);
             // Interpolation point is visible iff v2 is visible
             // Control points are by default the same as v1 and v2 (straight line)
             interpolate = new JMPathPoint(interP, jmp2.isThisSegmentVisible, JMPathPointType.INTERPOLATION_POINT);
@@ -510,13 +511,13 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
             JMPathPoint point = tempPath.jmPathPoints.get(k);
             if (reverse) // If the path is reversed, we must swap control points
             {
-                double cpTempX = point.cpExit.v.x;
-                double cpTempY = point.cpExit.v.y;
-                double cpTempZ = point.cpExit.v.z;
-                point.cpExit.v.copyFrom(point.cpEnter.v);
-                point.cpEnter.v.x = cpTempX;
-                point.cpEnter.v.y = cpTempY;
-                point.cpEnter.v.z = cpTempZ;
+                double cpTempX = point.cpExit.x;
+                double cpTempY = point.cpExit.y;
+                double cpTempZ = point.cpExit.z;
+                point.cpExit.copyFrom(point.cpEnter);
+                point.cpEnter.x = cpTempX;
+                point.cpEnter.y = cpTempY;
+                point.cpEnter.z = cpTempZ;
                 point.isCurved = curveds[(k + 1 + size) % size];
                 point.isThisSegmentVisible = visibles[(k + 1 + size) % size];
             }
@@ -865,7 +866,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
             JMPathPoint p1 = this.jmPathPoints.get(n);
             JMPathPoint p2 = this.jmPathPoints.get(n + 1);
             if (p1.p.isEquivalentTo(p2.p, epsilon)) {
-                p2.cpEnter.v.copyFrom(p1.cpEnter.v);
+                p2.cpEnter.copyFrom(p1.cpEnter);
                 p2.isThisSegmentVisible = p1.isThisSegmentVisible;
                 p2.isCurved = p1.isCurved;
                 this.jmPathPoints.remove(p1);
@@ -878,8 +879,8 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
             JMPathPoint p = jmPathPoints.get(i);
             JMPathPoint q = jmPathPoints.get(i - 1);
             if (!p.isCurved) {
-                p.cpEnter.v.copyFrom(p.p.v);
-                q.cpExit.v.copyFrom(q.p.v);
+                p.cpEnter.copyFrom(p.p.v);
+                q.cpExit.copyFrom(q.p.v);
             }
         }
         return this;
@@ -921,8 +922,8 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         // https://floris.briolas.nl/floris/2009/10/bounding-box-of-cubic-bezier/
         ArrayList<Point> resul = new ArrayList<>();//TODO: Adapt this to 3d case
         Vec P0 = pOrig.p.v;
-        Vec P1 = pOrig.cpExit.v;
-        Vec P2 = pDst.cpEnter.v;
+        Vec P1 = pOrig.cpExit;
+        Vec P2 = pDst.cpEnter;
         Vec P3 = pDst.p.v;
         Vec v;
         // a,b,c are the coefficients of the derivative of the Bezier function
@@ -1182,8 +1183,8 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         }
         final JMPathPoint jmp = jmPathPoints.get(0);
         jmp.isThisSegmentVisible = true;
-        jmp.cpEnter.v.copyFrom(jmp.p.v);
-        jmPathPoints.get(-1).cpExit.v.copyFrom(jmPathPoints.get(-1).p.v);
+        jmp.cpEnter.copyFrom(jmp.p.v);
+        jmPathPoints.get(-1).cpExit.copyFrom(jmPathPoints.get(-1).p.v);
         distille();
     }
 
@@ -1204,10 +1205,10 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         jmPathPoints.add(k + 1, newPoint);
         newPoint.isThisSegmentVisible = v2.isThisSegmentVisible;
         //Adjust the control points of v1 and v2
-        Vec vE = v1.p.v.interpolate(v1.cpExit.v, alpha); // New cpExit of v1
-        Vec vG = v2.cpEnter.v.interpolate(v2.p.v, alpha); // New cpEnter of v2
-        v1.cpExit.v.copyFrom(vE);
-        v2.cpEnter.v.copyFrom(vG);
+        Vec vE = v1.p.v.interpolate(v1.cpExit, alpha); // New cpExit of v1
+        Vec vG = v2.cpEnter.interpolate(v2.p.v, alpha); // New cpEnter of v2
+        v1.cpExit.copyFrom(vE);
+        v2.cpEnter.copyFrom(vG);
         return newPoint;
     }
 

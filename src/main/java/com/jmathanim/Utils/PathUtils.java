@@ -24,7 +24,6 @@ import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
@@ -102,19 +101,19 @@ public class PathUtils {
             double cx2 = x3 - mod23 / mod42 * (1 - tension) * (x4 - x2);
             double cy2 = y3 - mod23 / mod42 * (1 - tension) * (y4 - y2);
             double cz2 = z3 - mod23 / mod42 * (1 - tension) * (z4 - z2);
-            p2.cpExit.v.x = cx1;
-            p2.cpExit.v.y = cy1;
-            p2.cpExit.v.z = cz1;
-            p3.cpEnter.v.x = cx2;
-            p3.cpEnter.v.y = cy2;
-            p3.cpEnter.v.z = cz2;
+            p2.cpExit.x = cx1;
+            p2.cpExit.y = cy1;
+            p2.cpExit.z = cz1;
+            p3.cpEnter.x = cx2;
+            p3.cpEnter.y = cy2;
+            p3.cpEnter.z = cz2;
 //            } else {
 //                // If this path is straight, control points becomes vertices. Although this is
 //                // not used
 //                // when drawing straight paths, it becomes handy when doing transforms from
 //                // STRAIGHT to CURVED paths
 //                p2.cpExit.v.copyFrom(p2.p.v);
-//                p3.cpEnter.v.copyFrom(p3.p.v);
+//                p3.cpEnter.copyFrom(p3.p.v);
 //            }
 
         }
@@ -124,14 +123,14 @@ public class PathUtils {
         jp0 = path.jmPathPoints.get(0);
         if (!jp0.isThisSegmentVisible) {
             jp1 = path.jmPathPoints.get(1);
-            v = jp0.p.to(jp1.cpEnter).multInSite(PathUtils.DEFAULT_TENSION);
-            jp0.cpExit.v.copyFrom(jp0.p.add(v).v);
+            v = jp1.cpEnter.minus(jp0.p.v).multInSite(PathUtils.DEFAULT_TENSION);
+            jp0.cpExit.copyFrom(jp0.p.add(v).v);
 
             jp1 = path.jmPathPoints.get(numPoints - 2);
             jp0 = path.jmPathPoints.get(numPoints - 1);
 //            if (jp0.isCurved) {
-            v = jp0.p.to(jp1.cpExit).multInSite(PathUtils.DEFAULT_TENSION);
-            jp0.cpEnter.v.copyFrom(jp0.p.add(v).v);
+            v = jp1.cpExit.minus(jp0.p.v).multInSite(PathUtils.DEFAULT_TENSION);
+            jp0.cpEnter.copyFrom(jp0.p.add(v).v);
 //            }
         }
     }
@@ -144,12 +143,14 @@ public class PathUtils {
 
     private static void addJMPathPointToScene(JMPathPoint p, JMathAnimScene scene) {
         scene.add(p.p.drawColor("green"));//Point of the curve
-        scene.add(p.cpEnter.dotStyle(DotStyle.CROSS).drawColor("blue"));//Control point that "enters" into the point
-        scene.add(p.cpExit.dotStyle(DotStyle.PLUS).drawColor("red"));//Control point that "exits" from the point
-        scene.add(Shape.segment(p.p, p.cpExit)
+        Point pointCPEnter = Point.at(p.cpEnter).dotStyle(DotStyle.CROSS).drawColor("blue");
+        scene.add(pointCPEnter);//Control point that "enters" into the point
+        Point pointCPExit = Point.at(p.cpExit).dotStyle(DotStyle.PLUS).drawColor("red");
+        scene.add(pointCPExit);//Control point that "exits" from the point
+        scene.add(Shape.segment(p.p, pointCPExit)
                 .dashStyle(DashStyle.DASHED)
                 .drawColor("gray"));
-        scene.add(Shape.segment(p.p, p.cpEnter)
+        scene.add(Shape.segment(p.p, pointCPEnter)
                 .dashStyle(DashStyle.DASHED)
                 .drawColor("gray"));
     }
@@ -170,8 +171,8 @@ public class PathUtils {
     public static void rectifyPath(JMPath path) {
         for (JMPathPoint jmp : path) {
             jmp.isCurved = false;
-            jmp.cpEnter.v.copyFrom(jmp.p.v);
-            jmp.cpExit.v.copyFrom(jmp.p.v);
+            jmp.cpEnter.copyFrom(jmp.p.v);
+            jmp.cpExit.copyFrom(jmp.p.v);
         }
     }
 
@@ -183,13 +184,13 @@ public class PathUtils {
         //First point
         Point p = Point.origin();
         resul.getPath().addPoint(p);
-        resul.get(0).isThisSegmentVisible=false;
+        resul.get(0).isThisSegmentVisible = false;
         for (int i = 1; i < sh2.getPath().size(); i++) {
             double dist = sh2.getPoint(i - 1).to(sh2.getPoint(i)).norm();
             p = p.copy().shift(dist, 0);
             resul.getPath().addPoint(p);
         }
-        int shSize = sh2.size()-1;
+        int shSize = sh2.size() - 1;
 
         while (pivotalSegment < 0) {
             pivotalSegment += shSize;
@@ -206,36 +207,36 @@ public class PathUtils {
 
         return resul;
     }
-
-    public JMPathPoint getInterpolatedPoint(JMPathPoint jmp1, JMPathPoint jmp2, double alpha) {
-        JMPathPoint interpolate;
-        if (jmp2.isCurved) {
-            // De Casteljau's Algorithm:
-            // https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
-            Point E = jmp1.p.interpolate(jmp1.cpExit, alpha); // New cp1 of v1
-            Point G = jmp2.cpEnter.interpolate(jmp2.p, alpha); // New cp2 of v2
-            Point F = jmp1.cpExit.interpolate(jmp2.cpEnter, alpha);
-            Point H = E.interpolate(F, alpha);// cp2 of interpolation point
-            Point J = F.interpolate(G, alpha);// cp1 of interpolation point
-            Point K = H.interpolate(J, alpha); // Interpolation point
-            interpolate = new JMPathPoint(K, jmp2.isThisSegmentVisible, JMPathPointType.INTERPOLATION_POINT);
-            interpolate.cpExit.v.copyFrom(J.v);
-            interpolate.cpEnter.v.copyFrom(H.v);
-
-        } else {
-            Point K = jmp1.p.interpolate(jmp2.p, alpha);
-            interpolate = new JMPathPoint(K, jmp2.isThisSegmentVisible, JMPathPointType.INTERPOLATION_POINT);
-        }
-        interpolate.isCurved = jmp2.isCurved;
-        return interpolate;
-    }
+//
+//    public JMPathPoint getInterpolatedPoint(JMPathPoint jmp1, JMPathPoint jmp2, double alpha) {
+//        JMPathPoint interpolate;
+//        if (jmp2.isCurved) {
+//            // De Casteljau's Algorithm:
+//            // https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
+//            Vec E = jmp1.p.interpolate(jmp1.cpExit, alpha); // New cp1 of v1
+//            Point G = jmp2.cpEnter.interpolate(jmp2.p, alpha); // New cp2 of v2
+//            Point F = jmp1.cpExit.interpolate(jmp2.cpEnter, alpha);
+//            Point H = E.interpolate(F, alpha);// cp2 of interpolation point
+//            Point J = F.interpolate(G, alpha);// cp1 of interpolation point
+//            Point K = H.interpolate(J, alpha); // Interpolation point
+//            interpolate = new JMPathPoint(K, jmp2.isThisSegmentVisible, JMPathPointType.INTERPOLATION_POINT);
+//            interpolate.cpExit.copyFrom(J.v);
+//            interpolate.cpEnter.copyFrom(H.v);
+//
+//        } else {
+//            Point K = jmp1.p.interpolate(jmp2.p, alpha);
+//            interpolate = new JMPathPoint(K, jmp2.isThisSegmentVisible, JMPathPointType.INTERPOLATION_POINT);
+//        }
+//        interpolate.isCurved = jmp2.isCurved;
+//        return interpolate;
+//    }
 
     public void determineStraightSegments(JMPath path) {
         CircularArrayList<JMPathPoint> jmPathPoints = path.jmPathPoints;
         for (int n = 0; n < path.size(); n++) {
             JMPathPoint p1 = jmPathPoints.get(n);
             JMPathPoint p2 = jmPathPoints.get(n + 1);
-            p2.isCurved = !((p1.p.to(p1.cpExit).norm() < .0001) && (p2.p.to(p2.cpEnter).norm() < .0001));
+            p2.isCurved = !((p1.p.v.minus(p1.cpExit).norm() < .0001) && (p2.p.v.minus(p2.cpEnter).norm() < .0001));
         }
     }
 

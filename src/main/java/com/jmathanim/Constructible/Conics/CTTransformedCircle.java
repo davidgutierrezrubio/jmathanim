@@ -135,13 +135,13 @@ public class CTTransformedCircle extends CTCircle {
                 tr = AffineJTransform.createReflectionByAxis(axis.getP1(), axis.getP2(), 1);
                 break;
             case CENTRALMIRROR:
-                tr = AffineJTransform.createScaleTransform(new Point(center.v), -1);
+                tr = AffineJTransform.createScaleTransform(new Point(center.v.x,center.v.y), -1);
                 break;
             case TRANSLATION:
                 tr = AffineJTransform.createTranslationTransform(translation.getDirection());
                 break;
             case ROTATION:
-                tr = AffineJTransform.create2DRotationTransform(new Point(center.v), angle.value);
+                tr = AffineJTransform.create2DRotationTransform(new Point(center.v.x,center.v.y), angle.value);
                 break;
             default:
                 tr = null;

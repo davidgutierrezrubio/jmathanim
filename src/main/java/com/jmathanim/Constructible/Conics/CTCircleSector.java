@@ -111,7 +111,11 @@ public class CTCircleSector extends CTAbstractCircle {
 
     @Override
     public void rebuildShape() {
-        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(Point.at(0, 0), Point.at(1, 0), new Point(center.v), new Point(A.v), 1);
+        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(
+                Point.at(0, 0),
+                Point.at(1, 0),
+                new Point(center.v.x,center.v.y),
+                new Point(A.v.x,A.v.y), 1);
 
         Vec v1 = center.to(A);
         Vec v2 = center.to(B);
@@ -123,12 +127,12 @@ public class CTCircleSector extends CTAbstractCircle {
             }
             Shape referenceArc = Shape.arc(angle);
 
-            referenceArc.get(0).cpEnter.v.copyFrom(referenceArc.get(0).p.v);
-            referenceArc.get(-1).cpExit.v.copyFrom(referenceArc.get(-1).p.v);
+            referenceArc.get(0).cpEnter.copyFrom(referenceArc.get(0).p.v);
+            referenceArc.get(-1).cpExit.copyFrom(referenceArc.get(-1).p.v);
             referenceArc.get(0).isThisSegmentVisible = true;
             JMPathPoint pp = JMPathPoint.lineTo(Point.origin());
-            pp.cpEnter.v.copyFrom(pp.p.v);
-            pp.cpExit.v.copyFrom(pp.p.v);
+            pp.cpEnter.copyFrom(pp.p.v);
+            pp.cpExit.copyFrom(pp.p.v);
             referenceArc.getPath().jmPathPoints.add(0, pp);
             referenceArc.applyAffineTransform(tr);
             arcTODraw.getPath().clear();

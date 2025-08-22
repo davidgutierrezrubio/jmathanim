@@ -47,7 +47,7 @@ public class CTRotatedPoint extends CTPoint {
         this.pointToRotate = pointToRotate;
         this.angle = angle;
         this.rotationCenter = rotationCenter;
-        this.protationCenter = new Point(rotationCenter.v);
+        this.protationCenter = new Point(rotationCenter.v.x,rotationCenter.v.y);
     }
 
     @Override

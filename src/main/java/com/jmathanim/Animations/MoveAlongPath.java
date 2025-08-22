@@ -110,7 +110,7 @@ public class MoveAlongPath extends Animation {
 
         if (shouldRotate) {
             JMPathPoint pp = path.getJMPointAt(lt);
-            Vec tangent = pp.p.to(pp.cpExit);
+            Vec tangent = pp.cpExit.minus(pp.p.v);
             mobjTransformed.rotate(destinyPoint, tangent.getAngle());
         }
     }

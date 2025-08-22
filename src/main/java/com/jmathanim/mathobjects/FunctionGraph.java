@@ -248,12 +248,12 @@ public class FunctionGraph extends Shape implements hasScalarParameter, shouldUd
                     slope = 0;
                 }
                 Vec v = new Vec(deltaX, slope * deltaX);
-                jmp.cpExit.v.copyFrom(jmp.p.add(v).v);
+                jmp.cpExit.copyFrom(jmp.p.add(v).v);
             }
             if (n > 0) {
                 final double deltaX = .3 * (xPoints.get(n - 1) - x);
                 Vec v = new Vec(deltaX, getSlope(x, -1) * deltaX);
-                jmp.cpEnter.v.copyFrom(jmp.p.add(v).v);
+                jmp.cpEnter.copyFrom(jmp.p.add(v).v);
                 double h = x - xPoints.get(n - 1);
                 double deriv = (getFunctionValue(x, this.w) - getFunctionValue(xPoints.get(n - 1), this.w)) / h;
                 jmp.isThisSegmentVisible = (Math.abs(deriv) < CONTINUUM_THRESHOLD);

@@ -41,12 +41,19 @@ public class CTCircleArc extends CTAbstractCircle {
     private final CTPoint B;
     private final Shape arcTODraw;
 
+    private CTCircleArc(CTPoint center, CTPoint A, CTPoint B) {
+        this.center = center;
+        this.A = A;
+        this.B = B;
+        arcTODraw = new Shape();
+    }
+
     /**
      * Creates a new Constructible circle arc
      *
      * @param center Center of arc
-     * @param A Starting point. Arc will pass through this point
-     * @param B Point that determines the angle of the arc.
+     * @param A      Starting point. Arc will pass through this point
+     * @param B      Point that determines the angle of the arc.
      * @return The created arc
      */
     public static CTCircleArc make(CTPoint center, CTPoint A, CTPoint B) {
@@ -59,21 +66,14 @@ public class CTCircleArc extends CTAbstractCircle {
      * Overloaded method. Creates a new Constructible circle arc
      *
      * @param center Center of arc
-     * @param A Starting point. Arc will pass through this point
-     * @param B Point that determines the angle of the arc.
+     * @param A      Starting point. Arc will pass through this point
+     * @param B      Point that determines the angle of the arc.
      * @return The created arc
      */
     public static CTCircleArc make(Point center, Point A, Point B) {
         CTCircleArc resul = new CTCircleArc(CTPoint.make(center), CTPoint.make(A), CTPoint.make(B));
         resul.rebuildShape();
         return resul;
-    }
-
-    private CTCircleArc(CTPoint center, CTPoint A, CTPoint B) {
-        this.center = center;
-        this.A = A;
-        this.B = B;
-        arcTODraw = new Shape();
     }
 
     @Override
@@ -111,7 +111,11 @@ public class CTCircleArc extends CTAbstractCircle {
 
     @Override
     public void rebuildShape() {
-        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(Point.at(0, 0), Point.at(1, 0), new Point(center.v), new Point(A.v), 1);
+        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(
+                Point.at(0, 0),
+                Point.at(1, 0),
+                new Point(center.v.x, center.v.y),
+                new Point(A.v.x, A.v.y), 1);
 
         Vec v1 = center.to(A);
         Vec v2 = center.to(B);

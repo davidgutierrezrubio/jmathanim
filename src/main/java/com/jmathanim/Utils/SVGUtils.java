@@ -441,8 +441,8 @@ public class SVGUtils {
                     // one
                     previousCommand = token;
 
-                    cx1 = previousPoint.p.v.x - (previousPoint.cpEnter.v.x - previousPoint.p.v.x);
-                    cy1 = previousPoint.p.v.y - (previousPoint.cpEnter.v.y - previousPoint.p.v.y);
+                    cx1 = previousPoint.p.v.x - (previousPoint.cpEnter.x - previousPoint.p.v.x);
+                    cy1 = previousPoint.p.v.y - (previousPoint.cpEnter.y - previousPoint.p.v.y);
                     cx2 = Double.parseDouble(it.next());
                     cy2 = -Double.parseDouble(it.next());
                     getPoint(it.next(), it.next());
@@ -453,8 +453,8 @@ public class SVGUtils {
                     // previous one
                     previousCommand = token;
 
-                    cx1 = previousPoint.p.v.x - (previousPoint.cpEnter.v.x - previousPoint.p.v.x);
-                    cy1 = previousPoint.p.v.y - (previousPoint.cpEnter.v.y - previousPoint.p.v.y);
+                    cx1 = previousPoint.p.v.x - (previousPoint.cpEnter.x - previousPoint.p.v.x);
+                    cy1 = previousPoint.p.v.y - (previousPoint.cpEnter.y - previousPoint.p.v.y);
                     xx = previousPoint.p.v.x;
                     yy = previousPoint.p.v.y;
                     cx2 = xx + Double.parseDouble(it.next());
@@ -554,8 +554,8 @@ public class SVGUtils {
                                 break;
                             case "S": // Simplified Cubic Bezier. Take first control point as a reflection of previous
                                 // one
-                                cx1 = previousPoint.p.v.x - (previousPoint.cpEnter.v.x - previousPoint.p.v.x);
-                                cy1 = previousPoint.p.v.y - (previousPoint.cpEnter.v.y - previousPoint.p.v.y);
+                                cx1 = previousPoint.p.v.x - (previousPoint.cpEnter.x - previousPoint.p.v.x);
+                                cy1 = previousPoint.p.v.y - (previousPoint.cpEnter.y - previousPoint.p.v.y);
                                 cx2 = Double.parseDouble(token);
                                 cy2 = -Double.parseDouble(it.next());
                                 getPoint(it.next(), it.next());
@@ -563,8 +563,8 @@ public class SVGUtils {
                                 break;
                             case "s": // Simplified relative Cubic Bezier. Take first control point as a reflection of
                                 // previous one
-                                cx1 = previousPoint.p.v.x - (previousPoint.cpEnter.v.x - previousPoint.p.v.x);
-                                cy1 = previousPoint.p.v.y - (previousPoint.cpEnter.v.y - previousPoint.p.v.y);
+                                cx1 = previousPoint.p.v.x - (previousPoint.cpEnter.x - previousPoint.p.v.x);
+                                cy1 = previousPoint.p.v.y - (previousPoint.cpEnter.y - previousPoint.p.v.y);
                                 xx = previousPoint.p.v.x;
                                 yy = previousPoint.p.v.y;
                                 cx2 = xx + Double.parseDouble(token);
@@ -720,10 +720,10 @@ public class SVGUtils {
                                         double cy2, double x, double y) {
         JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true, JMPathPoint.JMPathPointType.VERTEX);
         point.isCurved = true;
-        previousPoint.cpExit.v.x = cx1;
-        previousPoint.cpExit.v.y = cy1;
-        point.cpEnter.v.x = cx2;
-        point.cpEnter.v.y = cy2;
+        previousPoint.cpExit.x = cx1;
+        previousPoint.cpExit.y = cy1;
+        point.cpEnter.x = cx2;
+        point.cpEnter.y = cy2;
         path.addJMPoint(point);
         return point;
     }
@@ -732,10 +732,10 @@ public class SVGUtils {
     private JMPathPoint pathLineTo(JMPath path, double currentX, double currentY, boolean isVisible) {
         JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), isVisible, JMPathPoint.JMPathPointType.VERTEX);
         point.isCurved = false;
-        point.cpExit.v.x = currentX;
-        point.cpExit.v.y = currentY;
-        point.cpEnter.v.x = currentX;
-        point.cpEnter.v.y = currentY;
+        point.cpExit.x = currentX;
+        point.cpExit.y = currentY;
+        point.cpEnter.x = currentX;
+        point.cpEnter.y = currentY;
         path.addJMPoint(point);
         return point;
     }

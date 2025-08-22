@@ -110,7 +110,7 @@ public class CTMirrorPoint extends CTPoint {
             case CENTRAL:
                 //Note that we don't use this.center.getMathObject() because 
                 //the mathobject may be free. Instead we create a new point pcenter
-                tr = AffineJTransform.createScaleTransform(new Point(this.center.v), -1);
+                tr = AffineJTransform.createScaleTransform(new Point(this.center.v.x,this.center.v.y), -1);
                 break;
             default:
                 tr = new AffineJTransform();//An identity transform

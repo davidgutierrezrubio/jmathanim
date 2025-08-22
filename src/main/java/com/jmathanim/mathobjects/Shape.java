@@ -249,8 +249,8 @@ public class Shape extends MathObject {
             path.addJMPoint(jmp.copy().rotate(Point.origin(), k * step));
         }
         path.get(0).isThisSegmentVisible = false;
-        path.get(0).cpEnter.v.copyFrom(path.get(0).p.v);
-        path.get(-1).cpExit.v.copyFrom(path.get(-1).p.v);
+        path.get(0).cpEnter.copyFrom(path.get(0).p.v);
+        path.get(-1).cpExit.copyFrom(path.get(-1).p.v);
         Shape obj = new Shape(path);
         obj.objectLabel = "circle";
         return obj;

@@ -114,13 +114,13 @@ public class CTTransformedLine extends CTAbstractLine {
                 tr = AffineJTransform.createReflectionByAxis(axis.getP1(), axis.getP2(), 1);
                 break;
             case CENTRALMIRROR:
-                tr = AffineJTransform.createScaleTransform(new Point(center.v), -1);
+                tr = AffineJTransform.createScaleTransform(new Point(center.v.x,center.v.y), -1);
                 break;
             case TRANSLATION:
                 tr = AffineJTransform.createTranslationTransform(translation.getDirection());
                 break;
             default:
-                tr = AffineJTransform.create2DRotationTransform(new Point(center.v), angle.value);
+                tr = AffineJTransform.create2DRotationTransform(new Point(center.v.x, center.v.y), angle.value);
         }
         getP1().v.copyFrom(lineToTransform.getP1().v);
         getP2().v.copyFrom(lineToTransform.getP2().v);

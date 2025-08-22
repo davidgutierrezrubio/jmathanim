@@ -75,7 +75,7 @@ public class CTPoint extends Constructible {
     
     @Override
     public CTPoint copy() {
-        CTPoint copy = make(new Point(this.v));
+        CTPoint copy = make(new Point(this.v.x,this.v.y));
         copy.setFreeMathObject(this.isFreeMathObject());
         copy.getMathObject().copyStateFrom(this.getMathObject());
         copy.getMp().copyFrom(this.getMp());
@@ -111,7 +111,7 @@ public class CTPoint extends Constructible {
      * @return The created object
      */
     public CTPoint add(Vec v) {
-        return CTPoint.make(new Point(this.v));
+        return CTPoint.make(new Point(this.v.x+v.x,this.v.y+v.y));
     }
     
     @Override

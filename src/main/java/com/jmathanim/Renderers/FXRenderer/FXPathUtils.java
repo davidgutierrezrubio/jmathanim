@@ -59,11 +59,11 @@ public class FXPathUtils {
                 double[] xy = cam.screenToMath(c.getX(), c.getY());
                 JMPathPoint pp = JMPathPoint.curveTo(Point.at(xy[0], xy[1]));
                 xy = cam.screenToMath(c.getControlX2(), c.getControlY2());
-                pp.cpEnter.v.x = xy[0];
-                pp.cpEnter.v.y = xy[1];
+                pp.cpEnter.x = xy[0];
+                pp.cpEnter.y = xy[1];
                 xy = cam.screenToMath(c.getControlX1(), c.getControlY1());
-                previousPP.cpExit.v.x = xy[0];
-                previousPP.cpExit.v.y = xy[1];
+                previousPP.cpExit.x = xy[0];
+                previousPP.cpExit.y = xy[1];
                 resul.addJMPoint(pp);
                 previousPP = pp;
             }
@@ -93,8 +93,8 @@ public class FXPathUtils {
             if (resul.jmPathPoints.get(0).p.isEquivalentTo(resul.jmPathPoints.get(-1).p, 1.0E-6)) {
                 JMPathPoint fp = resul.jmPathPoints.get(0);
                 JMPathPoint lp = resul.jmPathPoints.get(-1);
-                fp.cpEnter.v.x = lp.cpEnter.v.x;
-                fp.cpEnter.v.y = lp.cpEnter.v.y;
+                fp.cpEnter.x = lp.cpEnter.x;
+                fp.cpEnter.y = lp.cpEnter.y;
                 fp.isThisSegmentVisible = true;
                 // Delete last point
                 resul.jmPathPoints.remove(lp);
@@ -120,8 +120,8 @@ public class FXPathUtils {
         path.getElements().add(new MoveTo(prev[0], prev[1]));
         for (int n = 1; n < jmpath.size() + 1; n++) {
             Vec point = jmpath.jmPathPoints.get(n).p.v;
-            Vec cpoint1 = jmpath.jmPathPoints.get(n - 1).cpExit.v;
-            Vec cpoint2 = jmpath.jmPathPoints.get(n).cpEnter.v;
+            Vec cpoint1 = jmpath.jmPathPoints.get(n - 1).cpExit;
+            Vec cpoint2 = jmpath.jmPathPoints.get(n).cpEnter;
 
             double[] xy, cxy1, cxy2;
 
