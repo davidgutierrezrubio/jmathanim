@@ -262,8 +262,8 @@ public class AffineJTransform implements Stateable {
         // Determinant of the A_xy=2D-submatrix, to compute change in thickness
         // As Area changes in det(A_xy), we change thickness in the root square of
         // det(A_xy)
-        double det = matrix.getEntry(1, 1) * matrix.getEntry(2, 2) - matrix.getEntry(2, 1) * matrix.getEntry(1, 2);
         if (!mObject.getMp().isAbsoluteThickness()) {
+            double det = matrix.getEntry(1, 1) * matrix.getEntry(2, 2) - matrix.getEntry(2, 1) * matrix.getEntry(1, 2);
             final double sqrtDet = Math.sqrt(Math.abs(det));
             mObject.getMp().multThickness(Math.sqrt(sqrtDet));
         }

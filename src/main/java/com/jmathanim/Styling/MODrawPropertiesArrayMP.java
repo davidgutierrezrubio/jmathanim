@@ -44,7 +44,7 @@ import java.util.Arrays;
  * context. Instances can be initialized with default properties or copied from existing objects, with modifications
  * propagating across associated entities.
  */
-public class MODrawPropertiesArrayMP implements Stylable, Stateable {
+public class MODrawPropertiesArrayMP implements Stylable, Stateable,hasStyle {
 
     private final MODrawPropertiesLaTeX mpRef;
     private ArrayList<Stylable> mpArray;
@@ -568,7 +568,10 @@ public class MODrawPropertiesArrayMP implements Stylable, Stateable {
         }
         mpRef.setDotStyle(dotStyle);
     }
-
+    @Override
+    public Stylable getMp() {
+        return this;
+    }
     /**
      * Retrieves the dash style property from the referenced Stylable.
      *

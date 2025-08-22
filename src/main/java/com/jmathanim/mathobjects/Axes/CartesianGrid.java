@@ -176,7 +176,6 @@ public class CartesianGrid extends MultiShapeObject implements shouldUdpateWithC
          super.copyStateFrom(obj);
         if (obj instanceof CartesianGrid) {
             CartesianGrid grid = (CartesianGrid) obj;
-            this.getMp().copyFrom(grid.getMp());
         }
     }
 

@@ -51,6 +51,8 @@ public abstract class Renderer {
     protected final JMathAnimConfig config;
     protected final JMathAnimScene scene;
 
+    private final Vec nullVector=Vec.to(0,0);
+
     public Renderer(JMathAnimScene parentScene) {
         this.scene = parentScene;
         this.config = parentScene.getConfig();
@@ -145,9 +147,12 @@ public abstract class Renderer {
      *
      * @param mobj The JMPathObject
      */
-    abstract public void drawPath(Shape mobj);
+    abstract protected void drawPath(Shape mobj);
 
-    abstract public void drawPath(Shape mobj, Camera camera);
+    public void drawPath(Shape mobj, Camera camera) {
+        drawPath(mobj, nullVector, camera);
+    };
+    abstract public void drawPath(Shape mobj, Vec shiftVector, Camera camera);
 
     abstract public void drawAbsoluteCopy(Shape sh, Vec anchor);
 

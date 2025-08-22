@@ -94,7 +94,6 @@ public class JMImage extends AbstractJMImage {
         }
         JMImage img = (JMImage) obj;
         bbox.copyFrom(img.bbox);
-        getMp().copyFrom(img.getMp());
         preserveRatio = img.preserveRatio;
         this.currentViewTransform.copyFrom(img.currentViewTransform);
     }

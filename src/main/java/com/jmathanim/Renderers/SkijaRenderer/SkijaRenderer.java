@@ -164,7 +164,7 @@ public class SkijaRenderer extends Renderer {
     }
 
     @Override
-    public void drawPath(Shape mobj, Camera camera) {
+    public void drawPath(Shape mobj, Vec shiftVector,Camera camera) {
         skijaHandler.drawPath(mobj, camera);
     }
 

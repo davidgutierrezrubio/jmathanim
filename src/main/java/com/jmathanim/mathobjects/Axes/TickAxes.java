@@ -115,7 +115,6 @@ public class TickAxes extends MathObject {
             return;
         }
         TickAxes t = (TickAxes) obj;
-        getMp().copyFrom(t.getMp());
         getLegend().copyStateFrom(t.getLegend());
         getTick().copyStateFrom(t.getTick());
     }

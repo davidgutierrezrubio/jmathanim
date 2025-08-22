@@ -393,7 +393,6 @@ public class FunctionGraph extends Shape implements hasScalarParameter, shouldUd
             return;
         }
         FunctionGraph fg = (FunctionGraph) obj;
-        this.getMp().copyFrom(fg.getMp());
         xPoints.clear();
         xPoints.addAll(fg.xPoints);
 

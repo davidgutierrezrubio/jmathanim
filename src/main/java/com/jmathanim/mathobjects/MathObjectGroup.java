@@ -19,8 +19,8 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Enum.AnchorType;
-import com.jmathanim.Enum.LayoutType;
 import com.jmathanim.Enum.InnerAnchorType;
+import com.jmathanim.Enum.LayoutType;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
@@ -211,9 +211,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         }
         MathObjectGroup mg = (MathObjectGroup) obj;
 
-        this.getMp().copyFrom(mg.getMp());
-
-        if (mg.size() == size()) {
+       if (mg.size() == size()) {
             int n = 0;
             for (MathObject o : getObjects()) {
                 o.copyStateFrom(mg.get(n));

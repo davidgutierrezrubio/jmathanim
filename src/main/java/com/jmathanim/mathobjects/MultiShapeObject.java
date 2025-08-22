@@ -32,20 +32,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * This class stores multiple JMPathObjects, and properly apply transforms and
- * animations to them
+ * This class stores multiple JMPathObjects, and properly apply transforms and animations to them
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 
     protected final MODrawPropertiesArray mpMultiShape;
-    public boolean isAddedToScene;
     private final ArrayList<Shape> shapes;
-
-    public static MultiShapeObject make(Shape... shapes) {
-        return new MultiShapeObject(Arrays.asList(shapes));
-    }
+    public boolean isAddedToScene;
 
     protected MultiShapeObject() {
         this(new ArrayList<>());
@@ -60,6 +55,10 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         for (MathObject sh : shapes) {
             mpMultiShape.add(sh);
         }
+    }
+
+    public static MultiShapeObject make(Shape... shapes) {
+        return new MultiShapeObject(Arrays.asList(shapes));
     }
 
     public boolean add(Shape e) {
@@ -94,7 +93,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         return super.drawColor(dc);
     }
 
-//    @Override
+    //    @Override
 //    public <T extends MathObject> T shift(Vec shiftVector) {
 //        for (Shape jmp : shapes) {
 //            jmp.shift(shiftVector);
@@ -120,7 +119,8 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 //        if (!(obj instanceof MultiShapeObject)) {
 //            return;
 //        }
-////        shapes.clearAndPrepareCanvasForAnotherFrame();
+
+    /// /        shapes.clearAndPrepareCanvasForAnotherFrame();
 //        MultiShapeObject msh = (MultiShapeObject) obj;
 //        this.getMp().copyFrom(msh.getMp());
 //        for (Shape sh : msh) {
@@ -137,22 +137,17 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         }
 
         MultiShapeObject msh = (MultiShapeObject) obj;
-        this.getMp().copyFrom(msh.getMp());
         int n = 0;
         //Assuming this shape and obj has the same number of items
         if (size() == msh.size()) {
-
             for (Shape s : shapes) {
                 s.copyStateFrom(msh.get(n));
-                s.getMp().copyFrom(msh.get(n).getMp());
                 n++;
             }
         } else {//If there is discrepancy, turn it off and on!
             shapes.clear();
-            this.getMp().copyFrom(msh.getMp());
             for (Shape sh : msh) {
                 add(sh.copy());
-                sh.getMp().copyFrom(sh.getMp());
             }
         }
     }
@@ -162,7 +157,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         super.setAbsoluteSize(anchorType);
         Point p = Anchor.getAnchorPoint(this, anchorType);
         for (Shape sh : shapes) {
-            sh.setAbsoluteSize(p);
+            sh.setAbsoluteSize(p.v);
         }
 
         return (T) this;
@@ -188,7 +183,6 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         }
         scene.markAsAlreadydrawn(this);
     }
-
 
 
     @Override
@@ -244,16 +238,13 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     }
 
     /**
-     * Align with another MultiShape so that the center of one of its shapes is
-     * aligned with the center of the shape of the other Multishape. This is
-     * generally used for LaTeXMathObjects to align two equation by their equal
-     * sign
+     * Align with another MultiShape so that the center of one of its shapes is aligned with the center of the shape of
+     * the other Multishape. This is generally used for LaTeXMathObjects to align two equation by their equal sign
      *
-     * @param <T> Calling subclass
-     * @param index Shape index of the shape to align
-     * @param otherObject The other multishape object
-     * @param indexOtherObject Index of the shape of the other multishape to
-     * align with
+     * @param <T>              Calling subclass
+     * @param index            Shape index of the shape to align
+     * @param otherObject      The other multishape object
+     * @param indexOtherObject Index of the shape of the other multishape to align with
      * @return This object
      */
     public <T extends MultiShapeObject> T alignCenter(int index, MultiShapeObject otherObject, int indexOtherObject) {
@@ -271,12 +262,11 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     }
 
     /**
-     * Extracts a part of a MultiShape, given by a set of indices.Indices are
-     * unaltered, so shape 5 after slicing is still shape 5.
+     * Extracts a part of a MultiShape, given by a set of indices.Indices are unaltered, so shape 5 after slicing is
+     * still shape 5.
      *
-     * @param <T> Multishape subclass
-     * @param delete If true, sliced shapes will be removed from the original
-     * and replaced with empty shapes.
+     * @param <T>     Multishape subclass
+     * @param delete  If true, sliced shapes will be removed from the original and replaced with empty shapes.
      * @param indices indices to slice (varargs)
      * @return A new multishape instance with the extracted shapes.
      */
@@ -305,18 +295,18 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     /**
      * Overloaded method, equivalent to slice(true,indices)
      *
-     * @param <T> Multishape subclass object
+     * @param <T>     Multishape subclass object
      * @param indices indices to slice (varargs)
-     * @return A new multishape instance with the extracted shapes. The original
-     * multishape object is altered as the extracted shapes becomes null shapes
+     * @return A new multishape instance with the extracted shapes. The original multishape object is altered as the
+     * extracted shapes becomes null shapes
      */
     public <T extends MultiShapeObject> T slice(int... indices) {
         return slice(true, indices);
     }
 
     /**
-     * Gets an array of Shapes with the given indices. This method is used
-     * mostly to combine with animations that accepts a varargs of MathObject
+     * Gets an array of Shapes with the given indices. This method is used mostly to combine with animations that
+     * accepts a varargs of MathObject
      *
      * @param indices
      * @return
@@ -333,8 +323,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     }
 
     /**
-     * Gets a MultiShapeObject with the specified shapes of this object. The
-     * shapes are referenced.
+     * Gets a MultiShapeObject with the specified shapes of this object. The shapes are referenced.
      *
      * @param indices Indices of the shapes
      * @return A new MultiShapeObject with the specified shapes
@@ -353,7 +342,9 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         for (Shape sh : shapes) {
             sh.applyAffineTransform(tr);
         }
-        tr.applyTransformsToDrawingProperties(this);
+
+        if (hasMPCreated())
+            tr.applyTransformsToDrawingProperties(this);
         return (T) this;
     }
 
@@ -385,12 +376,11 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     }
 
     /**
-     * Returns a Shape object with all shapes of this MultiShapeObject merged.
-     * Drawing style is copied from general drawing style from this object.
+     * Returns a Shape object with all shapes of this MultiShapeObject merged. Drawing style is copied from general
+     * drawing style from this object.
      *
-     * @param connect If true, connect the ending of a shape with the beginning
-     * of the next one by a straight line.
-     * @param close If true, closes the resulting shape.
+     * @param connect If true, connect the ending of a shape with the beginning of the next one by a straight line.
+     * @param close   If true, closes the resulting shape.
      * @return The Shape object created.
      */
     public Shape merge(boolean connect, boolean close) {

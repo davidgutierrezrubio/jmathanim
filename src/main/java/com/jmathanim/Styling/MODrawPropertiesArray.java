@@ -49,7 +49,7 @@ import java.util.Arrays;
  * can be initialized with default properties or copied from existing objects, with
  * modifications propagating across associated entities.
  */
-public class MODrawPropertiesArray implements Stylable, Stateable {
+public class MODrawPropertiesArray implements Stylable, Stateable,hasStyle {
 
     private final MODrawPropertiesLaTeX mpRef;
     private ArrayList<MathObject> objects;
@@ -91,7 +91,10 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         mpRef = new MODrawPropertiesLaTeX();
     }
 
-
+    @Override
+    public Stylable getMp() {
+        return this;
+    }
     /**
      * Returns the LaTeXStyle of the associated AbstractLaTeXMathObject
      *

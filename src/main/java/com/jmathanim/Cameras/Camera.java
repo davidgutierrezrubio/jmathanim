@@ -171,6 +171,10 @@ public class Camera implements Boxable {
         return this;
     }
 
+    public double[] mathToScreenFX(Vec p) {
+        return mathToScreen(p.x, p.y);
+    }
+
     public double mathToScreen(double mathScalar) {
         // xmin,ymin->(0,0)
         // xmax, ymax->(screenWidth,screenHeight)
@@ -198,9 +202,6 @@ public class Camera implements Boxable {
         return screenScalar * (xmax - xmin) / screenWidth;
     }
 
-    public double[] mathToScreenFX(Vec p) {
-        return mathToScreen(p.x, p.y);
-    }
 
     public void saveState() {
         xminB = xmin;

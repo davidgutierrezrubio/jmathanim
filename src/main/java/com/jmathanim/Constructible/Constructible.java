@@ -127,7 +127,6 @@ public abstract class Constructible extends MathObject {
         } else {
             getMathObject().copyStateFrom(obj);
         }
-        getMp().copyFrom(obj.getMp());
     }
 
     @Override

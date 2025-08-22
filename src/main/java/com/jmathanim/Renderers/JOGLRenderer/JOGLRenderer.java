@@ -90,9 +90,11 @@ public class JOGLRenderer extends Renderer {
     }
 
     @Override
-    public void drawPath(Shape mobj, Camera camera) {
-        queue.addToQueue(mobj);
+    public void drawPath(Shape mobj, Vec shiftVector,Camera camera) {
+        queue.addToQueue(mobj);//TODO: SHiftvector is not passed trhough queue
     }
+
+
 
     @Override
     protected BufferedImage getRenderedImage(int frameCount) {

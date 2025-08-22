@@ -20,7 +20,6 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Enum.AnchorType;
-import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.*;
 import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
 
@@ -595,7 +594,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         ArrayList<Point> points = new ArrayList<>();
 
         for (JMPathPoint jmp : jmPathPoints) {
-            points.add(jmp.p.copy().thickness(2));
+            points.add(jmp.p.copy());
         }
         points.addAll(getCriticalPoints());
         return Rect.make(points.toArray(new Point[0]));
@@ -943,7 +942,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
                     v = pOrig.p.interpolate(pDst.p, tCrit).v;
                 }
 
-                resul.add(Point.at(v.x, v.y).drawColor(JMColor.BLUE));
+                resul.add(Point.at(v.x, v.y));
             }
         }
         // Now for y
@@ -956,7 +955,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
                 } else {
                     v = pOrig.p.interpolate(pDst.p, tCrit).v;
                 }
-                resul.add(Point.at(v.x, v.y).drawColor(JMColor.RED));
+                resul.add(Point.at(v.x, v.y));
             }
         }
         return resul;

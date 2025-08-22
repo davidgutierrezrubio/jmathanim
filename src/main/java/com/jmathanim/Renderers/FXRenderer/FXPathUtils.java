@@ -113,10 +113,10 @@ public class FXPathUtils {
      * coordinates
      * @return
      */
-    public static Path createFXPathFromJMPath(JMPath jmpath, Camera camera) {
+    public static Path createFXPathFromJMPath(JMPath jmpath, Vec shiftVector, Camera camera) {
         Path path = new Path();
         Vec p = jmpath.jmPathPoints.get(0).p.v;
-        double[] prev = camera.mathToScreen(p.x, p.y);
+        double[] prev = camera.mathToScreen(p.x+shiftVector.x, p.y+shiftVector.y);
         path.getElements().add(new MoveTo(prev[0], prev[1]));
         for (int n = 1; n < jmpath.size() + 1; n++) {
             Vec point = jmpath.jmPathPoints.get(n).p.v;
@@ -125,9 +125,9 @@ public class FXPathUtils {
 
             double[] xy, cxy1, cxy2;
 
-            xy = camera.mathToScreenFX(point);
-            cxy1 = camera.mathToScreenFX(cpoint1);
-            cxy2 = camera.mathToScreenFX(cpoint2);
+            xy = camera.mathToScreen(point.x+shiftVector.x,point.y+shiftVector.y);
+            cxy1 = camera.mathToScreen(cpoint1.x+shiftVector.x,cpoint1.y+shiftVector.y);
+            cxy2 = camera.mathToScreen(cpoint2.x+shiftVector.x,cpoint2.y+shiftVector.y);
 
             if (jmpath.jmPathPoints.get(n).isThisSegmentVisible) {
                 JMPathPoint jp = jmpath.jmPathPoints.get(n);

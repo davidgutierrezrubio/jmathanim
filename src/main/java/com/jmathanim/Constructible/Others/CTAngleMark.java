@@ -85,7 +85,6 @@ public class CTAngleMark extends Constructible {
             CTAngleMark ang = (CTAngleMark) obj;
             this.setFreeMathObject(ang.isFreeMathObject());
             this.getMathObject().copyStateFrom(ang.getMathObject());
-            this.getMp().copyFrom(ang.getMp());
         }
     }
 

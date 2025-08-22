@@ -317,7 +317,7 @@ public class JavaFXRenderer extends Renderer {
     }
 
     @Override
-    public void drawPath(Shape mobj, Camera cam) {
+    public void drawPath(Shape mobj, Vec shiftVector, Camera cam) {
         if (cam == null) {
             //If the object has not a camera assigned yet, set it to default
             cam = getCamera();
@@ -343,7 +343,7 @@ public class JavaFXRenderer extends Renderer {
 //                path.getTransforms().add(new Scale(1, -1));
 //                path.getTransforms().add(FXPathUtils.screenToCamAffineTransfrom(mobj.getCamera()));
 //            } else {
-            path = FXPathUtils.createFXPathFromJMPath(objectPath, cam);
+            path = FXPathUtils.createFXPathFromJMPath(objectPath, shiftVector,cam);
 //            }
             applyDrawingStyles(path, mobj);
             applyRendererEffects(path, mobj.getRendererEffects());
@@ -455,10 +455,8 @@ public class JavaFXRenderer extends Renderer {
 
     @Override
     public void drawAbsoluteCopy(Shape sh, Vec anchor) {
-        Shape shape = sh.copy();
         Vec vFixed = defaultToFixedCamera(anchor);
-        shape.shift(vFixed.minus(anchor));
-        drawPath(shape, fixedCamera);
+        drawPath(sh, vFixed.minus(anchor),fixedCamera);
     }
 
     /**

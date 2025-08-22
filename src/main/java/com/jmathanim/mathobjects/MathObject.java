@@ -38,16 +38,16 @@ import java.util.HashSet;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class MathObject implements Drawable, Updateable, Stateable, Boxable, Linkable {
+public abstract class MathObject implements Drawable, Updateable, Stateable, Boxable, Linkable,hasStyle {
     protected final AffineJTransform modelMatrix;
-    private final MODrawProperties mp;
+    private MODrawProperties mp;
     private final HashSet<MathObject> dependents;
     private final RendererEffects rendererEffects;
     private final HashMap<String, Object> properties;
     private final ArrayList<Updater> updaters;
     public String objectLabel = "";
     public boolean absoluteSize = false;
-    public Point absoluteAnchorPoint;
+    public Vec absoluteAnchorVec;
     protected JMathAnimScene scene;
     protected boolean isRigid = false;
     private boolean hasBeenUpdated = false;
@@ -74,9 +74,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         if (scene != null) {
             camera = scene.getCamera();//Default camera
         }
-        mp = config.getDefaultMP();// Default MP values
-        mp.copyFrom(prop);// Copy all non-null values from prop
-        mp.setParent(this);
+        if (prop!=null) {
+            mp = config.getDefaultMP();// Default MP values
+            mp.copyFrom(prop);// Copy all non-null values from prop
+            mp.setParent(this);
+        }
         //Default values for an object that always updates
         dependents = new HashSet<>();
 
@@ -357,7 +359,8 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public void copyStateFrom(MathObject obj) {
         if (obj == null) return;
         this.setCamera(obj.getCamera());
-        this.getMp().copyFrom(obj.getMp());
+        this.copyMPFrom(obj);
+//        this.getMp().copyFrom(obj.getMp());
         if (this.getRendererEffects() != null) {
             this.getRendererEffects().copyFrom(rendererEffects);
         }
@@ -403,7 +406,31 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @return The drawing attributes object
      */
     public Stylable getMp() {
+        if (mp==null) {
+            System.out.println("Creando nuevo MP para objeto "+this);
+            mp = (MODrawProperties) createDefaultMPForThisObject();
+            mp.setParent(this);
+        }
         return mp;
+    }
+
+    protected Stylable getSafeMP() {
+        return mp;
+    }
+    protected boolean hasMPCreated() {
+        return (mp!=null);
+    }
+    protected void copyMPFrom(MathObject obj) {
+       if (obj==null) return;
+        boolean thisHasCreated = hasMPCreated();
+        boolean objHasCreated = obj.hasMPCreated();
+        if (thisHasCreated || objHasCreated) {
+            getMp().copyFrom(obj.getMp());
+        }
+    }
+
+    protected Stylable createDefaultMPForThisObject() {
+        return JMathAnimConfig.getConfig().getDefaultMP();// Default MP values
     }
 
     /**
@@ -557,8 +584,8 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         return Anchor.getAnchorPoint(this, absoluteAnchorAnchorType);
     }
 
-    public Point getAbsoluteAnchorPoint() {
-        return absoluteAnchorPoint;
+    public Vec getAbsoluteAnchorVec() {
+        return absoluteAnchorVec;
     }
 
     /**
@@ -567,11 +594,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * reference point to position the object.
      *
      * @param <T> Mathobject subclass
-     * @param p   Reference point to position the object.
+     * @param anchorVec   Reference vector to position the object.
      * @return The current object
      */
-    public <T extends MathObject> T setAbsoluteSize(Point p) {
-        this.absoluteAnchorPoint = p;
+    public <T extends MathObject> T setAbsoluteSize(Vec anchorVec) {
+        this.absoluteAnchorVec = anchorVec;
         absoluteAnchorAnchorType = AnchorType.BY_POINT;
         absoluteSize = true;
         return (T) this;
@@ -888,8 +915,9 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @return True if visible, false otherwise
      */
     public boolean isVisible() {
-        return getMp().isVisible();
+        return  getMp().isVisible();
     }
+
 
     /**
      * Returns the current width of the object, in math coordinates

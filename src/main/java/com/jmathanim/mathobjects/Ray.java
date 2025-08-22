@@ -36,6 +36,47 @@ import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
  */
 public class Ray extends Shape implements HasDirection {
 
+    private final JMPathPoint bp1, bp2;
+    private final Point p1;
+    private final Point p2;
+    private final Shape visiblePiece;
+    MODrawPropertiesArray mpArray;
+
+    /**
+     * Creates a ray that passes through p with direction v
+     *
+     * @param p Point
+     * @param v Direction vector
+     */
+    public Ray(Point p, Vec v) {
+        this(p, p.add(v));
+    }
+
+    /**
+     * Creates a new line that passes through given points, with specified MathDrawingProperties
+     *
+     * @param p1 First point
+     * @param p2 Second point
+     */
+    public Ray(Point p1, Point p2) {
+        super();
+        mpArray = new MODrawPropertiesArray();
+        mpArray.copyFrom(JMathAnimConfig.getConfig().getDefaultMP());// Default MP values);
+        this.p1 = p1;
+        this.p2 = p2;
+        getPath().clear(); // Super constructor adds p1, p2. Delete them
+        bp1 = new JMPathPoint(this.p1, true, JMPathPointType.VERTEX);// trivial boundary points, just to
+        // initialize objects
+        bp2 = new JMPathPoint(new Point(0, 0), true, JMPathPointType.VERTEX);// trivial boundary points, just to
+        // initialize objects
+        visiblePiece = new Shape();
+        visiblePiece.getPath().addJMPoint(bp1, bp2);
+        visiblePiece.getMp().copyFrom(this.getMp());
+        getPath().addPoint(p1, p2);
+        get(0).isThisSegmentVisible = false;
+        mpArray.add(visiblePiece);
+    }
+
     public static Ray XAxisPositive() {
         return new Ray(new Point(0, 0), new Point(1, 0));
     }
@@ -61,9 +102,8 @@ public class Ray extends Shape implements HasDirection {
     }
 
     /**
-     * Creates a new Ray object. Ray is a Shape object with 2 points, as a
-     * Segment but it overrides the draw method so that it extends itself to all
-     * the view, to look like an infinite ray.
+     * Creates a new Ray object. Ray is a Shape object with 2 points, as a Segment but it overrides the draw method so
+     * that it extends itself to all the view, to look like an infinite ray.
      *
      * @param a First point (start of ray)
      * @param b Second point (ray will pass through here)
@@ -74,10 +114,9 @@ public class Ray extends Shape implements HasDirection {
     }
 
     /**
-     * Overloaded builder. Returns a ray starting from point a with direction
-     * given by a vector
+     * Overloaded builder. Returns a ray starting from point a with direction given by a vector
      *
-     * @param start Starting point
+     * @param start     Starting point
      * @param direction Direction
      * @return The Ray object
      */
@@ -85,60 +124,18 @@ public class Ray extends Shape implements HasDirection {
         return new Ray(start, start.add(direction));
     }
 
-    private final JMPathPoint bp1, bp2;
-    MODrawPropertiesArray mpArray;
-    private final Point p1;
-    private final Point p2;
-    private final Shape visiblePiece;
-
-    /**
-     * Creates a ray that passes through p with direction v
-     *
-     * @param p Point
-     * @param v Direction vector
-     */
-    public Ray(Point p, Vec v) {
-        this(p, p.add(v));
-    }
-
-    /**
-     * Creates a new line that passes through given points, with specified
-     * MathDrawingProperties
-     *
-     * @param p1 First point
-     * @param p2 Second point
-     */
-    public Ray(Point p1, Point p2) {
-        super();
-        mpArray = new MODrawPropertiesArray();
-        mpArray.copyFrom(JMathAnimConfig.getConfig().getDefaultMP());// Default MP values);
-        this.p1 = p1;
-        this.p2 = p2;
-        getPath().clear(); // Super constructor adds p1, p2. Delete them
-        bp1 = new JMPathPoint(this.p1, true, JMPathPointType.VERTEX);// trivial boundary points, just to
-        // initialize objects
-        bp2 = new JMPathPoint(new Point(0, 0), true, JMPathPointType.VERTEX);// trivial boundary points, just to
-        // initialize objects
-        visiblePiece = new Shape();
-        visiblePiece.getPath().addJMPoint(bp1, bp2);
-        visiblePiece.getMp().copyFrom(this.getMp());
-        getPath().addPoint(p1, p2);
-        get(0).isThisSegmentVisible = false;
-        mpArray.add(visiblePiece);
-    }
-
     @Override
     public Ray applyAffineTransform(AffineJTransform transform) {
         getP1().applyAffineTransform(transform);
         getP2().applyAffineTransform(transform);
-        transform.applyTransformsToDrawingProperties(this);
+        if (hasMPCreated())
+            transform.applyTransformsToDrawingProperties(this);
         return this;
     }
 
     /**
-     * Compute border points in the view area of the given renderer. This is
-     * need in order to draw an "infinite" ray which always extend to the whole
-     * visible area. The border points is stored in bp2
+     * Compute border points in the view area of the given renderer. This is need in order to draw an "infinite" ray
+     * which always extend to the whole visible area. The border points is stored in bp2
      *
      * @param cam Camera with the view to compute bound points
      */
@@ -172,14 +169,14 @@ public class Ray extends Shape implements HasDirection {
     public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
         update(scene);
         if (isVisible()) {
-            visiblePiece.draw(scene, r,cam);
+            visiblePiece.draw(scene, r, cam);
         }
         scene.markAsAlreadydrawn(this);
     }
 
     /**
-     * Returns the point of the line lying in the boundaries of the math view.
-     * From the 2 points of the boundary, this is next to p1.
+     * Returns the point of the line lying in the boundaries of the math view. From the 2 points of the boundary, this
+     * is next to p1.
      *
      * @param scene The scene, needed to obtain the math view
      * @return A referencedCopy of the boundary point
@@ -190,8 +187,8 @@ public class Ray extends Shape implements HasDirection {
     }
 
     /**
-     * Returns the point of the line lying in the boundaries of the math view.
-     * From the 2 points of the boundary, this is next to p2.
+     * Returns the point of the line lying in the boundaries of the math view. From the 2 points of the boundary, this
+     * is next to p2.
      *
      * @param scene The scene, needed to obtain the math view
      * @return A referencedCopy of the boundary point
@@ -202,8 +199,8 @@ public class Ray extends Shape implements HasDirection {
     }
 
     /**
-     * Returns the center of the object. As the center of an infinite line
-     * doesn't exists, return the first of the generating points instead.
+     * Returns the center of the object. As the center of an infinite line doesn't exists, return the first of the
+     * generating points instead.
      *
      * @return The first point of the generator points p1 and p2
      */
@@ -253,7 +250,7 @@ public class Ray extends Shape implements HasDirection {
     /**
      * Creates a finite Segment, that runs over the screen plus a percent gap
      *
-     * @param cam Camera with math view
+     * @param cam   Camera with math view
      * @param scale Scale to apply. 1 returns the visible part of the line.
      * @return A segment with the visibleFlag part of the line
      */

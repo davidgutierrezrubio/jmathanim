@@ -86,7 +86,7 @@ public class Anchor {
                 } else {
                     if (obj instanceof MathObject) {
                         MathObject o = (MathObject) obj;
-                        resul = o.getAbsoluteAnchorPoint();
+                        resul = Point.at(o.getAbsoluteAnchorVec());
                     }
                 }
                 break;

@@ -35,35 +35,6 @@ import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
  */
 public class Line extends Shape implements HasDirection, shouldUdpateWithCamera {
 
-    public static Line XAxis() {
-        return new Line(new Point(0, 0), new Point(1, 0));
-    }
-
-    public static Line XYBisector() {
-        return new Line(new Point(0, 0), new Point(1, 1));
-    }
-
-    public static Line YAxis() {
-        return new Line(new Point(0, 0), new Point(0, 1));
-    }
-
-    /**
-     * Creates a new Line object. Line is a Shape object with 2 points, as a
-     * Segment but it overrides the draw method so that it extends itself to all
-     * the view, to look like an infinite line.
-     *
-     * @param a First point
-     * @param b Second point
-     * @return The line object
-     */
-    public static Line make(Point a, Point b) {
-        return new Line(a, b);
-    }
-
-    public static Line make(Point a, Vec b) {
-        return new Line(a, a.add(b));
-    }
-
     private final JMPathPoint bp1, bp2;
     private final Point p1;
     private final Point p2;
@@ -102,18 +73,46 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
         computeBoundPoints(getCamera());
     }
 
+    public static Line XAxis() {
+        return new Line(new Point(0, 0), new Point(1, 0));
+    }
+
+    public static Line XYBisector() {
+        return new Line(new Point(0, 0), new Point(1, 1));
+    }
+
+    public static Line YAxis() {
+        return new Line(new Point(0, 0), new Point(0, 1));
+    }
+
+    /**
+     * Creates a new Line object. Line is a Shape object with 2 points, as a Segment but it overrides the draw method so
+     * that it extends itself to all the view, to look like an infinite line.
+     *
+     * @param a First point
+     * @param b Second point
+     * @return The line object
+     */
+    public static Line make(Point a, Point b) {
+        return new Line(a, b);
+    }
+
+    public static Line make(Point a, Vec b) {
+        return new Line(a, a.add(b));
+    }
+
     @Override
     public Line applyAffineTransform(AffineJTransform transform) {
         getP1().applyAffineTransform(transform);
         getP2().applyAffineTransform(transform);
-        transform.applyTransformsToDrawingProperties(this);
+        if (hasMPCreated())
+            transform.applyTransformsToDrawingProperties(this);
         return this;
     }
 
     /**
-     * Compute border points in the view area of the given renderer.This is need
-     * in order to draw an "infinite" line which always extend to the whole
-     * visible area. The border points are stored in bp1 and bp2
+     * Compute border points in the view area of the given renderer.This is need in order to draw an "infinite" line
+     * which always extend to the whole visible area. The border points are stored in bp1 and bp2
      *
      * @param cam Camera with the view to compute bound points
      */
@@ -147,19 +146,19 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
         return resul;
     }
 
-    
+
     @Override
-    public void draw(JMathAnimScene scene, Renderer r,Camera cam) {
+    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
         update(JMathAnimConfig.getConfig().getScene());// TODO: remove coupling
         if (isVisible()) {
-            visiblePiece.draw(scene, r,cam);
+            visiblePiece.draw(scene, r, cam);
         }
         scene.markAsAlreadydrawn(this);
     }
 
     /**
-     * Returns the point of the line lying in the boundaries of the math view.
-     * From the 2 points of the boundary, this is next to p1.
+     * Returns the point of the line lying in the boundaries of the math view. From the 2 points of the boundary, this
+     * is next to p1.
      *
      * @return A referencedCopy of the boundary point
      */
@@ -169,8 +168,8 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
     }
 
     /**
-     * Returns the point of the line lying in the boundaries of the math view.
-     * From the 2 points of the boundary, this is next to p2.
+     * Returns the point of the line lying in the boundaries of the math view. From the 2 points of the boundary, this
+     * is next to p2.
      *
      * @return A referencedCopy of the boundary point
      */
@@ -180,8 +179,8 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
     }
 
     /**
-     * Returns the center of the object. As the center of an infinite line
-     * doesn't exists, return the first of the generating points instead.
+     * Returns the center of the object. As the center of an infinite line doesn't exists, return the first of the
+     * generating points instead.
      *
      * @return The first point of the generator points p1 and p2
      */
@@ -211,7 +210,7 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, p1,p2);
+        dependsOn(scene, p1, p2);
 //        scene.registerUpdateable(p1, p2);
 //        setUpdateLevel(Math.max(p1.getUpdateLevel(), p2.getUpdateLevel()) + 1);
     }
@@ -233,7 +232,7 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
     /**
      * Creates a finite Segment, that runs over the screen plus a percent gap
      *
-     * @param cam Camera with math view
+     * @param cam   Camera with math view
      * @param scale Scale to apply. 1 returns the visible part of the line.
      * @return A segment with the visibleFlag part of the line
      */
@@ -260,7 +259,6 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
     public void updateWithCamera(Camera camera) {
         computeBoundPoints(camera);
     }
-    
-    
+
 
 }

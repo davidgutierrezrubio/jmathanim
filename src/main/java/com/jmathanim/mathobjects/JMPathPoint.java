@@ -28,40 +28,43 @@ import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.text.DecimalFormat;
 
 /**
- *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class JMPathPoint extends MathObject implements Updateable, Stateable {
 
-    public enum JMPathPointType {
-        VERTEX, INTERPOLATION_POINT
-    }
-
     public final Point p; // The vertex point
     public final Point cpExit, cpEnter; // Exit and Enter control points for Bezier curves
     public Vec cpExitvBackup, cpEntervBackup;// Backup values, to restore after removing interpolation points
-
     /**
      * If false, the segment from the previous point to this one is not visible.
      */
     public boolean isThisSegmentVisible;
     public boolean isCurved;
     public JMPathPointType type; // Vertex, interpolation point, etc.
-
     public int numDivisions = 0;// This number is used for convenience to store easily number of divisions when
     // subdiving a path
     private JMPathPoint pState;
+    public JMPathPoint(Point p, boolean isVisible, JMPathPointType type) {
+        super();
+        this.p = p;
+//        this.p.visibleFlag = false;
+        cpExit = p.copy();
+        cpEnter = p.copy();
+        isCurved = false;// By default, is not curved
+        this.isThisSegmentVisible = isVisible;
+        this.type = type;
+    }
 
     /**
-     * Builds a new JMPathPoint with given coordinates of vertex and control
-     * points. The result is marked as curved and visible.
+     * Builds a new JMPathPoint with given coordinates of vertex and control points. The result is marked as curved and
+     * visible.
      *
-     * @param x1 x-coordinate of vertex
-     * @param y1 y-coordinate of vertex
+     * @param x1     x-coordinate of vertex
+     * @param y1     y-coordinate of vertex
      * @param enterx x-coordinate of enter control point
      * @param entery y-coordinate of enter control point
-     * @param exitx x-coordinate of exit control point
-     * @param exity y-coordinate of exit control point
+     * @param exitx  x-coordinate of exit control point
+     * @param exity  y-coordinate of exit control point
      * @return The new jmpathpoint created
      */
     public static JMPathPoint make(double x1, double y1, double enterx, double entery, double exitx, double exity) {
@@ -90,17 +93,6 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         JMPathPoint jmp = new JMPathPoint(p, true, JMPathPointType.VERTEX);
         jmp.isCurved = true;
         return jmp;
-    }
-
-    public JMPathPoint(Point p, boolean isVisible, JMPathPointType type) {
-        super();
-        this.p = p;
-//        this.p.visibleFlag = false;
-        cpExit = p.copy();
-        cpEnter = p.copy();
-        isCurved = false;// By default, is not curved
-        this.isThisSegmentVisible = isVisible;
-        this.type = type;
     }
 
     @Override
@@ -260,38 +252,39 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         Point cp1Dst = tr.getTransformedObject(pSrc.cpExit);
         Point cp2Dst = tr.getTransformedObject(pSrc.cpEnter);
 
-        this.p.v.copyFrom(pDst.v);
-        this.cpExit.v.copyFrom(cp1Dst.v);
-        this.cpEnter.v.copyFrom(cp2Dst.v);
+        this.p.v.applyAffineTransform(tr);
+        this.cpExit.v.applyAffineTransform(tr);
+        this.cpEnter.v.applyAffineTransform(tr);
 
-        tr.applyTransformsToDrawingProperties(this);
         return (T) this;
     }
 
     @Override
     public <T extends MathObject> T rotate(Point center, double angle) {
-        p.rotate(center, angle);
-        cpEnter.rotate(center, angle);
-        cpExit.rotate(center, angle);
+        applyAffineTransform(AffineJTransform.create2DRotationTransform(center, angle));
+//        AffineJTransform tr = AffineJTransform.create2DRotationTransform(center, angle);
+//        p.applyAffineTransform(tr);
+//        cpEnter.applyAffineTransform(tr);
+//        cpExit.applyAffineTransform(tr);
         return (T) this;
     }
 
     @Override
     public <T extends MathObject> T shift(Vec shiftVector) {
-        p.shift(shiftVector);
-        cpEnter.shift(shiftVector);
-        cpExit.shift(shiftVector);
+//        AffineJTransform tr = AffineJTransform.createTranslationTransform(shiftVector);
+        applyAffineTransform(AffineJTransform.createTranslationTransform(shiftVector));
+//        p.applyAffineTransform(tr);
+//        cpEnter.applyAffineTransform(tr);
+//        cpExit.applyAffineTransform(tr);
         return (T) this;
     }
 
     /**
-     * Computes an interpolated JMPathPoint between this and another one. The
-     * interpolation is not the usual linear one, but Bezier interpolation if it
-     * is curved.
+     * Computes an interpolated JMPathPoint between this and another one. The interpolation is not the usual linear one,
+     * but Bezier interpolation if it is curved.
      *
-     * @param q Second JMPathPoint to interpolate
-     * @param alpha Interpolation parameter. 0 returns a copy of this object. 1
-     * returns a copy of q.
+     * @param q     Second JMPathPoint to interpolate
+     * @param alpha Interpolation parameter. 0 returns a copy of this object. 1 returns a copy of q.
      * @return The interpolated JMPathPoint.
      */
     public JMPathPoint interpolate(JMPathPoint q, double alpha) {
@@ -326,6 +319,10 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         m = Math.max(m, cpExit.getUpdateLevel());
         setUpdateLevel(m + 1);
 
+    }
+
+    public enum JMPathPointType {
+        VERTEX, INTERPOLATION_POINT
     }
 
 }
