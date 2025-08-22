@@ -119,7 +119,7 @@ public class CTSemiCircle extends CTAbstractCircle{
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(Point.at(-1, 0), Point.at(1, 0), new Point(A.v.x,A.v.y), new Point(B.v.x,B.v.y), 1);
         if (!isFreeMathObject()) {
             for (int i = 0; i < arcTODraw.size(); i++) {
-                arcTODraw.get(i).copyFrom(arcTODrawOrig.get(i));
+                arcTODraw.get(i).copyControlPointsFrom(arcTODrawOrig.get(i));
             }
             arcTODraw.applyAffineTransform(tr);
         }

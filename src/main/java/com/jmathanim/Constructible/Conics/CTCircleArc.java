@@ -26,6 +26,7 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.updaters.Coordinates;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
@@ -56,25 +57,12 @@ public class CTCircleArc extends CTAbstractCircle {
      * @param B      Point that determines the angle of the arc.
      * @return The created arc
      */
-    public static CTCircleArc make(CTPoint center, CTPoint A, CTPoint B) {
-        CTCircleArc resul = new CTCircleArc(center, A, B);
-        resul.rebuildShape();
-        return resul;
-    }
-
-    /**
-     * Overloaded method. Creates a new Constructible circle arc
-     *
-     * @param center Center of arc
-     * @param A      Starting point. Arc will pass through this point
-     * @param B      Point that determines the angle of the arc.
-     * @return The created arc
-     */
-    public static CTCircleArc make(Point center, Point A, Point B) {
+    public static CTCircleArc make(Coordinates center, Coordinates A, Coordinates B) {
         CTCircleArc resul = new CTCircleArc(CTPoint.make(center), CTPoint.make(A), CTPoint.make(B));
         resul.rebuildShape();
         return resul;
     }
+
 
     @Override
     public CTPoint getCircleCenter() {

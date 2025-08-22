@@ -67,12 +67,12 @@ class SkijaUtils {
 //        }
 
         Path path = new Path();
-        Vec prev = jmpath.jmPathPoints.get(0).p.v.copy();
+        Vec prev = jmpath.jmPathPoints.get(0).v.copy();
         path.moveTo((float) prev.x, (float) prev.y);
         for (int n = 1; n < jmpath.size() + 1; n++) {
-            Vec point = jmpath.jmPathPoints.get(n).p.v;
-            Vec cpoint1 = jmpath.jmPathPoints.get(n - 1).cpExit;
-            Vec cpoint2 = jmpath.jmPathPoints.get(n).cpEnter;
+            Vec point = jmpath.jmPathPoints.get(n).v;
+            Vec cpoint1 = jmpath.jmPathPoints.get(n - 1).vExit;
+            Vec cpoint2 = jmpath.jmPathPoints.get(n).vEnter;
 
             if (jmpath.jmPathPoints.get(n).isThisSegmentVisible) {
                 JMPathPoint jp = jmpath.jmPathPoints.get(n);

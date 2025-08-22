@@ -1,14 +1,11 @@
 package com.jmathanim.mathobjects.Delimiters;
 
 import com.jmathanim.Enum.AnchorType;
-import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.ResourceLoader;
-import com.jmathanim.Utils.UsefulLambdas;
+import com.jmathanim.Utils.*;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.NullMathObject;
-import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.SVGMathObject;
+import com.jmathanim.mathobjects.updaters.Coordinates;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
@@ -17,12 +14,12 @@ public class ShapeDelimiter extends Delimiter {
     private SVGMathObject body;
 
 
-    protected ShapeDelimiter(Point A, Point B, DelimiterType type, double gap) {
+    protected ShapeDelimiter(Coordinates A, Coordinates B, DelimiterType type, double gap) {
         super(A, B, type, gap);
         minimumWidthToShrink = .5;
     }
 
-    public static ShapeDelimiter make(Point A, Point B, DelimiterType type, double gap) {
+    public static ShapeDelimiter make(Coordinates A, Coordinates B, DelimiterType type, double gap) {
         ShapeDelimiter resul = new ShapeDelimiter(A, B, type, gap);
         ResourceLoader rl = new ResourceLoader();
         String name;
@@ -57,8 +54,8 @@ public class ShapeDelimiter extends Delimiter {
 
         double width = A.to(B).norm() * amplitudeScale;//The final width of the delimiter
         double angle = A.to(B).getAngle();
-        Point AA = A.interpolate(B, .5 * (1 - amplitudeScale));
-        Point BB = A.interpolate(B, .5 * (1 + amplitudeScale));
+        Vec AA = A.interpolate(B, .5 * (1 - amplitudeScale));
+        Vec BB = A.interpolate(B, .5 * (1 + amplitudeScale));
         MultiShapeObject bodyCopy = body.copy();
             delimiterShapeToDraw.getPath().clear();
 
@@ -97,8 +94,8 @@ public class ShapeDelimiter extends Delimiter {
         Rect bb = delimiterShapeToDraw.getBoundingBox();
         delimiterShapeToDraw.shift(0, gap * amplitudeScale);
 
-        labelMarkPoint.stackTo(delimiterShapeToDraw, AnchorType.UPPER, labelMarkGap * amplitudeScale);
-
+//        labelMarkPoint.stackTo(delimiterShapeToDraw, AnchorType.UPPER, labelMarkGap * amplitudeScale);
+        labelMarkPoint.copyFrom(Anchor.getAnchorPoint(delimiterShapeToDraw, AnchorType.UPPER, labelMarkGap * amplitudeScale).v);
 
         if (!(getLabel() instanceof NullMathObject)) {
 
@@ -127,7 +124,6 @@ public class ShapeDelimiter extends Delimiter {
 //            if (amplitudeScale != 1)
 //                delimiterLabelToDraw.scale(this.amplitudeScale);
         }
-
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(bb.getDL(), bb.getDR(), AA, BB, 1);
 
         if (this.type== DelimiterType.INVISIBLE) {

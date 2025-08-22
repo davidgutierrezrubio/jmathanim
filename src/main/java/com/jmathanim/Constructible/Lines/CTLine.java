@@ -22,8 +22,8 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
+import com.jmathanim.mathobjects.updaters.Coordinates;
 
 /**
  *
@@ -55,24 +55,19 @@ public class CTLine extends CTAbstractLine {
      * CTSegment,CTLine...)
      * @return The created object
      */
-    public static CTLine make(CTPoint A, HasDirection dir) {
-        CTLine resul = new CTLine(A, A.add(dir.getDirection()));
+    public static CTLine make(Coordinates A, HasDirection dir) {
+        CTLine resul = new CTLine(
+                CTPoint.make(A),
+                CTPoint.make(
+                        A.getVec().add(dir.getDirection())
+                )
+        );
         resul.dir = dir;
         resul.lineType = LineType.PointVector;
         resul.rebuildShape();
         return resul;
     }
 
-    /**
-     * Creates a Constructible line given by 2 points
-     *
-     * @param A First point
-     * @param B Second point
-     * @return The created object
-     */
-    public static CTLine make(Point A, Point B) {
-        return CTLine.make(CTPoint.make(A), CTPoint.make(B));
-    }
 
     /**
      * Creates a Constructible line given by 2 points
@@ -81,8 +76,8 @@ public class CTLine extends CTAbstractLine {
      * @param B Second point
      * @return The created object
      */
-    public static CTLine make(CTPoint A, CTPoint B) {
-        CTLine resul = new CTLine(A, B);
+    public static CTLine make(Coordinates A, Coordinates B) {
+        CTLine resul = new CTLine(CTPoint.make(A), CTPoint.make(B));
         resul.lineType = LineType.PointPoint;
         resul.rebuildShape();
         return resul;

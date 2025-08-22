@@ -34,6 +34,7 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.updaters.Coordinates;
 import javafx.scene.shape.StrokeLineCap;
 
 import java.util.ArrayList;
@@ -303,7 +304,7 @@ public class Commands {
 
     }
 
-    public static AnimationWithEffects rotate(double runtime, Point rotationCenter, double rotationAngle, MathObject... objects) {
+    public static AnimationWithEffects rotate(double runtime, Coordinates rotationCenter, double rotationAngle, MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
             final double angle = rotationAngle;
             final MathObject[] mathObjects = objects;

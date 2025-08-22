@@ -19,6 +19,7 @@ package com.jmathanim.Utils;
 
 import com.jmathanim.Constructible.Lines.HasDirection;
 import com.jmathanim.mathobjects.Stateable;
+import com.jmathanim.mathobjects.updaters.Coordinates;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 
@@ -30,7 +31,7 @@ import static java.lang.Math.sqrt;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Vec implements Stateable, HasDirection {
+public class Vec implements Stateable, HasDirection, Coordinates<Vec> {
 
     public double x, y, z;
     public double xState, yState, zState;
@@ -149,6 +150,11 @@ public class Vec implements Stateable, HasDirection {
         return this.copy().minusInSite(b);
     }
 
+    public Vec to(Coordinates b) {
+        Vec v2 = b.getVec();
+        return Vec.to(v2.x - x, v2.y - y, v2.z - z);
+    }
+
     /**
      * Add the given vector to this and return the result. The original vector is unaltered.
      *
@@ -166,14 +172,15 @@ public class Vec implements Stateable, HasDirection {
     /**
      * Returns a new point between this and v2, given by the parameter
      *
-     * @param v2    The other point to interpolate
-     * @param alpha Parameter of interpolation. 0 gives this point. 1 gives v2. 0.5 returns the middle point. Values
-     *              less than 0 and greater than 1 are allowed.
+     * @param coords2 The other point to interpolate
+     * @param alpha   Parameter of interpolation. 0 gives this point. 1 gives v2. 0.5 returns the middle point. Values
+     *                less than 0 and greater than 1 are allowed.
      * @return The interpolated point
      */
-    public Vec interpolate(Vec v2, double alpha) {
+    @Override
+    public Vec interpolate(Coordinates coords2, double alpha) {
+        Vec v2 = coords2.getVec();
         return new Vec((1 - alpha) * x + alpha * v2.x, (1 - alpha) * y + alpha * v2.y, (1 - alpha) * z + alpha * v2.z);
-
     }
 
     /**
@@ -330,6 +337,7 @@ public class Vec implements Stateable, HasDirection {
      * @param tr Affine transform
      * @return This object, with the transform applied
      */
+    @Override
     public Vec applyAffineTransform(AffineJTransform tr) {
         RealMatrix pRow = new Array2DRowRealMatrix(new double[][]{{1d, x, y, z}});
         RealMatrix pNew = pRow.multiply(tr.getMatrix());
@@ -368,5 +376,21 @@ public class Vec implements Stateable, HasDirection {
     public boolean isEquivalentTo(Vec v2, double epsilon) {
         boolean resul = (Math.abs(x - v2.x) <= epsilon) & (Math.abs(y - v2.y) <= epsilon) & (Math.abs(z - v2.z) <= epsilon);
         return resul;
+    }
+
+    @Override
+    public Vec getVec() {
+        return this;
+    }
+
+
+    @Override
+    public Rect getBoundingBox() {
+        return new Rect(x, y, x, y);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
     }
 }

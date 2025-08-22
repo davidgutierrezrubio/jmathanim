@@ -238,7 +238,7 @@ public class FunctionGraph extends Shape implements hasScalarParameter, shouldUd
     protected void generateControlPoints() {
         for (int n = 0; n < xPoints.size(); n++) {
             JMPathPoint jmp = this.get(n);
-            double x = jmp.p.v.x;
+            double x = jmp.v.x;
             if (n < xPoints.size() - 1) {
                 double deltaX = .3 * (xPoints.get(n + 1) - x);
                 double slope = getSlope(x, 1);
@@ -248,12 +248,12 @@ public class FunctionGraph extends Shape implements hasScalarParameter, shouldUd
                     slope = 0;
                 }
                 Vec v = new Vec(deltaX, slope * deltaX);
-                jmp.cpExit.copyFrom(jmp.p.add(v).v);
+                jmp.vExit.copyFrom(jmp.v.add(v));
             }
             if (n > 0) {
                 final double deltaX = .3 * (xPoints.get(n - 1) - x);
                 Vec v = new Vec(deltaX, getSlope(x, -1) * deltaX);
-                jmp.cpEnter.copyFrom(jmp.p.add(v).v);
+                jmp.vEnter.copyFrom(jmp.v.add(v));
                 double h = x - xPoints.get(n - 1);
                 double deriv = (getFunctionValue(x, this.w) - getFunctionValue(xPoints.get(n - 1), this.w)) / h;
                 jmp.isThisSegmentVisible = (Math.abs(deriv) < CONTINUUM_THRESHOLD);
@@ -269,7 +269,7 @@ public class FunctionGraph extends Shape implements hasScalarParameter, shouldUd
      */
     public void updatePoints() {
         for (JMPathPoint jmp : this.getPath().jmPathPoints) {
-            jmp.p.v.y = getFunctionValue(jmp.p.v.x, this.w);
+            jmp.v.y = getFunctionValue(jmp.v.x, this.w);
         }
         generateControlPoints();
     }

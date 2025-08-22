@@ -7,6 +7,7 @@ import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
@@ -14,11 +15,12 @@ import com.jmathanim.mathobjects.Text.TextUpdaters.CountUpdaterFactory;
 import com.jmathanim.mathobjects.Text.TextUpdaters.LengthUpdaterFactory;
 import com.jmathanim.mathobjects.Text.TextUpdaters.TextUpdaterFactory;
 import com.jmathanim.mathobjects.updateableObjects.AnchoredMathObject;
+import com.jmathanim.mathobjects.updaters.Coordinates;
 
 public abstract class Delimiter extends Constructible {
-    public final Point labelMarkPoint;
-    protected final Point A;
-    protected final Point B;
+    public final Vec labelMarkPoint;
+    protected final Vec A;
+    protected final Vec B;
     protected final Shape delimiterShapeToDraw;
 //    protected final MODrawProperties mpDelimiterShape;
     protected final MODrawPropertiesArray mpDelimiter;
@@ -46,10 +48,10 @@ public abstract class Delimiter extends Constructible {
     protected double gap;
 
 
-    public Delimiter(Point A, Point B, DelimiterType type, double gap) {
+    public Delimiter(Coordinates A, Coordinates B, DelimiterType type, double gap) {
         super();
-        this.A = A;
-        this.B = B;
+        this.A = A.getVec();
+        this.B = B.getVec();
         this.type = type;
         this.gap = gap;
 
@@ -62,7 +64,7 @@ public abstract class Delimiter extends Constructible {
         this.mpDelimiter.loadFromStyle("DEFAULT");
 
 
-        labelMarkPoint = Point.at(0, 0);
+        labelMarkPoint = Vec.to(0, 0);
         this.rotationType = RotationType.SMART;
         this.delimiterLabel = new NullMathObject();
         delimiterLabelRigidBox=new RigidBox(this.delimiterLabel);
@@ -88,7 +90,7 @@ public abstract class Delimiter extends Constructible {
      * @param gap  Gap between control points and delimiter
      * @return The delimiter
      */
-    public static Delimiter make(Point A, Point B, DelimiterType type, double gap) {
+    public static Delimiter make(Coordinates A, Coordinates B, DelimiterType type, double gap) {
         Delimiter resul = null;
         switch (type) {
             case BRACE:
@@ -156,11 +158,11 @@ public abstract class Delimiter extends Constructible {
 
 
 
-    public Point getA() {
+    public Coordinates getA() {
         return A;
     }
 
-    public Point getB() {
+    public Coordinates getB() {
         return B;
     }
 
@@ -261,8 +263,8 @@ public abstract class Delimiter extends Constructible {
         delimiterShapeToDraw.copyStateFrom(del.delimiterShapeToDraw);
         delimiterLabelRigidBox.copyStateFrom(del.delimiterLabelRigidBox);
 
-        this.A.copyStateFrom(del.A);
-        this.B.copyStateFrom(del.B);
+        this.A.copyFrom(del.A);
+        this.B.copyFrom(del.B);
         getMp().copyFrom(obj.getMp());
         this.labelMarkGap = del.labelMarkGap;
         this.mpDelimiter.copyFrom(del.mpDelimiter);

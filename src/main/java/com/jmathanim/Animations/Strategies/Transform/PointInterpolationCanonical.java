@@ -19,6 +19,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.DivideOnSensiblePointsStrategy;
 import com.jmathanim.Styling.JMColor;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.*;
 
 import java.util.ArrayList;
@@ -130,19 +131,19 @@ public class PointInterpolationCanonical extends TransformStrategy {
                 dstPoint = toPath.jmPathPoints.get(n);
 
                 // Interpolate point
-                interPoint.p.v.x = (1 - lt) * basePoint.p.v.x + lt * dstPoint.p.v.x;
-                interPoint.p.v.y = (1 - lt) * basePoint.p.v.y + lt * dstPoint.p.v.y;
-                interPoint.p.v.z = (1 - lt) * basePoint.p.v.z + lt * dstPoint.p.v.z;
+                interPoint.v.x = (1 - lt) * basePoint.v.x + lt * dstPoint.v.x;
+                interPoint.v.y = (1 - lt) * basePoint.v.y + lt * dstPoint.v.y;
+                interPoint.v.z = (1 - lt) * basePoint.v.z + lt * dstPoint.v.z;
 
                 // Interpolate control point 1
-                interPoint.cpExit.x = (1 - lt) * basePoint.cpExit.x + lt * dstPoint.cpExit.x;
-                interPoint.cpExit.y = (1 - lt) * basePoint.cpExit.y + lt * dstPoint.cpExit.y;
-                interPoint.cpExit.z = (1 - lt) * basePoint.cpExit.z + lt * dstPoint.cpExit.z;
+                interPoint.vExit.x = (1 - lt) * basePoint.vExit.x + lt * dstPoint.vExit.x;
+                interPoint.vExit.y = (1 - lt) * basePoint.vExit.y + lt * dstPoint.vExit.y;
+                interPoint.vExit.z = (1 - lt) * basePoint.vExit.z + lt * dstPoint.vExit.z;
 
                 // Interpolate control point 2
-                interPoint.cpEnter.x = (1 - lt) * basePoint.cpEnter.x + lt * dstPoint.cpEnter.x;
-                interPoint.cpEnter.y = (1 - lt) * basePoint.cpEnter.y + lt * dstPoint.cpEnter.y;
-                interPoint.cpEnter.z = (1 - lt) * basePoint.cpEnter.z + lt * dstPoint.cpEnter.z;
+                interPoint.vEnter.x = (1 - lt) * basePoint.vEnter.x + lt * dstPoint.vEnter.x;
+                interPoint.vEnter.y = (1 - lt) * basePoint.vEnter.y + lt * dstPoint.vEnter.y;
+                interPoint.vEnter.z = (1 - lt) * basePoint.vEnter.z + lt * dstPoint.vEnter.z;
             }
 
         }
@@ -230,12 +231,12 @@ public class PointInterpolationCanonical extends TransformStrategy {
 //                throw new Exception("Paths should have at least 2 points!");
 //            }
             // Last point of conSmall
-            Point p = conSmall.get(n - 1).getJMPointAt(-1).p;
+            Vec v = conSmall.get(n - 1).getJMPointAt(-1).v;
 
             // Create a dummy path with sizePathToAdd points, all equal
             JMPath pa = new JMPath();
             for (int k = 0; k < sizePathToAdd; k++) {
-                JMPathPoint jmp = JMPathPoint.curveTo(p.copy());
+                JMPathPoint jmp = JMPathPoint.curveTo(v.copy());
                 pa.addJMPoint(jmp);
             }
             pa.jmPathPoints.get(0).isThisSegmentVisible = false;

@@ -122,20 +122,20 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
 
         if (intersectLine == null) {
             // If there are no getIntersectionPath points, take p1 and p2 (workaround)
-            bp1.p.v.x = p1.v.x;
-            bp1.p.v.y = p1.v.y;
-            bp2.p.v.x = p2.v.x;
-            bp2.p.v.y = p2.v.y;
+            bp1.v.x = p1.v.x;
+            bp1.v.y = p1.v.y;
+            bp2.v.x = p2.v.x;
+            bp2.v.y = p2.v.y;
         } else {
-            bp1.p.v.x = intersectLine[0];
-            bp1.p.v.y = intersectLine[1];
-            bp2.p.v.x = intersectLine[2];
-            bp2.p.v.y = intersectLine[3];
+            bp1.v.x = intersectLine[0];
+            bp1.v.y = intersectLine[1];
+            bp2.v.x = intersectLine[2];
+            bp2.v.y = intersectLine[3];
         }
-        bp1.cpExit.copyFrom(bp1.p.v);
-        bp1.cpEnter.copyFrom(bp1.p.v);
-        bp2.cpExit.copyFrom(bp2.p.v);
-        bp2.cpEnter.copyFrom(bp2.p.v);
+        bp1.vExit.copyFrom(bp1.v);
+        bp1.vEnter.copyFrom(bp1.v);
+        bp2.vExit.copyFrom(bp2.v);
+        bp2.vEnter.copyFrom(bp2.v);
         bp1.isThisSegmentVisible = false;
     }
 
@@ -164,7 +164,7 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
      */
     public Point getBorderPoint1() {
         update(scene);
-        return bp1.p.copy();
+        return Point.at(bp1.getVec());
     }
 
     /**
@@ -175,7 +175,7 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
      */
     public Point getBorderPoint2() {
         update(scene);
-        return bp2.p.copy();
+        return Point.at(bp2.getVec());
     }
 
     /**
@@ -238,8 +238,8 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
      */
     public Shape toSegment(Camera cam, double scale) {
         computeBoundPoints(cam);
-        Point a = bp1.p.copy().scale(getCenter(), scale, scale);
-        Point b = bp2.p.copy().scale(getCenter(), scale, scale);
+        Point a = bp1.copy().scale(getCenter(), scale, scale);
+        Point b = bp2.copy().scale(getCenter(), scale, scale);
         Shape segment = Shape.segment(a, b);
         segment.getMp().copyFrom(this.getMp());
         return segment;

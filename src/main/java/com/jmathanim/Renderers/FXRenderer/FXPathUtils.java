@@ -59,11 +59,11 @@ public class FXPathUtils {
                 double[] xy = cam.screenToMath(c.getX(), c.getY());
                 JMPathPoint pp = JMPathPoint.curveTo(Point.at(xy[0], xy[1]));
                 xy = cam.screenToMath(c.getControlX2(), c.getControlY2());
-                pp.cpEnter.x = xy[0];
-                pp.cpEnter.y = xy[1];
+                pp.vEnter.x = xy[0];
+                pp.vEnter.y = xy[1];
                 xy = cam.screenToMath(c.getControlX1(), c.getControlY1());
-                previousPP.cpExit.x = xy[0];
-                previousPP.cpExit.y = xy[1];
+                previousPP.vExit.x = xy[0];
+                previousPP.vExit.y = xy[1];
                 resul.addJMPoint(pp);
                 previousPP = pp;
             }
@@ -90,11 +90,11 @@ public class FXPathUtils {
         }
         // //Be sure the last point is connected with the first (if closed)
         if (!resul.jmPathPoints.isEmpty()) {
-            if (resul.jmPathPoints.get(0).p.isEquivalentTo(resul.jmPathPoints.get(-1).p, 1.0E-6)) {
+            if (resul.jmPathPoints.get(0).v.isEquivalentTo(resul.jmPathPoints.get(-1).v, 1.0E-6)) {
                 JMPathPoint fp = resul.jmPathPoints.get(0);
                 JMPathPoint lp = resul.jmPathPoints.get(-1);
-                fp.cpEnter.x = lp.cpEnter.x;
-                fp.cpEnter.y = lp.cpEnter.y;
+                fp.vEnter.x = lp.vEnter.x;
+                fp.vEnter.y = lp.vEnter.y;
                 fp.isThisSegmentVisible = true;
                 // Delete last point
                 resul.jmPathPoints.remove(lp);
@@ -115,13 +115,13 @@ public class FXPathUtils {
      */
     public static Path createFXPathFromJMPath(JMPath jmpath, Vec shiftVector, Camera camera) {
         Path path = new Path();
-        Vec p = jmpath.jmPathPoints.get(0).p.v;
+        Vec p = jmpath.jmPathPoints.get(0).v;
         double[] prev = camera.mathToScreen(p.x+shiftVector.x, p.y+shiftVector.y);
         path.getElements().add(new MoveTo(prev[0], prev[1]));
         for (int n = 1; n < jmpath.size() + 1; n++) {
-            Vec point = jmpath.jmPathPoints.get(n).p.v;
-            Vec cpoint1 = jmpath.jmPathPoints.get(n - 1).cpExit;
-            Vec cpoint2 = jmpath.jmPathPoints.get(n).cpEnter;
+            Vec point = jmpath.jmPathPoints.get(n).v;
+            Vec cpoint1 = jmpath.jmPathPoints.get(n - 1).vExit;
+            Vec cpoint2 = jmpath.jmPathPoints.get(n).vEnter;
 
             double[] xy, cxy1, cxy2;
 

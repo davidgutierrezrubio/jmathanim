@@ -118,14 +118,14 @@ public class CTRegularPolygon extends Constructible {
 
     @Override
     public void rebuildShape() {
-        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(origPolygon.get(0).p, origPolygon.get(1).p, A.getMathObject(), B.getMathObject(), 1);
+        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(origPolygon.get(0), origPolygon.get(1), A.getMathObject(), B.getMathObject(), 1);
         for (int k = 0; k < nSides; k++) {
-            generatedPoints.get(k).v.copyFrom(origPolygon.get(k).p.v.copy().applyAffineTransform(tr));
+            generatedPoints.get(k).v.copyFrom(origPolygon.get(k).v.copy().applyAffineTransform(tr));
         }
 
         if (!isFreeMathObject()) {
             for (int k = 0; k < nSides; k++) {
-                poligonToView.get(k).p.v.copyFrom(generatedPoints.get(k).v);
+                poligonToView.get(k).v.copyFrom(generatedPoints.get(k).v);
             }
         }
 

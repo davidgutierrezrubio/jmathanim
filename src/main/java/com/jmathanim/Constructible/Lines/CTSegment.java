@@ -104,8 +104,8 @@ public class CTSegment extends CTAbstractLine implements hasScalarParameter {
         this.P1.v.copyFrom(this.A.v);
         this.P2.v.copyFrom(this.B.v);
         if (!isFreeMathObject()) {
-            segmentToDraw.get(0).p.v.copyFrom(this.P1.v);
-            segmentToDraw.get(1).p.v.copyFrom(this.P2.v);
+            segmentToDraw.get(0).v.copyFrom(this.P1.v);
+            segmentToDraw.get(1).v.copyFrom(this.P2.v);
         }
     }
 

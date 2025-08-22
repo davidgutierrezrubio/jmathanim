@@ -28,6 +28,7 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.updaters.Coordinates;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 
@@ -38,7 +39,7 @@ import java.text.DecimalFormat;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Point extends MathObject {
+public class Point extends MathObject implements Coordinates<Point> {
 
     //Position of the point to be drawn in screen
     public final Vec v;
@@ -128,15 +129,15 @@ public class Point extends MathObject {
         return new Point(0, 0, 1);
     }
 
-    public static Point segmentIntersection(Point A, Point B, Point C, Point D) {
+    public static Vec segmentIntersection(Coordinates A, Coordinates B, Coordinates C, Coordinates D) {
         AffineJTransform tr = AffineJTransform.createAffineTransformation(A, B, C, Point.unitX(), Point.unitY(),
                 Point.origin(), 1);
-        Point P = tr.getTransformedObject(D);
-        double r = P.v.x + P.v.y;
-        if ((r >= 1) & (P.v.x >= 0) & (P.v.y >= 0)) {
-            P.v.x /= r;
-            P.v.y /= r;
-            return tr.getInverse().getTransformedObject(P);
+        Vec P = D.getVec().copy().applyAffineTransform(tr);
+        double r = P.x + P.y;
+        if ((r >= 1) & (P.x >= 0) & (P.y >= 0)) {
+            P.x /= r;
+            P.y /= r;
+            return P.applyAffineTransform(tr.getInverse());
         } else {
             return null;
         }
@@ -156,10 +157,11 @@ public class Point extends MathObject {
     /**
      * Returns a new Point with coordinates those of given vector. Vector coordinates are copied.
      *
-     * @param v Vector with coordinates
+     * @param coords Vector with coordinates
      * @return The new point
      */
-    public static Point at(Vec v) {
+    public static Point at(Coordinates coords) {
+        Vec v=coords.getVec();
         return new Point(v.x, v.y);
     }
 
@@ -188,7 +190,7 @@ public class Point extends MathObject {
     }
 
     @Override
-    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
+    public Point applyAffineTransform(AffineJTransform tr) {
         RealMatrix pRow = new Array2DRowRealMatrix(new double[][]{{1d, v.x, v.y, v.z}});
         RealMatrix pNew = pRow.multiply(tr.getMatrix());
 
@@ -197,7 +199,7 @@ public class Point extends MathObject {
         v.z = pNew.getEntry(0, 3);
         if (hasMPCreated())
             tr.applyTransformsToDrawingProperties(this);
-        return (T) this;
+        return this;
     }
 
     @Override
@@ -352,13 +354,13 @@ public class Point extends MathObject {
     /**
      * Returns a new Point, linearly interpolated between this and p2 with alpha parameter
      *
-     * @param p2
-     * @param alpha
+     * @param coords2 Second Point to interpolate. Any object that implements the Coordinates interface can be used.
+     * @param alpha Interpolation parameter where 0 returns a copy of this object and 1 a copy of another object
      * @return The new Point
      */
-    public Point interpolate(Point p2, double alpha) {
-        Vec w = v.interpolate(p2.v, alpha);
-        return new Point(w.x,w.y,w.z);
+    public Point interpolate(Coordinates coords2, double alpha) {
+        Vec w = v.interpolate(coords2, alpha);
+        return  new Point(w.x,w.y,w.z);
 
     }
 
@@ -412,6 +414,11 @@ public class Point extends MathObject {
 
     public boolean isEquivalentTo(Point p2, double epsilon) {
         return v.isEquivalentTo(p2.v, epsilon);
+    }
+
+    @Override
+    public Vec getVec() {
+        return v;
     }
 
 }

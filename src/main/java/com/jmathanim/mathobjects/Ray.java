@@ -145,16 +145,16 @@ public class Ray extends Shape implements HasDirection {
 
         if (intersectLine == null) {
             // If there are no getIntersectionPath points, take p1 and p2 (workaround)
-            bp2.p.v.x = p2.v.x;
-            bp2.p.v.y = p2.v.y;
+            bp2.v.x = p2.v.x;
+            bp2.v.y = p2.v.y;
         } else {
-            bp2.p.v.x = intersectLine[2];
-            bp2.p.v.y = intersectLine[3];
+            bp2.v.x = intersectLine[2];
+            bp2.v.y = intersectLine[3];
         }
-        bp2.cpExit.x = bp2.p.v.x;
-        bp2.cpExit.y = bp2.p.v.y;
-        bp2.cpEnter.x = bp2.p.v.x;
-        bp2.cpEnter.y = bp2.p.v.y;
+        bp2.vExit.x = bp2.v.x;
+        bp2.vExit.y = bp2.v.y;
+        bp2.vEnter.x = bp2.v.x;
+        bp2.vEnter.y = bp2.v.y;
 
     }
 
@@ -183,7 +183,7 @@ public class Ray extends Shape implements HasDirection {
      */
     public Point getBorderPoint1(JMathAnimScene scene) {
         update(scene);
-        return bp1.p.copy();
+        return Point.at(bp1.v.copy());
     }
 
     /**
@@ -195,7 +195,7 @@ public class Ray extends Shape implements HasDirection {
      */
     public Point getBorderPoint2(JMathAnimScene scene) {
         update(scene);
-        return bp2.p.copy();
+        return Point.at(bp2.v.copy());
     }
 
     /**
@@ -256,8 +256,8 @@ public class Ray extends Shape implements HasDirection {
      */
     public Shape toSegment(Camera cam, double scale) {
         computeBoundPoints(cam);
-        Point a = bp1.p.copy().scale(getCenter(), scale, scale);
-        Point b = bp2.p.copy().scale(getCenter(), scale, scale);
+        Point a = bp1.copy().scale(getCenter(), scale, scale);
+        Point b = bp2.copy().scale(getCenter(), scale, scale);
         Shape segment = Shape.segment(a, b);
         segment.getMp().copyFrom(this.getMp());
         return segment;

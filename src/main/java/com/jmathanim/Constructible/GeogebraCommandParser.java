@@ -430,7 +430,7 @@ class GeogebraCommandParser {
         if (params.length == 2) {// 2 points
             CTPoint A = (CTPoint) params[0];
             CTPoint B = (CTPoint) params[1];
-            registerGeogebraElement(label, CTPerpBisector.makePerpBisector(A, B));
+            registerGeogebraElement(label, CTPerpBisector.make(A, B));
         }
         //TODO: Implement this. A perpendicular from a segment
         if (params.length == 1) {// 1 segment

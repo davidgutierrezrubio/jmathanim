@@ -20,7 +20,10 @@ package com.jmathanim.Animations;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.JMPath;
+import com.jmathanim.mathobjects.JMPathPoint;
+import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Shape;
 
 /**
  * This class animates an object moving it through a given path. An anchor
@@ -104,13 +107,13 @@ public class MoveAlongPath extends Animation {
         super.doAnim(t);
         double lt = getLT(t);
         restoreStates(mobjTransformed);
-        Point destinyPoint = (parametrized ? path.getParametrizedPointAt(lt) : path.getJMPointAt(lt).p);
-        Point anchPoint = Anchor.getAnchorPoint(mobjTransformed, anchorType);
-        mobjTransformed.shift(anchPoint.to(destinyPoint));
+        Vec destinyPoint = (parametrized ? path.getParametrizedPointAt(lt).v : path.getJMPointAt(lt).v);
+        Vec anchPoint = Anchor.getAnchorPoint(mobjTransformed, anchorType).v;
+        mobjTransformed.shift(destinyPoint.minus(anchPoint));
 
         if (shouldRotate) {
             JMPathPoint pp = path.getJMPointAt(lt);
-            Vec tangent = pp.cpExit.minus(pp.p.v);
+            Vec tangent = pp.vExit.minus(pp.v);
             mobjTransformed.rotate(destinyPoint, tangent.getAngle());
         }
     }

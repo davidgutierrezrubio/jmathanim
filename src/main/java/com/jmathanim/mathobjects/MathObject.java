@@ -24,6 +24,7 @@ import com.jmathanim.Styling.*;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
+import com.jmathanim.mathobjects.updaters.Coordinates;
 import com.jmathanim.mathobjects.updaters.Updater;
 import javafx.scene.shape.StrokeLineCap;
 
@@ -246,6 +247,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @return The same object, after scaling
      */
     public <T extends MathObject> T scale(Point scaleCenter, double sx, double sy, double sz) {
+        return scale(scaleCenter.v, sx, sy, sz);
+    }
+
+    public <T extends MathObject> T scale(Vec scaleCenter, double sx, double sy, double sz) {
         AffineJTransform tr = AffineJTransform.createScaleTransform(scaleCenter, sx, sy, sz);
         tr.applyTransform(this);
         return (T) this;
@@ -307,7 +312,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @param angle  Angle, in radians
      * @return The same object, after rotating
      */
-    public <T extends MathObject> T rotate(Point center, double angle) {
+    public <T extends MathObject> T rotate(Coordinates center, double angle) {
         AffineJTransform tr = AffineJTransform.create2DRotationTransform(center, angle);
         tr.applyTransform(this);
         return (T) this;

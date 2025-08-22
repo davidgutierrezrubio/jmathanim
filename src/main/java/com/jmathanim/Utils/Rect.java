@@ -46,6 +46,14 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
         );
     }
 
+
+    public static Rect makeFromVec(Vec v) {
+        return new Rect(v.x, v.y, v.x, v.y);
+    }
+
+
+
+
     /**
      * Generates a basic Rect 3D Cube, side 1, centered at origin
      *

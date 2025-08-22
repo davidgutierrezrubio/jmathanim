@@ -23,6 +23,7 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.updaters.Coordinates;
 import javafx.scene.shape.Path;
 
 import java.util.ArrayList;
@@ -92,7 +93,7 @@ public class Shape extends MathObject {
      * @param B Second point
      * @return The created segment.
      */
-    public static Shape segment(Point A, Point B) {
+    public static Shape segment(Coordinates A, Coordinates B) {
         return segment(A, B, 2);
     }
 
@@ -106,11 +107,11 @@ public class Shape extends MathObject {
      * @param numPoints Number of points, including start an ending point. A number greater or equal than 2.
      * @return The created segment.
      */
-    public static Shape segment(Point A, Point B, int numPoints) {
+    public static Shape segment(Coordinates A, Coordinates B, int numPoints) {
         if (numPoints < 2) {
             numPoints = 2;
         }
-        Point[] points = new Point[numPoints];
+        Coordinates[] points = new Coordinates[numPoints];
         points[0] = A;
         points[numPoints - 1] = B;
         for (int i = 1; i < numPoints - 1; i++) {
@@ -162,9 +163,9 @@ public class Shape extends MathObject {
      * @param points Points of the polygon, varargs or array Point[]
      * @return The polygon
      */
-    public static Shape polygon(Point... points) {
+    public static Shape polygon(Coordinates... points) {
         Shape obj = new Shape();
-        for (Point newPoint : points) {
+        for (Coordinates newPoint : points) {
             JMPathPoint p = JMPathPoint.lineTo(newPoint);
             obj.getPath().addJMPoint(p);
         }
@@ -177,7 +178,7 @@ public class Shape extends MathObject {
      * @param points Points to connect. Varargs or array Point[]
      * @return The polyline
      */
-    public static Shape polyLine(Point... points) {
+    public static Shape polyLine(Coordinates... points) {
         Shape obj = polygon(points);
         obj.objectLabel = "polyLine";
         obj.get(0).isThisSegmentVisible = false;
@@ -249,8 +250,8 @@ public class Shape extends MathObject {
             path.addJMPoint(jmp.copy().rotate(Point.origin(), k * step));
         }
         path.get(0).isThisSegmentVisible = false;
-        path.get(0).cpEnter.copyFrom(path.get(0).p.v);
-        path.get(-1).cpExit.copyFrom(path.get(-1).p.v);
+        path.get(0).vEnter.copyFrom(path.get(0).v);
+        path.get(-1).vExit.copyFrom(path.get(-1).v);
         Shape obj = new Shape(path);
         obj.objectLabel = "circle";
         return obj;
@@ -277,26 +278,30 @@ public class Shape extends MathObject {
      * @return The created arc
      */
 
-    public static Shape arc(Point startPoint, Point endPoint, double radius, boolean isCounterClockwise) {
+    public static Shape arc(Coordinates startPoint, Coordinates endPoint, double radius, boolean isCounterClockwise) {
         // First, compute arc center
-        Vec midpointVector = startPoint.to(endPoint).mult(0.5);
+        Vec startVec=startPoint.getVec();
+        Vec endVec=endPoint.getVec();
+
+        Vec midpointVector = startVec.to(endVec).mult(0.5);
         Vec radiusVector = midpointVector.rotate(PI / 2).normalize();
+
         double squaredDistance = midpointVector.dot(midpointVector);
         double discriminant = Math.max(0, radius * radius - squaredDistance);
         double radiusOffset = Math.sqrt(discriminant);
-        Point arcCenter = startPoint.copy().shift(midpointVector).shift(radiusVector.mult(radiusOffset));
+        Vec arcCenter = startVec.add(midpointVector).add(radiusVector.mult(radiusOffset));
 
         AffineJTransform transformation = AffineJTransform.createDirect2DIsomorphic(
-                startPoint, arcCenter,
-                Point.at(1, 0), Point.origin(),
+                startVec, arcCenter,
+                Vec.to(1, 0), Vec.to(0,0),
                 1
         );
 
         if (!isCounterClockwise) {
             transformation = transformation.compose(AffineJTransform.createReflectionByAxis(Point.origin(), Point.at(1, 0), 1));
         }
-        Point transformedEndPoint = transformation.getTransformedObject(endPoint);
-        double angle = transformedEndPoint.v.getAngle();
+        Vec transformedEndPoint = endVec.copy().applyAffineTransform(transformation);
+        double angle = transformedEndPoint.getAngle();
         Shape arcShape = Shape.arc(angle);
         return arcShape.applyAffineTransform(transformation.getInverse());
     }
@@ -378,7 +383,7 @@ public class Shape extends MathObject {
      * @return a new Point object at the specified position of the shape.
      */
     public Point getPointAt(double t) {
-        return jmpath.getJMPointAt(t).p;
+        return jmpath.getJMPointAt(t).getPoint();
     }
 
     /**
@@ -392,7 +397,7 @@ public class Shape extends MathObject {
         return jmpath.getParametrizedPointAt(t);
     }
 
-    public Point getCentroid() {
+    public Vec getCentroid() {
         return getPath().getCentroid();
     }
 
@@ -524,7 +529,7 @@ public class Shape extends MathObject {
      * @return The point
      */
     public Point getPoint(int n) {
-        return jmpath.get(n).p;
+        return jmpath.get(n).getPoint();
     }
 
     /**
@@ -731,8 +736,8 @@ public class Shape extends MathObject {
         if (size() < 3) {
             return Vec.to(0, 0, 0);
         }
-        Vec v1 = get(size() / 3).p.to(get(0).p);
-        Vec v2 = get(size() / 3).p.to(get(size() / 2).p);
+        Vec v1=get(0).v.minus(get(size() / 3).v);
+        Vec v2=get(size() / 2).v.minus(get(size() / 3).v);
         return v1.cross(v2);
     }
 

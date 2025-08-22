@@ -290,7 +290,7 @@ public class Arrow2D extends MathObject {
 
 //            arrowHeadToDraw1.draw(scene.getConfig().getRenderer());
             JMPathPoint pa = bodyToDraw.get(1);
-            pa.p.v.copyFrom(arrowHeadToDraw1.get(0).get(anchorPoint1).p.v);
+            pa.v.copyFrom(arrowHeadToDraw1.get(0).get(anchorPoint1).v);
             arrowHeadToDraw1.drawColor(getMp().getDrawColor());
             arrowHeadToDraw1.fillColor(getMp().getDrawColor());
             arrowHeadToDraw1.thickness(0);//A purely fill object
@@ -313,7 +313,7 @@ public class Arrow2D extends MathObject {
             tr.applyTransform(arrowHeadToDraw2);
 
             JMPathPoint pa = bodyToDraw.get(0);
-            pa.p.v.copyFrom(arrowHeadToDraw2.get(0).get(anchorPoint2).p.v);
+            pa.v.copyFrom(arrowHeadToDraw2.get(0).get(anchorPoint2).v);
             arrowHeadToDraw2.drawColor(getMp().getDrawColor());
             arrowHeadToDraw2.fillColor(getMp().getDrawColor());
             arrowHeadToDraw2.thickness(0);//A purely fill object

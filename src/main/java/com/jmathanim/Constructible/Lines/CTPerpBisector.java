@@ -22,7 +22,7 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.updaters.Coordinates;
 
 /**
  * A perpendicular bisector of a segment (perpendicular line that pass through
@@ -36,20 +36,14 @@ public class CTPerpBisector extends CTAbstractLine {
     protected final CTPoint B;
     protected final Line lineToDraw;
 
-    public static CTPerpBisector make(Point A, Point B) {
-        CTPerpBisector resul = CTPerpBisector.makePerpBisector(CTPoint.make(A), CTPoint.make(B));
-        resul.rebuildShape();
-        return resul;
-    }
-
-    public static CTPerpBisector makePerpBisector(CTPoint A, CTPoint B) {
-        CTPerpBisector resul = new CTPerpBisector(A, B);
+    public static CTPerpBisector make(Coordinates A, Coordinates B) {
+        CTPerpBisector resul = CTPerpBisector.make(CTPoint.make(A), CTPoint.make(B));
         resul.rebuildShape();
         return resul;
     }
 
     public static CTPerpBisector make(CTSegment segment) {
-        return makePerpBisector(segment.A, segment.B);
+        return make(segment.A, segment.B);
     }
 
     private CTPerpBisector(CTPoint A, CTPoint B) {
@@ -61,7 +55,7 @@ public class CTPerpBisector extends CTAbstractLine {
 
     @Override
     public CTPerpBisector copy() {
-        CTPerpBisector copy = CTPerpBisector.makePerpBisector(A.copy(), B.copy());
+        CTPerpBisector copy = CTPerpBisector.make(A.copy(), B.copy());
         copy.copyStateFrom(this);
         return copy;
     }

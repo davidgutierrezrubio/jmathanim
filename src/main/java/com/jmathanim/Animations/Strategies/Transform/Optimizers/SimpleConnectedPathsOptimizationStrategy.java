@@ -59,7 +59,7 @@ public class SimpleConnectedPathsOptimizationStrategy implements OptimizePathsSt
 	private double SumDistancesBetweenPaths(JMPath pa1, JMPath pa2) {
 		double dist = 0;
 		for (int n = 0; n < pa1.size(); n++) {
-			dist += pa1.jmPathPoints.get(n).p.to(pa2.jmPathPoints.get(n).p).norm();
+			dist += pa1.jmPathPoints.get(n).v.to(pa2.jmPathPoints.get(n).v).norm();
 		}
 		return dist;
 	}

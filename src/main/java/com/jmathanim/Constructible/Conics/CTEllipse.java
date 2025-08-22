@@ -106,7 +106,7 @@ public class CTEllipse extends Constructible {
         //Now we "reset" the shape to draw to a unit circle and apply a linear transformation
         for (int i = 0; i < ellipseToDraw.size(); i++) {
             JMPathPoint get = ellipseToDraw.get(i);
-            get.copyFrom(originalShape.get(i));
+            get.copyControlPointsFrom(originalShape.get(i));
         }
 
         //Create the affine transformation by 3 points: center, right and upper

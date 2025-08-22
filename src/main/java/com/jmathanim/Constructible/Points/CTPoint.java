@@ -23,12 +23,13 @@ import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.updaters.Coordinates;
 
 /**
  *
  * @author David
  */
-public class CTPoint extends Constructible {
+public class CTPoint extends Constructible implements Coordinates {
     
     public final Point p;
     public final Vec v;
@@ -39,8 +40,14 @@ public class CTPoint extends Constructible {
      * @param A Point object to wrap into
      * @return The created object
      */
-    public static CTPoint make(Point A) {
-        CTPoint resul = new CTPoint(A);
+    public static CTPoint make(Coordinates A) {
+        Point buildPoint;
+        if (A instanceof Point) {
+            buildPoint = (Point) A;
+        } else {
+            buildPoint = new Point(A.getVec());
+        }
+        CTPoint resul = new CTPoint(buildPoint);
         resul.rebuildShape();
         return resul;
     }
@@ -55,10 +62,15 @@ public class CTPoint extends Constructible {
         this(Point.origin());
     }
     
-    protected CTPoint(Point A) {
-        this.p = Point.origin();
-        this.p.copyStateFrom(A);
-        this.v = A.v;
+    protected CTPoint(Coordinates A) {
+        if (A instanceof Point) {
+            this.p = ((Point) A).copy();
+            this.v = A.getVec();
+        }
+        else {
+            this.p = Point.origin();
+            this.v = A.getVec();
+        }
     }
     
     @Override
@@ -125,7 +137,7 @@ public class CTPoint extends Constructible {
     }
     
     @Override
-    public Constructible applyAffineTransform(AffineJTransform transform) {
+    public CTPoint applyAffineTransform(AffineJTransform transform) {
         p.applyAffineTransform(transform);
         if (!isFreeMathObject()) {
             this.v.copyFrom(p.v);
@@ -133,5 +145,14 @@ public class CTPoint extends Constructible {
         rebuildShape();
         return this;
     }
-    
+
+    @Override
+    public Vec getVec() {
+        return p.v;
+    }
+
+    @Override
+    public CTPoint interpolate(Coordinates coords2, double alpha) {
+        return new CTPoint(getVec().interpolate(coords2.getVec(), alpha));
+    }
 }

@@ -91,7 +91,7 @@ public class LengthMeasure extends Delimiter {
 
             delimiterLabelRigidBox.stackTo(segment, AnchorType.RIGHT, gapToUse);
 
-            labelMarkPoint.v.copyFrom(delimiterLabelRigidBox.getCenter().v);
+            labelMarkPoint.copyFrom(delimiterLabelRigidBox.getCenter().v);
             Shape segCopy = segment.copy().stackTo(BB, AnchorType.LEFT);
             delimiterShapeToDraw.getPath().addJMPointsFrom(segCopy.getPath());
             delimiterLabelRigidBox.shift(0, +gap * amplitudeScale);
