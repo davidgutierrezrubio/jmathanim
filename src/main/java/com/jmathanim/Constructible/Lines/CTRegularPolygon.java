@@ -31,7 +31,7 @@ import java.util.ArrayList;
  *
  * @author David
  */
-public class CTRegularPolygon extends Constructible {
+public class CTRegularPolygon extends Constructible<CTRegularPolygon> {
 
     private final int nSides;
     private final CTPoint B;

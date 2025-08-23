@@ -19,6 +19,7 @@ package com.jmathanim.Utils.Layouts;
 
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.BoxDirection;
+import com.jmathanim.mathobjects.AbstractMathGroup;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
@@ -78,7 +79,7 @@ public class FlowLayout extends AbstractBoxLayout {
 	}
 
 	@Override
-	public void executeLayout(MathObjectGroup group) {
+	public void executeLayout(AbstractMathGroup<?> group) {
 		ArrayList<MathObjectGroup> rowGroups = getRowGroups(group);
 
 		rowGroups.get(0).get(0).stackTo(firstElementStack, this.corner, AnchorType.CENTER, 0);
@@ -114,9 +115,9 @@ public class FlowLayout extends AbstractBoxLayout {
 		}
 	}
 
-	public ArrayList<MathObjectGroup> getRowGroups(MathObjectGroup group) {
+	public ArrayList<MathObjectGroup> getRowGroups(AbstractMathGroup<?> group) {
 		ArrayList<MathObjectGroup> resul = new ArrayList<>();
-		MathObject firstOfTheRow = group.get(0);
+		MathObject<?> firstOfTheRow = group.get(0);
 		MathObjectGroup currentRow = MathObjectGroup.make(firstOfTheRow);
 		resul.add(currentRow);
 		int rowNumber = 0;

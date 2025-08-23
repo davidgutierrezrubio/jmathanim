@@ -21,6 +21,7 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.Interpolable;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.updaters.Coordinates;
@@ -29,7 +30,7 @@ import com.jmathanim.mathobjects.updaters.Coordinates;
  *
  * @author David
  */
-public class CTPoint extends Constructible implements Coordinates {
+public class CTPoint extends Constructible<CTPoint> implements Coordinates, Interpolable<CTPoint> {
     
     public final Point p;
     public final Vec v;

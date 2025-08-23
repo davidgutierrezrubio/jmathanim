@@ -36,7 +36,7 @@ import java.util.logging.Logger;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class JMImage extends AbstractJMImage {
+public class JMImage extends AbstractJMImage<JMImage> {
 
     private String filename;
 

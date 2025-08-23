@@ -20,7 +20,7 @@ package com.jmathanim.Utils.Layouts;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.LayoutType;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.MathObjectGroup;
+import com.jmathanim.mathobjects.AbstractMathGroup;
 import com.jmathanim.mathobjects.Point;
 
 /**
@@ -68,7 +68,7 @@ public class SimpleLayout extends GroupLayout {
 	}
 
 	@Override
-	public void executeLayout(MathObjectGroup group) {
+	public void executeLayout(AbstractMathGroup<?> group) {
 		AnchorType anchor1 = AnchorType.CENTER;
 		AnchorType anchor2 = AnchorType.CENTER;
 

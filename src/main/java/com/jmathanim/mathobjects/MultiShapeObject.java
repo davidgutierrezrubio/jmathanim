@@ -27,8 +27,12 @@ import java.util.List;
  */
 public class MultiShapeObject extends AbstractMultiShapeObject<MultiShapeObject> {
 
+    public MultiShapeObject() {
+        super();
+    }
 
-    private MultiShapeObject(List<Shape> shapes) {
+
+    protected MultiShapeObject(List<Shape> shapes) {
         super(shapes);
 
     }

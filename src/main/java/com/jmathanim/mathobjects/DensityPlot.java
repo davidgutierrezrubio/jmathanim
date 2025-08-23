@@ -80,10 +80,10 @@ public class DensityPlot extends AbstractJMImage implements hasScalarParameter {
     }
 
     @Override
-    public <T extends MathObject> T copy() {
+    public AbstractJMImage copy() {
         DensityPlot copy = new DensityPlot(bbox, densityLambdaFunction);
         copy.colorScale.copyFrom(colorScale);
-        return (T) this;
+        return this;
     }
 
     @Override
@@ -99,6 +99,7 @@ public class DensityPlot extends AbstractJMImage implements hasScalarParameter {
         heightView = dp.heightView;
         colorScale.copyFrom(dp.colorScale);
     }
+
 
     @Override
     public void update(JMathAnimScene scene) {
@@ -205,9 +206,9 @@ public class DensityPlot extends AbstractJMImage implements hasScalarParameter {
     }
 
     @Override
-    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
-        // Nothing to do (for now...)
-        return (T) this;
+    public DensityPlot applyAffineTransform(AffineJTransform tr) {
+        // TODO: Apply model matrix
+        return this;
     }
 
     @Override

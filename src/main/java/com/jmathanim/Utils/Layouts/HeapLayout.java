@@ -18,6 +18,7 @@
 package com.jmathanim.Utils.Layouts;
 
 import com.jmathanim.Enum.LayoutType;
+import com.jmathanim.mathobjects.AbstractMathGroup;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
 
@@ -61,7 +62,7 @@ public class HeapLayout extends GroupLayout {
 	}
 
 	@Override
-	public void executeLayout(MathObjectGroup group) {
+	public void executeLayout(AbstractMathGroup<?> group) {
 		center.clear();
 		rightSide.clear();
 		leftSide.clear();

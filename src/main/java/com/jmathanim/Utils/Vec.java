@@ -18,6 +18,8 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.Constructible.Lines.HasDirection;
+import com.jmathanim.mathobjects.AffineTransformable;
+import com.jmathanim.mathobjects.Interpolable;
 import com.jmathanim.mathobjects.Stateable;
 import com.jmathanim.mathobjects.updaters.Coordinates;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
@@ -31,7 +33,7 @@ import static java.lang.Math.sqrt;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Vec implements Stateable, HasDirection, Coordinates<Vec> {
+public class Vec implements Stateable, HasDirection, Coordinates, AffineTransformable<Vec>, Interpolable<Vec> {
 
     public double x, y, z;
     public double xState, yState, zState;

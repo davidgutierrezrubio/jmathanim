@@ -27,7 +27,7 @@ import com.jmathanim.mathobjects.Shape;
 /**
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTAngleMark extends Constructible {
+public class CTAngleMark extends Constructible<CTAngleMark> {
 
     private final CTPoint center, A, B;
     private final Shape arcToDraw;
@@ -72,7 +72,7 @@ public class CTAngleMark extends Constructible {
     }
 
     @Override
-    public Constructible copy() {
+    public CTAngleMark copy() {
         CTAngleMark copy = CTAngleMark.make(center.copy(), A.copy(), B.copy());
         copy.copyStateFrom(this);
         return copy;

@@ -256,8 +256,8 @@ public class Ray extends Shape implements HasDirection {
      */
     public Shape toSegment(Camera cam, double scale) {
         computeBoundPoints(cam);
-        Point a = bp1.copy().scale(getCenter(), scale, scale);
-        Point b = bp2.copy().scale(getCenter(), scale, scale);
+        JMPathPoint a = bp1.copy().scale(getCenter(), scale, scale);
+        JMPathPoint b = bp2.copy().scale(getCenter(), scale, scale);
         Shape segment = Shape.segment(a, b);
         segment.getMp().copyFrom(this.getMp());
         return segment;

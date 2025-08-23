@@ -37,9 +37,8 @@ import java.util.*;
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 @SuppressWarnings("ALL")
-public abstract class MathObject<T extends MathObject<T>>  implements Drawable, Updateable, Stateable, Boxable, Linkable,hasStyle {
+public abstract class MathObject<T extends MathObject<T>> implements Drawable, Updateable, Stateable, Boxable, Linkable, hasStyle, AffineTransformable<T> {
     protected final AffineJTransform modelMatrix;
-    private MODrawProperties mp;
     private final HashSet<MathObject> dependents;
     private final RendererEffects rendererEffects;
     private final HashMap<String, Object> properties;
@@ -49,6 +48,7 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
     public Vec absoluteAnchorVec;
     protected JMathAnimScene scene;
     protected boolean isRigid = false;
+    private MODrawProperties mp;
     private boolean hasBeenUpdated = false;
     private Camera camera;
     private int updateLevel;
@@ -73,7 +73,7 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
         if (scene != null) {
             camera = scene.getCamera();//Default camera
         }
-        if (prop!=null) {
+        if (prop != null) {
             mp = config.getDefaultMP();// Default MP values
             mp.copyFrom(prop);// Copy all non-null values from prop
             mp.setParent(this);
@@ -147,8 +147,8 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
     /**
      * Shift object. Overloaded method (2D version)
      *
-     * @param x   x-coordinate of shift vector
-     * @param y   y-coordinate of shift vector
+     * @param x x-coordinate of shift vector
+     * @param y y-coordinate of shift vector
      * @return The same object, after shifting
      */
     public final T shift(double x, double y) {
@@ -158,9 +158,9 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
     /**
      * Shift object.Overloaded method (3D version)
      *
-     * @param x   x-coordinate of shift vector
-     * @param y   y-coordinate of shift vector
-     * @param z   z-coordinate of shift vector
+     * @param x x-coordinate of shift vector
+     * @param y y-coordinate of shift vector
+     * @param z z-coordinate of shift vector
      * @return The same object, after shifting
      */
     public final T shift(double x, double y, double z) {
@@ -170,8 +170,8 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
     /**
      * Scale from center of object (2D version)
      *
-     * @param sx  x-scale factor
-     * @param sy  y-scale factor
+     * @param sx x-scale factor
+     * @param sy y-scale factor
      * @return The same object, after scaling
      */
     public T scale(double sx, double sy) {
@@ -182,11 +182,11 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
     /**
      * Scale from center of object (2D version) in a uniform scale
      *
-     * @param s   scale factor
+     * @param s scale factor
      * @return The same object, after scaling
      */
     public T scale(double s) {
-        return scale(getCenter(), s, s);
+        return (T) scale(getCenter(), s, s);
     }
 
     /**
@@ -196,7 +196,7 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
      * @param scale       scale factor
      * @return The same object, after scaling
      */
-    public final T scale(Point scaleCenter, double scale) {
+    public final T scale(Coordinates scaleCenter, double scale) {
         return scale(scaleCenter, scale, scale, scale);
     }
 
@@ -208,16 +208,16 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
      * @param sy          y-scale factor
      * @return The same object, after scaling
      */
-    public final T scale(Coordinates<?> scaleCenter, double sx, double sy) {
+    public final T scale(Coordinates scaleCenter, double sx, double sy) {
         return scale(scaleCenter, sx, sy, 1);
     }
 
     /**
      * Scale from the center of object (3D version)
      *
-     * @param sx  x-scale factor
-     * @param sy  y-scale factor
-     * @param sz  z-scale factor
+     * @param sx x-scale factor
+     * @param sy y-scale factor
+     * @param sz z-scale factor
      * @return The same object, after scaling
      */
     public final T scale(double sx, double sy, double sz) {
@@ -234,12 +234,8 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
      * @param sz          z-scale factor
      * @return The same object, after scaling
      */
-    public T scale(Point scaleCenter, double sx, double sy, double sz) {
-        return scale(scaleCenter.v, sx, sy, sz);
-    }
-
-    public T scale(Vec scaleCenter, double sx, double sy, double sz) {
-        AffineJTransform tr = AffineJTransform.createScaleTransform(scaleCenter, sx, sy, sz);
+    public T scale(Coordinates scaleCenter, double sx, double sy, double sz) {
+        AffineJTransform tr = AffineJTransform.createScaleTransform(scaleCenter.getVec(), sx, sy, sz);
         tr.applyTransform(this);
         return (T) this;
     }
@@ -295,7 +291,7 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
      * @param angle  Angle, in radians
      * @return The same object, after rotating
      */
-    public  T rotate(Coordinates center, double angle) {
+    public T rotate(Coordinates center, double angle) {
         AffineJTransform tr = AffineJTransform.create2DRotationTransform(center, angle);
         tr.applyTransform(this);
         return (T) this;
@@ -391,31 +387,12 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
      * @return The drawing attributes object
      */
     public Stylable getMp() {
-        if (mp==null) {
-            System.out.println("Creando nuevo MP para objeto "+this);
+        if (mp == null) {
+            System.out.println("Creando nuevo MP para objeto " + this);
             mp = (MODrawProperties) createDefaultMPForThisObject();
             mp.setParent(this);
         }
         return mp;
-    }
-
-    protected Stylable getSafeMP() {
-        return mp;
-    }
-    protected boolean hasMPCreated() {
-        return (mp!=null);
-    }
-    protected void copyMPFrom(MathObject obj) {
-       if (obj==null) return;
-        boolean thisHasCreated = hasMPCreated();
-        boolean objHasCreated = obj.hasMPCreated();
-        if (thisHasCreated || objHasCreated) {
-            getMp().copyFrom(obj.getMp());
-        }
-    }
-
-    protected Stylable createDefaultMPForThisObject() {
-        return JMathAnimConfig.getConfig().getDefaultMP();// Default MP values
     }
 
     /**
@@ -429,10 +406,31 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
         return (T) this;
     }
 
+    protected Stylable getSafeMP() {
+        return mp;
+    }
+
+    protected boolean hasMPCreated() {
+        return (mp != null);
+    }
+
+    protected void copyMPFrom(MathObject obj) {
+        if (obj == null) return;
+        boolean thisHasCreated = hasMPCreated();
+        boolean objHasCreated = obj.hasMPCreated();
+        if (thisHasCreated || objHasCreated) {
+            getMp().copyFrom(obj.getMp());
+        }
+    }
+
+    protected Stylable createDefaultMPForThisObject() {
+        return JMathAnimConfig.getConfig().getDefaultMP();// Default MP values
+    }
+
     /**
      * Changes both draw and fill color
      *
-     * @param dc  A PaintStyle object. Can be a JMColor, a gradient or image pattern
+     * @param dc A PaintStyle object. Can be a JMColor, a gradient or image pattern
      * @return This object
      */
     public T color(PaintStyle dc) {
@@ -456,10 +454,10 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
     /**
      * Sets the draw color of the object
      *
-     * @param dc  A JMcolor object with the draw color
+     * @param dc A JMcolor object with the draw color
      * @return The MathObject subclass
      */
-    public  T drawColor(PaintStyle dc) {
+    public T drawColor(PaintStyle dc) {
         getMp().setDrawColor(dc);
         return (T) this;
     }
@@ -478,10 +476,10 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
     /**
      * Sets the fill color of the object
      *
-     * @param fc  A JMcolor object with the fill color
+     * @param fc A JMcolor object with the fill color
      * @return The MathObject subclass
      */
-    public  T fillColor(PaintStyle fc) {
+    public T fillColor(PaintStyle fc) {
         getMp().setFillColor(fc);
         return (T) this;
     }
@@ -492,7 +490,7 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
      * @param str A string representing the fill color, as in the JMcolor.parse method
      * @return The MathObject subclass
      */
-    public  T fillColor(String str) {
+    public T fillColor(String str) {
         fillColor(JMColor.parse(str));
         return (T) this;
     }
@@ -514,7 +512,7 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
      * @param alpha Alpha value, between 0 (transparent) and 1 (opaque)
      * @return This MathObject subclass
      */
-    public  T fillAlpha(double alpha) {
+    public T fillAlpha(double alpha) {
         getMp().setFillAlpha(alpha);
         return (T) this;
     }
@@ -525,7 +523,7 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
      * @param newThickness Thickness
      * @return This MathObject subclass
      */
-    public  T thickness(double newThickness) {
+    public T thickness(double newThickness) {
         getMp().setThickness(newThickness);
         return (T) this;
     }
@@ -536,7 +534,7 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
      * @param dashStyle A value from enum DashStyle
      * @return This MathObject subclass
      */
-    public  T dashStyle(DashStyle dashStyle) {
+    public T dashStyle(DashStyle dashStyle) {
         getMp().setDashStyle(dashStyle);
         return (T) this;
     }
@@ -548,7 +546,7 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
      * @param visible True if objet is visible, false otherwise
      * @return This MathObject subclass
      */
-    public  T visible(boolean visible) {
+    public T visible(boolean visible) {
         getMp().setVisible(visible);
         return (T) this;
     }
@@ -566,7 +564,7 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
      * will appear with the same size regardless of the zoom applied to the camera. The given point will be used as
      * reference point to position the object.
      *
-     * @param anchorVec   Reference vector to position the object.
+     * @param anchorVec Reference vector to position the object.
      * @return The current object
      */
     public T setAbsoluteSize(Vec anchorVec) {
@@ -743,7 +741,7 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
     /**
      * Shifts the object so that its center lies at the specified location
      *
-     * @param p   Destination point
+     * @param p Destination point
      * @return The current object
      */
     public final T moveTo(Point p) {
@@ -753,8 +751,8 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
     /**
      * Overloaded method. Shifts the object so that its center lies at the specified location
      *
-     * @param x   x destiny coordinate
-     * @param y   y destiny coordinate
+     * @param x x destiny coordinate
+     * @param y y destiny coordinate
      * @return The current object
      */
     public T moveTo(double x, double y) {
@@ -870,7 +868,7 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
      * @return True if visible, false otherwise
      */
     public boolean isVisible() {
-        return  getMp().isVisible();
+        return getMp().isVisible();
     }
 
 
@@ -891,7 +889,7 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
     /**
      * Scale object so that has a specified width. Scaled is done around its center.
      *
-     * @param w   Desired width
+     * @param w Desired width
      * @return The same object
      */
     public T setWidth(double w) {
@@ -916,7 +914,7 @@ public abstract class MathObject<T extends MathObject<T>>  implements Drawable, 
     /**
      * Scale object so that has a specified height. Scaled is done around its center.
      *
-     * @param h   Desired height
+     * @param h Desired height
      * @return The same object
      */
     public T setHeight(double h) {

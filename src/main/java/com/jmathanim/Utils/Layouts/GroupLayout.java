@@ -19,6 +19,7 @@ package com.jmathanim.Utils.Layouts;
 
 import com.jmathanim.Enum.InnerAnchorType;
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.mathobjects.AbstractMathGroup;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Shape;
@@ -57,7 +58,7 @@ public abstract class GroupLayout {
      * @param group The MathObjectGroup to which the layout logic will
      *              be applied.
      */
-    protected abstract void executeLayout(MathObjectGroup group);
+    protected abstract void executeLayout(AbstractMathGroup<?> group);
 
     /**
      * Applies the layout configuration to the specified MathObjectGroup.
@@ -66,7 +67,7 @@ public abstract class GroupLayout {
      *
      * @param group The MathObjectGroup to which the layout is applied.
      */
-    public final void applyLayout(MathObjectGroup group) {
+    public final void applyLayout(AbstractMathGroup<?> group) {
         if (innerAnchor != null) {//Should homogeneize bounding boxes first
             saveGaps(group);
             group.homogeneizeBoundingBoxes(innerAnchor, rgap, ugap, logap, logap);
@@ -77,14 +78,14 @@ public abstract class GroupLayout {
         }
     }
 
-    private void saveGaps(MathObjectGroup group) {
+    private void saveGaps(AbstractMathGroup<?> group) {
         backupGaps.clear();
         for (MathObject ob : group) {
             backupGaps.add(ob.getGaps());
         }
     }
 
-    private void restoreGaps(MathObjectGroup group) {
+    private void restoreGaps(AbstractMathGroup<?> group) {
         for (int i = 0; i < group.size(); i++) {
             double[] gaps = backupGaps.get(i);
             group.get(i).setGaps(

@@ -17,55 +17,26 @@
  */
 package com.jmathanim.mathobjects.Text;
 
-import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Enum.AnchorType;
-import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.hasArguments;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 /**
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class LaTeXMathObject extends AbstractLaTeXMathObject<LaTeXMathObject>  implements hasArguments {
-
-    public final HashMap<Integer, Scalar> variables;
-    DecimalFormat df;
-    private Point anchor3DA;
-    private Point anchor3DC;
-    private Point anchor3DD;
-    private String origText;
+public class LaTeXMathObject extends AbstractLaTeXMathObject<LaTeXMathObject> implements hasArguments {
 
     /**
      * Creates a new LaTeX generated text
      */
     protected LaTeXMathObject(AnchorType anchor) {
         super(anchor);
-        df = new DecimalFormat("0.00");
-        df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.UK));
-        variables = new HashMap<>();
-        for (int n = 0; n < 9; n++) {
-            variables.put(n, Scalar.make(0));
-        }
     }
 
-    /**
-     * Static constructor
-     *
-     * @param text LaTex text to compile. By default this text is compiled using the compile mode JLaTexMath.
-     * @return The LaTexMathObject
-     */
-    public static LaTeXMathObject make(String text) {
-        return make(text, CompileMode.JLaTexMath, AnchorType.CENTER);
-    }
 
     /**
      * Static constructor
@@ -82,12 +53,13 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject<LaTeXMathObject>  i
     /**
      * Static constructor
      *
-     * @param text        LaTex text to compile
-     * @param compileMode How to generate the shapes from LaTeX string. A value from the enum CompileMode.
-     * @param anchor      Anchor to align. Default is CENTER. If LEFT, text will be anchored in its left margin to the
-     *                    reference point
+     * @param text LaTex text to compile. By default this text is compiled using the compile mode JLaTexMath.
      * @return The LaTexMathObject
      */
+    public static LaTeXMathObject make(String text) {
+        return make(text, CompileMode.JLaTexMath, AnchorType.CENTER);
+    }
+
     public static LaTeXMathObject make(String text, CompileMode compileMode, AnchorType anchor) {
 
         LaTeXMathObject resul = new LaTeXMathObject(anchor);
@@ -103,27 +75,8 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject<LaTeXMathObject>  i
         return resul;
     }
 
-    /**
-     * Changes the current LaTeX expression, updating the whole object as needed.The JMNumber for example, uses this.The
-     * new formula generated will be center-aligned with the replaced one. In case the old formula was empty (no shapes)
-     * it will be centered on the screen.
-     *
-     * @param text The new LaTeX string
-     * @return This object
-     */
-    public LaTeXMathObject setLaTeX(String text) {
-        origText = text;
-        text = replaceInnerReferencesInText(text);
-        changeInnerLaTeX(text);
-        return this;
-    }
 
-    protected String replaceInnerReferencesInText(String text) {
-        for (Integer index : variables.keySet()) {
-            text = text.replace("{#" + index + "}", df.format(variables.get(index).value));
-        }
-        return text;
-    }
+
 
     @Override
     public LaTeXMathObject copy() {
@@ -166,45 +119,6 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject<LaTeXMathObject>  i
 //        anchor3DC = anchor3DA.copy().shift(0, 1, 0);
 //        anchor3DD = anchor3DA.copy().shift(0, 0, 1);
 //        alignTo3DView();
-    }
-
-    private void alignTo3DView() {
-        if (scene.getCamera() instanceof Camera3D) {
-            Camera3D cam = (Camera3D) scene.getCamera();
-            Point anchor3DCdest = anchor3DA.copy().shift(cam.up);
-            Point anchor3DDdest = anchor3DA.copy().shift(cam.look.to(cam.eye));
-            AffineJTransform tr = AffineJTransform.createDirect3DIsomorphic(
-                    anchor3DA, anchor3DD, anchor3DC,
-                    anchor3DA.copy(), anchor3DDdest, anchor3DCdest,
-                    1);
-            tr.applyTransform(this);
-//            tr.applyTransform(anchor3DA);
-            tr.applyTransform(anchor3DC);
-            tr.applyTransform(anchor3DD);
-        }
-    }
-
-    public DecimalFormat getDecimalFormat() {
-        return df;
-    }
-
-
-    /**
-     * Sets the decimal format for the arguments.
-     *
-     * @param format A string representing a format for the DecimalFormat class.
-     */
-    public void setArgumentsFormat(String format) {
-        df = new DecimalFormat(format);
-    }
-
-    @Override
-    public Scalar getArg(int n) {
-        Scalar resul = variables.get(n);
-        if (resul == null) {
-            variables.put(n, Scalar.make(0));
-        }
-        return variables.get(n);
     }
 
 

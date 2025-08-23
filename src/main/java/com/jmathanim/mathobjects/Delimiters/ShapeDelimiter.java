@@ -2,7 +2,6 @@ package com.jmathanim.mathobjects.Delimiters;
 
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Utils.*;
-import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.NullMathObject;
 import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.updaters.Coordinates;
@@ -37,7 +36,7 @@ public class ShapeDelimiter extends Delimiter {
                 break;
         }
         if (name != null) {
-            resul.body = new SVGMathObject(rl.getResource(name, "shapeResources/delimiters"));
+            resul.body = SVGMathObject.make(rl.getResource(name, "shapeResources/delimiters"));
         } else resul.body = null;
 //        resul.mpDelimiter.add(resul.body);
         resul.style("latexdefault");
@@ -56,7 +55,7 @@ public class ShapeDelimiter extends Delimiter {
         double angle = A.to(B).getAngle();
         Vec AA = A.interpolate(B, .5 * (1 - amplitudeScale));
         Vec BB = A.interpolate(B, .5 * (1 + amplitudeScale));
-        MultiShapeObject bodyCopy = body.copy();
+        SVGMathObject bodyCopy = body.copy();
             delimiterShapeToDraw.getPath().clear();
 
         if (type == DelimiterType.BRACE) {

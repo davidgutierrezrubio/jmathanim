@@ -21,10 +21,7 @@ import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.LayoutType;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Rect;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.*;
 
 /**
  *
@@ -53,7 +50,7 @@ public class PascalLayout extends GroupLayout {
 	}
 
 	@Override
-	public void executeLayout(MathObjectGroup group) {
+	public void executeLayout(AbstractMathGroup<?> group) {
 		if (group.isEmpty()) {
 			return; // Nothing to do here...
 		}

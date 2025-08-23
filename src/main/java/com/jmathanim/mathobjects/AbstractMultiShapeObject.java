@@ -182,7 +182,7 @@ public abstract class AbstractMultiShapeObject<T extends AbstractMultiShapeObjec
      * @param indexOtherObject Index of the shape of the other multishape to align with
      * @return This object
      */
-    public T alignCenter(int index, MultiShapeObject otherObject, int indexOtherObject) {
+    public T alignCenter(int index, AbstractMultiShapeObject<?> otherObject, int indexOtherObject) {
         shift(this.get(index).getCenter().to(otherObject.get(indexOtherObject).getCenter()));
         return (T) this;
     }

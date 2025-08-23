@@ -60,8 +60,8 @@ public abstract class Polyhedron extends MathObjectGroup {
                     (Point) vertices.get(b));
         } else {
             edge = Shape.segment(
-                    vertices.get(a).copy(),
-                    vertices.get(b).copy());
+                    ((Point) vertices.get(a)).copy(),
+                    ((Point) vertices.get(b)).copy());
         }
 
         edges.add(edge);
@@ -78,7 +78,7 @@ public abstract class Polyhedron extends MathObjectGroup {
         else
         {
              for (int i = 0; i < indices.length; i++) {
-                points[i] = vertices.get(indices[i]).copy();
+                points[i] = ((Point) vertices.get(indices[i])).copy();
             }
         }
         Shape face = Shape.polygon(points);

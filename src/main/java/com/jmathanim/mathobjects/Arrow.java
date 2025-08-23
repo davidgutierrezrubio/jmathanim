@@ -30,7 +30,7 @@ import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Text.LaTeXMathObject;
+import com.jmathanim.mathobjects.Text.AbstractLaTeXMathObject;
 import com.jmathanim.mathobjects.Tippable.LabelTip;
 import com.jmathanim.mathobjects.updaters.Updater;
 
@@ -41,7 +41,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 /**
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Arrow extends Constructible {
+public class Arrow extends Constructible<Arrow> {
 
     public final Shape labelArcUpside;
     public final Shape labelArcDownside;
@@ -657,7 +657,7 @@ public class Arrow extends Constructible {
         labelType = labelTypeEnum.DISTANCE;
         this.stringFormat = format;
 
-        LaTeXMathObject t = arrowLabel.getLaTeXObject();
+        AbstractLaTeXMathObject<?> t = arrowLabel.getLaTeXObject();
         t.setArgumentsFormat(format);
         groupElementsToBeDrawn.clear();
         groupElementsToBeDrawn.add(shapeToDraw, arrowLabel);
@@ -692,7 +692,7 @@ public class Arrow extends Constructible {
         label.setAnchor(AnchorType.LOWER);
         setLabel(label);
         labelType = labelTypeEnum.COORDS;
-        LaTeXMathObject t = arrowLabel.getLaTeXObject();
+        AbstractLaTeXMathObject<?> t = arrowLabel.getLaTeXObject();
         t.setArgumentsFormat(format);
         this.stringFormat = format;
         arrowLabel.registerUpdater(new Updater() {

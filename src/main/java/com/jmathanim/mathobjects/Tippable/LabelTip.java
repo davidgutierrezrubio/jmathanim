@@ -21,6 +21,7 @@ import com.jmathanim.Enum.RotationType;
 import com.jmathanim.Enum.SlopeDirectionType;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.Text.AbstractLaTeXMathObject;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import com.jmathanim.mathobjects.updaters.Updater;
 
@@ -31,12 +32,12 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class LabelTip extends AbstractTippableObject implements hasArguments {
+public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArguments {
 
 
-    private final LaTeXMathObject laTeXMathObject;
+    private final AbstractLaTeXMathObject<?> laTeXMathObject;
 
-    protected LabelTip(Shape shape, LaTeXMathObject tipLabel, AnchorType anchor, double locationParameter) {
+    protected LabelTip(Shape shape, AbstractLaTeXMathObject<?> tipLabel, AnchorType anchor, double locationParameter) {
         super(shape, tipLabel, locationParameter);
         setAnchor(anchor);
         laTeXMathObject = tipLabel;
@@ -45,7 +46,7 @@ public class LabelTip extends AbstractTippableObject implements hasArguments {
     }
 
 
-    protected LabelTip(Shape shape, LaTeXMathObject tipObject, Point anchorPoint, double locationParameter) {
+    protected LabelTip(Shape shape, AbstractLaTeXMathObject<?> tipObject, Point anchorPoint, double locationParameter) {
         super(shape, tipObject, locationParameter);
         setAnchorPoint(anchorPoint);
         laTeXMathObject = tipObject;
@@ -135,7 +136,7 @@ public class LabelTip extends AbstractTippableObject implements hasArguments {
      *                          will be located in the opposite side.
      * @return The tippable object
      */
-    public static LabelTip makeLabelTip(Shape shape, double locationParameter, LaTeXMathObject tipLabel, boolean upSide) {
+    public static LabelTip makeLabelTip(Shape shape, double locationParameter, AbstractLaTeXMathObject<?> tipLabel, boolean upSide) {
 
         LabelTip resul = new LabelTip(shape, tipLabel, AnchorType.LOWER, locationParameter);
         resul.setDistanceToShape(tipLabel.getHeight() * .25);
@@ -155,7 +156,7 @@ public class LabelTip extends AbstractTippableObject implements hasArguments {
         return copy;
     }
 
-    public LaTeXMathObject getLaTeXObject() {
+    public AbstractLaTeXMathObject<?> getLaTeXObject() {
         return laTeXMathObject;
     }
 

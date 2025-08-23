@@ -17,7 +17,7 @@ import com.jmathanim.mathobjects.Text.TextUpdaters.TextUpdaterFactory;
 import com.jmathanim.mathobjects.updateableObjects.AnchoredMathObject;
 import com.jmathanim.mathobjects.updaters.Coordinates;
 
-public abstract class Delimiter extends Constructible {
+public abstract class Delimiter extends Constructible<Delimiter> {
     public final Vec labelMarkPoint;
     protected final Vec A;
     protected final Vec B;

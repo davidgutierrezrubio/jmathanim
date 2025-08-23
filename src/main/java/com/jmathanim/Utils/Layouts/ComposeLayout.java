@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Utils.Layouts;
 
+import com.jmathanim.mathobjects.AbstractMathGroup;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 
@@ -49,9 +50,9 @@ public class ComposeLayout extends GroupLayout {
 	}
 
 	@Override
-	public void executeLayout(MathObjectGroup group) {
+	public void executeLayout(AbstractMathGroup<?> group) {
 		MathObjectGroup externalGroup = group.divide(sizeInternalGroups);
-		for (MathObject ig : externalGroup) {
+		for (MathObject<?> ig : externalGroup) {
 			MathObjectGroup internalGroup = (MathObjectGroup) ig;
 			internalLayout.applyLayout(internalGroup);
 		}

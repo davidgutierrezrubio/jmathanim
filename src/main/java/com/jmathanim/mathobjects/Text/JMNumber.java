@@ -27,7 +27,7 @@ import java.text.DecimalFormat;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class JMNumber extends LaTeXMathObject implements hasScalarParameter {
+public class JMNumber extends AbstractLaTeXMathObject<JMNumber> implements hasScalarParameter {
 
     private double value;
     private String format;

@@ -32,7 +32,7 @@ import java.util.ArrayList;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Surface extends MathObject {
+public class Surface extends MathObject<Surface> {
 
     public final MathObjectGroup vertices;
     public final ArrayList<HalfEdge> halfEdges;
@@ -84,7 +84,7 @@ public class Surface extends MathObject {
     }
 
     @Override
-    public <T extends MathObject> T copy() {
+    public Surface copy() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

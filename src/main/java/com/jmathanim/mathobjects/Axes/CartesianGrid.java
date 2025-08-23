@@ -19,14 +19,17 @@ package com.jmathanim.mathobjects.Axes;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
-import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.Line;
+import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MathObjectGroup;
+import com.jmathanim.mathobjects.shouldUdpateWithCamera;
 
 /**
  * A Cartesian Grid
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CartesianGrid extends MultiShapeObject implements shouldUdpateWithCamera {
+public class CartesianGrid extends MathObjectGroup implements shouldUdpateWithCamera {
 
     private final double xStep;
     private final double yStep;
@@ -99,7 +102,7 @@ public class CartesianGrid extends MultiShapeObject implements shouldUdpateWithC
     }
 
     private void recomputeGrid() {
-        this.clearShapes();
+        this.clear();
 
         Rect bb = this.getCamera().getMathView();
         double wv = 1 * bb.getWidth();

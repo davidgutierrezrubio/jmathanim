@@ -33,13 +33,13 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  *
  * @author David Gutierrez Rubio
  */
-public class NullMathObject extends Constructible {
+public class NullMathObject extends Constructible<NullMathObject> {
 
     public NullMathObject() {
     }
 
     @Override
-    public Constructible applyAffineTransform(AffineJTransform transform) {
+    public NullMathObject applyAffineTransform(AffineJTransform transform) {
         return this;
     }
 

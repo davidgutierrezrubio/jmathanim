@@ -46,7 +46,7 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
      * @param p1 First point
      * @param p2 Second point
      */
-    public Line(Coordinates<?> p1, Coordinates<?> p2) {
+    public Line(Coordinates p1, Coordinates p2) {
         super();
         this.p1 = p1.getVec();
         this.p2 = p2.getVec();
@@ -81,7 +81,7 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
      * @param b Second point
      * @return The line object
      */
-    public static Line make(Coordinates<?> a, Point b) {
+    public static Line make(Coordinates a, Point b) {
         return new Line(a, b);
     }
 

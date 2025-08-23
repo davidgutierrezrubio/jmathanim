@@ -115,7 +115,7 @@ public class Shape extends MathObject<Shape> {
         points[0] = A;
         points[numPoints - 1] = B;
         for (int i = 1; i < numPoints - 1; i++) {
-            points[i] = A.interpolate(B, 1d * i / (numPoints - 1));
+            points[i] = A.getVec().interpolate(B, 1d * i / (numPoints - 1));
         }
         return polyLine(points);
     }

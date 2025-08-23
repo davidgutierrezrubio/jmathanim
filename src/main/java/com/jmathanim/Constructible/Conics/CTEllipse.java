@@ -32,7 +32,7 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutierrez Rubio
  */
-public class CTEllipse extends Constructible {
+public class CTEllipse extends Constructible<CTEllipse> {
     
     CTPoint focus1, focus2, A;
     private final Shape originalShape;

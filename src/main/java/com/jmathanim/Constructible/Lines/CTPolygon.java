@@ -32,7 +32,7 @@ import java.util.Arrays;
  *
  * @author David Gutierrez Rubio
  */
-public class CTPolygon extends Constructible {
+public class CTPolygon extends Constructible<CTPolygon> {
 
     private final Shape shapeToDraw;
     private final CTPoint[] points;

@@ -29,7 +29,7 @@ import com.jmathanim.mathobjects.*;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTCircle extends CTAbstractCircle {
+public class CTCircle extends CTAbstractCircle<CTCircle> {
 
     @Override
     public Vec getHoldCoordinates(Vec coordinates) {

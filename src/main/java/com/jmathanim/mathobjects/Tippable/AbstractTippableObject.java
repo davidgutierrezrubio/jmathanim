@@ -17,9 +17,9 @@
 package com.jmathanim.mathobjects.Tippable;
 
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.RotationType;
 import com.jmathanim.Enum.SlopeDirectionType;
-import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
@@ -33,7 +33,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 /**
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class AbstractTippableObject extends Constructible implements hasScalarParameter {
+public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>> extends Constructible<T> implements hasScalarParameter {
 
     public final Point pivotPointRefMathObject;
     public final Point markPoint;
@@ -80,7 +80,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         mpArray.add(tipObjectRigidBox);
     }
 
-    public <T extends AbstractTippableObject> T setAnchor(AnchorType anchor) {
+    public T setAnchor(AnchorType anchor) {
         this.anchor = anchor;
         tipObjectRigidBox.resetMatrix();
         tipObjectRigidBox.rotate(rotationAngleAroundCenterOfMathObject);
@@ -101,7 +101,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         }
     }
 
-    protected <T extends AbstractTippableObject> T setAnchorPoint(Point anchorPoint) {
+    protected T setAnchorPoint(Point anchorPoint) {
         this.anchorPoint = anchorPoint;
         this.pivotPointRefMathObject.v.copyFrom(anchorPoint.v);
         anchorType = AnchorTypeUsed.FIXED_POINT;
@@ -133,7 +133,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         return rotationType;
     }
 
-    public <T extends AbstractTippableObject> T setRotationType(RotationType rotationType) {
+    public T setRotationType(RotationType rotationType) {
         this.rotationType = rotationType;
         rebuildShape();
         return (T) this;
@@ -143,21 +143,20 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         return distanceToShape;
     }
 
-    public <T extends AbstractTippableObject> T setDistanceToShape(Double distanceToShape) {
+    public  T setDistanceToShape(Double distanceToShape) {
         this.distanceToShape = distanceToShape;
         rebuildShape();
         return (T) this;
     }
 
     @Override
-    public Constructible applyAffineTransform(AffineJTransform transform) {
+    public T applyAffineTransform(AffineJTransform transform) {
         if (isFreeMathObject()) {
             getMathObject().applyAffineTransform(transform);
-        }
-        else {
+        } else {
             tipObjectRigidBox.applyAffineTransformToBaseTransform(transform);
         }
-        return this;
+        return (T) this;
     }
 
     @Override
@@ -187,7 +186,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
             this.markPoint.copyStateFrom(nt.markPoint);
             this.pivotPointRefShape.copyStateFrom(nt.pivotPointRefShape);
             this.isParametrized = nt.isParametrized;
-            this.slopeDirectionType=nt.slopeDirectionType;
+            this.slopeDirectionType = nt.slopeDirectionType;
             rebuildShape();
         }
 
@@ -278,7 +277,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         return slopeDirectionType;
     }
 
-    public <T extends AbstractTippableObject> T setSlopeDirection(SlopeDirectionType slopeDirection) {
+    public T setSlopeDirection(SlopeDirectionType slopeDirection) {
         this.slopeDirectionType = slopeDirection;
         rebuildShape();
         return (T) this;
@@ -293,11 +292,11 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         return markPoint;
     }
 
-    private enum AnchorTypeUsed {ANCHOR, FIXED_POINT}
-
     @Override
     public void update(JMathAnimScene scene) {
         super.update(scene);
         rebuildShape();
     }
+
+    private enum AnchorTypeUsed {ANCHOR, FIXED_POINT}
 }

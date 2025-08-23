@@ -19,6 +19,7 @@ package com.jmathanim.Utils.Layouts;
 
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.BoxDirection;
+import com.jmathanim.mathobjects.AbstractMathGroup;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
@@ -108,7 +109,7 @@ public class BoxLayout extends AbstractBoxLayout {
     }
 
     @Override
-    public void executeLayout(MathObjectGroup group) {
+    public void executeLayout(AbstractMathGroup<?> group) {
         int rowCounter = 0; // This counter checks if another row is necessary
         MathObject firstOfTheRow = group.get(0);
         // Stacks the first object to the corner point, if it exists

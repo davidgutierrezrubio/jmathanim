@@ -21,13 +21,12 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
-import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.AbstractMultiShapeObject;
 import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 
 import java.text.DecimalFormat;
@@ -39,7 +38,7 @@ import java.util.Locale;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Axes extends MathObject<Axes> {
+public class Axes extends AbstractMultiShapeObject<Axes> {
 
     public static final double LEGEND_TICKS_GAP = .5;
     DecimalFormat format;
@@ -318,10 +317,6 @@ public class Axes extends MathObject<Axes> {
         this.format = format;
     }
 
-    @Override
-    public final Stylable getMp() {
-        return mpArray;
-    }
 
     public ArrayList<TickAxes> getXticks() {
         return xticks;

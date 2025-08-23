@@ -21,6 +21,7 @@ import com.jmathanim.Animations.*;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Utils.OrientationType;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.AbstractMultiShapeObject;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
@@ -40,8 +41,8 @@ public class TransformMathExpression extends Animation {
 
     private RemoveType defaultRemovingStyle;
     private AddType defaultAddingStyle;
-    private final MultiShapeObject latexTransformedOrig;
-    private final MultiShapeObject latexDestiny;
+    private final AbstractMultiShapeObject<?> latexTransformedOrig;
+    private final AbstractMultiShapeObject<?> latexDestiny;
     private final MultiShapeObject latexTransformedBase;
     private final AnimationGroup animations;
     private boolean isOriginalAddedToScene;
@@ -98,7 +99,7 @@ public class TransformMathExpression extends Animation {
      * @param latexDestiny Destiny math expression
      * @return The created object
      */
-    public static TransformMathExpression make(double runTime, MultiShapeObject latexTransformed, MultiShapeObject latexDestiny) {
+    public static TransformMathExpression make(double runTime, AbstractMultiShapeObject<?> latexTransformed, AbstractMultiShapeObject<?> latexDestiny) {
         return new TransformMathExpression(runTime, latexTransformed, latexDestiny);
     }
 
@@ -111,7 +112,7 @@ public class TransformMathExpression extends Animation {
      * @param latexTransformedOrig Original math expression
      * @param latexDestiny Destiny math expression
      */
-    public TransformMathExpression(double runTime, MultiShapeObject latexTransformedOrig, MultiShapeObject latexDestiny) {
+    public TransformMathExpression(double runTime, AbstractMultiShapeObject<?> latexTransformedOrig, AbstractMultiShapeObject<?> latexDestiny) {
         super(runTime);
         this.latexTransformedBase = MultiShapeObject.make();
         this.latexTransformedOrig = latexTransformedOrig;
@@ -390,7 +391,7 @@ public class TransformMathExpression extends Animation {
         toDelete.add(sh2);
     }
 
-    private ArrayList<Shape> getShapeListForGroup(HashMap<String, int[]> or, String names, MultiShapeObject lat,
+    private ArrayList<Shape> getShapeListForGroup(HashMap<String, int[]> or, String names, AbstractMultiShapeObject<?> lat,
             HashMap<Integer, TransformMathExpressionParameters> listRemainders) {
         ArrayList<Shape> resul = new ArrayList<>();
         int[] gr = or.get(names);
@@ -404,7 +405,7 @@ public class TransformMathExpression extends Animation {
         return resul;
     }
 
-    private Shape getShapeForGroup(HashMap<String, int[]> or, String names, MultiShapeObject lat,
+    private Shape getShapeForGroup(HashMap<String, int[]> or, String names, AbstractMultiShapeObject<?> lat,
             HashMap<Integer, TransformMathExpressionParameters> listRemainders) {
         int[] gr = or.get(names);
         Shape sh = lat.get(gr[0]);

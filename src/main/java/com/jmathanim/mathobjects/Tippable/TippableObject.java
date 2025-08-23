@@ -31,7 +31,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class TippableObject extends AbstractTippableObject {
+public class TippableObject extends AbstractTippableObject<TippableObject> {
 
     //    public static AbstractTippableObject makeLabel(Shape shape, String text, Type anchor, double location) {
 //        LaTeXMathObject tipObject = LaTeXMathObject.make(text);

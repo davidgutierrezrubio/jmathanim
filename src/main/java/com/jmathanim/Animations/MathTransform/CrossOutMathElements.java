@@ -24,10 +24,7 @@ import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.MultiShapeObject;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.*;
 
 import java.util.ArrayList;
 
@@ -55,18 +52,18 @@ public class CrossOutMathElements extends AnimationGroup {
      * per index)
      * @return The created animation.
      */
-    public static CrossOutMathElements make(double runTime, MultiShapeObject formula, int... indices) {
+    public static CrossOutMathElements make(double runTime, AbstractMultiShapeObject<?> formula, int... indices) {
         CrossOutMathElements resul = new CrossOutMathElements(runTime, formula);
         resul.shouldAddObjectsToScene = true;
         resul.addSmallCrosses(indices);
         resul.setLambda(t -> t);
         return resul;
     }
-    private final MultiShapeObject formula;
+    private final AbstractMultiShapeObject<?>  formula;
     private final MultiShapeObject generatedCrosses;
     private int[] createdCrossedIndices;
 
-    private CrossOutMathElements(double runTime, MultiShapeObject formula) {
+    private CrossOutMathElements(double runTime, AbstractMultiShapeObject<?>  formula) {
         super();
         this.runTime = runTime;
         this.formula = formula;
@@ -198,7 +195,7 @@ public class CrossOutMathElements extends AnimationGroup {
 
     private void generateCrosses() {
         for (int[] indices : crossIndices) {
-            MultiShapeObject slice = formula.slice(false, indices);
+            AbstractMultiShapeObject<?> slice = formula.slice(false, indices);
             Rect formulaRect = slice.getBoundingBox();
             Shape cross = buildCrossFromRect(formulaRect);
             cross.getMp().copyFrom(crossDrawProperties);

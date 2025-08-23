@@ -31,7 +31,8 @@ import java.text.DecimalFormat;
 /**
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class JMPathPoint extends MathObject<JMPathPoint> implements Updateable, Stateable, Coordinates<JMPathPoint> {
+public class JMPathPoint extends MathObject<JMPathPoint> implements
+        Updateable, Stateable,  Coordinates, AffineTransformable<JMPathPoint>, Interpolable<JMPathPoint> {
 
     //    public final Point p; // The vertex point
     public final Vec v; // The vertex point

@@ -19,7 +19,7 @@ package com.jmathanim.Utils.Layouts;
 
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.mathobjects.MathObjectGroup;
+import com.jmathanim.mathobjects.AbstractMathGroup;
 import com.jmathanim.mathobjects.Point;
 
 /**
@@ -147,7 +147,7 @@ public class SpiralLayout extends GroupLayout {
     }
 
     @Override
-    public void executeLayout(MathObjectGroup group) {
+    public void executeLayout(AbstractMathGroup<?> group) {
         computeStacks(orientation);
         int[] turns = new int[]{0, 0};//Experimental, to control horizontal/vertical ratio
         int ii = 0;

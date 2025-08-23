@@ -48,6 +48,10 @@ public class SVGMathObject extends AbstractMultiShapeObject<SVGMathObject> {
         URL url = rl.getResource(filename, "images");
         return make(url);
   }
+  public static SVGMathObject make() {
+      return new SVGMathObject();
+  }
+
 
     protected SVGMathObject() {
         super();
@@ -66,6 +70,7 @@ public class SVGMathObject extends AbstractMultiShapeObject<SVGMathObject> {
         } catch (Exception ex) {
             Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return resul;
     }
 
     @Override

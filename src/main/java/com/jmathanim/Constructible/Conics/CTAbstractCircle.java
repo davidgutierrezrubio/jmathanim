@@ -28,7 +28,7 @@ import com.jmathanim.mathobjects.hasScalarParameter;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class CTAbstractCircle extends Constructible implements hasScalarParameter,PointOwner {
+public abstract class CTAbstractCircle<T extends CTAbstractCircle<T>> extends Constructible<T> implements hasScalarParameter,PointOwner {
 
     /**
      * Returns the geometrical center of the circle or similar
