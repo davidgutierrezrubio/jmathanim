@@ -28,10 +28,7 @@ import com.jmathanim.mathobjects.updaters.Coordinates;
 import com.jmathanim.mathobjects.updaters.Updater;
 import javafx.scene.shape.StrokeLineCap;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * This class represents a mathematical object that can be drawn on screen, transformed or animated. All math objects
@@ -39,7 +36,8 @@ import java.util.HashSet;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class MathObject implements Drawable, Updateable, Stateable, Boxable, Linkable,hasStyle {
+@SuppressWarnings("ALL")
+public abstract class MathObject<T extends MathObject<T>>  implements Drawable, Updateable, Stateable, Boxable, Linkable,hasStyle {
     protected final AffineJTransform modelMatrix;
     private MODrawProperties mp;
     private final HashSet<MathObject> dependents;
@@ -113,11 +111,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * Set the associated camera to this object. The camera is used to compute the screen coordinates where it will be
      * drawn. If not camera is set, default camera is associated when added to the scene.
      *
-     * @param <T>    Calling subclass
      * @param camera Camera
      * @return This object
      */
-    public <T extends MathObject> T setCamera(Camera camera) {
+    public T setCamera(Camera camera) {
         if ((this instanceof shouldUdpateWithCamera) && (getCamera() != null)) {
             getCamera().unregisterUpdateable((shouldUdpateWithCamera) this);
             camera.registerUpdateable((shouldUdpateWithCamera) this);
@@ -138,11 +135,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Shift object with the given vector
      *
-     * @param <T>         MathObject subclass
      * @param shiftVector Amount of shifting
      * @return The same object, after shifting
      */
-    public <T extends MathObject> T shift(Vec shiftVector) {
+    public T shift(Vec shiftVector) {
         AffineJTransform tr = AffineJTransform.createTranslationTransform(shiftVector);
         tr.applyTransform(this);
         return (T) this;
@@ -151,37 +147,34 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Shift object. Overloaded method (2D version)
      *
-     * @param <T> MathObject subclass
      * @param x   x-coordinate of shift vector
      * @param y   y-coordinate of shift vector
      * @return The same object, after shifting
      */
-    public final <T extends MathObject> T shift(double x, double y) {
+    public final T shift(double x, double y) {
         return shift(new Vec(x, y));
     }
 
     /**
      * Shift object.Overloaded method (3D version)
      *
-     * @param <T> MathObject subclass
      * @param x   x-coordinate of shift vector
      * @param y   y-coordinate of shift vector
      * @param z   z-coordinate of shift vector
      * @return The same object, after shifting
      */
-    public final <T extends MathObject> T shift(double x, double y, double z) {
+    public final T shift(double x, double y, double z) {
         return shift(new Vec(x, y, z));
     }
 
     /**
      * Scale from center of object (2D version)
      *
-     * @param <T> MathObject subclass
      * @param sx  x-scale factor
      * @param sy  y-scale factor
      * @return The same object, after scaling
      */
-    public <T extends MathObject> T scale(double sx, double sy) {
+    public T scale(double sx, double sy) {
         scale(getCenter(), sx, sy);
         return (T) this;
     }
@@ -189,49 +182,45 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Scale from center of object (2D version) in a uniform scale
      *
-     * @param <T> MathObject subclass
      * @param s   scale factor
      * @return The same object, after scaling
      */
-    public <T extends MathObject> T scale(double s) {
+    public T scale(double s) {
         return scale(getCenter(), s, s);
     }
 
     /**
      * Scale from a given center (uniform scale)
      *
-     * @param <T>         MathObject subclass
      * @param scaleCenter Scale center
      * @param scale       scale factor
      * @return The same object, after scaling
      */
-    public final <T extends MathObject> T scale(Point scaleCenter, double scale) {
+    public final T scale(Point scaleCenter, double scale) {
         return scale(scaleCenter, scale, scale, scale);
     }
 
     /**
      * Scale from a given center (2D version)
      *
-     * @param <T>         MathObject subclass
      * @param scaleCenter Scale center
      * @param sx          x-scale factor
      * @param sy          y-scale factor
      * @return The same object, after scaling
      */
-    public final <T extends MathObject> T scale(Point scaleCenter, double sx, double sy) {
+    public final T scale(Coordinates<?> scaleCenter, double sx, double sy) {
         return scale(scaleCenter, sx, sy, 1);
     }
 
     /**
      * Scale from the center of object (3D version)
      *
-     * @param <T> MathObject subclass
      * @param sx  x-scale factor
      * @param sy  y-scale factor
      * @param sz  z-scale factor
      * @return The same object, after scaling
      */
-    public final <T extends MathObject> T scale(double sx, double sy, double sz) {
+    public final T scale(double sx, double sy, double sz) {
         scale(getBoundingBox().getCenter(), sx, sy, sz);
         return (T) this;
     }
@@ -239,18 +228,17 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Scale from a given center (3D version)
      *
-     * @param <T>         MathObject subclass
      * @param scaleCenter Scale center
      * @param sx          x-scale factor
      * @param sy          y-scale factor
      * @param sz          z-scale factor
      * @return The same object, after scaling
      */
-    public <T extends MathObject> T scale(Point scaleCenter, double sx, double sy, double sz) {
+    public T scale(Point scaleCenter, double sx, double sy, double sz) {
         return scale(scaleCenter.v, sx, sy, sz);
     }
 
-    public <T extends MathObject> T scale(Vec scaleCenter, double sx, double sy, double sz) {
+    public T scale(Vec scaleCenter, double sx, double sy, double sz) {
         AffineJTransform tr = AffineJTransform.createScaleTransform(scaleCenter, sx, sy, sz);
         tr.applyTransform(this);
         return (T) this;
@@ -259,10 +247,9 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Center the object in the math view. This command is equivalent this.stackToScreen(Type.BY_CENTER);
      *
-     * @param <T> Object type
      * @return The same object
      */
-    public final <T extends MathObject> T center() {
+    public final T center() {
         this.stackToScreen(AnchorType.CENTER);
         return (T) this;
     }
@@ -270,10 +257,9 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Center the object vertically in the math view.
      *
-     * @param <T> Object type
      * @return The same object
      */
-    public final <T extends MathObject> T vCenter() {
+    public final T vCenter() {
         Vec v = getCenter().v;
         center();
         shift(v.x - getCenter().v.x, 0);
@@ -283,10 +269,9 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Center the object horizontally in the math view.
      *
-     * @param <T> Object type
      * @return The same object
      */
-    public final <T extends MathObject> T hCenter() {
+    public final T hCenter() {
         Vec v = getCenter().v;
         center();
         shift(0, v.y - getCenter().v.y);
@@ -296,23 +281,21 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Performs a 2D-Rotation of the MathObject around the object center
      *
-     * @param <T>   MathObject subclass
      * @param angle Angle, in radians
      * @return The same object, after rotating
      */
-    public <T extends MathObject> T rotate(double angle) {
+    public T rotate(double angle) {
         return rotate(getCenter(), angle);
     }
 
     /**
      * Performs a 2D-Rotation of the MathObject around the given rotation center
      *
-     * @param <T>    MathObject subclass
      * @param center Rotation center
      * @param angle  Angle, in radians
      * @return The same object, after rotating
      */
-    public <T extends MathObject> T rotate(Coordinates center, double angle) {
+    public  T rotate(Coordinates center, double angle) {
         AffineJTransform tr = AffineJTransform.create2DRotationTransform(center, angle);
         tr.applyTransform(this);
         return (T) this;
@@ -321,27 +304,25 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Performs a 3D-Rotation of the MathObject around the center of the object
      *
-     * @param <T>    MathObject subclass
      * @param anglex Rotation angle in x axis, in radians
      * @param angley Rotation angle in y axis, in radians
      * @param anglez Rotation angle in z axis, in radians
      * @return The same object, after rotating
      */
-    public <T extends MathObject> T rotate3d(double anglex, double angley, double anglez) {
+    public T rotate3d(double anglex, double angley, double anglez) {
         return rotate3d(this.getCenter(), anglex, angley, anglez);
     }
 
     /**
      * Performs a 2D-Rotation of the MathObject around the given rotation center
      *
-     * @param <T>    MathObject subclass
      * @param center Rotation center
      * @param anglex Rotation angle in x axis, in radians
      * @param angley Rotation angle in y axis, in radians
      * @param anglez Rotation angle in z axis, in radians
      * @return The same object, after rotating
      */
-    public <T extends MathObject> T rotate3d(Point center, double anglex, double angley, double anglez) {
+    public T rotate3d(Point center, double anglex, double angley, double anglez) {
         AffineJTransform tr = AffineJTransform.create3DRotationTransform(center, anglex, angley, anglez, 1);
         tr.applyTransform(this);
         return (T) this;
@@ -350,10 +331,9 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Returns a copy of the object
      *
-     * @param <T> MathObject subclass
      * @return copy of object, with identical properties. A deep copy is performed.
      */
-    abstract public <T extends MathObject> T copy();
+    abstract public T copy();
 
     /**
      * Copy state from another object of the same type. After this method is executed, the two objects should be
@@ -361,7 +341,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      *
      * @param obj The object to copy state from.
      */
-    public void copyStateFrom(MathObject obj) {
+    public void copyStateFrom(MathObject<?> obj) {
         if (obj == null) return;
         this.setCamera(obj.getCamera());
         this.copyMPFrom(obj);
@@ -441,11 +421,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Copy draw attributes from another one.
      *
-     * @param <T>   Subclass of MathObject that calls the method
      * @param newMp Drawing properties to be copied
      * @return This object
      */
-    public <T extends MathObject> T setMp(MODrawProperties newMp) {
+    public T setMp(MODrawProperties newMp) {
         this.getMp().copyFrom(newMp);
         return (T) this;
     }
@@ -453,11 +432,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Changes both draw and fill color
      *
-     * @param <T> Subclass
      * @param dc  A PaintStyle object. Can be a JMColor, a gradient or image pattern
      * @return This object
      */
-    public <T extends MathObject> T color(PaintStyle dc) {
+    public T color(PaintStyle dc) {
         drawColor(dc);
         fillColor(dc);
         return (T) this;
@@ -466,11 +444,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Overloaded method. Sets both draw and fill color
      *
-     * @param <T> Calling subclass
      * @param str A string representing the draw color, as in the JMcolor.parse method
      * @return This object
      */
-    public <T extends MathObject> T color(String str) {
+    public T color(String str) {
         drawColor(str);
         fillColor(str);
         return (T) this;
@@ -479,11 +456,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Sets the draw color of the object
      *
-     * @param <T> Subclass of MathObject that calls the method
      * @param dc  A JMcolor object with the draw color
      * @return The MathObject subclass
      */
-    public <T extends MathObject> T drawColor(PaintStyle dc) {
+    public  T drawColor(PaintStyle dc) {
         getMp().setDrawColor(dc);
         return (T) this;
     }
@@ -491,11 +467,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Sets the draw color of the object. Overloaded method.
      *
-     * @param <T> Subclass of MathObject that calls the method
      * @param str A string representing the draw color, as in the JMcolor.parse method
      * @return The MathObject subclass
      */
-    public final <T extends MathObject> T drawColor(String str) {
+    public final T drawColor(String str) {
         drawColor(JMColor.parse(str));
         return (T) this;
     }
@@ -503,11 +478,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Sets the fill color of the object
      *
-     * @param <T> Subclass of MathObject that calls the method
      * @param fc  A JMcolor object with the fill color
      * @return The MathObject subclass
      */
-    public <T extends MathObject> T fillColor(PaintStyle fc) {
+    public  T fillColor(PaintStyle fc) {
         getMp().setFillColor(fc);
         return (T) this;
     }
@@ -515,11 +489,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Sets the fill color of the object. Overloaded method.
      *
-     * @param <T> Subclass of MathObject that calls the method
      * @param str A string representing the fill color, as in the JMcolor.parse method
      * @return The MathObject subclass
      */
-    public final <T extends MathObject> T fillColor(String str) {
+    public  T fillColor(String str) {
         fillColor(JMColor.parse(str));
         return (T) this;
     }
@@ -527,11 +500,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Sets the alpha component of the draw color
      *
-     * @param <T>   Subclass of MathObject that calls the method
      * @param alpha Alpha value, between 0 (transparent) and 1 (opaque)
      * @return The MathObject subclass
      */
-    public <T extends MathObject> T drawAlpha(double alpha) {
+    public T drawAlpha(double alpha) {
         getMp().setDrawAlpha(alpha);
         return (T) this;
     }
@@ -539,11 +511,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Sets the alpha component of the fill color
      *
-     * @param <T>   Subclass of MathObject that calls the method
      * @param alpha Alpha value, between 0 (transparent) and 1 (opaque)
      * @return This MathObject subclass
      */
-    public <T extends MathObject> T fillAlpha(double alpha) {
+    public  T fillAlpha(double alpha) {
         getMp().setFillAlpha(alpha);
         return (T) this;
     }
@@ -551,11 +522,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Sets the thickness to draw the contour of the object
      *
-     * @param <T>          Subclass of MathObject that calls the method
      * @param newThickness Thickness
      * @return This MathObject subclass
      */
-    public <T extends MathObject> T thickness(double newThickness) {
+    public  T thickness(double newThickness) {
         getMp().setThickness(newThickness);
         return (T) this;
     }
@@ -563,11 +533,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Sets the dashStyle, from one of the types defined in the enum DashStyle
      *
-     * @param <T>       Subclass of MathObject that calls the method
      * @param dashStyle A value from enum DashStyle
      * @return This MathObject subclass
      */
-    public <T extends MathObject> T dashStyle(DashStyle dashStyle) {
+    public  T dashStyle(DashStyle dashStyle) {
         getMp().setDashStyle(dashStyle);
         return (T) this;
     }
@@ -576,11 +545,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * Sets the flag visible. If false, the object won't be draw using the renderer, although it still will be in the
      * scene.
      *
-     * @param <T>     Subclass of MathObject that calls the method
      * @param visible True if objet is visible, false otherwise
      * @return This MathObject subclass
      */
-    public <T extends MathObject> T visible(boolean visible) {
+    public  T visible(boolean visible) {
         getMp().setVisible(visible);
         return (T) this;
     }
@@ -598,11 +566,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * will appear with the same size regardless of the zoom applied to the camera. The given point will be used as
      * reference point to position the object.
      *
-     * @param <T> Mathobject subclass
      * @param anchorVec   Reference vector to position the object.
      * @return The current object
      */
-    public <T extends MathObject> T setAbsoluteSize(Vec anchorVec) {
+    public T setAbsoluteSize(Vec anchorVec) {
         this.absoluteAnchorVec = anchorVec;
         absoluteAnchorAnchorType = AnchorType.BY_POINT;
         absoluteSize = true;
@@ -614,18 +581,17 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * will appear with the same size regardless of the zoom applied to the camera. The specified anchor will be used as
      * reference point to position the object.
      *
-     * @param <T>        Mathobject subclass
      * @param anchorType {@link Anchor} type
      * @return The current object
      */
-    public <T extends MathObject> T setAbsoluteSize(AnchorType anchorType) {
+    public T setAbsoluteSize(AnchorType anchorType) {
         absoluteSize = true;
         absoluteAnchorAnchorType = anchorType;
         absoluteSize = true;
         return (T) this;
     }
 
-    public <T extends MathObject> T setRelativeSize() {
+    public T setRelativeSize() {
         absoluteSize = false;
         return (T) this;
     }
@@ -635,12 +601,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * as the reverse of the destiny anchor. For example stackTo(obj, RIGHT) will move this object so that its LEFT
      * anchor matchs the RIGHT anchor of the destiny. This method is equivalent to stackTo(obj,type,0)
      *
-     * @param <T>        Mathobject subclass
      * @param obj        The destiny object. Anyting that implements the Boxable interface, like MathObject or Rect
      * @param anchorType {@link Anchor} type
      * @return The current object
      */
-    public final <T extends MathObject> T stackTo(Boxable obj, AnchorType anchorType) {
+    public final T stackTo(Boxable obj, AnchorType anchorType) {
         return stackTo(obj, anchorType, 0);
     }
 
@@ -648,7 +613,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * Stack the object to another using a specified anchor. For example stackTo(UPPER, obj, RIGHT) will move this
      * object so that its UPPER anchor matchs the RIGHT anchor of the destiny.
      *
-     * @param <T>           Mathobject subclass
      * @param originAnchor  Anchor of this object to use
      * @param destinyObject Destiny object to stack with
      * @param destinyAnchor Anchor of destiny object to use
@@ -656,7 +620,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      *                      computed using origin anchor as reference.
      * @return This object
      */
-    public <T extends MathObject> T stackTo(AnchorType originAnchor, Boxable destinyObject, AnchorType destinyAnchor, double originGap) {
+    public T stackTo(AnchorType originAnchor, Boxable destinyObject, AnchorType destinyAnchor, double originGap) {
         return stackTo(originAnchor, destinyObject, destinyAnchor, originGap, 0);
     }
 
@@ -664,7 +628,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * Stack the object to another using a specified anchor.For example stackTo(UPPER, obj, RIGHT) will move this object
      * so that its UPPER anchor matchs the RIGHT anchor of the destiny.
      *
-     * @param <T>           Mathobject subclass
      * @param originAnchor  Anchor of this object to use
      * @param destinyObject Destiny object to stack with
      * @param destinyAnchor Anchor of destiny object to use
@@ -672,7 +635,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @param destinyGap    Amount of gap to leave in destiny anchor, in math units
      * @return This object
      */
-    public <T extends MathObject> T stackTo(AnchorType originAnchor, Boxable destinyObject, AnchorType destinyAnchor, double originGap, double destinyGap) {
+    public T stackTo(AnchorType originAnchor, Boxable destinyObject, AnchorType destinyAnchor, double originGap, double destinyGap) {
         if (!destinyObject.isEmpty()) {
             Point B = Anchor.getAnchorPoint(destinyObject, destinyAnchor, destinyGap);
             Point A = Anchor.getAnchorPoint(this, originAnchor, originGap);
@@ -686,14 +649,13 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * object so that its UPPER anchor matchs the RIGHT anchor of the destiny. The difference with similar methods is
      * that the gap is given relative to this object width.
      *
-     * @param <T>        Mathobject subclass
      * @param anchorObj  Anchor of this object to use
      * @param dstObj     Destiny object to stack with
      * @param anchorType Anchor of destiny object to use
      * @param gap        Amount of gap, relative to this object width, to leave between the anchors, in math units.
      * @return This object
      */
-    public <T extends MathObject> T stackToRW(AnchorType anchorObj, Boxable dstObj, AnchorType anchorType, double gap) {
+    public T stackToRW(AnchorType anchorObj, Boxable dstObj, AnchorType anchorType, double gap) {
         return stackTo(anchorObj, dstObj, anchorType, gap * this.getWidth());
     }
 
@@ -702,14 +664,13 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * object so that its UPPER anchor matchs the RIGHT anchor of the destiny. The difference with similar methods is
      * that the gap is given relative to this object height.
      *
-     * @param <T>        Mathobject subclass
      * @param anchorObj  Anchor of this object to use
      * @param dstObj     Destiny object to stack with
      * @param anchorType Anchor of destiny object to use
      * @param gap        Amount of gap, relative to this object height, to leave between the anchors, in math units.
      * @return This object
      */
-    public <T extends MathObject> T stackToRH(AnchorType anchorObj, Boxable dstObj, AnchorType anchorType, double gap) {
+    public T stackToRH(AnchorType anchorObj, Boxable dstObj, AnchorType anchorType, double gap) {
         return stackTo(anchorObj, dstObj, anchorType, gap * this.getHeight());
     }
 
@@ -718,13 +679,12 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * that its LEFT anchor matchs the RIGHT anchor of the destiny. The difference with similar methods is that the gap
      * is given relative to this object height.
      *
-     * @param <T>        Mathobject subclass
      * @param dstObj     Destiny object to stack with
      * @param anchorType Anchor of destiny object to use
      * @param gap        Amount of gap, relative to this object height, to leave between the anchors, in math units.
      * @return This object
      */
-    public <T extends MathObject> T stackToRH(Boxable dstObj, AnchorType anchorType, double gap) {
+    public T stackToRH(Boxable dstObj, AnchorType anchorType, double gap) {
         return stackToRH(Anchor.reverseAnchorPoint(anchorType), dstObj, anchorType, gap);
     }
 
@@ -733,13 +693,12 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * that its LEFT anchor matchs the RIGHT anchor of the destiny. The difference with similar methods is that the gap
      * is given relative to this object width.
      *
-     * @param <T>        Mathobject subclass
      * @param dstObj     Destiny object to stack with
      * @param anchorType Anchor of destiny object to use
      * @param gap        Amount of gap, relative to this object width, to leave between the anchors, in math units.
      * @return This object
      */
-    public <T extends MathObject> T stackToRW(Boxable dstObj, AnchorType anchorType, double gap) {
+    public T stackToRW(Boxable dstObj, AnchorType anchorType, double gap) {
         return stackToRW(Anchor.reverseAnchorPoint(anchorType), dstObj, anchorType, gap);
     }
 
@@ -748,37 +707,34 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * as the reverse of the destiny anchor. For example stackTo(obj, RIGHT) will move this object so that its LEFT
      * anchor matchs the RIGHT anchor of the destiny.
      *
-     * @param <T>        Mathobject subclass
      * @param obj        The destiny object. Anyting that implements the Boxable interface, like MathObject or Rect
      * @param anchorType {@link Anchor} type
      * @param gap        Amount of gap to leave between the anchors, in math units
      * @return The current object
      */
-    public <T extends MathObject> T stackTo(Boxable obj, AnchorType anchorType, double gap) {
+    public T stackTo(Boxable obj, AnchorType anchorType, double gap) {
         return stackTo(Anchor.reverseAnchorPoint(anchorType), obj, anchorType, gap);
     }
 
     /**
      * Stack the object to the given anchor, relative to the current camera view
      *
-     * @param <T>        Mathobject subclass
      * @param anchorType {@link Anchor} type
      * @return The current object
      */
-    public final <T extends MathObject> T stackToScreen(AnchorType anchorType) {
+    public final T stackToScreen(AnchorType anchorType) {
         return stackToScreen(anchorType, 0, 0);
     }
 
     /**
      * Stack the object to the given anchor, relative to the current camera view, applying the specified margins.
      *
-     * @param <T>        Mathobject subclass
      * @param anchorType {@link Anchor} type
      * @param xMargin    x margin
      * @param yMargin    y margin
      * @return The current object
      */
-    public <T extends MathObject> T stackToScreen(AnchorType anchorType, double xMargin, double yMargin) {
+    public T stackToScreen(AnchorType anchorType, double xMargin, double yMargin) {
         Point B = Anchor.getScreenAnchorPoint(getCamera(), anchorType, xMargin, yMargin);
         Point A = Anchor.getAnchorPoint(this, anchorType);
         return this.shift(A.to(B));
@@ -787,23 +743,21 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Shifts the object so that its center lies at the specified location
      *
-     * @param <T> Mathobject subclass
      * @param p   Destination point
      * @return The current object
      */
-    public final <T extends MathObject> T moveTo(Point p) {
+    public final T moveTo(Point p) {
         return stackTo(p, AnchorType.CENTER);
     }
 
     /**
      * Overloaded method. Shifts the object so that its center lies at the specified location
      *
-     * @param <T> Mathobject subclass
      * @param x   x destiny coordinate
      * @param y   y destiny coordinate
      * @return The current object
      */
-    public <T extends MathObject> T moveTo(double x, double y) {
+    public T moveTo(double x, double y) {
         return moveTo(Point.at(x, y));
     }
 
@@ -812,11 +766,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * Sets the layer where this object belongs. Lower layers means that the object will be drawn first and appear under
      * other objects. The number can be any integer
      *
-     * @param <T>   MathObject subclass
      * @param layer Layer number
      * @return The object
      */
-    public <T extends MathObject> T layer(int layer) {
+    public T layer(int layer) {
         this.getMp().setLayer(layer);
         return (T) this;
     }
@@ -834,11 +787,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * Sets the given style, as defined in config files. If no such style exists, there is no effect, apart from a
      * warning message
      *
-     * @param <T>  MathObject subclass
      * @param name Name of the style being applied
      * @return The object
      */
-    public <T extends MathObject> T style(String name) {
+    public T style(String name) {
         getMp().loadFromStyle(name);
         return (T) this;
     }
@@ -846,11 +798,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Sets the linecap style, using one of the styles of StrokeLineCap
      *
-     * @param <T>           MathObject subclass
      * @param strokeLineCap Style of linecap
      * @return The object
      */
-    public <T extends MathObject> T linecap(StrokeLineCap strokeLineCap) {
+    public T linecap(StrokeLineCap strokeLineCap) {
         this.getMp().setLinecap(strokeLineCap);
         return (T) this;
     }
@@ -862,10 +813,9 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * important to note that this may introduce infinite recursion if not handled correctly.
      *
      * @param updater the updater to register
-     * @param <T>     the type of the MathObject
      * @return the current MathObject instance
      */
-    public <T extends MathObject> T registerUpdater(Updater updater) {
+    public T registerUpdater(Updater updater) {
         updater.setMathObject(this);
         updaters.add(updater);
         setUpdateLevel(getUpdateLevel());
@@ -941,11 +891,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Scale object so that has a specified width. Scaled is done around its center.
      *
-     * @param <T> Object type
      * @param w   Desired width
      * @return The same object
      */
-    public <T extends MathObject> T setWidth(double w) {
+    public T setWidth(double w) {
         scale(w / this.getBoundingBox().getWidth());
         return (T) this;
     }
@@ -967,11 +916,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Scale object so that has a specified height. Scaled is done around its center.
      *
-     * @param <T> Object type
      * @param h   Desired height
      * @return The same object
      */
-    public <T extends MathObject> T setHeight(double h) {
+    public T setHeight(double h) {
         scale(h / this.getBoundingBox().getHeight());
         return (T) this;
     }
@@ -990,12 +938,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Align this object with another one
      *
-     * @param <T>  MathObject subclass
      * @param obj  Object to align with. This object remains unaltered.
      * @param type Align type, a value from the enum Align
      * @return This object
      */
-    public <T extends MathObject> T align(Boxable obj, Align type) {
+    public T align(Boxable obj, Align type) {
         Vec shiftVector = Vec.to(0, 0);
         Rect thisBoundingBox = this.getBoundingBox();
         Rect objectBoundingBox = obj.getBoundingBox();
@@ -1026,11 +973,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Apply an affine transform to the object.
      *
-     * @param <T>       Calling subclass
      * @param transform Affine transform to apply
      * @return This object
      */
-    public <T extends MathObject> T applyAffineTransform(AffineJTransform transform) {
+    public T applyAffineTransform(AffineJTransform transform) {
         if (isRigid) {
             AffineJTransform compose = modelMatrix.compose(transform);
             modelMatrix.copyFrom(compose);
@@ -1100,7 +1046,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         scene.registerUpdateable(objs);
 
         //Sets the update level the max of objs +1
-        int maxUpdateLevel = Arrays.stream(objs).mapToInt(MathObject::getUpdateLevel).max().orElse(-1);
+        int maxUpdateLevel = Arrays.stream(objs).filter(Objects::nonNull).mapToInt(MathObject::getUpdateLevel).max().orElse(-1);
         setUpdateLevel(maxUpdateLevel + 1);
 
         //Register this object in the dependent list of objs
@@ -1112,14 +1058,13 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Sets the gaps for this object. These gaps will be added to the bounding box of the object.
      *
-     * @param <T>
      * @param upperGap Upper gap
      * @param rightGap Right gap
      * @param lowerGap Lower gap
      * @param leftGap  Left gap
      * @return This object
      */
-    public <T extends MathObject> T setGaps(double upperGap, double rightGap, double lowerGap, double leftGap) {
+    public T setGaps(double upperGap, double rightGap, double lowerGap, double leftGap) {
         this.rightGap = rightGap;
         this.upperGap = upperGap;
         this.leftGap = leftGap;
@@ -1150,12 +1095,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * Stores an object into an internal dictionary of the MathObject. This can be useful if additional information to
      * this object needs to be saved
      *
-     * @param <T> Subclass
      * @param key A String denoting the key
      * @param obj Any Java Object
      * @return This object
      */
-    public <T extends MathObject> T setProperty(String key, Object obj) {
+    public T setProperty(String key, Object obj) {
         properties.put(key, obj);
         return (T) this;
     }
@@ -1163,11 +1107,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     /**
      * Sets the label object. This is used mostly for debugging purposes
      *
-     * @param <T>         Calling subclass
      * @param objectLabel The label
      * @return This object
      */
-    public <T extends MathObject> T setObjectLabel(String objectLabel) {
+    public T setObjectLabel(String objectLabel) {
         this.objectLabel = objectLabel;
         return (T) this;
     }
@@ -1177,13 +1120,12 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * of the object is already inside the bounding box, this method has no effect. If the bounding box of the object is
      * wider or taller than the container box, nothing is done.
      *
-     * @param <T>           Calling subclass
      * @param containerBox  Boxable to smash object. May be a Rect, MathObject or Camera
      * @param horizontalGap Horizontal gap between the smashed object and the container bounding box
      * @param verticalGap   Vertical gap between the smashed object and the container bounding box
      * @return This object
      */
-    public <T extends MathObject> T smash(Boxable containerBox, double horizontalGap, double verticalGap) {
+    public T smash(Boxable containerBox, double horizontalGap, double verticalGap) {
         Rect rObj = this.getBoundingBox();
         rObj.smash(containerBox, horizontalGap, verticalGap);
         shift(getCenter().to(rObj.getCenter()));
@@ -1194,11 +1136,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * Overloaded method. Move the object the minimum so that fits inside the given bounding box object and no gaps. If
      * the bounding box of the object is already inside the bounding box, this method has no effect.
      *
-     * @param <T>          Calling subclass
      * @param containerBox Boxable to smash object. May be a Rect, MathObject or Camera
      * @return This object
      */
-    public <T extends MathObject> T smash(Boxable containerBox) {
+    public T smash(Boxable containerBox) {
         return smash(containerBox, 0, 0);
     }
 

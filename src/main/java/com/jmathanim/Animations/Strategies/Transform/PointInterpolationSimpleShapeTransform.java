@@ -105,6 +105,11 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
 
     }
 
+    @Override
+    public Shape getIntermediateObject() {
+        return shIntermediate;
+    }
+
     private void alignNumberOfElements(JMPath path1, JMPath path2) {
         JMPath pathSmall, pathBig;
         if (path1.size() < path2.size()) {

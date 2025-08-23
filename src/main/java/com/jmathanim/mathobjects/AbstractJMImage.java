@@ -28,7 +28,7 @@ import javafx.scene.image.Image;
  *
  * @author David
  */
-public abstract class AbstractJMImage extends MathObject {
+public abstract class AbstractJMImage extends MathObject<AbstractJMImage> {
 
     protected Rect bbox;
     public boolean preserveRatio = false;
@@ -47,9 +47,9 @@ public abstract class AbstractJMImage extends MathObject {
     }
 
     @Override
-    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
+    public AbstractJMImage applyAffineTransform(AffineJTransform tr) {
         currentViewTransform = currentViewTransform.compose(tr);
-        return (T) this;
+        return this;
     }
 
     @Override

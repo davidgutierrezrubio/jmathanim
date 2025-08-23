@@ -17,6 +17,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.Utils.SVGUtils;
 
@@ -30,7 +31,7 @@ import java.util.logging.Logger;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class SVGMathObject extends MultiShapeObject {
+public class SVGMathObject extends AbstractMultiShapeObject<SVGMathObject> {
 
     protected String filename;
 
@@ -45,23 +46,23 @@ public class SVGMathObject extends MultiShapeObject {
   public static SVGMathObject make(String filename) {
       ResourceLoader rl=new ResourceLoader();
         URL url = rl.getResource(filename, "images");
-        return new SVGMathObject(url);
+        return make(url);
   }
 
-    public SVGMathObject() {
+    protected SVGMathObject() {
         super();
     }
 
     /**
      * Creates a new SVGMathObject from the specified URL
-     * @param url An URL object pointing to a SVG file.
+     * @param url A URL object pointing to a SVG file.
      */
-    public SVGMathObject(URL url) {
-        super();
-        this.getMp().setAbsoluteThickness(false);
+    public static SVGMathObject make(URL url) {
+        SVGMathObject resul = new SVGMathObject();
         try {
-            SVGUtils svgu = new SVGUtils(scene);
-            svgu.importSVG(url, this);
+            SVGUtils svgu = new SVGUtils(JMathAnimConfig.getConfig().getScene());
+            svgu.importSVG(url, resul);
+            resul.getMp().setAbsoluteThickness(false);
         } catch (Exception ex) {
             Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -69,13 +70,8 @@ public class SVGMathObject extends MultiShapeObject {
 
     @Override
     public SVGMathObject copy() {
-        SVGMathObject resul = new SVGMathObject();
-        resul.getMp().copyFrom(getMp());
-        for (Shape sh : this) {
-            final Shape copy = sh.copy();
-            resul.add(copy);
-        }
-        resul.absoluteSize = this.absoluteSize;
-        return resul;
+        SVGMathObject copy = SVGMathObject.make();
+        copy.copyStateFrom(this);
+        return copy;
     }
 }

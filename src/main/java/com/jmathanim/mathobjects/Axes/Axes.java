@@ -39,7 +39,7 @@ import java.util.Locale;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Axes extends MathObject {
+public class Axes extends MathObject<Axes> {
 
     public static final double LEGEND_TICKS_GAP = .5;
     DecimalFormat format;
@@ -193,13 +193,13 @@ public class Axes extends MathObject {
     }
 
     @Override
-    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
-        // Do nothing
-        return (T) this;
+    public Axes applyAffineTransform(AffineJTransform tr) {
+        // Do nothing???
+        return this;
     }
 
     @Override
-    public <T extends MathObject> T copy() {
+    public Axes copy() {
         return null;// For now, it doesn't make senses to make a copy of the axes
     }
 
@@ -350,7 +350,7 @@ public class Axes extends MathObject {
     }
 
     @Override
-    public <T extends MathObject> T thickness(double newThickness) {
+    public Axes thickness(double newThickness) {
         xAxis.thickness(newThickness);
         yAxis.thickness(newThickness);
         for (TickAxes s : xticksBase) {
@@ -359,7 +359,7 @@ public class Axes extends MathObject {
         for (TickAxes s : yticksBase) {
             s.tick.thickness(newThickness);
         }
-        return (T) this;
+        return this;
     }
 
     @Override

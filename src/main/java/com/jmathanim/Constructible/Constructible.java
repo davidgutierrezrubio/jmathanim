@@ -35,7 +35,7 @@ import com.jmathanim.mathobjects.MediatorMathObject;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class Constructible extends MathObject {
+public abstract class Constructible<T extends Constructible<T>>  extends MathObject<T> {
 
     private boolean isMathObjectFree;
     private String label = "";
@@ -64,7 +64,7 @@ public abstract class Constructible extends MathObject {
      *                         parameters.
      * @return This object
      */
-    public <T extends Constructible> T setFreeMathObject(boolean isMathObjectFree) {
+    public <T extends Constructible<?>> T setFreeMathObject(boolean isMathObjectFree) {
         if (!isMathObjectFree) {
             if (this.isMathObjectFree) {
                 rebuildShape();
@@ -82,7 +82,7 @@ public abstract class Constructible extends MathObject {
     public abstract MathObject getMathObject();
 
     @Override
-    public abstract Constructible copy();
+    public abstract T copy();
 
     @Override
     public Stylable getMp() {
@@ -109,9 +109,9 @@ public abstract class Constructible extends MathObject {
     }
 
     @Override
-    public Constructible applyAffineTransform(AffineJTransform transform) {
+    public T applyAffineTransform(AffineJTransform transform) {
         getMathObject().applyAffineTransform(transform);
-        return this;
+        return (T) this;
     }
 
     @Override

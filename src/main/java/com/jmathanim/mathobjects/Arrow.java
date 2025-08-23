@@ -147,16 +147,16 @@ public class Arrow extends Constructible {
                 return Shape.segment(Point.at(1, 0), Point.at(0, 0));
             case ARROW1:
                 arrowUrl = rl.getResource("#arrow1.svg", "shapeResources/arrows");
-                return new SVGMathObject(arrowUrl).get(0);
+                return SVGMathObject.make(arrowUrl).get(0);
             case ARROW2:
                 arrowUrl = rl.getResource("#arrow2.svg", "shapeResources/arrows");
-                return new SVGMathObject(arrowUrl).get(0);
+                return SVGMathObject.make(arrowUrl).get(0);
             case ARROW3:
                 arrowUrl = rl.getResource("#arrow3.svg", "shapeResources/arrows");
-                return new SVGMathObject(arrowUrl).get(0);
+                return SVGMathObject.make(arrowUrl).get(0);
             case SQUARE:
                 arrowUrl = rl.getResource("#ArrowSquare.svg", "shapeResources/arrows");
-                resul = new SVGMathObject(arrowUrl).get(0);
+                resul = SVGMathObject.make(arrowUrl).get(0);
                 resul.setProperty("gap", -resul.getHeight() * .5);
                 return resul;
             case BULLET:
@@ -775,11 +775,11 @@ public class Arrow extends Constructible {
     }
 
     @Override
-    public <T extends Constructible> T setFreeMathObject(boolean isMathObjectFree) {
+    public Arrow setFreeMathObject(boolean isMathObjectFree) {
         super.setFreeMathObject(isMathObjectFree);
         if (getLabel()!=null) {
             getLabel().setFreeMathObject(isMathObjectFree);
         }
-        return (T) this;
+        return this;
     }
 }

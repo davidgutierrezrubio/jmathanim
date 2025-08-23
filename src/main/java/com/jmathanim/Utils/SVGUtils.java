@@ -41,6 +41,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.DEGREES;
+import static com.jmathanim.jmathanim.JMathAnimScene.logger;
 
 /**
  * A class with useful methods to handle SVG files
@@ -115,11 +116,11 @@ public class SVGUtils {
                 .replaceAll("^ +| +$|( )+", "$1");
     }
 
-    public void importSVG(URL urlSvg, MultiShapeObject msh) throws Exception {
+    public void importSVG(URL urlSvg, AbstractMultiShapeObject<?> msh) throws Exception {
         importSVG(urlSvg, msh, MODrawProperties.makeNullValues());
     }
 
-    public void importSVG(URL urlSvg, MultiShapeObject msh, MODrawProperties base) throws Exception {
+    public void importSVG(URL urlSvg, AbstractMultiShapeObject<?> msh, MODrawProperties base) throws Exception {
         JMathAnimScene.logger.debug("Importing SVG file {}", urlSvg.toString());
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         // Disabling these features will speed up the load of the svg
@@ -140,7 +141,7 @@ public class SVGUtils {
         processChildNodes(root, mpCopy, currentTransform, msh);
     }
 
-    public void importSVGFromDOM(Element root, MultiShapeObject msh) {
+    public void importSVGFromDOM(Element root, AbstractMultiShapeObject<?> msh) {
         currentTransform = new AffineJTransform();
         processChildNodes(root, msh.getMp().getFirstMP(), currentTransform, msh);
     }
@@ -160,7 +161,7 @@ public class SVGUtils {
         }
     }
 
-    private void processChildNodes(Element gNode, MODrawProperties localMP, AffineJTransform transform, MultiShapeObject msh) throws NumberFormatException {
+    private void processChildNodes(Element gNode, MODrawProperties localMP, AffineJTransform transform, AbstractMultiShapeObject<?> msh) throws NumberFormatException {
         Shape shape;
         NodeList nList = gNode.getChildNodes();
         // localMP holds the base MODrawProperties to apply to all childs
@@ -192,7 +193,7 @@ public class SVGUtils {
                                 msh.add(shape);
                             }
                         } catch (Exception ex) {
-                            Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
+                            logger.error("Error processing SVG path "+ el.getAttribute("d") );
                         }
                         break;
                     case "polygon":

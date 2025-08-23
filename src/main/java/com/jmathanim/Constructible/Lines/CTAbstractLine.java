@@ -26,7 +26,7 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class CTAbstractLine extends Constructible implements HasDirection, PointOwner {
+public abstract class CTAbstractLine<T extends CTAbstractLine<T>> extends Constructible<T> implements HasDirection, PointOwner {
 
     protected enum LineType {
         PointPoint, PointVector

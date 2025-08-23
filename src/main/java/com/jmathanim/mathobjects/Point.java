@@ -39,7 +39,7 @@ import java.text.DecimalFormat;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Point extends MathObject implements Coordinates<Point> {
+public class Point extends MathObject<Point> implements Coordinates<Point> {
 
     //Position of the point to be drawn in screen
     public final Vec v;

@@ -31,7 +31,7 @@ import java.text.DecimalFormat;
 /**
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class JMPathPoint extends MathObject implements Updateable, Stateable, Coordinates<JMPathPoint> {
+public class JMPathPoint extends MathObject<JMPathPoint> implements Updateable, Stateable, Coordinates<JMPathPoint> {
 
     //    public final Point p; // The vertex point
     public final Vec v; // The vertex point
@@ -299,23 +299,23 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable, Co
     }
 
     @Override
-    public <T extends MathObject> T rotate(Coordinates center, double angle) {
+    public JMPathPoint rotate(Coordinates center, double angle) {
         applyAffineTransform(AffineJTransform.create2DRotationTransform(center, angle));
 //        AffineJTransform tr = AffineJTransform.create2DRotationTransform(center, angle);
 //        p.applyAffineTransform(tr);
 //        cpEnter.applyAffineTransform(tr);
 //        cpExit.applyAffineTransform(tr);
-        return (T) this;
+        return this;
     }
 
     @Override
-    public <T extends MathObject> T shift(Vec shiftVector) {
+    public JMPathPoint shift(Vec shiftVector) {
 //        AffineJTransform tr = AffineJTransform.createTranslationTransform(shiftVector);
         applyAffineTransform(AffineJTransform.createTranslationTransform(shiftVector));
 //        p.applyAffineTransform(tr);
 //        cpEnter.applyAffineTransform(tr);
 //        cpExit.applyAffineTransform(tr);
-        return (T) this;
+        return this;
     }
 
     /**

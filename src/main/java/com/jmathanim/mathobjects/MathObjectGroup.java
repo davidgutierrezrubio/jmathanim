@@ -40,10 +40,10 @@ import java.util.logging.Logger;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class MathObjectGroup extends MathObject implements Iterable<MathObject> {
+public class MathObjectGroup extends MathObject<MathObjectGroup> implements Iterable<MathObject<?>> {
 
-    private final ArrayList<MathObject> objects;
-    private final HashMap<String, MathObject> dict;
+    private final ArrayList<MathObject<?>> objects;
+    private final HashMap<String, MathObject<?>> dict;
     MODrawPropertiesArray mpArray;
 
     public MathObjectGroup() {
@@ -53,21 +53,21 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         this.dict = new HashMap<>();
     }
 
-    public MathObjectGroup(MathObject... objects) {
+    public MathObjectGroup(MathObject<?>... objects) {
         this(new ArrayList<>(Arrays.asList(objects)));
     }
 
-    public MathObjectGroup(ArrayList<MathObject> objects) {
+    public MathObjectGroup(ArrayList<MathObject<?>> objects) {
         super();
         mpArray = new MODrawPropertiesArray();
         this.dict = new HashMap<>();
         this.objects = objects;
-        for (MathObject o : objects) {
+        for (MathObject<?> o : objects) {
             mpArray.add(o);
         }
     }
 
-    public static MathObjectGroup make(MathObject... objects) {
+    public static MathObjectGroup make(MathObject<?>... objects) {
         return new MathObjectGroup(objects);
     }
 
@@ -105,7 +105,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
 
     private MathObjectGroup flatten(MathObjectGroup group) {
         MathObjectGroup resul = MathObjectGroup.make();
-        for (MathObject obj : group) {
+        for (MathObject<?> obj : group) {
             if (obj instanceof MathObjectGroup) {
                 MathObjectGroup cc = flatten(((MathObjectGroup) obj));
                 resul.addAll(cc.getObjects());
@@ -122,8 +122,8 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
      * @param objs A vararg of MathObjects
      * @return This MathObjectGroup
      */
-    public MathObjectGroup add(MathObject... objs) {
-        for (MathObject obj : objs) {
+    public MathObjectGroup add(MathObject<?>... objs) {
+        for (MathObject<?> obj : objs) {
             if (obj != null) {
                 objects.add(obj);
                 mpArray.add(obj);
@@ -140,28 +140,28 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
      * @param obj Object to add
      * @return This MathObjectGroup
      */
-    public MathObjectGroup addWithKey(String key, MathObject obj) {
+    public MathObjectGroup addWithKey(String key, MathObject<?> obj) {
         add(obj);
         dict.put(key, obj);
         return this;
     }
 
-    public void add(int index, MathObject element) {
+    public void add(int index, MathObject<?> element) {
         objects.add(index, element);
         mpArray.add(element);
     }
 
-    public void addAll(Collection<? extends MathObject> c) {
+    public void addAll(Collection<? extends MathObject<?>> c) {
         objects.addAll(c);
         mpArray.getObjects().addAll(c);
     }
 
-    public void addAll(int index, Collection<? extends MathObject> c) {
+    public void addAll(int index, Collection<? extends MathObject<?>> c) {
         objects.addAll(index, c);
         mpArray.getObjects().addAll(c);
     }
 
-    public void remove(MathObject obj) {
+    public void remove(MathObject<?> obj) {
         objects.remove(obj);
     }
 
@@ -171,12 +171,12 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     @Override
-    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
-        for (MathObject obj : objects) {
+    public MathObjectGroup applyAffineTransform(AffineJTransform tr) {
+        for (MathObject<?> obj : objects) {
             obj.applyAffineTransform(tr);
         }
         tr.applyTransformsToDrawingProperties(this);
-        return (T) this;
+        return this;
     }
 
     public void clear() {
@@ -188,8 +188,8 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     public MathObjectGroup copy() {
         MathObjectGroup copy = new MathObjectGroup();
         copy.getMp().copyFrom(getMp());
-        for (MathObject obj : this.getObjects()) {
-            MathObject copyObject = obj.copy();
+        for (MathObject<?> obj : this.getObjects()) {
+            MathObject<?> copyObject = obj.copy();
             copy.add(copyObject);
             //If this object is registered with a key, register the copied one with the same key
             if (dict.containsValue(copyObject)) {
@@ -204,7 +204,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     @Override
-    public void copyStateFrom(MathObject obj) {
+    public void copyStateFrom(MathObject<?> obj) {
         super.copyStateFrom(obj);
         if (!(obj instanceof MathObjectGroup)) {
             return;
@@ -213,13 +213,13 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
 
        if (mg.size() == size()) {
             int n = 0;
-            for (MathObject o : getObjects()) {
+            for (MathObject<?> o : getObjects()) {
                 o.copyStateFrom(mg.get(n));
                 n++;
             }
         } else {
             clear();
-            for (MathObject o : mg.getObjects()) {
+            for (MathObject<?> o : mg.getObjects()) {
                 add(o.copy());
             }
         }
@@ -231,46 +231,43 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     @Override
-    public <T extends MathObject> T setCamera(Camera camera) {
-        for (MathObject obj : this) {
+    public MathObjectGroup setCamera(Camera camera) {
+        for (MathObject<?> obj : this) {
             obj.setCamera(camera);
         }
-        return (T) this;
+        return this;
     }
 
     /**
      * Overloaded method. Distribute evenly spaced objects in the group, horizontally or vertically. x-order or y-order
      * of objects is respected. Order of objects in MathObjectGroup is unaltered.
      *
-     * @param <T>         Calling subclass
      * @param orientation A value of enum Orientation (HORIZONTAL or VERTICAL)
      */
-    public <T extends MathObjectGroup> T distribute(Orientation orientation) {
+    public MathObjectGroup distribute(Orientation orientation) {
         return distribute(orientation, true);
     }
 
     /**
      * Distribute evenly spaced objects in the group, horizontally or vertically.
      *
-     * @param <T>          Calling subclass
      * @param orientation  A value of enum Orientation (HORIZONTAL or VERTICAL)
      * @param respectOrder If true, current x-order or y-order of objects is respected. Position of objects in the
      *                     MathObjectGroup is unaltered. A value of false in a horizontal distribute por example, always
      *                     puts the first element of the group in the left extreme.
      * @return This object
      */
-    public <T extends MathObjectGroup> T distribute(Orientation orientation, boolean respectOrder) {
-        ArrayList<MathObject> objectsToDistribute = new ArrayList<>();
-        objectsToDistribute.addAll(getObjects());
+    public MathObjectGroup distribute(Orientation orientation, boolean respectOrder) {
+        ArrayList<MathObject<?>> objectsToDistribute = new ArrayList<>(getObjects());
         if (respectOrder) {
             if (orientation == Orientation.HORIZONTAL) {
-                Collections.sort(objectsToDistribute, Comparator.comparingDouble(obj -> obj.getBoundingBox().xmin));
+                objectsToDistribute.sort(Comparator.comparingDouble(obj -> obj.getBoundingBox().xmin));
             } else {
-                Collections.sort(objectsToDistribute, Comparator.comparingDouble(obj -> obj.getBoundingBox().ymin));
+                objectsToDistribute.sort(Comparator.comparingDouble(obj -> obj.getBoundingBox().ymin));
             }
         }
         if (size() < 2) {
-            return (T) this;//Nothing to do here
+            return this;//Nothing to do here
         }
         double left, right, dstCoord;
         double size = 0;
@@ -281,13 +278,13 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         if (orientation == Orientation.HORIZONTAL) {
             left = bb.xmin;
             right = bb.xmax;
-            for (MathObject thi : this) {
+            for (MathObject<?> thi : this) {
                 size += thi.getWidth();
             }
         } else {
             left = bb.ymin;
             right = bb.ymax;
-            for (MathObject thi : this) {
+            for (MathObject<?> thi : this) {
                 size += thi.getHeight();
             }
         }
@@ -297,7 +294,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
 
         //Move every object
         for (int i = 0; i < size(); i++) {
-            MathObject obj = objectsToDistribute.get(i);
+            MathObject<?> obj = objectsToDistribute.get(i);
 
             if (orientation == Orientation.HORIZONTAL) {
                 obj.shift(dstCoord - obj.getBoundingBox().xmin, 0);
@@ -307,20 +304,20 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
                 dstCoord = obj.getBoundingBox().ymax + gap;
             }
         }
-        return (T) this;
+        return this;
     }
 
     /**
-     * Gets the MathObject stored at a given position
+     * Gets the MathObject<?> stored at a given position
      *
      * @param index Index of the object
      * @return The MathObject
      */
-    public MathObject get(int index) {
+    public MathObject<?> get(int index) {
         return objects.get(index);
     }
 
-    public MathObject get(String key) {
+    public MathObject<?> get(String key) {
         if (dict.containsKey(key)) {
             return dict.get(key);
         } else {
@@ -341,13 +338,13 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         }
 
         Rect bbox = objects.get(0).getBoundingBox();
-        for (MathObject obj : objects) {
+        for (MathObject<?> obj : objects) {
             bbox = Rect.union(bbox, obj.getBoundingBox());
         }
         return bbox;
     }
 
-    public ArrayList<MathObject> getObjects() {
+    public ArrayList<MathObject<?>> getObjects() {
         return objects;
     }
 
@@ -356,14 +353,14 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     @Override
-    public Iterator<MathObject> iterator() {
+    public Iterator<MathObject<?>> iterator() {
         return objects.iterator();
     }
 
     @Override
     public void restoreState() {
         mpArray.restoreState();
-        for (MathObject obj : objects) {
+        for (MathObject<?> obj : objects) {
             obj.restoreState();
         }
     }
@@ -371,29 +368,29 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     @Override
     public void saveState() {
         mpArray.saveState();
-        for (MathObject obj : objects) {
+        for (MathObject<?> obj : objects) {
             obj.saveState();
         }
     }
 
     @Override
-    public <T extends MathObject> T setAbsoluteSize(AnchorType anchorType) {
-        for (MathObject obj : objects) {
+    public MathObjectGroup setAbsoluteSize(AnchorType anchorType) {
+        for (MathObject<?> obj : objects) {
             obj.setAbsoluteSize(anchorType);
         }
-        return (T) this;
+        return this;
     }
 
-    public <T extends MathObjectGroup> T setLayout(GroupLayout layout) {
+    public MathObjectGroup setLayout(GroupLayout layout) {
         layout.applyLayout(this);
-        return (T) this;
+        return this;
     }
 
-    public <T extends MathObjectGroup> T setLayout(LayoutType layoutType, double gap) {
+    public MathObjectGroup setLayout(LayoutType layoutType, double gap) {
         return setLayout(null, layoutType, gap);
     }
 
-    public <T extends MathObjectGroup> T setLayout(MathObject corner, LayoutType layoutType, double gap) {
+    public MathObjectGroup setLayout(MathObject<?> corner, LayoutType layoutType, double gap) {
         AnchorType anchor = AnchorType.CENTER;
 
         switch (layoutType) {
@@ -459,16 +456,16 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         for (int n = 1; n < objects.size(); n++) {
             objects.get(n).stackTo(objects.get(n - 1), anchor, gap);
         }
-        return (T) this;
+        return this;
 
     }
 
     @Override
-    public <T extends MathObject> T setRelativeSize() {
-        for (MathObject obj : objects) {
+    public MathObjectGroup setRelativeSize() {
+        for (MathObject<?> obj : objects) {
             obj.setRelativeSize();
         }
-        return (T) this;
+        return this;
     }
 
     public int size() {
@@ -476,20 +473,20 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     /**
-     * Returns an array of MathObject with the contents of the group.
+     * Returns an array of MathObject<?> with the contents of the group.
      *
      * @return The array
      */
-    public MathObject[] toArray() {
-        return objects.toArray(new MathObject[0]);
+    public MathObject<?>[] toArray() {
+        return objects.toArray(new MathObject<?>[0]);
     }
 
     @Override
-    public <T extends MathObject> T visible(boolean visible) {
-        for (MathObject obj : objects) {
+    public MathObjectGroup visible(boolean visible) {
+        for (MathObject<?> obj : objects) {
             obj.visible(visible);
         }
-        return (T) this;
+        return this;
     }
 
     @Override
@@ -507,7 +504,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     @Override
     public boolean isEmpty() {
         boolean resul = true;
-        for (MathObject thi : this) {
+        for (MathObject<?> thi : this) {
             resul = resul && thi.isEmpty();
         }
         return resul;
@@ -528,11 +525,11 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     public MathObjectGroup homogeneizeBoundingBoxes(InnerAnchorType anchorType, double upperGap, double rightGap, double lowerGap, double leftGap) {
         double hmax = 0;
         double wmax = 0;
-        for (MathObject ob : this) {//Compute max of widths and heights
+        for (MathObject<?> ob : this) {//Compute max of widths and heights
             double w = ob.getWidth();
             double h = ob.getHeight();
-            hmax = (hmax < h ? h : hmax);
-            wmax = (wmax < w ? w : wmax);
+            hmax = Math.max(hmax, h);
+            wmax = Math.max(wmax, w);
         }
 
         homogeneizeBoundingBoxesTo(anchorType, wmax, hmax, upperGap, rightGap, lowerGap, leftGap);
@@ -553,7 +550,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
      * @return This object
      */
     public MathObjectGroup homogeneizeBoundingBoxesTo(InnerAnchorType anchorType, double width, double height, double upperGap, double rightGap, double lowerGap, double leftGap) {
-        for (MathObject ob : this) {//Now add proper gaps
+        for (MathObject<?> ob : this) {//Now add proper gaps
             double rGap = 0, lGap = 0, uGap = 0, loGap = 0;
             double w = ob.getWidth();
             double h = ob.getHeight();
@@ -612,18 +609,18 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     @Override
-    public <T extends MathObject> T layer(int layer) {
-        for (MathObject thi : this) {
+    public MathObjectGroup layer(int layer) {
+        for (MathObject<?> thi : this) {
             thi.layer(layer);
         }
-        return (T) this;
+        return this;
     }
 
     @Override
     public String toString() {
         String toString = "MathObjectGroup[" + size() + "] ";
         if (size() < 5) {
-            for (MathObject obj : objects) {
+            for (MathObject<?> obj : objects) {
                 toString += "[" + obj.toString() + "] ";
             }
         }

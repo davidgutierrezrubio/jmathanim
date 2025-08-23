@@ -258,7 +258,7 @@ public class AffineJTransform implements Stateable {
      */
     public <T extends MathObject> T getTransformedObject(MathObject obj) {
 
-        T resul = obj.copy();
+        T resul = (T)obj.copy();
         applyTransform(resul);
         return resul;
     }

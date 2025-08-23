@@ -21,34 +21,24 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Constructible.Lines.HasDirection;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.Stylable;
-import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.Vec;
+import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
+import com.jmathanim.mathobjects.updaters.Coordinates;
 
 /**
  * Represents an infinite line, given by 2 points.
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Line extends Shape implements HasDirection, shouldUdpateWithCamera {
+public class Line extends MathObject<Line> implements HasDirection, shouldUdpateWithCamera {
 
     private final JMPathPoint bp1, bp2;
-    private final Point p1;
-    private final Point p2;
+    private final Vec p1;
+    private final Vec p2;
     private final Shape visiblePiece;
-
-    /**
-     * Creates a line that passes through p with direction v
-     *
-     * @param p Point
-     * @param v Direction vector
-     */
-    public Line(Point p, Vec v) {
-        this(p, p.add(v));
-    }
+    private Point pointP1;
+    private Point pointP2;
 
     /**
      * Creates a line that passes through p1 and p2
@@ -56,19 +46,17 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
      * @param p1 First point
      * @param p2 Second point
      */
-    public Line(Point p1, Point p2) {
+    public Line(Coordinates<?> p1, Coordinates<?> p2) {
         super();
-        this.p1 = p1;
-        this.p2 = p2;
-        getPath().clear(); // Super constructor adds p1, p2. Delete them
-        bp1 = new JMPathPoint(new Point(0, 0), true, JMPathPointType.VERTEX);// trivial boundary points, just to
+        this.p1 = p1.getVec();
+        this.p2 = p2.getVec();
+        bp1 = new JMPathPoint(Vec.to(0, 0), true, JMPathPointType.VERTEX);// trivial boundary points, just to
         // initialize objects
-        bp2 = new JMPathPoint(new Point(0, 0), true, JMPathPointType.VERTEX);// trivial boundary points, just to
+        bp2 = new JMPathPoint(Vec.to(0, 0), true, JMPathPointType.VERTEX);// trivial boundary points, just to
         // initialize objects
         visiblePiece = new Shape();
         visiblePiece.getPath().addJMPoint(bp1, bp2);
-        getPath().addPoint(p1, p2);
-        get(0).isThisSegmentVisible = false;
+        visiblePiece.get(0).isThisSegmentVisible = false;
         setCamera(JMathAnimConfig.getConfig().getCamera());//First default camera
         computeBoundPoints(getCamera());
     }
@@ -93,7 +81,7 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
      * @param b Second point
      * @return The line object
      */
-    public static Line make(Point a, Point b) {
+    public static Line make(Coordinates<?> a, Point b) {
         return new Line(a, b);
     }
 
@@ -118,14 +106,14 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
      */
     private void computeBoundPoints(Camera cam) {
         Rect rect = cam.getMathView();
-        double[] intersectLine = rect.intersectLine(p1.v.x, p1.v.y, p2.v.x, p2.v.y);
+        double[] intersectLine = rect.intersectLine(p1.x, p1.y, p2.x, p2.y);
 
         if (intersectLine == null) {
             // If there are no getIntersectionPath points, take p1 and p2 (workaround)
-            bp1.v.x = p1.v.x;
-            bp1.v.y = p1.v.y;
-            bp2.v.x = p2.v.x;
-            bp2.v.y = p2.v.y;
+            bp1.v.x = p1.x;
+            bp1.v.y = p1.y;
+            bp2.v.x = p2.x;
+            bp2.v.y = p2.y;
         } else {
             bp1.v.x = intersectLine[0];
             bp1.v.y = intersectLine[1];
@@ -144,6 +132,12 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
         Line resul = new Line(p1.copy(), p2.copy());
         resul.getMp().copyFrom(getMp());
         return resul;
+    }
+
+    @Override
+    protected Rect computeBoundingBox() {
+        JMathAnimScene.logger.warn("Trying to compute bounding box of an infinite line, returning EmptyRect");
+        return new EmptyRect();
     }
 
 
@@ -186,8 +180,7 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
      */
     @Override
     public Point getCenter() {
-
-        return p1.copy();
+        return Point.at(p1);
     }
 
     @Override
@@ -201,18 +194,22 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
     }
 
     public Point getP1() {
-        return p1;
+        if (pointP1==null) {
+            pointP1 = Point.at(p1);
+        }
+        return pointP1;
     }
 
     public Point getP2() {
-        return p2;
+        if (pointP2==null) {
+            pointP2 = Point.at(p2);
+        }
+        return pointP2;
     }
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, p1, p2);
-//        scene.registerUpdateable(p1, p2);
-//        setUpdateLevel(Math.max(p1.getUpdateLevel(), p2.getUpdateLevel()) + 1);
+        dependsOn(scene, pointP1, pointP2);//You can safely pass null to this method
     }
 
     @Override
@@ -238,8 +235,8 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
      */
     public Shape toSegment(Camera cam, double scale) {
         computeBoundPoints(cam);
-        Point a = bp1.copy().scale(getCenter(), scale, scale);
-        Point b = bp2.copy().scale(getCenter(), scale, scale);
+        JMPathPoint a = bp1.copy().scale(getCenter(), scale, scale);
+        JMPathPoint b = bp2.copy().scale(getCenter(), scale, scale);
         Shape segment = Shape.segment(a, b);
         segment.getMp().copyFrom(this.getMp());
         return segment;
@@ -259,6 +256,5 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
     public void updateWithCamera(Camera camera) {
         computeBoundPoints(camera);
     }
-
 
 }

@@ -29,7 +29,7 @@ import com.jmathanim.mathobjects.updaters.Coordinates;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTLine extends CTAbstractLine {
+public class CTLine extends CTAbstractLine<CTLine> {
 
     protected Line lineToDraw;
     protected CTPoint A;

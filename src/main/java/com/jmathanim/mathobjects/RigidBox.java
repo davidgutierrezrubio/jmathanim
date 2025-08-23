@@ -7,13 +7,13 @@ import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
-public class RigidBox extends MathObject {
-    private MathObject mathObjectReference;
-    private MathObject mathObjectCopyToDraw;
+public class RigidBox extends MathObject<RigidBox> {
+    private MathObject<?> mathObjectReference;
+    private MathObject<?> mathObjectCopyToDraw;
     private boolean isCopyToDrawTransformedByMatrix;
     protected final AffineJTransform baseModelMatrix;
 
-    public RigidBox(MathObject mathObject) {
+    public RigidBox(MathObject<?> mathObject) {
         this.mathObjectReference = mathObject;
         this.mathObjectCopyToDraw = mathObject.copy();
         isCopyToDrawTransformedByMatrix = false;
@@ -26,17 +26,17 @@ public class RigidBox extends MathObject {
         return mathObjectReference.getMp();
     }
 
-    public MathObject getReferenceMathObject() {
+    public MathObject<?> getReferenceMathObject() {
         return mathObjectReference;
     }
 
-    public void setMathObjectReference(MathObject mathObjectReference) {
+    public void setMathObjectReference(MathObject<?> mathObjectReference) {
 
         this.mathObjectReference = (mathObjectReference == null ? new NullMathObject() : mathObjectReference);
         this.mathObjectCopyToDraw = this.mathObjectReference.copy();
     }
 
-    public MathObject getMathObjectCopyToDraw() {
+    public MathObject<?> getMathObjectCopyToDraw() {
         if (!isCopyToDrawTransformedByMatrix) {
             mathObjectCopyToDraw.applyAffineTransform(modelMatrix);
             mathObjectCopyToDraw.getMp().copyFrom(mathObjectReference.getMp());
@@ -53,7 +53,7 @@ public class RigidBox extends MathObject {
     }
 
     @Override
-    public void copyStateFrom(MathObject obj) {
+    public void copyStateFrom(MathObject<?> obj) {
 
 //        super.copyStateFrom(obj);
         if (obj instanceof RigidBox) {
@@ -75,17 +75,17 @@ public class RigidBox extends MathObject {
         isCopyToDrawTransformedByMatrix = true;
     }
 
-    public <T extends MathObject> T applyAffineTransform(AffineJTransform transform) {
+    public RigidBox applyAffineTransform(AffineJTransform transform) {
         AffineJTransform compose = modelMatrix.compose(transform);
         modelMatrix.copyFrom(compose);
         isCopyToDrawTransformedByMatrix = false;
-        return (T) this;
+        return this;
     }
 
-    public <T extends MathObject> T applyAffineTransformToBaseTransform(AffineJTransform transform) {
+    public RigidBox applyAffineTransformToBaseTransform(AffineJTransform transform) {
         AffineJTransform compose = baseModelMatrix.compose(transform);
         baseModelMatrix.copyFrom(compose);
-        return (T) this;
+        return this;
     }
 
 

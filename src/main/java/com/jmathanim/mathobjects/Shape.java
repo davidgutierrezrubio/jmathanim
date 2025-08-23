@@ -34,7 +34,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 /**
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Shape extends MathObject {
+public class Shape extends MathObject<Shape> {
 
     protected final JMPath jmpath;
 
@@ -54,9 +54,9 @@ public class Shape extends MathObject {
     }
 
     //    @Override
-//    public <T extends MathObject> T shift(Vec shiftVector) {
+//    public Shape shift(Vec shiftVector) {
 //        jmpath.shift(shiftVector);
-//        return (T) this;
+//        return this;
 //    }
 //    public void removeInterpolationPoints() {
 //        jmpath.removeInterpolationPoints();
@@ -413,13 +413,12 @@ public class Shape extends MathObject {
     /**
      * Align this object with another one
      *
-     * @param <T>  MathObject subclass
      * @param obj  Object to align with. This object remains unaltered.
      * @param type Align type, a value from the enum Align
      * @return This object
      */
     @Override
-    public <T extends MathObject> T align(Boxable obj, Align type) {
+    public Shape align(Boxable obj, Align type) {
         Vec shiftVector = Vec.to(0, 0);
         Rect thisBoundingBox = this.getBoundingBox();
         Rect objectBoundingBox = obj.getBoundingBox();
@@ -444,18 +443,18 @@ public class Shape extends MathObject {
                 break;
         }
         shift(shiftVector);
-        return (T) this;
+        return this;
     }
 
     @Override
-    public <T extends MathObject> T applyAffineTransform(AffineJTransform transform) {
+    public Shape applyAffineTransform(AffineJTransform transform) {
         super.applyAffineTransform(transform);
         if (!isRigid) {
             jmpath.applyAffineTransform(transform);
             if (hasMPCreated())
                 transform.applyTransformsToDrawingProperties(this);
         }
-        return (T) this;
+        return this;
     }
 
     @Override
@@ -630,7 +629,6 @@ public class Shape extends MathObject {
      * Creates a new Shape object with the intersection of this Shape and another one. Styling properties of the new
      * Shape are copied from calling object.
      *
-     * @param <T> Calling class
      * @param s2  Shape to intersect with
      * @return A Shape with the intersecion
      */
@@ -644,7 +642,6 @@ public class Shape extends MathObject {
      * Creates a new Shape object with the union of this Shape and another one. Styling properties of the new Shape are
      * copied from calling object.
      *
-     * @param <T> Calling class
      * @param s2  Shape to compute the union
      * @return A Shape with the union
      */
@@ -658,7 +655,6 @@ public class Shape extends MathObject {
      * Creates a new Shape object with the substraction of this Shape with another one. Styling properties of the new
      * Shape are copied from calling object.
      *
-     * @param <T> Calling class
      * @param s2  Shape to substract
      * @return A Shape with the substraction
      */
@@ -744,12 +740,11 @@ public class Shape extends MathObject {
     /**
      * Reverse the points of the path. First point becomes last. The object is altered
      *
-     * @param <T> Calling class
      * @return This object
      */
-    public <T extends Shape> T reverse() {
+    public Shape reverse() {
         getPath().reverse();
-        return (T) this;
+        return this;
     }
 
     @Override
@@ -786,15 +781,14 @@ public class Shape extends MathObject {
      * unless the connect parameter is set to true. In such case, the shapes will be connected by a straight line from
      * the last point of the calling object to the first point of the given one.
      *
-     * @param <T>         Calling Shape subclass
      * @param sh          Shape to merge
      * @param connectAtoB If true, the end of path A will be connected to the beginning of path B by a straight line
      * @param connectBtoA If true, the end of path B will be connected to the beginning of path A by a straight line
      * @return This object
      */
-    public <T extends Shape> T merge(Shape sh, boolean connectAtoB, boolean connectBtoA) {
+    public Shape merge(Shape sh, boolean connectAtoB, boolean connectBtoA) {
         jmpath.merge(sh.getPath().copy(), connectAtoB, connectBtoA);
-        return (T) this;
+        return this;
     }
 
     @Override

@@ -47,7 +47,7 @@ public class CanonicalJMPath {
 
     public MultiShapeObject createMultiShape(MathObject obj) {
         MODrawProperties mpCopy = null;
-        MultiShapeObject msh = new MultiShapeObject();
+        MultiShapeObject msh = MultiShapeObject.make();
         if (obj != null) {
             mpCopy = obj.getMp().copy();
             msh.getMp().copyFrom(mpCopy);

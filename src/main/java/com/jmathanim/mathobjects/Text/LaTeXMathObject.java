@@ -35,7 +35,7 @@ import java.util.Map;
 /**
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArguments {
+public class LaTeXMathObject extends AbstractLaTeXMathObject<LaTeXMathObject>  implements hasArguments {
 
     public final HashMap<Integer, Scalar> variables;
     DecimalFormat df;
