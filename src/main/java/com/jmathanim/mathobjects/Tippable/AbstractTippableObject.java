@@ -52,7 +52,7 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
     private AnchorType anchor;
     private AnchorTypeUsed anchorType;
     private boolean alreadyRebuildingShape = false;
-    private Point anchorPoint;
+    private Vec anchorPoint;
 
 
     protected AbstractTippableObject(Shape shape, MathObject tipObject, double location) {
@@ -95,15 +95,15 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
             if (anchorPoint == null) {
                 anchorPoint = Anchor.getAnchorPoint(tipObjectRigidBox, AnchorType.CENTER);
             }
-            this.pivotPointRefMathObject.v.copyFrom(anchorPoint.v);
+            this.pivotPointRefMathObject.v.copyCoordinatesFrom(anchorPoint);
         } else {
-            this.pivotPointRefMathObject.v.copyFrom(Anchor.getAnchorPoint(tipObjectRigidBox, this.anchor).v);
+            this.pivotPointRefMathObject.v.copyCoordinatesFrom(Anchor.getAnchorPoint(tipObjectRigidBox, this.anchor));
         }
     }
 
-    protected T setAnchorPoint(Point anchorPoint) {
-        this.anchorPoint = anchorPoint;
-        this.pivotPointRefMathObject.v.copyFrom(anchorPoint.v);
+    protected T setAnchorPoint(Coordinates anchorPoint) {
+        this.anchorPoint = anchorPoint.getVec();
+        this.pivotPointRefMathObject.v.copyCoordinatesFrom(this.anchorPoint);
         anchorType = AnchorTypeUsed.FIXED_POINT;
         rebuildShape();
         return (T) this;
@@ -174,7 +174,7 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
         super.copyStateFrom(obj);
         if (obj instanceof AbstractTippableObject) {
             AbstractTippableObject nt = (AbstractTippableObject) obj;
-            pivotPointRefMathObject.v.copyFrom(nt.pivotPointRefMathObject.v);
+            pivotPointRefMathObject.v.copyCoordinatesFrom(nt.pivotPointRefMathObject.v);
             correctionAngle = nt.correctionAngle;
             this.tipObjectRigidBox.copyStateFrom(nt.tipObjectRigidBox);
             this.tipObjectRigidBox.getReferenceMathObject().copyStateFrom(nt.tipObjectRigidBox.getReferenceMathObject());
@@ -245,12 +245,12 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
 
 
         if (isParametrized) {
-            markPoint.v.copyFrom(shape.getParametrizedPointAt(locationParameterOnShape).v);
+            markPoint.v.copyCoordinatesFrom(shape.getParametrizedPointAt(locationParameterOnShape));
         } else {
-            markPoint.v.copyFrom(shape.getPointAt(locationParameterOnShape).v);
+            markPoint.v.copyCoordinatesFrom(shape.getPointAt(locationParameterOnShape).v);
         }
 //        Point labelAnchorPointDst=markPoint.copy();
-        pivotPointRefShape.v.copyFrom(markPoint.v);
+        pivotPointRefShape.v.copyCoordinatesFrom(markPoint.v);
 
         if (distanceToShape != null)
             pivotPointRefShape.v.addInSite(normal.multInSite(distanceToShape));

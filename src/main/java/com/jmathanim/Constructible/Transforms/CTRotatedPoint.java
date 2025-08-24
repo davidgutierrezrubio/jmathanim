@@ -47,17 +47,17 @@ public class CTRotatedPoint extends CTPoint {
         this.pointToRotate = pointToRotate;
         this.angle = angle;
         this.rotationCenter = rotationCenter;
-        this.protationCenter = new Point(rotationCenter.v.x,rotationCenter.v.y);
+        this.protationCenter = new Point(rotationCenter.coordinatesOfPoint.x,rotationCenter.coordinatesOfPoint.y);
     }
 
     @Override
     public void rebuildShape() {
-        this.v.copyFrom(pointToRotate.v);
+        this.coordinatesOfPoint.copyCoordinatesFrom(pointToRotate.coordinatesOfPoint);
         AffineJTransform tr = AffineJTransform.create2DRotationTransform(this.protationCenter, angle.value);
-        this.v.copyFrom(this.pointToRotate.v);
-        this.v.applyAffineTransform(tr);
+        this.coordinatesOfPoint.copyCoordinatesFrom(this.pointToRotate.coordinatesOfPoint);
+        this.coordinatesOfPoint.applyAffineTransform(tr);
         if (!isFreeMathObject()) {
-            p.v.copyFrom(v);
+            pointToShow.v.copyCoordinatesFrom(coordinatesOfPoint);
         }
     }
 

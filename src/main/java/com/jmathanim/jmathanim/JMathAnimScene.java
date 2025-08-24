@@ -82,12 +82,12 @@ public abstract class JMathAnimScene {
     /**
      * List of sceneObjects which needs to be removed immediately after rendering
      */
-    final ArrayList<MathObject> objectsToBeRemoved;
+    final ArrayList<MathObject<?>> objectsToBeRemoved;
     /**
      * List of sceneObjects which needs to be drawn on the screen
      */
-    private final ArrayList<MathObject> sceneObjects;
-    private final HashSet<MathObject> objectsAlreadydrawn;
+    private final ArrayList<MathObject<?>> sceneObjects;
+    private final HashSet<MathObject<?>> objectsAlreadydrawn;
     /**
      * Links to be executed, right before the updates
      */
@@ -244,7 +244,7 @@ public abstract class JMathAnimScene {
      *
      * @return An ArrayList of MathObject
      */
-    public ArrayList<MathObject> getMathObjects() {
+    public ArrayList<MathObject<?>> getMathObjects() {
         return sceneObjects;
     }
 
@@ -295,7 +295,7 @@ public abstract class JMathAnimScene {
      *
      * @param objs Objects to be drawn
      */
-    public void addOnce(MathObject... objs) {
+    public void addOnce(MathObject<?>... objs) {
         add(objs);
         objectsToBeRemoved.addAll(Arrays.asList(objs));
     }
@@ -316,7 +316,7 @@ public abstract class JMathAnimScene {
      *
      * @param objs Mathobjects (varargs)
      */
-    public synchronized final void add(MathObject... objs) {
+    public synchronized final void add(MathObject<?>... objs) {
         for (MathObject obj : objs) {
             if (obj != null) {
                 if (!sceneObjects.contains(obj)) {
@@ -353,7 +353,7 @@ public abstract class JMathAnimScene {
      *
      * @param objs ArrayList of Mathobjects
      */
-    public synchronized final void remove(ArrayList<MathObject> objs) {
+    public synchronized final void remove(ArrayList<MathObject<?>> objs) {
         remove((MathObject[]) objs.toArray());
 //        remove((MathObject[]) objs.toArray(value -> new MathObject[value]));
 
@@ -364,7 +364,7 @@ public abstract class JMathAnimScene {
      *
      * @param objs Mathobjects (varargs)
      */
-    public synchronized final void remove(MathObject... objs) {
+    public synchronized final void remove(MathObject<?>... objs) {
         for (MathObject obj : objs) {
             if (obj != null) {
                 if (obj instanceof MultiShapeObject) {
@@ -741,7 +741,7 @@ public abstract class JMathAnimScene {
         for (int k : layers) {
             arLayers.add(k);
         }
-        ArrayList<MathObject> resul = new ArrayList<>();
+        ArrayList<MathObject<?>> resul = new ArrayList<>();
         for (MathObject mathObject : getMathObjects()) {
             if (arLayers.contains(mathObject.getLayer())) {
                 resul.add(mathObject);
@@ -774,7 +774,7 @@ public abstract class JMathAnimScene {
      */
     public void reset() {
         logger.info("Resetting scene");
-        ArrayList<MathObject> objects = new ArrayList<>(getMathObjects());
+        ArrayList<MathObject<?>> objects = new ArrayList<>(getMathObjects());
         for (MathObject obj : objects) {
             remove(obj);
         }

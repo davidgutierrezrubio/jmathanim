@@ -20,7 +20,7 @@ package com.jmathanim.Styling;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Coordinates;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
@@ -34,7 +34,7 @@ import java.util.Objects;
  */
 public class JMLinearGradient extends PaintStyle {
 
-    protected Point start, end;
+    protected Vec start, end;
     protected GradientStop stops;
     protected boolean relativeToShape;
     protected CycleMethod cycleMethod;
@@ -47,10 +47,10 @@ public class JMLinearGradient extends PaintStyle {
      * @param start Starting point
      * @param end Ending point
      */
-    public JMLinearGradient(Point start, Point end) {
+    public JMLinearGradient(Coordinates<?> start, Coordinates<?> end) {
         super();
-        this.start = start;
-        this.end = end;
+        this.start = start.getVec();
+        this.end = end.getVec();
         this.stops = new GradientStop();
         relativeToShape = false;
         cycleMethod = CycleMethod.NO_CYCLE;
@@ -70,8 +70,8 @@ public class JMLinearGradient extends PaintStyle {
         }
         if (A instanceof JMLinearGradient) {
             JMLinearGradient jmlg = (JMLinearGradient) A;
-            this.start.v.copyFrom(jmlg.start.v);
-            this.end.v.copyFrom(jmlg.end.v);
+            this.start.copyCoordinatesFrom(jmlg.start);
+            this.end.copyCoordinatesFrom(jmlg.end);
             this.relativeToShape = jmlg.relativeToShape;
             this.cycleMethod = jmlg.cycleMethod;
             this.stops = jmlg.stops.copy();
@@ -80,8 +80,8 @@ public class JMLinearGradient extends PaintStyle {
         //Convert radial gradient into a linear one, horizontally
          if (A instanceof JMRadialGradient) {
             JMRadialGradient jmlg = (JMRadialGradient) A;
-            this.start.v.copyFrom(jmlg.center.v);
-            this.end.v.copyFrom(jmlg.center.add(Vec.to(jmlg.radius,0)).v);
+            this.start.copyCoordinatesFrom(jmlg.center);
+            this.end.copyCoordinatesFrom(jmlg.center.add(Vec.to(jmlg.radius,0)));
             this.relativeToShape = jmlg.relativeToShape;
             this.cycleMethod = jmlg.cycleMethod;
             this.stops = jmlg.stops.copy();
@@ -93,11 +93,11 @@ public class JMLinearGradient extends PaintStyle {
     public Paint getFXPaint(JavaFXRenderer r, Camera cam) {
         double[] ss, ee;
         if (!relativeToShape) {
-            ss = cam.mathToScreenFX(start.v);
-            ee = cam.mathToScreenFX(end.v);
+            ss = cam.mathToScreenFX(start);
+            ee = cam.mathToScreenFX(end);
         } else {
-            ss = new double[]{start.v.x, 1 - start.v.y};
-            ee = new double[]{end.v.x, 1 - end.v.y};
+            ss = new double[]{start.x, 1 - start.y};
+            ee = new double[]{end.x, 1 - end.y};
         }
         return new LinearGradient(ss[0], ss[1], ee[0], ee[1], relativeToShape, this.cycleMethod, stops.toFXStop(getAlpha()));
     }
@@ -219,11 +219,11 @@ public class JMLinearGradient extends PaintStyle {
         return this.cycleMethod == other.cycleMethod;
     }
 
-    public Point getStart() {
+    public Vec getStart() {
         return start;
     }
 
-    public Point getEnd() {
+    public Vec getEnd() {
         return end;
     }
 }

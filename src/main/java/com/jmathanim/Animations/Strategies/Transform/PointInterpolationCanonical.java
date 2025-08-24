@@ -20,7 +20,10 @@ package com.jmathanim.Animations.Strategies.Transform;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.DivideOnSensiblePointsStrategy;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.CanonicalJMPath;
+import com.jmathanim.mathobjects.JMPath;
+import com.jmathanim.mathobjects.JMPathPoint;
+import com.jmathanim.mathobjects.Shape;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -105,8 +108,8 @@ public class PointInterpolationCanonical extends TransformStrategy {
         shIntermediate.getPath().addJMPointsFrom(connectedOrigin.toJMPath());
 
         // Jump paths
-        Point origCenter = this.getOriginObject().getCenter();
-        Point dstCenter = this.getDestinyObject().getCenter();
+        Vec origCenter = this.getOriginObject().getCenter();
+        Vec dstCenter = this.getDestinyObject().getCenter();
         prepareJumpPath(origCenter, dstCenter, getIntermediateObject());
         return true;
     }

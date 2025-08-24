@@ -24,7 +24,6 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
-import com.jmathanim.mathobjects.updaters.Coordinates;
 
 import java.text.DecimalFormat;
 
@@ -32,7 +31,7 @@ import java.text.DecimalFormat;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class JMPathPoint extends MathObject<JMPathPoint> implements
-        Updateable, Stateable,  Coordinates, AffineTransformable<JMPathPoint>, Interpolable<JMPathPoint> {
+        Updateable, Stateable, Coordinates<JMPathPoint>, AffineTransformable<JMPathPoint>, Interpolable<JMPathPoint> {
 
     //    public final Point p; // The vertex point
     public final Vec v; // The vertex point
@@ -50,13 +49,12 @@ public class JMPathPoint extends MathObject<JMPathPoint> implements
     private JMPathPoint pState;
 
 
-    public JMPathPoint(Coordinates p, boolean isVisible, JMPathPointType type) {
+    public JMPathPoint(Coordinates<?> p, boolean isVisible, JMPathPointType type) {
         super();
         this.v = p.getVec();
         if (p instanceof Point) {
             this.pCenter = (Point) p;
-        }
-        else {
+        } else {
             this.pCenter = null;
         }
         vExit = v.copy();
@@ -102,11 +100,11 @@ public class JMPathPoint extends MathObject<JMPathPoint> implements
     public static JMPathPoint lineTo(Coordinates coord) {
         Coordinates p;
         if (coord instanceof Point) {
-            p= (Point) coord;
+            p = (Point) coord;
         } else if (coord instanceof JMPathPoint) {
-            p=((JMPathPoint)coord).v;
+            p = ((JMPathPoint) coord).v;
         } else {
-            p=coord.getVec();
+            p = coord.getVec();
         }
 
         // Default values: visibleFlag, type vertex, straight
@@ -138,9 +136,9 @@ public class JMPathPoint extends MathObject<JMPathPoint> implements
     }
 
     public void copyStateFrom(JMPathPoint jp) {
-        v.copyFrom(jp.v);
-        vExit.copyFrom(jp.vExit);
-        vEnter.copyFrom(jp.vEnter);
+        v.copyCoordinatesFrom(jp.v);
+        vExit.copyCoordinatesFrom(jp.vExit);
+        vEnter.copyCoordinatesFrom(jp.vEnter);
         isCurved = jp.isCurved;
         isThisSegmentVisible = jp.isThisSegmentVisible;
 
@@ -242,8 +240,8 @@ public class JMPathPoint extends MathObject<JMPathPoint> implements
     }
 
     @Override
-    public Point getCenter() {
-        return Point.at(v.x, v.y);
+    public Vec getCenter() {
+        return Vec.to(v.x, v.y);
     }
 
     @Override
@@ -257,9 +255,9 @@ public class JMPathPoint extends MathObject<JMPathPoint> implements
     }
 
     public void copyControlPointsFrom(JMPathPoint jmPoint) {
-        this.v.copyFrom(jmPoint.v);
-        this.vExit.copyFrom(jmPoint.vExit);
-        this.vEnter.copyFrom(jmPoint.vEnter);
+        this.v.copyCoordinatesFrom(jmPoint.v);
+        this.vExit.copyCoordinatesFrom(jmPoint.vExit);
+        this.vEnter.copyCoordinatesFrom(jmPoint.vEnter);
     }
 
     @Override
@@ -270,9 +268,9 @@ public class JMPathPoint extends MathObject<JMPathPoint> implements
         }
 
         JMPathPoint jmp2 = (JMPathPoint) obj;
-        this.v.copyFrom(jmp2.v);
-        this.vExit.copyFrom(jmp2.vExit);
-        this.vEnter.copyFrom(jmp2.vEnter);
+        this.v.copyCoordinatesFrom(jmp2.v);
+        this.vExit.copyCoordinatesFrom(jmp2.vExit);
+        this.vEnter.copyCoordinatesFrom(jmp2.vEnter);
     }
 
     public boolean isEquivalentTo(JMPathPoint p2, double epsilon) {
@@ -323,18 +321,18 @@ public class JMPathPoint extends MathObject<JMPathPoint> implements
      * Computes an interpolated JMPathPoint between this and another one. The interpolation is not the usual linear one,
      * but Bezier interpolation if it is curved.
      *
-     * @param coords2     Second JMPathPoint to interpolate
-     * @param alpha Interpolation parameter. 0 returns a copy of this object. 1 returns a copy of q.
+     * @param coords2 Second JMPathPoint to interpolate
+     * @param alpha   Interpolation parameter. 0 returns a copy of this object. 1 returns a copy of q.
      * @return The interpolated JMPathPoint.
      */
     public JMPathPoint interpolate(Coordinates coords2, double alpha) {
         JMPathPoint q;
         if (coords2 instanceof JMPathPoint) {
-             q = (JMPathPoint) coords2;
+            q = (JMPathPoint) coords2;
         } else {
             q = new JMPathPoint(coords2, true, JMPathPointType.VERTEX);
         }
-    JMPathPoint interpolate;
+        JMPathPoint interpolate;
         if (q.isCurved) {
             // De Casteljau's Algorithm:
             // https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
@@ -344,9 +342,9 @@ public class JMPathPoint extends MathObject<JMPathPoint> implements
             Vec H = E.interpolate(F, alpha);// cp2 of interpolation point
             Vec J = F.interpolate(G, alpha);// cp1 of interpolation point
             Vec K = H.interpolate(J, alpha); // Interpolation point
-            interpolate = new JMPathPoint(Point.at(K), q.isThisSegmentVisible, JMPathPointType.INTERPOLATION_POINT);
-            interpolate.vExit.copyFrom(J);
-            interpolate.vEnter.copyFrom(H);
+            interpolate = new JMPathPoint(K, q.isThisSegmentVisible, JMPathPointType.INTERPOLATION_POINT);
+            interpolate.vExit.copyCoordinatesFrom(J);
+            interpolate.vEnter.copyCoordinatesFrom(H);
 
         } else {
             // Straight interpolation
@@ -379,6 +377,61 @@ public class JMPathPoint extends MathObject<JMPathPoint> implements
     @Override
     public Vec getVec() {
         return v;
+    }
+
+    @Override
+    public JMPathPoint addInSite(Coordinates<?> coords) {
+        //Add to the 3 components
+        v.addInSite(coords);
+        vEnter.addInSite(coords);
+        vExit.addInSite(coords);
+        return this;
+    }
+
+    @Override
+    public JMPathPoint minusInSite(Coordinates<?> coords) {
+        //Substract from the 3 components
+        v.minusInSite(coords);
+        vEnter.minusInSite(coords);
+        vExit.minusInSite(coords);
+        return this;
+    }
+
+    @Override
+    public void copyCoordinatesFrom(Coordinates<?> coords) {
+        //Copy from the 3 components
+        v.copyCoordinatesFrom(coords);
+        vEnter.copyCoordinatesFrom(coords);
+        vExit.copyCoordinatesFrom(coords);
+    }
+
+    @Override
+    public JMPathPoint minus(Coordinates<?> v2) {
+        JMPathPoint copy = copy();
+        copy.v.minusInSite(v2);
+        copy.vEnter.minusInSite(v2);
+        copy.vExit.minusInSite(v2);
+        return copy;
+    }
+
+    @Override
+    public JMPathPoint add(Coordinates<?> v2) {
+        JMPathPoint copy = copy();
+        //Substract from the 3 components
+        copy.v.addInSite(v2);
+        copy.vEnter.addInSite(v2);
+        copy.vExit.addInSite(v2);
+        return copy;
+    }
+
+    @Override
+    public JMPathPoint mult(double lambda) {
+        JMPathPoint copy = copy();
+        //Multiply the 3 components
+        copy.v.multInSite(lambda);
+        copy.vEnter.multInSite(lambda);
+        copy.vExit.multInSite(lambda);
+        return copy;
     }
 
     public enum JMPathPointType {

@@ -17,12 +17,11 @@
  */
 package com.jmathanim.Constructible.Lines;
 
-import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.updaters.Coordinates;
 
 /**
  * A perpendicular bisector of a segment (perpendicular line that pass through
@@ -30,14 +29,15 @@ import com.jmathanim.mathobjects.updaters.Coordinates;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTPerpBisector extends CTAbstractLine {
+public class CTPerpBisector extends CTAbstractLine<CTPerpBisector> {
 
-    protected final CTPoint A;
-    protected final CTPoint B;
+    protected final Coordinates A;
+    protected final Coordinates B;
     protected final Line lineToDraw;
 
     public static CTPerpBisector make(Coordinates A, Coordinates B) {
-        CTPerpBisector resul = CTPerpBisector.make(CTPoint.make(A), CTPoint.make(B));
+//        CTPerpBisector resul = CTPerpBisector.make(CTPoint.make(A), CTPoint.make(B));
+        CTPerpBisector resul = new CTPerpBisector(A, B);
         resul.rebuildShape();
         return resul;
     }
@@ -46,7 +46,7 @@ public class CTPerpBisector extends CTAbstractLine {
         return make(segment.A, segment.B);
     }
 
-    private CTPerpBisector(CTPoint A, CTPoint B) {
+    private CTPerpBisector(Coordinates A, Coordinates B) {
         super();
         this.A = A;
         this.B = B;
@@ -55,19 +55,19 @@ public class CTPerpBisector extends CTAbstractLine {
 
     @Override
     public CTPerpBisector copy() {
-        CTPerpBisector copy = CTPerpBisector.make(A.copy(), B.copy());
+        CTPerpBisector copy = CTPerpBisector.make(A.getVec().copy(), B.getVec().copy());
         copy.copyStateFrom(this);
         return copy;
     }
 
     @Override
     public void rebuildShape() {
-        getP1().v.copyFrom(A.v.interpolate(B.v, .5));
+        getP1().copyCoordinatesFrom(A.getVec().interpolate(B, .5));
         Vec v = A.to(B);
-        getP2().v.copyFrom(Vec.to(getP1().v.x - v.y, getP1().v.y + v.x));
+        getP2().copyCoordinatesFrom(Vec.to(getP1().x - v.y, getP1().y + v.x));
         if (!isFreeMathObject()) {
-            lineToDraw.getP1().v.copyFrom(P1.v);
-            lineToDraw.getP2().v.copyFrom(P2.v);
+            lineToDraw.getP1().copyCoordinatesFrom(P1);
+            lineToDraw.getP2().copyCoordinatesFrom(P2);
         }
     }
 
@@ -80,10 +80,10 @@ public class CTPerpBisector extends CTAbstractLine {
     public void registerUpdateableHook(JMathAnimScene scene) {
         dependsOn(scene, this.A, this.B);
     }
-      @Override
-    public Vec getHoldCoordinates(Vec coordinates) {
-        Vec v1 = getDirection().normalize();
-        Vec v2 = coordinates.minus(getP1().v);
-        return(getP1().v.add(v1.mult(v1.dot(v2))));
-    }
+//      @Override
+//    public Vec getHoldCoordinates(Vec coordinates) {
+//        Vec v1 = getDirection().normalize();
+//        Vec v2 = coordinates.minus(getP1());
+//        return(getP1().add(v1.mult(v1.dot(v2))));
+//    }
 }

@@ -226,7 +226,7 @@ public class SVGUtils {
                         double y = -Double.parseDouble(el.getAttribute("y"));
                         double w = Double.parseDouble(el.getAttribute("width"));
                         double h = -Double.parseDouble(el.getAttribute("height"));
-                        shape = Shape.rectangle(new Point(x, y), new Point(x + w, y + h)).setMp(mpCopy);
+                        shape = Shape.rectangle(Vec.to(x, y), Vec.to(x + w, y + h)).setMp(mpCopy);
                         transfCopy.applyTransform(shape);
                         msh.add(shape);
                         break;
@@ -258,18 +258,18 @@ public class SVGUtils {
     }
 
     private Shape processPolygonPoints(String s, boolean polygon) {
-        ArrayList<Point> points = new ArrayList<>();
+        ArrayList<Vec> points = new ArrayList<>();
         ArrayList<String> tokens = getPointTokens(s);
         Shape resul;
         Iterator<String> it = tokens.iterator();
         while (it.hasNext()) {
             getPoint(it.next(), it.next());
-            points.add(Point.at(currentX, currentY));
+            points.add(Vec.to(currentX, currentY));
         }
         if (polygon) {
-            resul = Shape.polygon(points.toArray(new Point[0]));
+            resul = Shape.polygon(points.toArray(new Vec[0]));
         } else {
-            resul = Shape.polyLine(points.toArray(new Point[0]));
+            resul = Shape.polyLine(points.toArray(new Vec[0]));
         }
         return resul;
     }
@@ -599,8 +599,8 @@ public class SVGUtils {
         //previousX,previousY; origin point
         //currentX,currentY; destiny point
         getPoint(it.next(), it.next());
-        Point O1 = Point.at(previousX, -previousY);
-        Point O2 = Point.at(currentX, -currentY);
+        Vec O1 = Vec.to(previousX, -previousY);
+        Vec O2 = Vec.to(currentX, -currentY);
         sweep = 1 - sweep;
         Shape arc = computeSVGArc(
                 O1,
@@ -960,9 +960,9 @@ public class SVGUtils {
      * @param destinyPoint Destiny Point
      * @return The created curve
      */
-    public Shape computeSVGArc(Point originPoint, double rx, double ry, double axisRotation, int large, int sweep, Point destinyPoint) {
-        Vec O1 = (large == sweep ? originPoint.v.copy() : destinyPoint.v.copy());
-        Vec O2 = (large == sweep ? destinyPoint.v.copy() : originPoint.v.copy());
+    public Shape computeSVGArc(Coordinates<?> originPoint, double rx, double ry, double axisRotation, int large, int sweep, Coordinates<?> destinyPoint) {
+        Vec O1 = (large == sweep ? originPoint.getVec().copy() : destinyPoint.getVec().copy());
+        Vec O2 = (large == sweep ? destinyPoint.getVec().copy() : originPoint.getVec().copy());
         AffineJTransform tr = AffineJTransform.create2DRotationTransform(O1, axisRotation);
 
         double rad;

@@ -36,7 +36,7 @@ public abstract class Polyhedron extends MathObjectGroup {
     
     protected void buildVerticesFromArray(float[] coords) {
         for (int i = 0; i < coords.length; i += 3) {
-            vertices.add(Point.at(coords[i], coords[i + 1], coords[i + 2]));
+            vertices.add(Point.at(coords[i], coords[i + 1], coords[i + 2]));//TODO: Replace with vectors
         }
     }
 

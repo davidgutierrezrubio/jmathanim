@@ -18,8 +18,8 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Utils.OrientationType;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 
 /**
  * Transforms one object to another, animating a flip effect
@@ -46,11 +46,11 @@ public class FlipTransform extends AnimationWithEffects {
 //        BOTH
 //    }
     private final OrientationType flipType;
-    private final MathObject objOrig;
-    private final MathObject objDst;
-    private MathObject intermediateObject;
-    private Point origCenter;
-    private Point dstCenter;
+    private final MathObject<?> objOrig;
+    private final MathObject<?> objDst;
+    private MathObject<?> intermediateObject;
+    private Vec origCenter;
+    private Vec dstCenter;
 
     /**
      * Creates a new FlipTransform animation, that flips the original object
@@ -104,7 +104,7 @@ public class FlipTransform extends AnimationWithEffects {
      * @param objDst Destiny object
      * @return The animation to play with the playAnim method
      */
-    public static FlipTransform Flip(double runTime, MathObject objOrig, MathObject objDst) {
+    public static FlipTransform Flip(double runTime, MathObject<?> objOrig, MathObject<?> objDst) {
         return new FlipTransform(runTime, OrientationType.BOTH, objOrig, objDst);
     }
 

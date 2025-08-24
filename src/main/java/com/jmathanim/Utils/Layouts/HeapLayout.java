@@ -18,6 +18,7 @@
 package com.jmathanim.Utils.Layouts;
 
 import com.jmathanim.Enum.LayoutType;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.AbstractMathGroup;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
@@ -126,7 +127,7 @@ public class HeapLayout extends GroupLayout {
 		// Stack them horizontally
 		whole.setLayout(LayoutType.DRIGHT, this.horizontalGap);
 		// Allocates them properly
-		Point a = center.get(0).getBoundingBox().getLower();// The center
+		Vec a = center.get(0).getBoundingBox().getLower();// The center
 		if (this.base != null) {
 			whole.shift(a.to(this.base));
 		}

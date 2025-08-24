@@ -20,7 +20,6 @@ package com.jmathanim.Styling;
 import com.jmathanim.Enum.LatexTokenType;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Point;
 import javafx.scene.paint.CycleMethod;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
@@ -594,13 +593,13 @@ public class ConfigLoader {
         Element start = (Element) starts.item(0);
         Double x = Double.valueOf(start.getAttribute("x"));
         Double y = Double.valueOf(start.getAttribute("y"));
-        Point startP = Point.at(x, y);
+        Vec startP = Vec.to(x, y);
 
         NodeList ends = gradientElement.getElementsByTagName("end");
         Element end = (Element) ends.item(0);
         x = Double.valueOf(end.getAttribute("x"));
         y = Double.valueOf(end.getAttribute("y"));
-        Point endP = Point.at(x, y);
+        Vec endP = Vec.to(x, y);
         JMLinearGradient resul = new JMLinearGradient(startP, endP);
 
         //Now process the stops
@@ -657,7 +656,7 @@ public class ConfigLoader {
         Element start = (Element) starts.item(0);
         Double x = Double.valueOf(start.getAttribute("x"));
         Double y = Double.valueOf(start.getAttribute("y"));
-        Point centerP = Point.at(x, y);
+        Vec centerP = Vec.to(x, y);
 
         NodeList radiuses = gradientElement.getElementsByTagName("radius");
         Element radiusEl = (Element) radiuses.item(0);

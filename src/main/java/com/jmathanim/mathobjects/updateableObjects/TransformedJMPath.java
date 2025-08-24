@@ -55,9 +55,9 @@ public class TransformedJMPath extends Shape {
         for (int n = 0; n < size; n++) {
             JMPathPoint jmPDst = get(n);
 
-            jmPDst.v.copyFrom(jmPDst.v);
-            jmPDst.vExit.copyFrom(jmPDst.vExit);
-            jmPDst.vEnter.copyFrom(jmPDst.vEnter);
+            jmPDst.v.copyCoordinatesFrom(jmPDst.v);
+            jmPDst.vExit.copyCoordinatesFrom(jmPDst.vExit);
+            jmPDst.vEnter.copyCoordinatesFrom(jmPDst.vEnter);
 
             jmPDst.v.applyAffineTransform(transform);
             jmPDst.vExit.applyAffineTransform(transform);

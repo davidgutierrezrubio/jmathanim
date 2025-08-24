@@ -17,13 +17,14 @@
  */
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.Coordinates;
 
 /**
  *
  * @author David
  */
 public interface CreationStrategy {
-    void setPencilPosition(Point previous, Point current);
-    Point[] getPencilPosition();
+    void setPencilPosition(Coordinates previous, Coordinates current);
+    Vec[] getPencilPosition();
 }

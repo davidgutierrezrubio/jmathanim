@@ -20,8 +20,8 @@ import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.RotationType;
 import com.jmathanim.Enum.SlopeDirectionType;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.*;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
@@ -39,7 +39,7 @@ public class TippableObject extends AbstractTippableObject<TippableObject> {
 //        AbstractTippableObject resul = new TippableObject(shape, tipObject, anchorPoint, location);
 //        return resul;
 //    }
-    protected TippableObject(Shape shape, MathObject tipObject, double location) {
+    protected TippableObject(Shape shape, MathObject<?> tipObject, double location) {
         super(shape, tipObject, location);
     }
 
@@ -54,7 +54,7 @@ public class TippableObject extends AbstractTippableObject<TippableObject> {
     public static TippableObject equalLengthTip(Shape shape, double location, int numberOfMarks) {
         MultiShapeObject parallelSign = MultiShapeObject.make();
         for (int i = 0; i < numberOfMarks; i++) {
-            parallelSign.add(Shape.segment(Point.at(0, i), Point.at(2, i)));
+            parallelSign.add(Shape.segment(Vec.to(0, i), Vec.to(2, i)));
         }
         parallelSign.setWidth(.05);
         parallelSign.setAbsoluteSize(AnchorType.CENTER);
@@ -81,12 +81,12 @@ public class TippableObject extends AbstractTippableObject<TippableObject> {
         return resul;
     }
 
-    public static TippableObject make(Shape shape, double location, SlopeDirectionType dir, MathObject tipObject) {
+    public static TippableObject make(Shape shape, double location, SlopeDirectionType dir, MathObject<?> tipObject) {
         return make(shape, location, dir, tipObject, AnchorType.CENTER);
     }
 
-    public static TippableObject make(Shape shape, double location, SlopeDirectionType dir, MathObject tipObject, AnchorType anchor) {
-        Point anchorPoint = Anchor.getAnchorPoint(tipObject, anchor);
+    public static TippableObject make(Shape shape, double location, SlopeDirectionType dir, MathObject<?> tipObject, AnchorType anchor) {
+//        Vec anchorPoint = Anchor.getAnchorPoint(tipObject, anchor);
         TippableObject resul = new TippableObject(shape, tipObject,  location);
         resul.setDistanceToShape(0d);
         resul.setAnchor(anchor);
@@ -94,7 +94,7 @@ public class TippableObject extends AbstractTippableObject<TippableObject> {
         return resul;
     }
 
-    public static TippableObject make(Shape shape, MathObject tipObject, Point anchorPoint, double location) {
+    public static TippableObject make(Shape shape, MathObject<?> tipObject, Point anchorPoint, double location) {
         TippableObject resul = new TippableObject(shape, tipObject, location);
         resul.setAnchorPoint(anchorPoint);
         resul.setDistanceToShape(0d);

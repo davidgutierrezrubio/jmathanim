@@ -24,7 +24,10 @@ import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.AbstractMultiShapeObject;
+import com.jmathanim.mathobjects.JMPath;
+import com.jmathanim.mathobjects.MultiShapeObject;
+import com.jmathanim.mathobjects.Shape;
 
 import java.util.ArrayList;
 
@@ -205,8 +208,8 @@ public class CrossOutMathElements extends AnimationGroup {
     }
 
     public Shape buildCrossFromRect(Rect formulaRect) {
-        final Point ur = formulaRect.getUR();
-        final Point dl = formulaRect.getDL();
+        final Vec ur = formulaRect.getUR();
+        final Vec dl = formulaRect.getDL();
         Vec diag = ur.to(dl);
         Vec normal = Vec.to(-diag.y, diag.x).normalize();
         final double th = diag.norm() * ratio;

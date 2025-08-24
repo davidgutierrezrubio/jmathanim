@@ -18,8 +18,8 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Enum.JumpType;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 
 /**
  *
@@ -64,11 +64,11 @@ public abstract class AnimationWithEffects extends Animation {
         return (T) this;
     }
 
-    public void prepareJumpPath(Point A, Point B, MathObject obj) {
+    public void prepareJumpPath(Coordinates A, Coordinates B, MathObject<?> obj) {
         effect.prepareJumpPath(A, B, obj);
     }
 
-    protected void applyAnimationEffects(double lt, MathObject obj) {
+    protected void applyAnimationEffects(double lt, MathObject<?> obj) {
         effect.applyAnimationEffects(lt, obj);
     }
 

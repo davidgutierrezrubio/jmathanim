@@ -115,11 +115,11 @@ public class RandomLayout extends GroupLayout {
         if (center != null) {
             v = center.v;
         } else {
-            v = group.getCenter().v;
+            v = group.getCenter();
         }
 
         for (MathObject<?> obj : group) {
-            obj.moveTo(Point.at(v.add(getRandomVector())));
+            obj.moveTo(v.add(getRandomVector()));
         }
 
     }

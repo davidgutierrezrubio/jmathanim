@@ -18,10 +18,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
-import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.ResourceLoader;
+import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import javafx.scene.image.Image;
 
@@ -128,10 +125,10 @@ public class JMImage extends AbstractJMImage<JMImage> {
      * @param B Lower right corner of image
      * @return This object
      */
-    public JMImage adjustTo(Point A, Point B) {
+    public JMImage adjustTo(Coordinates A, Coordinates B) {
 
-        Point origA = bbox.getDL();
-        Point origB = bbox.getDR();
+        Vec origA = bbox.getDL();
+        Vec origB = bbox.getDR();
         currentViewTransform = AffineJTransform.createDirect2DIsomorphic(origA, origB, A, B, 1);
         return this;
     }

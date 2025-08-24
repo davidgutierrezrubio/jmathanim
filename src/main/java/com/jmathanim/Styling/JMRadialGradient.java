@@ -19,7 +19,8 @@ package com.jmathanim.Styling;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.Coordinates;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.RadialGradient;
@@ -33,7 +34,7 @@ import java.util.TreeMap;
  */
 public class JMRadialGradient extends PaintStyle {
 
-    protected Point center;
+    protected Vec center;
     protected double focusAngle;
     protected double focusDistance;
     protected double radius;
@@ -42,13 +43,13 @@ public class JMRadialGradient extends PaintStyle {
     protected boolean relativeToShape;
     protected CycleMethod cycleMethod;
 
-    public JMRadialGradient(Point center, double radius) {
+    public JMRadialGradient(Coordinates<?> center, double radius) {
         this(center, 0, 0, radius);
     }
 
-    public JMRadialGradient(Point center, double focusAngle, double focusDistance, double radius) {
+    public JMRadialGradient(Coordinates<?> center, double focusAngle, double focusDistance, double radius) {
         super();
-        this.center = center;
+        this.center = center.getVec();
         this.focusAngle = focusAngle;
         this.focusDistance = focusDistance;
         this.radius = radius;
@@ -72,7 +73,7 @@ public class JMRadialGradient extends PaintStyle {
         }
         if (A instanceof JMRadialGradient) {
             JMRadialGradient jmrg = (JMRadialGradient) A;
-            this.center.v.copyFrom(jmrg.center.v);
+            this.center.copyCoordinatesFrom(jmrg.center);
             this.focusAngle = jmrg.focusAngle;
             this.focusDistance = jmrg.focusDistance;
             this.radius = jmrg.radius;
@@ -84,7 +85,7 @@ public class JMRadialGradient extends PaintStyle {
         //For a linear gradient, try to convert it to a radial one
         if (A instanceof JMLinearGradient) {
             JMLinearGradient jmlg = (JMLinearGradient) A;
-            this.center.v.copyFrom(jmlg.start.v);
+            this.center.copyCoordinatesFrom(jmlg.start);
             this.radius = jmlg.start.to(jmlg.end).norm();
             this.relativeToShape = jmlg.relativeToShape;
             this.cycleMethod = jmlg.cycleMethod;
@@ -106,10 +107,10 @@ public class JMRadialGradient extends PaintStyle {
         double[] cc;
         double realRadius;
         if (!relativeToShape) {
-            cc = cam.mathToScreenFX(center.v);
+            cc = cam.mathToScreenFX(center);
             realRadius = cam.mathToScreen(this.radius);
         } else {
-            cc = new double[]{center.v.x, 1 - center.v.y};
+            cc = new double[]{center.x, 1 - center.y};
             realRadius = this.radius;
         }
 
@@ -299,7 +300,7 @@ public class JMRadialGradient extends PaintStyle {
         return this.cycleMethod == other.cycleMethod;
     }
 
-    public Point getCenter() {
+    public Vec getCenter() {
         return center;
     }
 

@@ -34,10 +34,10 @@ import java.util.function.DoubleUnaryOperator;
  */
 public abstract class Animation {
 
-    protected final HashSet<MathObject> removeThisAtTheEnd;
-    protected final HashSet<MathObject> addThisAtTheEnd;
+    protected final HashSet<MathObject<?>> removeThisAtTheEnd;
+    protected final HashSet<MathObject<?>> addThisAtTheEnd;
     private final JMathAnimConfig config;
-    private final HashMap<MathObject, MathObject> backups;
+    private final HashMap<MathObject<?>, MathObject<?>> backups;
     protected double lastTComputed;
     protected double t, dt;
     protected boolean printProgressBar;
@@ -327,7 +327,7 @@ public abstract class Animation {
      *
      * @param mathObjects MathObjects to save state (varargs)
      */
-    protected void saveStates(MathObject... mathObjects) {
+    protected void saveStates(MathObject<?>... mathObjects) {
         if (this.isUseObjectState()) {
             backups.clear();
             for (MathObject obj : mathObjects) {
@@ -342,7 +342,7 @@ public abstract class Animation {
      *
      * @param mathObjects MathObjects to restore state (varargs)
      */
-    protected void restoreStates(MathObject... mathObjects) {
+    protected void restoreStates(MathObject<?>... mathObjects) {
         if (this.isUseObjectState()) {
             for (MathObject obj : mathObjects) {
                 obj.copyStateFrom(backups.get(obj));
@@ -355,7 +355,7 @@ public abstract class Animation {
      *
      * @param mathObjects Objects to add (varargs)
      */
-    protected void addObjectsToscene(MathObject... mathObjects) {
+    protected void addObjectsToscene(MathObject<?>... mathObjects) {
         if (this.shouldAddObjectsToScene) {
             scene.add(mathObjects);
         }
@@ -366,17 +366,17 @@ public abstract class Animation {
      *
      * @param mathObjects Objects to add (varargs)
      */
-    protected void removeObjectsFromScene(MathObject... mathObjects) {
+    protected void removeObjectsFromScene(MathObject<?>... mathObjects) {
         if (this.shouldAddObjectsToScene) {
             scene.remove(mathObjects);
         }
     }
 
-    protected void removeObjectsFromScene(HashSet<MathObject> objectsToRemove) {
+    protected void removeObjectsFromScene(HashSet<MathObject<?>> objectsToRemove) {
         removeObjectsFromScene(objectsToRemove.toArray(new MathObject[0]));
     }
 
-    protected void addObjectsToscene(HashSet<MathObject> objectsToAdd) {
+    protected void addObjectsToscene(HashSet<MathObject<?>> objectsToAdd) {
         addObjectsToscene(objectsToAdd.toArray(new MathObject[0]));
     }
 

@@ -70,7 +70,7 @@ public class JOGLRenderQueue implements GLEventListener {
     public int frameCount;
     public JOGLRenderer renderer;
     JMathAnimConfig config;
-    ArrayList<MathObject> objectsToDraw;
+    ArrayList<MathObject<?>> objectsToDraw;
     //Shaders and uniform variables
     //Shader that draws thin, rounded cap lines
     ShaderLoader thinLinesShader;

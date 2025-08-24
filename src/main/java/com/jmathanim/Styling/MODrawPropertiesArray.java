@@ -52,7 +52,7 @@ import java.util.Arrays;
 public class MODrawPropertiesArray implements Stylable, Stateable,hasStyle {
 
     private final MODrawPropertiesLaTeX mpRef;
-    private ArrayList<MathObject> objects;
+    private ArrayList<MathObject<?>> objects;
     private LatexStyle latexStyle = null;
 
     /**
@@ -86,7 +86,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable,hasStyle {
      *
      * @param objects The list of MathObject instances to initialize the MODrawPropertiesArray.
      */
-    public MODrawPropertiesArray(ArrayList<MathObject> objects) {
+    public MODrawPropertiesArray(ArrayList<MathObject<?>> objects) {
         this.objects = objects;
         mpRef = new MODrawPropertiesLaTeX();
     }
@@ -120,7 +120,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable,hasStyle {
      *
      * @return An ArrayList containing MathObject instances.
      */
-    public ArrayList<MathObject> getObjects() {
+    public ArrayList<MathObject<?>> getObjects() {
         return objects;
     }
 
@@ -129,7 +129,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable,hasStyle {
      *
      * @param objects The ArrayList of MathObject instances to be set.
      */
-    public void setObjects(ArrayList<MathObject> objects) {
+    public void setObjects(ArrayList<MathObject<?>> objects) {
         this.objects = objects;
     }
 
@@ -138,7 +138,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable,hasStyle {
      *
      * @param objs The MathObject instances to be added.
      */
-    public void add(MathObject... objs) {
+    public void add(MathObject<?>... objs) {
         objects.addAll(Arrays.asList(objs));
     }
 

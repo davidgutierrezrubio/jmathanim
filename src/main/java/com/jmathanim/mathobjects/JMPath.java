@@ -22,7 +22,6 @@ import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Utils.*;
 import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
-import com.jmathanim.mathobjects.updaters.Coordinates;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -105,14 +104,14 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
             Vec H = E.interpolate(F, t);// cpEnter of interpolation point
             Vec J = F.interpolate(G, t);// cpExit of interpolation point
 //            resul = H.interpolate(J, t); //Interpolation point
-            resul = JMPathPoint.curveTo(Point.at(H.interpolate(J, t)));
+            resul = JMPathPoint.curveTo(H.interpolate(J, t));
 
-            resul.vExit.copyFrom(J);
-            resul.vEnter.copyFrom(H);
+            resul.vExit.copyCoordinatesFrom(J);
+            resul.vEnter.copyCoordinatesFrom(H);
         } else {
             resul = JMPathPoint.lineTo(v1.v.interpolate(v2.v, t));
-            resul.vExit.copyFrom(v1.v);
-            resul.vEnter.copyFrom(v2.v);
+            resul.vExit.copyCoordinatesFrom(v1.v);
+            resul.vEnter.copyCoordinatesFrom(v2.v);
         }
         return resul;
     }
@@ -125,8 +124,8 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         return jmPathPoints.size();
     }
 
-    public void addPoint(Coordinates... points) {
-        for (Coordinates p : points) {
+    public void addPoint(Coordinates<?>... points) {
+        for (Coordinates<?> p : points) {
             jmPathPoints.add(new JMPathPoint(p, true, JMPathPointType.VERTEX));
         }
     }
@@ -207,25 +206,25 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
 //        // for curved paths control points are modified so that a backup is necessary
 //        for (JMPathPoint p : jmPathPoints) {
 //            if (p.cpExitvBackup != null) {
-//                p.cpExit.v.copyFrom(p.cpExitvBackup);
+//                p.cpExit.copyCoordinatesFrom(p.cpExitvBackup);
 //                p.cpExitvBackup = null;
 //            }
 //            if (p.cpEntervBackup != null) {
-//                p.cpEnter.v.copyFrom(p.cpEntervBackup);
+//                p.cpEnter.copyCoordinatesFrom(p.cpEntervBackup);
 //                p.cpEntervBackup = null;
 //            }
 //        }
 //
 
     /**
-     * Return a point at a given percentage of total arclenth of path. Note that, as path are composed of cubic Bezier
+     * Return a Vec with coordinates at a given percentage of total arclenth of path. Note that, as path are composed of cubic Bezier
      * curves, a rectified path must be computed. This is done automatically only once at first call of this method, so
      * if you change the path after a a first call, the next calls to this method may give wrong results.
      *
      * @param t A value from 0 to 1. 0 means starting point and 1 ending point
      * @return A new Point object with the computed location
      */
-    public Point getParametrizedPointAt(double t) {
+    public Vec getParametrizedPointAt(double t) {
         if (rectifiedVecPoints.isEmpty()) {
             computeRectifiedPoints();
         }
@@ -236,11 +235,11 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
             t--;
         }
         if (t == 0) {
-            return Point.at(rectifiedVecPoints.get(0).x, rectifiedVecPoints.get(0).y);
+            return Vec.to(rectifiedVecPoints.get(0).x, rectifiedVecPoints.get(0).y);
         }
         if (t == 1) {
             Vec vr = rectifiedVecPoints.get(rectifiedVecPoints.size() - 1);
-            return Point.at(vr.x, vr.y);
+            return Vec.to(vr.x, vr.y);
         }
 
         double td = t * computedPathLength;
@@ -259,7 +258,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
 
         double tLocal = (td - sum) / rectifiedPointDistances.get(n);
         Vec interpolate = rectifiedVecPoints.get(n).interpolate(rectifiedVecPoints.get(n + 1), tLocal);
-        return Point.at(interpolate.x, interpolate.y);
+        return Vec.to(interpolate.x, interpolate.y);
     }
 
     /// /        generateControlPoints();//Recompute control points
@@ -394,9 +393,9 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
             Vec H = E.interpolate(F, alpha);// cp2 of interpolation point
             Vec J = F.interpolate(G, alpha);// cp1 of interpolation point
             Vec K = H.interpolate(J, alpha); // Interpolation point
-            interpolate = new JMPathPoint(Point.at(K), jmp2.isThisSegmentVisible, JMPathPointType.INTERPOLATION_POINT);
-            interpolate.vExit.copyFrom(J);
-            interpolate.vEnter.copyFrom(H);
+            interpolate = new JMPathPoint(K, jmp2.isThisSegmentVisible, JMPathPointType.INTERPOLATION_POINT);
+            interpolate.vExit.copyCoordinatesFrom(J);
+            interpolate.vEnter.copyCoordinatesFrom(H);
             // Change control points from v1 and v2,save
             // backup values to restore after removing interpolation points
             if (jmp1.vExitvBackup == null) {
@@ -406,8 +405,8 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
                 jmp2.vEntervBackup = jmp2.vEnter;
             }
 
-            jmp1.vExit.copyFrom(E);
-            jmp2.vEnter.copyFrom(G);
+            jmp1.vExit.copyCoordinatesFrom(E);
+            jmp2.vEnter.copyCoordinatesFrom(G);
 
         } else {
             // Straight interpolation
@@ -506,7 +505,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
                 double cpTempX = point.vExit.x;
                 double cpTempY = point.vExit.y;
                 double cpTempZ = point.vExit.z;
-                point.vExit.copyFrom(point.vEnter);
+                point.vExit.copyCoordinatesFrom(point.vEnter);
                 point.vEnter.x = cpTempX;
                 point.vEnter.y = cpTempY;
                 point.vEnter.z = cpTempZ;
@@ -562,15 +561,15 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
      *
      * @return An ArrayList with all critical points. The bounding box of these point is the bounding box of the Shape.
      */
-    public ArrayList<Point> getCriticalPoints() {
-        ArrayList<Point> criticalPoints = new ArrayList<>();
+    public ArrayList<Vec> getCriticalPoints() {
+        ArrayList<Vec> criticalPoints = new ArrayList<>();
         for (int n = 0; n < jmPathPoints.size(); n++) {
             JMPathPoint jmp = jmPathPoints.get(n);
             if (jmp.isThisSegmentVisible) {
                 if (jmp.isCurved) {
                     criticalPoints.addAll(getCriticalPoints(jmPathPoints.get(n - 1), jmp));
                 }
-                criticalPoints.add(Point.at(jmp.v.x, jmp.v.y));
+                criticalPoints.add(Vec.to(jmp.v.x, jmp.v.y));
 
             }
         }
@@ -587,7 +586,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         double ymin = Double.MAX_VALUE;
         double ymax = -Double.MAX_VALUE;
 
-        ArrayList<Point> criticalPoints = getCriticalPoints();
+        ArrayList<Vec> criticalPoints = getCriticalPoints();
 
 
         int size = jmPathPoints.size();
@@ -603,7 +602,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
 
         }
         for (int i = size; i < size + sizeCrit; i++) {
-            Vec vi = criticalPoints.get(i - size).v;
+            Vec vi = criticalPoints.get(i - size);
             xmin = Math.min(xmin, vi.x);
             xmax = Math.max(xmax, vi.x);
             ymin = Math.min(ymin, vi.y);
@@ -746,9 +745,9 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         JMPathPoint pnew = p.copy();
 
         pnew.isThisSegmentVisible = false;
-//        pnew.cp2.v.copyFrom(p.cp2.v);
+//        pnew.cp2.copyCoordinatesFrom(p.cp2.v);
         pnew.type = JMPathPointType.INTERPOLATION_POINT;
-//        pnew.cp1.v.copyFrom(p.cp1.v);
+//        pnew.cp1.copyCoordinatesFrom(p.cp1.v);
 
         jmPathPoints.add(k + 1, pnew);
     }
@@ -831,7 +830,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         area = Math.abs(area) / 2.0;
         if (area == 0) {
             logger.warn("Warning: Polygon with area 0, using center of bounding box instead");
-            return getBoundingBox().getCenter().v;
+            return getBoundingBox().getCenter();
         }
         centroidX = centroidX / (6.0 * area);
         centroidY = centroidY / (6.0 * area);
@@ -870,7 +869,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
             JMPathPoint p1 = this.jmPathPoints.get(n);
             JMPathPoint p2 = this.jmPathPoints.get(n + 1);
             if (p1.v.isEquivalentTo(p2.v, epsilon)) {
-                p2.vEnter.copyFrom(p1.vEnter);
+                p2.vEnter.copyCoordinatesFrom(p1.vEnter);
                 p2.isThisSegmentVisible = p1.isThisSegmentVisible;
                 p2.isCurved = p1.isCurved;
                 this.jmPathPoints.remove(p1);
@@ -883,8 +882,8 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
             JMPathPoint p = jmPathPoints.get(i);
             JMPathPoint q = jmPathPoints.get(i - 1);
             if (!p.isCurved) {
-                p.vEnter.copyFrom(p.v);
-                q.vExit.copyFrom(q.v);
+                p.vEnter.copyCoordinatesFrom(p.v);
+                q.vExit.copyCoordinatesFrom(q.v);
             }
         }
         return this;
@@ -920,9 +919,9 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         return d.add(c.mult(t)).add(b.mult(t * t)).add(a.mult(t * t * t));
     }
 
-    private ArrayList<Point> getCriticalPoints(JMPathPoint pOrig, JMPathPoint pDst) {
+    private ArrayList<Vec> getCriticalPoints(JMPathPoint pOrig, JMPathPoint pDst) {
         // https://floris.briolas.nl/floris/2009/10/bounding-box-of-cubic-bezier/
-        ArrayList<Point> resul = new ArrayList<>();//TODO: Adapt this to 3d case
+        ArrayList<Vec> resul = new ArrayList<>();//TODO: Adapt this to 3d case
         Vec P0 = pOrig.v;
         Vec P1 = pOrig.vExit;
         Vec P2 = pDst.vEnter;
@@ -945,7 +944,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
                     v = pOrig.v.interpolate(pDst.v, tCrit);
                 }
 
-                resul.add(Point.at(v.x, v.y));
+                resul.add(Vec.to(v.x, v.y));
             }
         }
         // Now for y
@@ -958,7 +957,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
                 } else {
                     v = pOrig.v.interpolate(pDst.v, tCrit);
                 }
-                resul.add(Point.at(v.x, v.y));
+                resul.add(Vec.to(v.x, v.y));
             }
         }
         return resul;
@@ -1004,22 +1003,22 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
      * @param anchorType What side of the bounding box: UPPER, LOWER, RIGHT or LEFT. The other types return null.
      * @return A List with all the points that lies in the specified side of the boundary box
      */
-    public List<Point> getBorderPoints(AnchorType anchorType) {
-        Stream<Point> stream = getCriticalPoints().stream();
+    public List<Vec> getBorderPoints(AnchorType anchorType) {
+        Stream<Vec> stream = getCriticalPoints().stream();
         Rect bb = getBoundingBox();
-        List<Point> li = null;
+        List<Vec> li = null;
         switch (anchorType) {
             case UPPER:
-                li = stream.filter(p -> p.v.y == bb.ymax).collect(Collectors.toList());
+                li = stream.filter(p -> p.y == bb.ymax).collect(Collectors.toList());
                 break;
             case LOWER:
-                li = stream.filter(p -> p.v.y == bb.ymin).collect(Collectors.toList());
+                li = stream.filter(p -> p.y == bb.ymin).collect(Collectors.toList());
                 break;
             case RIGHT:
-                li = stream.filter(p -> p.v.x == bb.xmax).collect(Collectors.toList());
+                li = stream.filter(p -> p.x == bb.xmax).collect(Collectors.toList());
                 break;
             case LEFT:
-                li = stream.filter(p -> p.v.x == bb.xmin).collect(Collectors.toList());
+                li = stream.filter(p -> p.x == bb.xmin).collect(Collectors.toList());
                 break;
         }
 
@@ -1179,8 +1178,8 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         }
         final JMPathPoint jmp = jmPathPoints.get(0);
         jmp.isThisSegmentVisible = true;
-        jmp.vEnter.copyFrom(jmp.v);
-        jmPathPoints.get(-1).vExit.copyFrom(jmPathPoints.get(-1).v);
+        jmp.vEnter.copyCoordinatesFrom(jmp.v);
+        jmPathPoints.get(-1).vExit.copyCoordinatesFrom(jmPathPoints.get(-1).v);
         distille();
     }
 
@@ -1200,8 +1199,8 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         //Adjust the control points of v1 and v2
         Vec vE = v1.v.interpolate(v1.vExit, alpha); // New cpExit of v1
         Vec vG = v2.vEnter.interpolate(v2.v, alpha); // New cpEnter of v2
-        v1.vExit.copyFrom(vE);
-        v2.vEnter.copyFrom(vG);
+        v1.vExit.copyCoordinatesFrom(vE);
+        v2.vEnter.copyCoordinatesFrom(vG);
         return newPoint;
     }
 
@@ -1272,8 +1271,8 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
     }
 
     public Vec getParametrizedSlopeAt(double t, boolean positiveDirection) {
-        Point p1 = getParametrizedPointAt(t);
-        Point p2 = getParametrizedPointAt(positiveDirection ? t + DELTA_DERIVATIVE : t - DELTA_DERIVATIVE);
+        Vec p1 = getParametrizedPointAt(t);
+        Vec p2 = getParametrizedPointAt(positiveDirection ? t + DELTA_DERIVATIVE : t - DELTA_DERIVATIVE);
         return p1.to(p2);
     }
 

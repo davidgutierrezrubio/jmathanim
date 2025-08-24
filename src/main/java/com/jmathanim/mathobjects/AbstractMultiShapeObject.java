@@ -94,9 +94,9 @@ public abstract class AbstractMultiShapeObject<T extends AbstractMultiShapeObjec
     @Override
     public T setAbsoluteSize(AnchorType anchorType) {
         super.setAbsoluteSize(anchorType);
-        Point p = Anchor.getAnchorPoint(this, anchorType);
+        Vec p = Anchor.getAnchorPoint(this, anchorType);
         for (Shape sh : shapes) {
-            sh.setAbsoluteSize(p.v);
+            sh.setAbsoluteSize(p);
         }
         return (T) this;
     }
@@ -108,7 +108,7 @@ public abstract class AbstractMultiShapeObject<T extends AbstractMultiShapeObjec
                 //Store camera and temporary use MultiShapeObject camera
                 if ((jmp.isVisible()) && (!scene.isAlreadydrawn(jmp))) {
                     if (absoluteSize) {
-                        r.drawAbsoluteCopy(jmp, getAbsoluteAnchor().v);// TODO: This doesnt work for overrided methods
+                        r.drawAbsoluteCopy(jmp, getAbsoluteAnchor());// TODO: This doesnt work for overrided methods
                         // (e.g.: line)
                     } else {
                         jmp.draw(scene, r, cam);
@@ -281,8 +281,7 @@ public abstract class AbstractMultiShapeObject<T extends AbstractMultiShapeObjec
             sh.applyAffineTransform(tr);
         }
 
-        if (hasMPCreated())
-            tr.applyTransformsToDrawingProperties(this);
+        tr.applyTransformsToDrawingProperties(this);
         return (T) this;
     }
 

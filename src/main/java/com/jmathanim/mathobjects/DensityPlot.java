@@ -131,8 +131,8 @@ public class DensityPlot extends AbstractJMImage implements hasScalarParameter {
             PixelWriter pixelWriter = raster.getPixelWriter();
             for (int i = 0; i < wRaster; i++) {
                 for (int j = 0; j < hRaster; j++) {
-                    Point p = bbox.getRelPoint(i * 1d / wRaster, 1 - j * 1d / hRaster);
-                    double z = densityLambdaFunction.apply(p.v.x, p.v.y, getScalar());
+                    Vec p = bbox.getRelCoordinates(i * 1d / wRaster, 1 - j * 1d / hRaster);
+                    double z = densityLambdaFunction.apply(p.x, p.y, getScalar());
                     pixelWriter.setColor(i, j, colorScale.getColorValue(z).getFXColor());
                 }
             }
@@ -154,8 +154,8 @@ public class DensityPlot extends AbstractJMImage implements hasScalarParameter {
             double b = -Double.MAX_VALUE;
             for (int i = 0; i < wRaster; i++) {
                 for (int j = 0; j < hRaster; j++) {
-                    Point p = bbox.getRelPoint(i * 1d / wRaster, 1 - j * 1d / hRaster);
-                    double z = densityLambdaFunction.apply(p.v.x, p.v.y, getScalar());
+                    Vec p = bbox.getRelCoordinates(i * 1d / wRaster, 1 - j * 1d / hRaster);
+                    double z = densityLambdaFunction.apply(p.x, p.y, getScalar());
                     if (z < a) {
                         a = z;
                     }

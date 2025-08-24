@@ -79,7 +79,7 @@ public class TransformMathExpression extends Animation {
         INTERPOLATION, FLIP_HORIZONTALLY, FLIP_VERTICALLY, FLIP_BOTH
     }
 
-    private final ArrayList<MathObject> toDelete;
+    private final ArrayList<MathObject<?>> toDelete;
 
     // Transformation parameters
     private final HashMap<String, int[]> trParOrigGroups;

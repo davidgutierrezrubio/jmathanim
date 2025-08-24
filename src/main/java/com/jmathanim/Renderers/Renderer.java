@@ -26,9 +26,9 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.AbstractJMImage;
+import com.jmathanim.mathobjects.AbstractShape;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MediatorMathObject;
-import com.jmathanim.mathobjects.Shape;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -147,18 +147,18 @@ public abstract class Renderer {
      *
      * @param mobj The JMPathObject
      */
-    abstract protected void drawPath(Shape mobj);
+    abstract protected void drawPath(AbstractShape<?> mobj);
 
-    public void drawPath(Shape mobj, Camera camera) {
+    public void drawPath(AbstractShape<?> mobj, Camera camera) {
         drawPath(mobj, nullVector, camera);
     };
-    abstract public void drawPath(Shape mobj, Vec shiftVector, Camera camera);
+    abstract public void drawPath(AbstractShape<?> mobj, Vec shiftVector, Camera camera);
 
-    abstract public void drawAbsoluteCopy(Shape sh, Vec anchor);
+    abstract public void drawAbsoluteCopy(AbstractShape<?> sh, Vec anchor);
 
     abstract public Rect createImage(InputStream stream);
 
-    abstract public void drawImage(AbstractJMImage obj,Camera cam);
+    abstract public void drawImage(AbstractJMImage<?> obj,Camera cam);
 
     abstract public void debugText(String text, Vec loc);
 
@@ -166,7 +166,7 @@ public abstract class Renderer {
 
     abstract public double ThicknessToMathWidth(double th);
 
-    abstract public double ThicknessToMathWidth(MathObject obj);
+    abstract public double ThicknessToMathWidth(MathObject<?> obj);
 
     abstract public void addSound(SoundItem soundItem);
 }

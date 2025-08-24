@@ -24,10 +24,10 @@ import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.AbstractMultiShapeObject;
 import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.Point;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -77,8 +77,8 @@ public class Axes extends AbstractMultiShapeObject<Axes> {
         xticks = new ArrayList<>();
         yticksBase = new ArrayList<>();
         yticks = new ArrayList<>();
-        xAxis = Line.make(Point.at(0, 0), Point.at(1, 0)).style("axisdefault");
-        yAxis = Line.make(Point.at(0, 0), Point.at(0, 1)).style("axisdefault");
+        xAxis = Line.make(Vec.to(0, 0), Vec.to(1, 0)).style("axisdefault");
+        yAxis = Line.make(Vec.to(0, 0), Vec.to(0, 1)).style("axisdefault");
         mpArray.add(xAxis, yAxis);
         Locale locale = new Locale("en", "UK");
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
@@ -305,8 +305,8 @@ public class Axes extends AbstractMultiShapeObject<Axes> {
     }
 
     @Override
-    public Point getCenter() {
-        return Point.at(0, 0);
+    public Vec getCenter() {
+        return Vec.to(0, 0);
     }
 
     public DecimalFormat getFormat() {

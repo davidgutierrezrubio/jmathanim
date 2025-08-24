@@ -21,6 +21,7 @@ import com.jmathanim.Enum.JumpType;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.Utils.UsefulLambdas;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.*;
 
 import java.util.HashMap;
@@ -156,7 +157,7 @@ public class AnimationEffect {
         }
     }
 
-    protected void prepareJumpPath(Point A, Point B, MathObject obj) {
+    protected void prepareJumpPath(Coordinates A, Coordinates B, MathObject<?> obj) {
         if ((jumpHeight == null) || (jumpHeight == 0) || A.to(B).norm() == 0) {
             return;
         }
@@ -172,8 +173,8 @@ public class AnimationEffect {
                 jumpPath.getPath().reverse();
                 break;
             case TRIANGULAR:
-                jumpPath = Shape.polyLine(Point.origin(), Point.at(.7, .7), Point.at(1, 1), Point.at(1.3, .7),
-                        Point.at(2, 0));
+                jumpPath = Shape.polyLine(Point.origin(), Vec.to(.7, .7), Vec.to(1, 1), Vec.to(1.3, .7),
+                        Vec.to(2, 0));
                 break;
             case FOLIUM:
                 ResourceLoader rl = new ResourceLoader();
@@ -190,8 +191,8 @@ public class AnimationEffect {
                 jumpPath = new Shape(FunctionGraph.make(t -> Math.sin(2 * PI * t), 0, 1, 3).getFunctionShape().getPath());
                 break;
             case CRANE:
-                jumpPath = Shape.polyLine(Point.origin(), Point.at(0, .7), Point.at(0, 1), Point.at(.3, 1), Point.at(.7, 1),
-                        Point.at(1, 1), Point.at(1, .7), Point.at(1, 0));
+                jumpPath = Shape.polyLine(Point.origin(), Vec.to(0, .7), Vec.to(0, 1), Vec.to(.3, 1), Vec.to(.7, 1),
+                        Vec.to(1, 1), Vec.to(1, .7), Vec.to(1, 0));
                 break;
             case BOUNCE1:
                 jumpPath = new Shape(FunctionGraph.make(UsefulLambdas.backAndForthBounce1(), 0, 1).getFunctionShape().getPath());

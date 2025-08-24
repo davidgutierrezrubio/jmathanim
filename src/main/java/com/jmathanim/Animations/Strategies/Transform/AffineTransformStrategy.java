@@ -18,7 +18,7 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Shape;
 
 /**
@@ -30,12 +30,12 @@ public abstract class AffineTransformStrategy extends TransformStrategy {
 
     protected final Shape shDestiny;
     protected final Shape shOrigin;
-    Point A;
-    Point B;
-    Point C;
-    Point D;
-    Point E;
-    Point F;
+    Vec A;
+    Vec B;
+    Vec C;
+    Vec D;
+    Vec E;
+    Vec F;
 
     public AffineTransformStrategy(double runTime, Shape origin, Shape destiny) {
         super(runTime);
@@ -49,16 +49,16 @@ public abstract class AffineTransformStrategy extends TransformStrategy {
     @Override
     public boolean doInitialization() {
         super.doInitialization();
-        A = Point.at(shOrigin.getPoint(0).v);
-        B =  Point.at(shOrigin.getPoint(1).v);;//shOrigin.getPoint(1).copy();
-        C =  Point.at(shOrigin.getPoint(2).v);//shOrigin.getPoint(2).copy();
-        D =  Point.at(shDestiny.getPoint(0).v);//shDestiny.getPoint(0).copy();
-        E = Point.at(shDestiny.getPoint(1).v);//shDestiny.getPoint(1).copy();
-        F = Point.at(shDestiny.getPoint(2).v);//shDestiny.getPoint(2).copy();
+        A = shOrigin.getPoint(0).v;
+        B =  shOrigin.getPoint(1).v;;//shOrigin.getPoint(1).copy();
+        C =  shOrigin.getPoint(2).v;//shOrigin.getPoint(2).copy();
+        D =  shDestiny.getPoint(0).v;//shDestiny.getPoint(0).copy();
+        E = shDestiny.getPoint(1).v;//shDestiny.getPoint(1).copy();
+        F = shDestiny.getPoint(2).v;//shDestiny.getPoint(2).copy();
         saveStates(getIntermediateObject());
         AffineJTransform tr = createIntermediateTransform(1);
-        Point center = getIntermediateObject().getCenter();
-        prepareJumpPath(center, tr.getTransformedObject(center), getIntermediateObject());
+        Vec center = getIntermediateObject().getCenter();
+        prepareJumpPath(center, center.applyAffineTransform(tr), getIntermediateObject());
         return true;
     }
 

@@ -85,7 +85,7 @@ class SkijaUtils {
             } else {
                 path.moveTo((float) point.x, (float) point.y);
             }
-            prev.copyFrom(point);
+            prev.copyCoordinatesFrom(point);
         }
 //        paths.put(jmpath, path);
         return path;
@@ -154,10 +154,10 @@ class SkijaUtils {
             Rect bb=obj.getBoundingBox();
              radius = (float) Math.max(bb.getHeight(), bb.getWidth());
 
-            vCenter=bb.getCenter().v;
+            vCenter=bb.getCenter();
 
         } else {
-            vCenter=jmRadialGradient.getCenter().v;
+            vCenter=jmRadialGradient.getCenter();
             radius= (float) jmRadialGradient.getRadius();
         }
 
@@ -184,12 +184,12 @@ class SkijaUtils {
         Vec vStart, vEnd;
         if (jmLinearGradient.isRelativeToShape()) {
             Rect bb=obj.getBoundingBox();
-            vStart = bb.getRelVec(jmLinearGradient.getStart().v);
-            vEnd = bb.getRelVec(jmLinearGradient.getEnd().v);
+            vStart = bb.getRelVec(jmLinearGradient.getStart());
+            vEnd = bb.getRelVec(jmLinearGradient.getEnd());
 
         } else {
-            vStart = jmLinearGradient.getStart().v;
-            vEnd = jmLinearGradient.getEnd().v;
+            vStart = jmLinearGradient.getStart();
+            vEnd = jmLinearGradient.getEnd();
         }
         GradientStop stops = jmLinearGradient.getStops();
         int[] colors = new int[stops.size()];

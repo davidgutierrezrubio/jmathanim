@@ -17,10 +17,9 @@
  */
 package com.jmathanim.Constructible.Lines;
 
-import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.hasScalarParameter;
 
@@ -29,22 +28,12 @@ import com.jmathanim.mathobjects.hasScalarParameter;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTSegment extends CTAbstractLine implements hasScalarParameter {
+public class CTSegment extends CTAbstractLine<CTSegment> implements hasScalarParameter {
 
-    protected final CTPoint B;
-    protected final CTPoint A;
+    protected final Coordinates B;
+    protected final Coordinates A;
     private final Shape segmentToDraw;
 
-    /**
-     * Creates a Constructible segment between 2 points
-     *
-     * @param A First point
-     * @param B Second point
-     * @return The created object
-     */
-    public static CTSegment make(Point A, Point B) {
-        return CTSegment.make(CTPoint.make(A), CTPoint.make(B));
-    }
 
     /**
      * Creates a Constructible segment between 2 points
@@ -53,17 +42,17 @@ public class CTSegment extends CTAbstractLine implements hasScalarParameter {
      * @param B Second point
      * @return The created object
      */
-    public static CTSegment make(CTPoint A, CTPoint B) {
+    public static CTSegment make(Coordinates A, Coordinates B) {
         CTSegment resul = new CTSegment(A, B);
         resul.rebuildShape();
         return resul;
     }
 
-    private CTSegment(CTPoint A, CTPoint B) {
+    private CTSegment(Coordinates A, Coordinates B) {
         super();
         this.A = A;
         this.B = B;
-        segmentToDraw = Shape.segment(this.A.getMathObject().copy(), this.B.getMathObject().copy());
+        segmentToDraw = Shape.segment(this.A.getVec().copy(), this.B.getVec().copy());
     }
 
     /**
@@ -79,7 +68,7 @@ public class CTSegment extends CTAbstractLine implements hasScalarParameter {
 
     @Override
     public CTSegment copy() {
-        CTSegment copy = CTSegment.make(this.A.copy(), this.B.copy());
+        CTSegment copy = CTSegment.make(this.A.getVec().copy(), this.B.getVec().copy());
         copy.copyStateFrom(this);
         return copy;
     }
@@ -87,11 +76,11 @@ public class CTSegment extends CTAbstractLine implements hasScalarParameter {
     @Override
     public Vec getHoldCoordinates(Vec coordinates) {
         Vec v1 = getDirection().normalize();
-        Vec v2 = coordinates.minus(getP1().v);
+        Vec v2 = coordinates.minus(getP1());
         double dotProd = v1.dot(v2);
         dotProd = Math.max(dotProd, 0);
         dotProd = Math.min(dotProd, getDirection().norm());
-        return getP1().v.add(v1.mult(dotProd));
+        return getP1().add(v1.mult(dotProd));
     }
 
     @Override
@@ -101,11 +90,11 @@ public class CTSegment extends CTAbstractLine implements hasScalarParameter {
 
     @Override
     public void rebuildShape() {
-        this.P1.v.copyFrom(this.A.v);
-        this.P2.v.copyFrom(this.B.v);
+        this.P1.copyCoordinatesFrom(this.A.getVec());
+        this.P2.copyCoordinatesFrom(this.B.getVec());
         if (!isFreeMathObject()) {
-            segmentToDraw.get(0).v.copyFrom(this.P1.v);
-            segmentToDraw.get(1).v.copyFrom(this.P2.v);
+            segmentToDraw.get(0).v.copyCoordinatesFrom(this.P1);
+            segmentToDraw.get(1).v.copyCoordinatesFrom(this.P2);
         }
     }
 
@@ -116,7 +105,7 @@ public class CTSegment extends CTAbstractLine implements hasScalarParameter {
 
     @Override
     public String toString() {
-        return String.format("CTSegment[" + this.A.getObjectLabel() + ", " + this.B.getObjectLabel() + "]");
+        return String.format("CTSegment[" + this.A.getVec() + ", " + this.B.getVec() + "]");
     }
 
     @Override

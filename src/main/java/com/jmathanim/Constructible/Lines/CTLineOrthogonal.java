@@ -31,7 +31,7 @@ import com.jmathanim.mathobjects.updateableObjects.Updateable;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTLineOrthogonal extends CTAbstractLine {
+public class CTLineOrthogonal extends CTAbstractLine<CTLineOrthogonal> {
 
     protected final CTPoint A;
     protected final HasDirection dir;
@@ -84,7 +84,7 @@ public class CTLineOrthogonal extends CTAbstractLine {
     private CTLineOrthogonal(CTPoint A, HasDirection dir) {
         super();
         this.A = A;
-        this.lineType = LineType.PointVector;
+        this.lineType = LineType.POINT_DIRECTION;
         this.dir = dir;
         this.lineToDraw = Line.XAxis();
     }
@@ -98,15 +98,15 @@ public class CTLineOrthogonal extends CTAbstractLine {
 
     @Override
     public void rebuildShape() {
-        Vec v = A.v;
+        Vec v = A.coordinatesOfPoint;
         Vec direction = dir.getDirection();
-        P1.v.copyFrom(v);
+        P1.copyCoordinatesFrom(v);
 
-        P2.v.x = v.x - direction.y;
-        P2.v.y = v.y + direction.x;
+        P2.x = v.x - direction.y;
+        P2.y = v.y + direction.x;
         if (!isFreeMathObject()) {
-            lineToDraw.getP1().v.copyFrom(P1.v);
-            lineToDraw.getP2().v.copyFrom(P2.v);
+            lineToDraw.getP1().copyCoordinatesFrom(P1);
+            lineToDraw.getP2().copyCoordinatesFrom(P2);
         }
     }
 
@@ -123,11 +123,5 @@ public class CTLineOrthogonal extends CTAbstractLine {
             scene.registerUpdateable((Updateable) this.dir);
             setUpdateLevel(Math.max(this.A.getUpdateLevel(), ((Updateable) this.dir).getUpdateLevel()) + 1);
         }
-    }
-      @Override
-    public Vec getHoldCoordinates(Vec coordinates) {
-        Vec v1 = getDirection().normalize();
-        Vec v2 = coordinates.minus(getP1().v);
-        return(getP1().v.add(v1.mult(v1.dot(v2))));
     }
 }

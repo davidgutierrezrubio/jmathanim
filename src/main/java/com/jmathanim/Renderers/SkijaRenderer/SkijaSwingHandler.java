@@ -3,7 +3,7 @@ package com.jmathanim.Renderers.SkijaRenderer;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.AbstractShape;
 import io.github.humbleui.skija.Surface;
 
 import javax.swing.*;
@@ -68,7 +68,7 @@ public class SkijaSwingHandler extends SkijaHandler {
     }
 
     @Override
-    public void drawPath(Shape mobj, Camera camera) {
+    public void drawPath(AbstractShape<?> mobj, Camera camera) {
 
         canvas.save();
         //Check if transform is created for this camera in this frame...

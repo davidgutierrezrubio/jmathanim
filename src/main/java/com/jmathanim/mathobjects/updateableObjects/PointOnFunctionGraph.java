@@ -17,18 +17,12 @@
  */
 package com.jmathanim.mathobjects.updateableObjects;
 
-import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Enum.DotStyle;
-import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Styling.Stylable;
-import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.AbstractPoint;
 import com.jmathanim.mathobjects.FunctionGraph;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.updaters.Coordinates;
 
 /**
  * Updateable point which updates the y-coordinate to be f(x). Shifting this
@@ -36,12 +30,12 @@ import com.jmathanim.mathobjects.updaters.Coordinates;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class PointOnFunctionGraph extends MathObject<PointOnFunctionGraph> implements Coordinates {
+public class PointOnFunctionGraph extends AbstractPoint<PointOnFunctionGraph> {
 
     FunctionGraph fg;
-    private final Point slopePointRight;
-    private final Point slopePointLeft;
-    private final Point pointOnFunction;
+    private final Vec slopePointRight;
+    private final Vec slopePointLeft;
+    private final Vec pointOnFunction;
     private static double DELTA_DERIVATE=0.000001d;
 
     /**
@@ -63,11 +57,11 @@ public class PointOnFunctionGraph extends MathObject<PointOnFunctionGraph> imple
      * @param fg Function graph
      */
     public PointOnFunctionGraph(double x, FunctionGraph fg) {
-        super();
+        super(Vec.to(0,0));
         this.fg = fg;
-        slopePointRight = Point.at(x, 0);
-        slopePointLeft = Point.at(x, 0);
-        pointOnFunction=Point.at(x,0);
+        slopePointRight = Vec.to(x, 0);
+        slopePointLeft = Vec.to(x, 0);
+        pointOnFunction=getVec();
         computePoints();
     }
 
@@ -78,29 +72,24 @@ public class PointOnFunctionGraph extends MathObject<PointOnFunctionGraph> imple
     }
 
     private void computePoints() {
-        pointOnFunction.v.y = this.fg.getFunctionValue(pointOnFunction.v.x);
-        slopePointRight.v.x = pointOnFunction.v.x + DELTA_DERIVATE;
-        slopePointRight.v.y = pointOnFunction.v.y + this.fg.getSlope(pointOnFunction.v.x, -1);
+        pointOnFunction.y = this.fg.getFunctionValue(pointOnFunction.x);
+        slopePointRight.x = pointOnFunction.x + DELTA_DERIVATE;
+        slopePointRight.y = pointOnFunction.y + this.fg.getSlope(pointOnFunction.x, -1);
 
-        slopePointLeft.v.x = pointOnFunction.v.x - DELTA_DERIVATE;
-        slopePointLeft.v.y = pointOnFunction.v.y - this.fg.getSlope(pointOnFunction.v.x, -1);
+        slopePointLeft.x = pointOnFunction.x - DELTA_DERIVATE;
+        slopePointLeft.y = pointOnFunction.y - this.fg.getSlope(pointOnFunction.x, -1);
     }
 
     public FunctionGraph getFg() {
         return fg;
     }
 
-    public Point getSlopePointRight() {
+    public Vec getSlopePointRight() {
         return slopePointRight;
     }
 
-    public Point getSlopePointLeft() {
+    public Vec getSlopePointLeft() {
         return slopePointLeft;
-    }
-
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r, Camera camera) {
-        pointOnFunction.draw(scene, r, camera);
     }
 
     @Override
@@ -110,7 +99,7 @@ public class PointOnFunctionGraph extends MathObject<PointOnFunctionGraph> imple
 
     @Override
     public PointOnFunctionGraph copy() {
-        PointOnFunctionGraph copy = new PointOnFunctionGraph(pointOnFunction.v.x, fg);
+        PointOnFunctionGraph copy = new PointOnFunctionGraph(pointOnFunction.x, fg);
         copy.copyStateFrom(this);
         return copy;
     }
@@ -124,28 +113,6 @@ public class PointOnFunctionGraph extends MathObject<PointOnFunctionGraph> imple
     public void copyStateFrom(MathObject<?> obj) {
         super.copyStateFrom(obj);
         PointOnFunctionGraph pg = (PointOnFunctionGraph) obj;
-        pointOnFunction.v.y = pg.pointOnFunction.v.y;
-    }
-
-    @Override
-    public PointOnFunctionGraph applyAffineTransform(AffineJTransform tr) {
-        super.applyAffineTransform(tr);
-        computePoints();
-        return this;
-    }
-
-    @Override
-    public Vec getVec() {
-        return pointOnFunction.getVec();
-    }
-
-    @Override
-    public Stylable getMp() {
-        return pointOnFunction.getMp();
-    }
-
-    public PointOnFunctionGraph dotStyle(DotStyle dotStyle) {
-        getMp().setDotStyle(dotStyle);
-        return this;
+        pointOnFunction.y = pg.pointOnFunction.y;
     }
 }

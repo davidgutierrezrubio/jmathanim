@@ -24,7 +24,6 @@ import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
-import com.jmathanim.mathobjects.updaters.Coordinates;
 
 /**
  * Represents an infinite line, given by 2 points.
@@ -37,7 +36,7 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
     private final Vec p1;
     private final Vec p2;
     private final Shape visiblePiece;
-    private Point pointP1;
+    private Point pointP1;//Visible points to be created on the fly if the user asks for them
     private Point pointP2;
 
     /**
@@ -46,7 +45,7 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
      * @param p1 First point
      * @param p2 Second point
      */
-    public Line(Coordinates p1, Coordinates p2) {
+    public Line(Coordinates<?> p1, Coordinates<?> p2) {
         super();
         this.p1 = p1.getVec();
         this.p2 = p2.getVec();
@@ -62,15 +61,15 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
     }
 
     public static Line XAxis() {
-        return new Line(new Point(0, 0), new Point(1, 0));
+        return new Line(Vec.to(0, 0), Vec.to(1, 0));
     }
 
     public static Line XYBisector() {
-        return new Line(new Point(0, 0), new Point(1, 1));
+        return new Line(Vec.to(0, 0), Vec.to(1, 1));
     }
 
     public static Line YAxis() {
-        return new Line(new Point(0, 0), new Point(0, 1));
+        return new Line(Vec.to(0, 0), Vec.to(0, 1));
     }
 
     /**
@@ -81,7 +80,7 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
      * @param b Second point
      * @return The line object
      */
-    public static Line make(Coordinates a, Point b) {
+    public static Line make(Coordinates<?> a, Coordinates<?> b) {
         return new Line(a, b);
     }
 
@@ -91,10 +90,9 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
 
     @Override
     public Line applyAffineTransform(AffineJTransform transform) {
-        getP1().applyAffineTransform(transform);
-        getP2().applyAffineTransform(transform);
-        if (hasMPCreated())
-            transform.applyTransformsToDrawingProperties(this);
+        p1.applyAffineTransform(transform);
+        p2.applyAffineTransform(transform);
+        transform.applyTransformsToDrawingProperties(this);
         return this;
     }
 
@@ -120,10 +118,10 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
             bp2.v.x = intersectLine[2];
             bp2.v.y = intersectLine[3];
         }
-        bp1.vExit.copyFrom(bp1.v);
-        bp1.vEnter.copyFrom(bp1.v);
-        bp2.vExit.copyFrom(bp2.v);
-        bp2.vEnter.copyFrom(bp2.v);
+        bp1.vExit.copyCoordinatesFrom(bp1.v);
+        bp1.vEnter.copyCoordinatesFrom(bp1.v);
+        bp2.vExit.copyCoordinatesFrom(bp2.v);
+        bp2.vEnter.copyCoordinatesFrom(bp2.v);
         bp1.isThisSegmentVisible = false;
     }
 
@@ -151,25 +149,25 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
     }
 
     /**
-     * Returns the point of the line lying in the boundaries of the math view. From the 2 points of the boundary, this
-     * is next to p1.
+     * Returns the coordinates of the line lying in the boundaries of the math view. From the 2 points of the boundary,
+     * this is next to p1.
      *
-     * @return A referencedCopy of the boundary point
+     * @return A vector with the coordinates of the boundary point
      */
-    public Point getBorderPoint1() {
+    public Vec getBorderPoint1() {
         update(scene);
-        return Point.at(bp1.getVec());
+        return bp1.getVec();
     }
 
     /**
-     * Returns the point of the line lying in the boundaries of the math view. From the 2 points of the boundary, this
-     * is next to p2.
+     * Returns the coordinates of the line lying in the boundaries of the math view. From the 2 points of the boundary,
+     * this is next to p2.
      *
-     * @return A referencedCopy of the boundary point
+     * @return A vector with the coordinates of the boundary point
      */
-    public Point getBorderPoint2() {
+    public Vec getBorderPoint2() {
         update(scene);
-        return Point.at(bp2.getVec());
+        return bp2.getVec();
     }
 
     /**
@@ -179,8 +177,8 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
      * @return The first point of the generator points p1 and p2
      */
     @Override
-    public Point getCenter() {
-        return Point.at(p1);
+    public Vec getCenter() {
+        return p1.copy();
     }
 
     @Override
@@ -193,15 +191,15 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
         return visiblePiece.getMp();
     }
 
-    public Point getP1() {
-        if (pointP1==null) {
+    public Coordinates<Point> getP1() {
+        if (pointP1 == null) {
             pointP1 = Point.at(p1);
         }
         return pointP1;
     }
 
     public Point getP2() {
-        if (pointP2==null) {
+        if (pointP2 == null) {
             pointP2 = Point.at(p2);
         }
         return pointP2;
@@ -209,7 +207,7 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, pointP1, pointP2);//You can safely pass null to this method
+        dependsOn(scene, p1, p2);//You can safely pass null to this method
     }
 
     @Override

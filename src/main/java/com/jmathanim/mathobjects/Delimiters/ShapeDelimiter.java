@@ -1,10 +1,11 @@
 package com.jmathanim.mathobjects.Delimiters;
 
 import com.jmathanim.Enum.AnchorType;
+import com.jmathanim.Enum.DelimiterType;
 import com.jmathanim.Utils.*;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.NullMathObject;
 import com.jmathanim.mathobjects.SVGMathObject;
-import com.jmathanim.mathobjects.updaters.Coordinates;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
@@ -94,7 +95,7 @@ public class ShapeDelimiter extends Delimiter {
         delimiterShapeToDraw.shift(0, gap * amplitudeScale);
 
 //        labelMarkPoint.stackTo(delimiterShapeToDraw, AnchorType.UPPER, labelMarkGap * amplitudeScale);
-        labelMarkPoint.copyFrom(Anchor.getAnchorPoint(delimiterShapeToDraw, AnchorType.UPPER, labelMarkGap * amplitudeScale).v);
+        labelMarkPoint.copyCoordinatesFrom(Anchor.getAnchorPoint(delimiterShapeToDraw, AnchorType.UPPER, labelMarkGap * amplitudeScale));
 
         if (!(getLabel() instanceof NullMathObject)) {
 

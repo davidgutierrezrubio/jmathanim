@@ -18,22 +18,22 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.Constructible.Lines.HasDirection;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.AffineTransformable;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.Interpolable;
 import com.jmathanim.mathobjects.Stateable;
-import com.jmathanim.mathobjects.updaters.Coordinates;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI2;
-import static java.lang.Math.sqrt;
 
 /**
  * A vector in 3D
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Vec implements Stateable, HasDirection, Coordinates, AffineTransformable<Vec>, Interpolable<Vec> {
+public class Vec implements Stateable, HasDirection, Coordinates<Vec>, AffineTransformable<Vec>, Interpolable<Vec> {
 
     public double x, y, z;
     public double xState, yState, zState;
@@ -90,85 +90,22 @@ public class Vec implements Stateable, HasDirection, Coordinates, AffineTransfor
         return new Vec(this.y * b.z - this.z * b.y, this.z * b.x - this.x * b.z, this.x * b.y - this.y * b.x);
     }
 
-    /**
-     * Multiplies the vector by a scalar and stores the resul. The original vector is altered and the method returns
-     * this object.
-     *
-     * @param lambda The scalar to multiply
-     * @return This vector
-     */
-    public Vec multInSite(double lambda) {
-        x *= lambda;
-        y *= lambda;
-        z *= lambda;
-        return this;
-    }
 
-    /**
-     * Returns a new vector representing this vector scaled by a factor. The current vector is unaltered.
-     *
-     * @param lambda The factor
-     * @return The new vector
-     */
+    @Override
     public Vec mult(double lambda) {
         return this.copy().multInSite(lambda);
     }
 
-    /**
-     * Adds the given vector to this and stores the resul. The original vector is altered and the method returns this
-     * object.
-     *
-     * @param b The vector to add
-     * @return This vector
-     */
-    public Vec addInSite(Vec b) {
-        x += b.x;
-        y += b.y;
-        z += b.z;
-        return this;
+
+    public Vec minus(Coordinates<?> v2) {
+
+        return (Vec) this.copy().minusInSite(v2);
     }
 
-    /**
-     * Substracts the given vector to this and stores the resul. The original vector is altered and the method returns
-     * this object.
-     *
-     * @param b The vector to substract
-     * @return This vector
-     */
-    public Vec minusInSite(Vec b) {
-        x -= b.x;
-        y -= b.y;
-        z -= b.z;
-        return this;
-    }
 
-    /**
-     * Substracts the given vector to this and return the result. The original vector is unaltered.
-     *
-     * @param b The vector to substract
-     * @return The substraction result
-     */
-    public Vec minus(Vec b) {
-        return this.copy().minusInSite(b);
-    }
-
-    public Vec to(Coordinates b) {
-        Vec v2 = b.getVec();
-        return Vec.to(v2.x - x, v2.y - y, v2.z - z);
-    }
-
-    /**
-     * Add the given vector to this and return the result. The original vector is unaltered.
-     *
-     * @param b The vector to add
-     * @return The sum result
-     */
-    public Vec add(Vec b) {
-        return this.copy().addInSite(b);
-    }
-
-    public double norm() {
-        return sqrt(x * x + y * y + z * z);
+    @Override
+    public Vec add(Coordinates<?> v2) {
+        return (Vec) this.copy().addInSite(v2);
     }
 
     /**
@@ -180,7 +117,7 @@ public class Vec implements Stateable, HasDirection, Coordinates, AffineTransfor
      * @return The interpolated point
      */
     @Override
-    public Vec interpolate(Coordinates coords2, double alpha) {
+    public Vec interpolate(Coordinates<?> coords2, double alpha) {
         Vec v2 = coords2.getVec();
         return new Vec((1 - alpha) * x + alpha * v2.x, (1 - alpha) * y + alpha * v2.y, (1 - alpha) * z + alpha * v2.z);
     }
@@ -194,18 +131,6 @@ public class Vec implements Stateable, HasDirection, Coordinates, AffineTransfor
         return new Vec(x, y, z);
     }
 
-    /**
-     * Copy coordinates from given vector
-     *
-     * @param v Vector to copy from
-     */
-    public void copyFrom(Vec v) {
-        if (v != null) {
-            this.x = v.x;
-            this.y = v.y;
-            this.z = v.z;
-        }
-    }
 
     @Override
     public void saveState() {
@@ -260,6 +185,22 @@ public class Vec implements Stateable, HasDirection, Coordinates, AffineTransfor
     }
 
     /**
+     * Rotates the coordinates given by the vector the specified angle around the given center, storing the result in
+     * the original vector (2d version)
+     *
+     * @param center Rotation center
+     * @param angle  Rotation angle
+     * @return This vector
+     */
+    public Vec rotate(Coordinates<?> center, double angle) {
+        Vec vCenter = center.getVec();
+        Vec rotatedVector = Vec.to(x - vCenter.x, y - vCenter.y);
+        rotatedVector.rotateInSite(angle);
+        return rotatedVector.addInSite(vCenter);
+    }
+
+
+    /**
      * Rotates the vector the specified angle, and returns the result.The original vector is unaltered (2d version).
      *
      * @param angle Rotation angle
@@ -268,6 +209,7 @@ public class Vec implements Stateable, HasDirection, Coordinates, AffineTransfor
     public Vec rotate(double angle) {
         return this.copy().rotateInSite(angle);
     }
+
 
     @Override
     public int hashCode() {
@@ -301,7 +243,7 @@ public class Vec implements Stateable, HasDirection, Coordinates, AffineTransfor
 
     @Override
     public String toString() {
-        return "Vec(" + x + ", " + y + ", " + z + ')';
+        return String.format("Vec(%.2f, %.2f, %.2f)", x, y, z);
     }
 
     /**
@@ -350,29 +292,7 @@ public class Vec implements Stateable, HasDirection, Coordinates, AffineTransfor
         return this;
     }
 
-    /**
-     * Scales the vector according to given parameters. The vector is modified.
-     *
-     * @param scx X scale
-     * @param scy Y scale
-     * @return This vector
-     */
-    public Vec scaleInSite(double scx, double scy) {
-        this.x *= scx;
-        this.y *= scy;
-        return this;
-    }
 
-    /**
-     * Returns a scaled version of the vector. The original vector is not modified
-     *
-     * @param scx X scale
-     * @param scy Y scale
-     * @return A copy of the vector, scaled.
-     */
-    public Vec scale(double scx, double scy) {
-        return this.copy().scaleInSite(scx, scy);
-    }
 
 
     public boolean isEquivalentTo(Vec v2, double epsilon) {
@@ -395,4 +315,30 @@ public class Vec implements Stateable, HasDirection, Coordinates, AffineTransfor
     public boolean isEmpty() {
         return false;
     }
+
+    @Override
+    public int getUpdateLevel() {
+        return 0;
+    }
+
+    @Override
+    public void setUpdateLevel(int level) {
+
+    }
+
+    @Override
+    public void update(JMathAnimScene scene) {
+
+    }
+
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+
+    }
+
+    @Override
+    public void unregisterUpdateableHook(JMathAnimScene scene) {
+    }
+
+
 }

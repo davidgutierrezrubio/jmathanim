@@ -71,15 +71,15 @@ public final class LinkArguments extends Link {
             if (destiny instanceof MathObject) {
                 MathObject mathObject = (MathObject) destiny;
                 Vec vshift = Vec.to(0, 0);
-                Point center = mathObject.getCenter();
+                Vec center = mathObject.getCenter();
 
                 switch (destinyLinkType) {
                     case X:
-                        vshift.x = getValue(data) - center.v.x;
+                        vshift.x = getValue(data) - center.x;
                         mathObject.shift(vshift);
                         break;
                     case Y:
-                        vshift.y = getValue(data) - center.v.y;
+                        vshift.y = getValue(data) - center.y;
                         mathObject.shift(vshift);
                         break;
                     case XMIN:
@@ -275,40 +275,32 @@ public final class LinkArguments extends Link {
 
     private Double getX(Object obj) throws JLinkException {
 
-        if (obj instanceof Point) {
-            Point point = (Point) obj;
-            return point.v.x;
-        }
-        if (obj instanceof Vec) {
-            Vec vec = (Vec) obj;
-            return vec.x;
+        if (obj instanceof Coordinates) {
+            Coordinates point = (Coordinates) obj;
+            return point.getVec().x;
         }
         if (obj instanceof Double) {
             return (Double) obj;
         }
         if (obj instanceof Boxable) {
             Boxable boxable = (Boxable) obj;
-            return boxable.getBoundingBox().getCenter().v.x;
+            return boxable.getBoundingBox().getCenter().x;
         }
         throw new JLinkException();
     }
 
     private Double getY(Object obj) throws JLinkException {
 
-        if (obj instanceof Point) {
-            Point point = (Point) obj;
-            return point.v.y;
-        }
-        if (obj instanceof Vec) {
-            Vec vec = (Vec) obj;
-            return vec.y;
+        if (obj instanceof Coordinates) {
+            Coordinates point = (Coordinates) obj;
+            return point.getVec().y;
         }
         if (obj instanceof Double) {
             return (Double) obj;
         }
         if (obj instanceof Boxable) {
             Boxable boxable = (Boxable) obj;
-            return boxable.getBoundingBox().getCenter().v.y;
+            return boxable.getBoundingBox().getCenter().y;
         }
         throw new JLinkException();
     }
@@ -335,7 +327,7 @@ public final class LinkArguments extends Link {
         }
         if (obj instanceof Boxable) {
             Boxable boxable = (Boxable) obj;
-            return boxable.getBoundingBox().getCenter().v.norm();
+            return boxable.getBoundingBox().getCenter().norm();
         }
         throw new JLinkException();
     }

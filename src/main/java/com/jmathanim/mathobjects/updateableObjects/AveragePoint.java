@@ -45,10 +45,10 @@ public class AveragePoint extends Point implements Updateable {
         super.update(scene);
         Vec resul = new Vec(0, 0);
         for (int n = 0; n < points.size(); n++) {
-            resul.addInSite(points.get(n).v);
+            resul.addInSite(points.get(n).getVec());
         }
         resul.multInSite(1.0d / points.size());
-        this.v.copyFrom(resul);
+        this.getVec().copyCoordinatesFrom(resul);
     }
 
     @Override

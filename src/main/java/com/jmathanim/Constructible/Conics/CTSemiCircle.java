@@ -76,14 +76,17 @@ public class CTSemiCircle extends CTAbstractCircle{
 
     @Override
     public CTPoint getCircleCenter() {
-        final Vec vv = A.v.interpolate(B.v, .5);
+        final Vec vv = A.coordinatesOfPoint.interpolate(B.coordinatesOfPoint, .5);
         return CTPoint.at(vv.x, vv.y);
     }
 
     @Override
     public Vec getHoldCoordinates(Vec coordinates) {
         //Map A and B to (1,0) and (-1,0)
-        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(B.getMathObject(), A.getMathObject(), Point.at(1, 0), Point.at(-1, 0), 1);
+        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(
+                B.getMathObject(), A.getMathObject(),
+                Vec.to(1, 0),
+                Vec.to(-1, 0), 1);
         Vec v = coordinates.applyAffineTransform(tr);
         if (v.x <= - 1) {
             v.x = -1;
@@ -116,7 +119,7 @@ public class CTSemiCircle extends CTAbstractCircle{
 
     @Override
     public void rebuildShape() {
-        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(Point.at(-1, 0), Point.at(1, 0), new Point(A.v.x,A.v.y), new Point(B.v.x,B.v.y), 1);
+        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(Vec.to(-1, 0), Vec.to(1, 0), new Point(A.coordinatesOfPoint.x,A.coordinatesOfPoint.y), new Point(B.coordinatesOfPoint.x,B.coordinatesOfPoint.y), 1);
         if (!isFreeMathObject()) {
             for (int i = 0; i < arcTODraw.size(); i++) {
                 arcTODraw.get(i).copyControlPointsFrom(arcTODrawOrig.get(i));

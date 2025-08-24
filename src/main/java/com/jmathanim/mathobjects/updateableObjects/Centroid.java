@@ -47,7 +47,7 @@ public class Centroid extends Point implements Updateable {
             resul.addInSite(shape.get(n).v);
         }
         resul.multInSite(1.0d / shape.size());
-        this.v.copyFrom(resul);
+        this.getVec().copyCoordinatesFrom(resul);
     }
 
     @Override

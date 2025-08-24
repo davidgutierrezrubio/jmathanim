@@ -107,22 +107,22 @@ public class CTAngleMark extends Constructible<CTAngleMark> {
         JMPath pa = arcToDraw.getPath();
         pa.clear();
 //        pa.addPoint(center.getMathObject().copy());
-        pa.addPoint(Point.at(center.v));
+        pa.addPoint(center.coordinatesOfPoint);
         Vec v1 = center.to(A).normalize();
         Vec v2 = center.to(B).normalize();
         double dotProduct = v1.dot(v2);
         if ((isRight) || (dotProduct == 0)) {//Right angle
             arc = Shape.polyLine(
-                    Point.at(center.v.add(v1.mult(radius))),
-                    Point.at(center.v.add(v1.mult(radius)).add(v2.mult(radius))),
-                    Point.at(center.v.add(v2.mult(radius)))
+                    center.coordinatesOfPoint.add(v1.mult(radius)),
+                    center.coordinatesOfPoint.add(v1.mult(radius)).add(v2.mult(radius)),
+                    (center.coordinatesOfPoint.add(v2.mult(radius)))
             );
         } else {
              angle = Math.acos(dotProduct);
             arc = Shape.arc(angle)
                     .scale(Point.origin(), radius)
                     .rotate(Point.origin(), v1.getAngle())
-                    .shift(center.v);
+                    .shift(center.coordinatesOfPoint);
         }
         arcToDraw.merge(arc, true, true);
         arcToDraw.getPath().distille();

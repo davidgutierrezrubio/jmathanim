@@ -370,7 +370,7 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>> extends 
         return setLayout(null, layoutType, gap);
     }
 
-    public T setLayout(MathObject<?> corner, LayoutType layoutType, double gap) {
+    public T setLayout(Coordinates<?> corner, LayoutType layoutType, double gap) {
         AnchorType anchor = AnchorType.CENTER;
 
         switch (layoutType) {

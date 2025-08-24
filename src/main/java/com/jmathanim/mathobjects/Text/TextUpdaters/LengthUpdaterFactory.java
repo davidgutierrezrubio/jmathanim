@@ -2,8 +2,8 @@ package com.jmathanim.mathobjects.Text.TextUpdaters;
 
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
-import com.jmathanim.mathobjects.updaters.Coordinates;
 import com.jmathanim.mathobjects.updaters.Updater;
 
 public class LengthUpdaterFactory extends TextUpdaterFactory{

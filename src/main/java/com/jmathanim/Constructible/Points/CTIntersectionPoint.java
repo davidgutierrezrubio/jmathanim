@@ -131,9 +131,9 @@ public class CTIntersectionPoint extends CTPoint {
     public void rebuildShape() {
         Vec inter=Vec.to(Double.NaN, Double.NaN);//Default result: no point at all
         if (intersectionType == null) {
-            this.v.copyFrom(inter);
+            this.copyCoordinatesFrom(inter);
             if (!isFreeMathObject()) {
-                getMathObject().v.copyFrom(this.v);
+                getMathObject().copyCoordinatesFrom(this.coordinatesOfPoint);
                 return;
             }
         }
@@ -142,15 +142,15 @@ public class CTIntersectionPoint extends CTPoint {
         double x1, x2, x3, x4, y1, y2, y3, y4;
         switch (intersectionType) {
             case LINEAR:
-                x1 = ctline1.getP1().v.x;
-                x2 = ctline1.getP2().v.x;
-                x3 = ctline2.getP1().v.x;
-                x4 = ctline2.getP2().v.x;
+                x1 = ctline1.getP1().x;
+                x2 = ctline1.getP2().x;
+                x3 = ctline2.getP1().x;
+                x4 = ctline2.getP2().x;
 
-                y1 = ctline1.getP1().v.y;
-                y2 = ctline1.getP2().v.y;
-                y3 = ctline2.getP1().v.y;
-                y4 = ctline2.getP2().v.y;
+                y1 = ctline1.getP1().y;
+                y2 = ctline1.getP2().y;
+                y3 = ctline2.getP1().y;
+                y4 = ctline2.getP2().y;
 
                 double[] sols = BezierIntersect(x1, y1, x2, y2, x3, y3, x4, y4);
 
@@ -167,20 +167,20 @@ public class CTIntersectionPoint extends CTPoint {
                 }
 //        double interX2 = x3 + sols[1] * (x4 - x3);
 //        double interY2 = y3 + sols[1] * (y4 - y3);
-                this.v.copyFrom(inter);
+                this.copyCoordinatesFrom(inter);
                 break;
             case LINE_CIRCLE:
                 //A line/ray/segment with a circle
                 double radius = ctcircle1.getRadius().value;
-                Vec center = ctcircle1.getCircleCenter().v;
+                Vec center = ctcircle1.getCircleCenter().coordinatesOfPoint;
 
-                Point A = ctline1.getP1().copy().shift(center.mult(-1));
-                Point B = ctline1.getP2().copy().shift(center.mult(-1));
+                Vec A = ctline1.getP1().copy().add(center.mult(-1));
+                Vec B = ctline1.getP2().copy().add(center.mult(-1));
 
                 double dx = A.to(B).x;
                 double dy = A.to(B).y;
                 double drSq = dx * dx + dy * dy;
-                double D = A.v.x * B.v.y - B.v.x * A.v.y;
+                double D = A.x * B.y - B.x * A.y;
                 final double discr = Math.sqrt(radius * radius * drSq - D * D);
                 if (discr < 0) {
                     inter.x = Double.NaN;
@@ -194,7 +194,7 @@ public class CTIntersectionPoint extends CTPoint {
                     y2 = (-D * dx + Math.abs(dy) * discr) / drSq;
                     int sign = (this.solNumber == 0 ? 1 : -1);
                     //TODO:Determine the nearest solution to A
-                    if (sign * ((x1 - A.v.x) * (x1 - A.v.x) + (y1 - A.v.y) * (y1 - A.v.y)) < sign * ((x1 - B.v.x) * (x1 - B.v.x) + (y1 - B.v.y) * (y1 - B.v.y))) {
+                    if (sign * ((x1 - A.x) * (x1 - A.x) + (y1 - A.y) * (y1 - A.y)) < sign * ((x1 - B.x) * (x1 - B.x) + (y1 - B.y) * (y1 - B.y))) {
                         inter.x = x1;
                         inter.y = y1;
                     } else {
@@ -206,8 +206,8 @@ public class CTIntersectionPoint extends CTPoint {
                         inter.y = Double.NaN;
                     }
                 }
-                this.v.copyFrom(inter);
-                this.v.addInSite(center);
+                this.copyCoordinatesFrom(inter);
+                this.getVec().addInSite(center);
                 break;
             case CIRCLE_CIRCLE:
                 final Vec vecCenterCircles = ctcircle1.getCircleCenter().to(ctcircle2.getCircleCenter()).copy();
@@ -219,16 +219,16 @@ public class CTIntersectionPoint extends CTPoint {
 
                 inter.y= alpha * Math.sqrt((-d + r2 - r1) * (-d - r2 + r1) * (-d + r2 + r1) * (d + r2 + r1));
                 Point p = Point.origin();
-                p.v.copyFrom(Vec.to(inter.x, (solNumber == 0 ? 1 : -1) * inter.y));
+                p.copyCoordinatesFrom(Vec.to(inter.x, (solNumber == 0 ? 1 : -1) * inter.y));
                 p.rotate(Point.origin(), vecCenterCircles.getAngle());
-                p.shift(ctcircle1.getCircleCenter().v);
-                this.v.copyFrom(p.v);
+                p.shift(ctcircle1.getCircleCenter().coordinatesOfPoint);
+                this.copyCoordinatesFrom(p.v);
                 break;
             case CIRCLE_CONIC:
             //Not implemented yet. Returns a NaN point
         }
         if (!isFreeMathObject()) {
-            p.v.copyFrom(this.v);
+            pointToShow.copyCoordinatesFrom(this.coordinatesOfPoint);
         }
 
     }
@@ -240,20 +240,20 @@ public class CTIntersectionPoint extends CTPoint {
     }
 
     //Determines if given point P of line/ray/segment is valid or not
-    private boolean validateSolutionForLines(CTAbstractLine line, Vec v) {
+    private boolean validateSolutionForLines(CTAbstractLine<?> line, Vec v) {
         boolean valid = true;
-        Point A = line.getP1();
-        Point B = line.getP2();
+        Vec A = line.getP1();
+        Vec B = line.getP2();
         Vec vLine = A.to(B);
-        Vec vP = v.minus(A.v);
-                //Vec.to(x - A.v.x, y - A.v.y);
+        Vec vP = v.minus(A);
+                //Vec.to(x - A.x, y - A.y);
         double lambda;
         if (vLine.x != 0) {
             lambda = vP.x / vLine.x;
         } else {
             lambda = vP.y / vLine.y;
         }
-        valid = valid && !((line instanceof CTRay) && (lambda < 0));
+        valid = !((line instanceof CTRay) && (lambda < 0));
         valid = valid && !((line instanceof CTSegment) && ((lambda < 0) || (lambda > 1)));
         return valid;
     }

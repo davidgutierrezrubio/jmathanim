@@ -20,9 +20,9 @@ package com.jmathanim.Utils.Layouts;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.BoxDirection;
 import com.jmathanim.mathobjects.AbstractMathGroup;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.Point;
 
 import java.util.ArrayList;
 import java.util.function.IntToDoubleFunction;
@@ -44,14 +44,14 @@ public class FlowLayout extends AbstractBoxLayout {
 	 * @param inRowGap
 	 * @param inColGap
 	 */
-	public FlowLayout(Point corner, double width, BoxDirection boxDirection, double inRowGap, double inColGap) {
+	public FlowLayout(Coordinates<?> corner, double width, BoxDirection boxDirection, double inRowGap, double inColGap) {
 		super(corner, inRowGap, inColGap);
 		rowLength = (int row) -> width;
 		this.boxDirection = boxDirection;
 		computeDirections(boxDirection);
 	}
 
-	public FlowLayout(Point corner, IntToDoubleFunction widthFunction, BoxDirection boxDirection, double inRowGap,
+	public FlowLayout(Coordinates<?>  corner, IntToDoubleFunction widthFunction, BoxDirection boxDirection, double inRowGap,
 					  double inColGap) {
 		super(corner, inRowGap, inColGap);
 		rowLength = widthFunction;
@@ -59,7 +59,7 @@ public class FlowLayout extends AbstractBoxLayout {
 		computeDirections(boxDirection);
 	}
 
-	private double getAppropiateSize(MathObject obj) {
+	private double getAppropiateSize(MathObject<?> obj) {
 		double resul = 0;
 		switch (boxDirection) {
 		case DOWN_LEFT:

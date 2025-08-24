@@ -48,7 +48,7 @@ public class FXPathUtils {
             if (el instanceof MoveTo) {
                 MoveTo c = (MoveTo) el;
                 double[] xy = cam.screenToMath(c.getX(), c.getY());
-                JMPathPoint pp = JMPathPoint.lineTo(Point.at(xy[0], xy[1]));
+                JMPathPoint pp = JMPathPoint.lineTo(Vec.to(xy[0], xy[1]));
                 pp.isThisSegmentVisible = false;
                 resul.addJMPoint(pp);
                 previousPP = pp;
@@ -57,7 +57,7 @@ public class FXPathUtils {
             if (el instanceof CubicCurveTo) {
                 CubicCurveTo c = (CubicCurveTo) el;
                 double[] xy = cam.screenToMath(c.getX(), c.getY());
-                JMPathPoint pp = JMPathPoint.curveTo(Point.at(xy[0], xy[1]));
+                JMPathPoint pp = JMPathPoint.curveTo(Vec.to(xy[0], xy[1]));
                 xy = cam.screenToMath(c.getControlX2(), c.getControlY2());
                 pp.vEnter.x = xy[0];
                 pp.vEnter.y = xy[1];
@@ -70,7 +70,7 @@ public class FXPathUtils {
             if (el instanceof LineTo) {
                 LineTo c = (LineTo) el;
                 double[] xy = cam.screenToMath(c.getX(), c.getY());
-                JMPathPoint pp = JMPathPoint.lineTo(Point.at(xy[0], xy[1]));
+                JMPathPoint pp = JMPathPoint.lineTo(Vec.to(xy[0], xy[1]));
                 resul.addJMPoint(pp);
                 previousPP = pp;
             }

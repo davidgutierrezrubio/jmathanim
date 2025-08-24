@@ -21,19 +21,19 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.Interpolable;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.updaters.Coordinates;
 
 /**
  *
  * @author David
  */
-public class CTPoint extends Constructible<CTPoint> implements Coordinates, Interpolable<CTPoint> {
+public class CTPoint extends Constructible<CTPoint> implements Coordinates<CTPoint>, Interpolable<CTPoint> {
     
-    public final Point p;
-    public final Vec v;
+    public final Point pointToShow;
+    public final Vec coordinatesOfPoint;
 
     /**
      * Creates a CTPoint from a Point
@@ -41,7 +41,7 @@ public class CTPoint extends Constructible<CTPoint> implements Coordinates, Inte
      * @param A Point object to wrap into
      * @return The created object
      */
-    public static CTPoint make(Coordinates A) {
+    public static CTPoint make(Coordinates<?> A) {
         Point buildPoint;
         if (A instanceof Point) {
             buildPoint = (Point) A;
@@ -54,7 +54,7 @@ public class CTPoint extends Constructible<CTPoint> implements Coordinates, Inte
     }
     
     public static CTPoint at(double x, double y) {
-        CTPoint resul = new CTPoint(Point.at(x, y));
+        CTPoint resul =  CTPoint.at(x, y);
         resul.rebuildShape();
         return resul;
     }
@@ -65,30 +65,30 @@ public class CTPoint extends Constructible<CTPoint> implements Coordinates, Inte
     
     protected CTPoint(Coordinates A) {
         if (A instanceof Point) {
-            this.p = ((Point) A).copy();
-            this.v = A.getVec();
+            this.pointToShow = Point.at(A.getVec().copy());
+            this.coordinatesOfPoint = A.getVec();
         }
         else {
-            this.p = Point.origin();
-            this.v = A.getVec();
+            this.pointToShow = Point.origin();
+            this.coordinatesOfPoint = A.getVec();
         }
     }
     
     @Override
     public Point getMathObject() {
-        return p;
+        return pointToShow;
     }
     
     @Override
     public void rebuildShape() {
         if (!isFreeMathObject()) {
-            this.p.v.copyFrom(this.v);
+            this.pointToShow.v.copyCoordinatesFrom(this.coordinatesOfPoint);
         }
     }
     
     @Override
     public CTPoint copy() {
-        CTPoint copy = make(new Point(this.v.x,this.v.y));
+        CTPoint copy = make(new Point(this.coordinatesOfPoint.x,this.coordinatesOfPoint.y));
         copy.setFreeMathObject(this.isFreeMathObject());
         copy.getMathObject().copyStateFrom(this.getMathObject());
         copy.getMp().copyFrom(this.getMp());
@@ -99,7 +99,7 @@ public class CTPoint extends Constructible<CTPoint> implements Coordinates, Inte
     public void copyStateFrom(MathObject obj) {
         if (obj instanceof CTPoint) {
             CTPoint cnst = (CTPoint) obj;
-            this.v.copyFrom(cnst.v);
+            this.coordinatesOfPoint.copyCoordinatesFrom(cnst.coordinatesOfPoint);
             this.getMathObject().copyStateFrom(cnst.getMathObject());
             this.setFreeMathObject(cnst.isFreeMathObject());
         }
@@ -113,7 +113,7 @@ public class CTPoint extends Constructible<CTPoint> implements Coordinates, Inte
      * @return The vector
      */
     public Vec to(CTPoint B) {
-        return B.v.minus(this.v);
+        return B.coordinatesOfPoint.minus(this.coordinatesOfPoint);
     }
 
     /**
@@ -124,24 +124,24 @@ public class CTPoint extends Constructible<CTPoint> implements Coordinates, Inte
      * @return The created object
      */
     public CTPoint add(Vec v) {
-        return CTPoint.make(new Point(this.v.x+v.x,this.v.y+v.y));
+        return CTPoint.make(new Point(this.coordinatesOfPoint.x+v.x,this.coordinatesOfPoint.y+v.y));
     }
     
     @Override
     public String toString() {
-        return this.getObjectLabel() + ":" + String.format("CTPoint[%.2f, %.2f]", this.v.x, this.v.y);
+        return this.getObjectLabel() + ":" + String.format("CTPoint[%.2f, %.2f]", this.coordinatesOfPoint.x, this.coordinatesOfPoint.y);
     }
     
     public CTPoint dotStyle(DotStyle dotStyle) {
-        p.dotStyle(dotStyle);
+        pointToShow.dotStyle(dotStyle);
         return this;
     }
     
     @Override
     public CTPoint applyAffineTransform(AffineJTransform transform) {
-        p.applyAffineTransform(transform);
+        pointToShow.applyAffineTransform(transform);
         if (!isFreeMathObject()) {
-            this.v.copyFrom(p.v);
+            this.coordinatesOfPoint.copyCoordinatesFrom(pointToShow.v);
         }
         rebuildShape();
         return this;
@@ -149,11 +149,30 @@ public class CTPoint extends Constructible<CTPoint> implements Coordinates, Inte
 
     @Override
     public Vec getVec() {
-        return p.v;
+        return coordinatesOfPoint;
     }
 
     @Override
-    public CTPoint interpolate(Coordinates coords2, double alpha) {
+    public CTPoint add(Coordinates<?> v2) {
+        CTPoint copy = copy();
+        copy.getVec().addInSite(v2);
+        return copy;
+    }
+
+    @Override
+    public CTPoint minus(Coordinates<?> v2) {
+        CTPoint copy = copy();
+        copy.getVec().minusInSite(v2);
+        return copy;
+    }
+
+    @Override
+    public CTPoint mult(double lambda) {
+        return copy().multInSite(lambda);
+    }
+
+    @Override
+    public CTPoint interpolate(Coordinates<?> coords2, double alpha) {
         return new CTPoint(getVec().interpolate(coords2.getVec(), alpha));
     }
 }

@@ -20,6 +20,7 @@ package com.jmathanim.Animations;
 import com.jmathanim.Animations.Strategies.ShowCreation.*;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Enum.ShowCreationStrategy;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
 import com.jmathanim.mathobjects.Axes.Axes;
@@ -36,7 +37,7 @@ import java.util.function.DoubleUnaryOperator;
  */
 public class ShowCreation extends Animation {
 
-    protected final Point[] pencilPosition;
+    protected final Vec[] pencilPosition;
     MathObject mobj;//Mathobject that will be created
     MathObject origObj;//Original constructible object, in case
     private Animation creationStrategy;
@@ -51,7 +52,7 @@ public class ShowCreation extends Animation {
     public ShowCreation(double runtime, MathObject mobj) {
         super(runtime);
         setDebugName("showCreation");
-        pencilPosition = new Point[]{Point.origin(), Point.origin()};
+        pencilPosition = new Vec[]{Vec.to(0,0), Vec.to(0,0)};
         this.mobj=mobj;
         this.origObj=mobj;
     }
@@ -126,8 +127,8 @@ public class ShowCreation extends Animation {
         try {
             if (creationStrategy instanceof CreationStrategy) {
                 CreationStrategy cs = (CreationStrategy) creationStrategy;
-                pencilPosition[0].v.copyFrom(cs.getPencilPosition()[0].v);
-                pencilPosition[1].v.copyFrom(cs.getPencilPosition()[1].v);
+                pencilPosition[0].copyCoordinatesFrom(cs.getPencilPosition()[0]);
+                pencilPosition[1].copyCoordinatesFrom(cs.getPencilPosition()[1]);
             }
         } catch (java.lang.NullPointerException e) {
             //do nothing
@@ -336,7 +337,7 @@ public class ShowCreation extends Animation {
      * @return An array with 2 point objects. The 0 index stores the previous position of the pencil and 1 stores the
      * current direction
      */
-    public Point[] getPencilPosition() {
+    public Vec[] getPencilPosition() {
         return pencilPosition;
 
     }

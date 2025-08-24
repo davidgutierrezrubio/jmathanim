@@ -14,11 +14,11 @@ public abstract class Updater {
         this.updateLevel=level;
     }
 
-    public MathObject getMathObject() {
+    public MathObject<?> getMathObject() {
         return mathObject;
     }
 
-    public void setMathObject(MathObject mathObject) {
+    public void setMathObject(MathObject<?> mathObject) {
         this.mathObject = mathObject;
 //        setUpdateLevel(computeUpdateLevel());
     }

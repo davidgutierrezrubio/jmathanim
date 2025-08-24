@@ -24,7 +24,6 @@ import com.jmathanim.Styling.*;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
-import com.jmathanim.mathobjects.updaters.Coordinates;
 import com.jmathanim.mathobjects.updaters.Updater;
 import javafx.scene.shape.StrokeLineCap;
 
@@ -39,7 +38,7 @@ import java.util.*;
 @SuppressWarnings("ALL")
 public abstract class MathObject<T extends MathObject<T>> implements Drawable, Updateable, Stateable, Boxable, Linkable, hasStyle, AffineTransformable<T> {
     protected final AffineJTransform modelMatrix;
-    private final HashSet<MathObject> dependents;
+    private final HashSet<MathObject<?>> dependents;
     private final RendererEffects rendererEffects;
     private final HashMap<String, Object> properties;
     private final ArrayList<Updater> updaters;
@@ -73,11 +72,7 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
         if (scene != null) {
             camera = scene.getCamera();//Default camera
         }
-        if (prop != null) {
-            mp = config.getDefaultMP();// Default MP values
-            mp.copyFrom(prop);// Copy all non-null values from prop
-            mp.setParent(this);
-        }
+        mp = config.getDefaultMP();// Default MP values
         //Default values for an object that always updates
         dependents = new HashSet<>();
 
@@ -128,7 +123,7 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
      *
      * @return Vec object with center
      */
-    public Point getCenter() {
+    public Vec getCenter() {
         return this.getBoundingBox().getCenter();
     }
 
@@ -256,9 +251,9 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
      * @return The same object
      */
     public final T vCenter() {
-        Vec v = getCenter().v;
+        Vec v = getCenter();
         center();
-        shift(v.x - getCenter().v.x, 0);
+        shift(v.x - getCenter().x, 0);
         return (T) this;
     }
 
@@ -268,9 +263,9 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
      * @return The same object
      */
     public final T hCenter() {
-        Vec v = getCenter().v;
+        Vec vCenter = getCenter();
         center();
-        shift(0, v.y - getCenter().v.y);
+        shift(0, vCenter.y - vCenter.y);
         return (T) this;
     }
 
@@ -318,7 +313,7 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
      * @param anglez Rotation angle in z axis, in radians
      * @return The same object, after rotating
      */
-    public T rotate3d(Point center, double anglex, double angley, double anglez) {
+    public T rotate3d(Coordinates center, double anglex, double angley, double anglez) {
         AffineJTransform tr = AffineJTransform.create3DRotationTransform(center, anglex, angley, anglez, 1);
         tr.applyTransform(this);
         return (T) this;
@@ -340,7 +335,7 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
     public void copyStateFrom(MathObject<?> obj) {
         if (obj == null) return;
         this.setCamera(obj.getCamera());
-        this.copyMPFrom(obj);
+        getMp().copyFrom(obj.getMp());
 //        this.getMp().copyFrom(obj.getMp());
         if (this.getRendererEffects() != null) {
             this.getRendererEffects().copyFrom(rendererEffects);
@@ -387,11 +382,6 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
      * @return The drawing attributes object
      */
     public Stylable getMp() {
-        if (mp == null) {
-            System.out.println("Creando nuevo MP para objeto " + this);
-            mp = (MODrawProperties) createDefaultMPForThisObject();
-            mp.setParent(this);
-        }
         return mp;
     }
 
@@ -406,22 +396,6 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
         return (T) this;
     }
 
-    protected Stylable getSafeMP() {
-        return mp;
-    }
-
-    protected boolean hasMPCreated() {
-        return (mp != null);
-    }
-
-    protected void copyMPFrom(MathObject obj) {
-        if (obj == null) return;
-        boolean thisHasCreated = hasMPCreated();
-        boolean objHasCreated = obj.hasMPCreated();
-        if (thisHasCreated || objHasCreated) {
-            getMp().copyFrom(obj.getMp());
-        }
-    }
 
     protected Stylable createDefaultMPForThisObject() {
         return JMathAnimConfig.getConfig().getDefaultMP();// Default MP values
@@ -551,7 +525,7 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
         return (T) this;
     }
 
-    public Point getAbsoluteAnchor() {
+    public Vec getAbsoluteAnchor() {
         return Anchor.getAnchorPoint(this, absoluteAnchorAnchorType);
     }
 
@@ -635,8 +609,8 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
      */
     public T stackTo(AnchorType originAnchor, Boxable destinyObject, AnchorType destinyAnchor, double originGap, double destinyGap) {
         if (!destinyObject.isEmpty()) {
-            Point B = Anchor.getAnchorPoint(destinyObject, destinyAnchor, destinyGap);
-            Point A = Anchor.getAnchorPoint(this, originAnchor, originGap);
+            Vec B = Anchor.getAnchorPoint(destinyObject, destinyAnchor, destinyGap);
+            Vec A = Anchor.getAnchorPoint(this, originAnchor, originGap);
             this.shift(A.to(B));
         }
         return (T) this;
@@ -733,8 +707,8 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
      * @return The current object
      */
     public T stackToScreen(AnchorType anchorType, double xMargin, double yMargin) {
-        Point B = Anchor.getScreenAnchorPoint(getCamera(), anchorType, xMargin, yMargin);
-        Point A = Anchor.getAnchorPoint(this, anchorType);
+        Vec B = Anchor.getScreenAnchorPoint(getCamera(), anchorType, xMargin, yMargin);
+        Vec A = Anchor.getAnchorPoint(this, anchorType);
         return this.shift(A.to(B));
     }
 
@@ -744,7 +718,7 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
      * @param p Destination point
      * @return The current object
      */
-    public final T moveTo(Point p) {
+    public final T moveTo(Coordinates p) {
         return stackTo(p, AnchorType.CENTER);
     }
 
@@ -756,7 +730,7 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
      * @return The current object
      */
     public T moveTo(double x, double y) {
-        return moveTo(Point.at(x, y));
+        return moveTo(Vec.to(x, y));
     }
 
 
@@ -1028,7 +1002,7 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
 //     *
 //     * @return A HashSet of the dependent MathObjects
 //     */
-//    public HashSet<MathObject> getDependentObjects() {
+//    public HashSet<MathObject<?>> getDependentObjects() {
 //        return dependents;
 //    }
 
@@ -1038,19 +1012,22 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
      * @param scene Scene
      * @param objs  Objects that this object depends on
      */
-    protected void dependsOn(JMathAnimScene scene, MathObject... objs) {
+    protected void dependsOn(JMathAnimScene scene, Updateable... objs) {
 
         //Ensure all objects in objs is registered
         scene.registerUpdateable(objs);
 
         //Sets the update level the max of objs +1
-        int maxUpdateLevel = Arrays.stream(objs).filter(Objects::nonNull).mapToInt(MathObject::getUpdateLevel).max().orElse(-1);
+        int maxUpdateLevel = Arrays.stream(objs).filter(Objects::nonNull).mapToInt(Updateable::getUpdateLevel).max().orElse(-1);
         setUpdateLevel(maxUpdateLevel + 1);
 
-        //Register this object in the dependent list of objs
-        for (MathObject obj : objs) {
-            obj.dependents.add(this);
-        }
+
+        //TODO: Implement this
+//        //Register this object in the dependent list of objs
+//        for (Updateable obj : objs) {
+//            if (obj != null)
+//                obj.dependents.add(this);
+//        }
     }
 
     /**

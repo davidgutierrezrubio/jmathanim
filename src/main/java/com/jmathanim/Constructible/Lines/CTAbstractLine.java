@@ -20,7 +20,6 @@ package com.jmathanim.Constructible.Lines;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.PointOwner;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.Point;
 
 /**
  *
@@ -29,15 +28,15 @@ import com.jmathanim.mathobjects.Point;
 public abstract class CTAbstractLine<T extends CTAbstractLine<T>> extends Constructible<T> implements HasDirection, PointOwner {
 
     protected enum LineType {
-        PointPoint, PointVector
+        POINT_POINT, POINT_DIRECTION
     }
     protected LineType lineType;
-    protected final Point P1;
-    protected final Point P2;
+    protected final Vec P1;
+    protected final Vec P2;
 
     public CTAbstractLine() {
-        this.P1 = Point.origin();
-        this.P2 = Point.origin();
+        this.P1 = Vec.to(0,0);
+        this.P2 = Vec.to(0,0);
     }
 
     @Override
@@ -45,19 +44,19 @@ public abstract class CTAbstractLine<T extends CTAbstractLine<T>> extends Constr
         return P1.to(P2);
     }
 
-    public Point getP1() {
+    public Vec getP1() {
         return P1;
     }
 
-    public Point getP2() {
+    public Vec getP2() {
         return P2;
     }
 
     @Override
     public Vec getHoldCoordinates(Vec coordinates) {
         Vec v1 = getDirection().normalize();
-        Vec v2 = coordinates.minus(getP1().v);
-        return (getP1().v.add(v1.mult(v1.dot(v2))));
+        Vec v2 = coordinates.minus(getP1());
+        return (getP1().add(v1.mult(v1.dot(v2))));
     }
 
 }

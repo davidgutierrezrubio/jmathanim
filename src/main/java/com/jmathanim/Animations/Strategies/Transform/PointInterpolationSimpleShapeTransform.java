@@ -18,9 +18,9 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.SimpleConnectedPathsOptimizationStrategy;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
 /**
@@ -31,7 +31,7 @@ import com.jmathanim.mathobjects.Shape;
 public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
 
     private Shape originBase;
-    Point origCenter, dstCenter;
+    Vec origCenter, dstCenter;
     private final Shape shDestiny;
     private final Shape shIntermediate;
 

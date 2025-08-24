@@ -43,7 +43,7 @@ public class CameraFollowingObjects implements Updateable {
      * @param objs MathObjects
      * @return The created object
      */
-    public static Updateable make(Camera camera, MathObject... objs) {
+    public static Updateable make(Camera camera, MathObject<?>... objs) {
         return new CameraFollowingObjects(camera, objs);
     }
 
@@ -51,7 +51,7 @@ public class CameraFollowingObjects implements Updateable {
     private final Camera camera;
     private int updateLevel;
 
-    private CameraFollowingObjects(Camera camera, MathObject... objects) {
+    private CameraFollowingObjects(Camera camera, MathObject<?>... objects) {
         this.objects = objects;
         this.camera = camera;
         updateLevel = 0;
@@ -80,11 +80,11 @@ public class CameraFollowingObjects implements Updateable {
     public void update(JMathAnimScene scene) {
         Vec centroid = Vec.to(0, 0);
         for (int i = 0; i < objects.length; i++) {
-            Vec v = objects[i].getCenter().v;
+            Vec v = objects[i].getCenter();
             centroid.addInSite(v);
         }
         centroid.multInSite(1d / objects.length);
-        Vec vcenter = camera.getMathView().getCenter().v;
+        Vec vcenter = camera.getMathView().getCenter();
         camera.shift(centroid.minus(vcenter));
         Rect r = camera.getMathView();
         for (Boxable obj : objects) {

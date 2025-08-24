@@ -110,7 +110,11 @@ public class CTEllipse extends Constructible<CTEllipse> {
         }
 
         //Create the affine transformation by 3 points: center, right and upper
-        AffineJTransform tr = AffineJTransform.createAffineTransformation(Point.origin(), Point.at(1, 0), Point.at(0, 1), centerEllipse, rightPoint, upperPoint, 1);
+        AffineJTransform tr = AffineJTransform.createAffineTransformation(
+                Vec.to(0,0),
+                Vec.to(1, 0),
+                Vec.to(0, 1),
+                centerEllipse, rightPoint, upperPoint, 1);
         tr.applyTransform(ellipseToDraw);
     }
     

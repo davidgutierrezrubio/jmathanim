@@ -2,6 +2,7 @@ package com.jmathanim.mathobjects.Delimiters;
 
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Enum.AnchorType;
+import com.jmathanim.Enum.DelimiterType;
 import com.jmathanim.Enum.RotationType;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
@@ -14,8 +15,7 @@ import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import com.jmathanim.mathobjects.Text.TextUpdaters.CountUpdaterFactory;
 import com.jmathanim.mathobjects.Text.TextUpdaters.LengthUpdaterFactory;
 import com.jmathanim.mathobjects.Text.TextUpdaters.TextUpdaterFactory;
-import com.jmathanim.mathobjects.updateableObjects.AnchoredMathObject;
-import com.jmathanim.mathobjects.updaters.Coordinates;
+import com.jmathanim.mathobjects.updaters.Updater;
 
 public abstract class Delimiter extends Constructible<Delimiter> {
     public final Vec labelMarkPoint;
@@ -122,7 +122,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
      * @param gap           Gap to put between anchor points and delimiter
      * @return The delimiter
      */
-    public static Delimiter makeStacked(MathObject obj, AnchorType anchorType, DelimiterType delimiterType, double gap) {
+    public static Delimiter makeStacked(MathObject<?> obj, AnchorType anchorType, DelimiterType delimiterType, double gap) {
         JMathAnimScene sce = JMathAnimConfig.getConfig().getScene();//This should be better implemented, avoid static singletons
         AnchorType anchorA, anchorB;
         switch (anchorType) {
@@ -146,23 +146,31 @@ public abstract class Delimiter extends Constructible<Delimiter> {
                 JMathAnimScene.logger.error("Invalid anchor for delimiter object " + anchorType.name());
                 return null;
         }
-        Point A = Anchor.getAnchorPoint(obj, anchorA);
-        Point B = Anchor.getAnchorPoint(obj, anchorB);
+        Vec A = Anchor.getAnchorPoint(obj, anchorA);
+        Vec B = Anchor.getAnchorPoint(obj, anchorB);
         //Register points A and B as updateable
-        sce.registerUpdateable(new AnchoredMathObject(A, AnchorType.CENTER, obj, anchorA));
-        sce.registerUpdateable(new AnchoredMathObject(B, AnchorType.CENTER, obj, anchorB));
+//        sce.registerUpdateable(new AnchoredMathObject(Point.at(A), AnchorType.CENTER, obj, anchorA));
+//        sce.registerUpdateable(new AnchoredMathObject(Point.at(B), AnchorType.CENTER, obj, anchorB));
 
         Delimiter resul = Delimiter.make(A, B, delimiterType, gap);
+        resul.registerUpdater(new Updater() {
+            @Override
+            public void update(JMathAnimScene scene) {
+                resul.getA().copyCoordinatesFrom(Anchor.getAnchorPoint(obj, anchorA));
+                resul.getB().copyCoordinatesFrom(Anchor.getAnchorPoint(obj, anchorB));
+                resul.rebuildShape();
+            }
+        });
         return resul;
     }
 
 
 
-    public Coordinates getA() {
+    public Coordinates<?> getA() {
         return A;
     }
 
-    public Coordinates getB() {
+    public Coordinates<?> getB() {
         return B;
     }
 
@@ -263,8 +271,8 @@ public abstract class Delimiter extends Constructible<Delimiter> {
         delimiterShapeToDraw.copyStateFrom(del.delimiterShapeToDraw);
         delimiterLabelRigidBox.copyStateFrom(del.delimiterLabelRigidBox);
 
-        this.A.copyFrom(del.A);
-        this.B.copyFrom(del.B);
+        this.A.copyCoordinatesFrom(del.A);
+        this.B.copyCoordinatesFrom(del.B);
         getMp().copyFrom(obj.getMp());
         this.labelMarkGap = del.labelMarkGap;
         this.mpDelimiter.copyFrom(del.mpDelimiter);
@@ -363,33 +371,6 @@ public abstract class Delimiter extends Constructible<Delimiter> {
         return (LaTeXMathObject) getLabel();
     }
 
-
-    /**
-     * Type of delimiter
-     */
-    public enum DelimiterType {
-        /**
-         * Brace {
-         */
-        BRACE,
-        /**
-         * Parenthesis (
-         */
-        PARENTHESIS,
-        /**
-         * Brackets
-         */
-        BRACKET,
-        /**
-         * Simple bar addLengthLabel length
-         */
-        LENGTH_BRACKET,
-        /**
-         * Simple arrow addLengthLabel length
-         */
-        LENGTH_ARROW,
-        INVISIBLE
-    }
 
     @Override
     public void update(JMathAnimScene scene) {

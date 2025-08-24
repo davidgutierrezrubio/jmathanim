@@ -19,6 +19,7 @@ package com.jmathanim.Utils;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Enum.AnchorType;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 
@@ -42,7 +43,7 @@ public class Anchor {
      * @param anchor Type of anchor defined in the enum Type
      * @return The anchor point
      */
-    public static Point getAnchorPoint(Boxable obj, AnchorType anchor) {
+    public static Vec getAnchorPoint(Boxable obj, AnchorType anchor) {
         return getAnchorPoint(obj, anchor, 0, 0, 0);
     }
 
@@ -57,7 +58,7 @@ public class Anchor {
      * @param gap Gap to add to the anchor
      * @return The anchor point
      */
-    public static Point getAnchorPoint(Boxable obj, AnchorType anchor, double gap) {
+    public static Vec getAnchorPoint(Boxable obj, AnchorType anchor, double gap) {
         return getAnchorPoint(obj, anchor, gap, gap, gap);
     }
 
@@ -75,18 +76,18 @@ public class Anchor {
      * @param zgap Z Gap. Applied to ZTOP and ZBOTTOM
      * @return The anchor point
      */
-    public static Point getAnchorPoint(Boxable obj, AnchorType anchor, double xgap, double ygap, double zgap) {
-        Point resul = new Point();
+    public static Vec getAnchorPoint(Boxable obj, AnchorType anchor, double xgap, double ygap, double zgap) {
+        Vec resul = Vec.to(0,0);
         final Rect bb = obj.getBoundingBox();
         switch (anchor) {
             case BY_POINT:
-                if (obj instanceof Point) {
-                    Point p = (Point) obj;
-                    resul = p.copy();
+                if (obj instanceof Coordinates) {
+                    Vec v = ((Coordinates) obj).getVec();
+                    resul = v.copy();
                 } else {
                     if (obj instanceof MathObject) {
-                        MathObject o = (MathObject) obj;
-                        resul = Point.at(o.getAbsoluteAnchorVec());
+                        MathObject<?> o = (MathObject<?>) obj;
+                        resul = o.getAbsoluteAnchorVec().copy();
                     }
                 }
                 break;
@@ -241,12 +242,12 @@ public class Anchor {
      * @param yMargin y margin to apply to the anchor
      * @return A {@link Point} located at the current anchor
      */
-    public static Point getScreenAnchorPoint(Camera camera, AnchorType anchor, double xMargin, double yMargin) {
+    public static Vec getScreenAnchorPoint(Camera camera, AnchorType anchor, double xMargin, double yMargin) {
         if (camera == null) {
             //If not set, use default
             camera = JMathAnimConfig.getConfig().getCamera();
         }
-        Point resul = new Point();
+        Vec resul = Vec.to(0,0);
         Vec gaps = camera.getGaps();
         Rect mathViewWithGap = camera.getMathView().addGap(-xMargin - gaps.x, -yMargin - gaps.y);
         switch (anchor) {

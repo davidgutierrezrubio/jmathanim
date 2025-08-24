@@ -19,10 +19,7 @@ package com.jmathanim.Utils.Layouts;
 
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.BoxDirection;
-import com.jmathanim.mathobjects.AbstractMathGroup;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.*;
 
 /**
  * A box layout. This layout allocates the objects following a row-column
@@ -87,7 +84,7 @@ public class BoxLayout extends AbstractBoxLayout {
      * @param inRowGap Gap between 2 consecutive elements in the same row
      * @param inColGap Gap between 2 consecutive elements in the same column
      */
-    public BoxLayout(Point corner, int rowSize, BoxDirection boxDirection, double inRowGap, double inColGap) {
+    public BoxLayout(Coordinates<?> corner, int rowSize, BoxDirection boxDirection, double inRowGap, double inColGap) {
         super(corner, inRowGap, inColGap);
         computeDirections(boxDirection);
         this.rowSize = rowSize;

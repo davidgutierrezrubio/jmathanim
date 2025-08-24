@@ -17,13 +17,10 @@
  */
 package com.jmathanim.Constructible.Lines;
 
-import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
 
@@ -31,7 +28,7 @@ import com.jmathanim.mathobjects.Scalar;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTTransformedLine extends CTAbstractLine {
+public class CTTransformedLine extends CTAbstractLine<CTTransformedLine> {
 
     private final CTLine lineToTransform;
     private final CTLine axis;
@@ -81,12 +78,12 @@ public class CTTransformedLine extends CTAbstractLine {
     }
 
     @Override
-    public MathObject getMathObject() {
+    public Line getMathObject() {
         return lineToDraw;
     }
 
     @Override
-    public Constructible copy() {
+    public CTTransformedLine copy() {
         CTTransformedLine copy;
         switch (transType) {
             case AXISMIRROR:
@@ -114,21 +111,21 @@ public class CTTransformedLine extends CTAbstractLine {
                 tr = AffineJTransform.createReflectionByAxis(axis.getP1(), axis.getP2(), 1);
                 break;
             case CENTRALMIRROR:
-                tr = AffineJTransform.createScaleTransform(new Point(center.v.x,center.v.y), -1);
+                tr = AffineJTransform.createScaleTransform(new Point(center.coordinatesOfPoint.x,center.coordinatesOfPoint.y), -1);
                 break;
             case TRANSLATION:
                 tr = AffineJTransform.createTranslationTransform(translation.getDirection());
                 break;
             default:
-                tr = AffineJTransform.create2DRotationTransform(new Point(center.v.x, center.v.y), angle.value);
+                tr = AffineJTransform.create2DRotationTransform(new Point(center.coordinatesOfPoint.x, center.coordinatesOfPoint.y), angle.value);
         }
-        getP1().v.copyFrom(lineToTransform.getP1().v);
-        getP2().v.copyFrom(lineToTransform.getP2().v);
-        getP1().v.applyAffineTransform(tr);
-        getP2().v.applyAffineTransform(tr);
+        getP1().copyCoordinatesFrom(lineToTransform.getP1());
+        getP2().copyCoordinatesFrom(lineToTransform.getP2());
+        getP1().applyAffineTransform(tr);
+        getP2().applyAffineTransform(tr);
         if (!isFreeMathObject()) {
-            lineToDraw.getP1().v.copyFrom(getP1().v);
-            lineToDraw.getP2().v.copyFrom(getP2().v);
+            lineToDraw.getP1().copyCoordinatesFrom(getP1());
+            lineToDraw.getP2().copyCoordinatesFrom(getP2());
         }
     }
 
@@ -148,11 +145,5 @@ public class CTTransformedLine extends CTAbstractLine {
                 dependsOn(scene, this.lineToTransform, this.translation);
                 break;
         }
-    }
-      @Override
-    public Vec getHoldCoordinates(Vec coordinates) {
-        Vec v1 = getDirection().normalize();
-        Vec v2 = coordinates.minus(getP1().v);
-        return(getP1().v.add(v1.mult(v1.dot(v2))));
     }
 }

@@ -18,6 +18,7 @@
 package com.jmathanim.Constructible.Points;
 
 import com.jmathanim.Constructible.Lines.CTSegment;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 
@@ -100,20 +101,20 @@ public class CTMidPoint extends CTPoint {
         Point p = getMathObject();
         switch (midPointType) {
             case SEGMENT:
-                Point p1 = segment.getP1();
-                Point p2 = segment.getP2();
-                v.x = .5 * (p1.v.x + p2.v.x);
-                v.y = .5 * (p1.v.y + p2.v.y);
-                v.z = .5 * (p1.v.z + p2.v.z);
+                Vec p1 = segment.getP1();
+                Vec p2 = segment.getP2();
+                coordinatesOfPoint.x = .5 * (p1.x + p2.x);
+                coordinatesOfPoint.y = .5 * (p1.y + p2.y);
+                coordinatesOfPoint.z = .5 * (p1.z + p2.z);
                 break;
             case TWO_POINTS:
-                v.x = .5 * (A.v.x + B.v.x);
-                v.y = .5 * (A.v.y + B.v.y);
-                v.z = .5 * (A.v.z + B.v.z);
+                coordinatesOfPoint.x = .5 * (A.coordinatesOfPoint.x + B.coordinatesOfPoint.x);
+                coordinatesOfPoint.y = .5 * (A.coordinatesOfPoint.y + B.coordinatesOfPoint.y);
+                coordinatesOfPoint.z = .5 * (A.coordinatesOfPoint.z + B.coordinatesOfPoint.z);
                 break;
         }
         if (!isFreeMathObject()) {
-            p.v.copyFrom(v);
+            p.v.copyCoordinatesFrom(coordinatesOfPoint);
         }
     }
 

@@ -42,7 +42,7 @@ public class CTVector extends CTAbstractLine {
      * @return The created object
      */
     public static CTVector makeVector(Vec vector) {
-        CTVector resul = new CTVector(CTPoint.make(Point.origin()), CTPoint.make(Point.at(vector.x, vector.y)));
+        CTVector resul = new CTVector(CTPoint.at(0,0), CTPoint.at(vector.x, vector.y));
         resul.rebuildShape();
         return resul;
     }
@@ -97,11 +97,11 @@ public class CTVector extends CTAbstractLine {
 
     @Override
     public void rebuildShape() {
-        this.P1.v.copyFrom(this.A.v);
-        this.P2.v.copyFrom(this.B.v);
+        this.P1.copyCoordinatesFrom(this.A.coordinatesOfPoint);
+        this.P2.copyCoordinatesFrom(this.B.coordinatesOfPoint);
         if (!isFreeMathObject()) {
-            arrowToDraw.getStart().v.copyFrom(this.P1.v);
-            arrowToDraw.getEnd().v.copyFrom(this.P2.v);
+            arrowToDraw.getStart().v.copyCoordinatesFrom(this.P1);
+            arrowToDraw.getEnd().v.copyCoordinatesFrom(this.P2);
         }
     }
 
@@ -119,10 +119,10 @@ public class CTVector extends CTAbstractLine {
     @Override
     public Vec getHoldCoordinates(Vec coordinates) {
         Vec v1 = getDirection().normalize();
-        Vec v2 = coordinates.minus(getP1().v);
+        Vec v2 = coordinates.minus(getP1());
         double dotProd = v1.dot(v2);
         dotProd = Math.max(dotProd, 0);
         dotProd = Math.min(dotProd, getDirection().norm());
-        return getP1().v.add(v1.mult(dotProd));
+        return getP1().add(v1.mult(dotProd));
     }
 }

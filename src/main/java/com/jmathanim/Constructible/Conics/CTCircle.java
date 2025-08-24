@@ -33,8 +33,8 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
 
     @Override
     public Vec getHoldCoordinates(Vec coordinates) {
-        Vec v=coordinates.minus(getCircleCenter().v).normalize().mult(getRadius().value);
-        return getCircleCenter().v.add(v);
+        Vec v=coordinates.minus(getCircleCenter().coordinatesOfPoint).normalize().mult(getRadius().value);
+        return getCircleCenter().coordinatesOfPoint.add(v);
         
     }
 
@@ -156,7 +156,7 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
         radius = Scalar.make(0);
         originalCircle = Shape.circle();
         circleToDraw = originalCircle.copy();
-        circleCenter = CTPoint.make(Point.at(0, 0));
+        circleCenter = CTPoint.make(Vec.to(0, 0));
     }
 
     @Override
@@ -238,7 +238,7 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
                 get.copyControlPointsFrom(originalCircle.get(i));
             }
             circleToDraw.scale(this.radius.value);
-            circleToDraw.shift(this.circleCenter.v);
+            circleToDraw.shift(this.circleCenter.coordinatesOfPoint);
         }
     }
 
@@ -248,7 +248,7 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
                 this.radius.value = circleCenter.getMathObject().to(A.getMathObject()).norm();
                 break;
             case THREE_POINTS:
-                findCircleThatPassThroughThreePoints(A.v.x, A.v.y, B.v.x, B.v.y, C.v.x, C.v.y);
+                findCircleThatPassThroughThreePoints(A.coordinatesOfPoint.x, A.coordinatesOfPoint.y, B.coordinatesOfPoint.x, B.coordinatesOfPoint.y, C.coordinatesOfPoint.x, C.coordinatesOfPoint.y);
                 break;
             case CENTER_RADIUS:
             //Nothing to do, everything is already calculated!
@@ -310,9 +310,9 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
 
         // r is the radius
 //        this.radius = Math.sqrt(sqr_of_r);//this doesn't work
-        this.circleCenter.v.x = h;
-        this.circleCenter.v.y = k;
-        final Vec radd = A.v.minus(this.circleCenter.v);
+        this.circleCenter.coordinatesOfPoint.x = h;
+        this.circleCenter.coordinatesOfPoint.y = k;
+        final Vec radd = A.coordinatesOfPoint.minus(this.circleCenter.coordinatesOfPoint);
         this.radius.value = radd.norm();
         // Center (h,k)
     }

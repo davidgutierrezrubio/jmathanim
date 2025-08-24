@@ -28,7 +28,6 @@ import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Class with static methods to perform interpolations on path
@@ -113,7 +112,7 @@ public class PathUtils {
 //                // not used
 //                // when drawing straight paths, it becomes handy when doing transforms from
 //                // STRAIGHT to CURVED paths
-//                p2.cpExit.v.copyFrom(p2.p.v);
+//                p2.cpExit.copyCoordinatesFrom(p2.p.v);
 //                p3.cpEnter.copyFrom(p3.p.v);
 //            }
 
@@ -125,13 +124,13 @@ public class PathUtils {
         if (!jp0.isThisSegmentVisible) {
             jp1 = path.jmPathPoints.get(1);
             v = jp1.vEnter.minus(jp0.v).multInSite(PathUtils.DEFAULT_TENSION);
-            jp0.vExit.copyFrom(jp0.v.add(v));
+            jp0.vExit.copyCoordinatesFrom(jp0.v.add(v));
 
             jp1 = path.jmPathPoints.get(numPoints - 2);
             jp0 = path.jmPathPoints.get(numPoints - 1);
 //            if (jp0.isCurved) {
             v = jp1.vExit.minus(jp0.v).multInSite(PathUtils.DEFAULT_TENSION);
-            jp0.vEnter.copyFrom(jp0.v.add(v));
+            jp0.vEnter.copyCoordinatesFrom(jp0.v.add(v));
 //            }
         }
     }
@@ -172,8 +171,8 @@ public class PathUtils {
     public static void rectifyPath(JMPath path) {
         for (JMPathPoint jmp : path) {
             jmp.isCurved = false;
-            jmp.vEnter.copyFrom(jmp.v);
-            jmp.vExit.copyFrom(jmp.v);
+            jmp.vEnter.copyCoordinatesFrom(jmp.v);
+            jmp.vExit.copyCoordinatesFrom(jmp.v);
         }
     }
 
@@ -254,10 +253,7 @@ public class PathUtils {
 
         }
         Vec[] pointsArray = flattened.toArray(new Vec[0]);
-        Point[] points = Arrays.stream(pointsArray).map(t -> Point.at(t)).toArray(Point[]::new);
-        
-        Shape resul = Shape.polygon(points);
-        return resul;
+        return Shape.polygon(pointsArray);
     }
 
     public ArrayList<ArrayList<Vec>> computePolygonalPieces(Camera cam, JMPath path) {

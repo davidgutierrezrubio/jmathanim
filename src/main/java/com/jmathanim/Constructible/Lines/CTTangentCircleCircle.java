@@ -17,32 +17,22 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Conics.CTAbstractCircle;
-import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.MathObject;
 
 /**
- *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTTangentCircleCircle extends CTAbstractLine {
+public class CTTangentCircleCircle extends CTAbstractLine<CTTangentCircleCircle> {
 
     public final CTPoint intersectionTangents;
-
-    protected CTAbstractCircle c1;
-    protected CTAbstractCircle c2;
-    protected Line lineToDraw;
     private final int numTangent;
+    protected CTAbstractCircle<?> c1;
+    protected CTAbstractCircle<?> c2;
+    protected Line lineToDraw;
 
-    public static CTTangentCircleCircle make(CTAbstractCircle c1, CTAbstractCircle c2, int numSolution) {
-        CTTangentCircleCircle resul = new CTTangentCircleCircle(c1, c2, numSolution);
-        resul.rebuildShape();
-        return resul;
-    }
-
-    private CTTangentCircleCircle(CTAbstractCircle c1, CTAbstractCircle c2, int numTangent) {
+    private CTTangentCircleCircle(CTAbstractCircle<?> c1, CTAbstractCircle<?> c2, int numTangent) {
         super();
         this.c1 = c1;
         this.c2 = c2;
@@ -51,15 +41,21 @@ public class CTTangentCircleCircle extends CTAbstractLine {
         intersectionTangents = CTPoint.at(0, 0);//Dummy point
     }
 
+    public static CTTangentCircleCircle make(CTAbstractCircle<?> c1, CTAbstractCircle<?> c2, int numSolution) {
+        CTTangentCircleCircle resul = new CTTangentCircleCircle(c1, c2, numSolution);
+        resul.rebuildShape();
+        return resul;
+    }
+
     @Override
-    public Constructible copy() {
-        CTTangentCircleCircle copy = CTTangentCircleCircle.make((CTAbstractCircle) c1.copy(), (CTAbstractCircle) c2.copy(), numTangent);
+    public CTTangentCircleCircle copy() {
+        CTTangentCircleCircle copy = CTTangentCircleCircle.make(c1.copy(), c2.copy(), numTangent);
         copy.copyStateFrom(this);
         return copy;
     }
 
     @Override
-    public MathObject getMathObject() {
+    public Line getMathObject() {
         return lineToDraw;
     }
 
@@ -82,15 +78,15 @@ public class CTTangentCircleCircle extends CTAbstractLine {
         } else {
             return;
         }
-        Vec v = c1.getCenter().v.interpolate(c2.getCenter().v, baricentricCoordinates);
-        intersectionTangents.v.copyFrom(v);
+        Vec v = c1.getCenter().interpolate(c2.getCenter(), baricentricCoordinates);
+        intersectionTangents.coordinatesOfPoint.copyCoordinatesFrom(v);
         intersectionTangents.rebuildShape();
         CTTangentPointCircle ct = CTTangentPointCircle.make(intersectionTangents, c1, numTangent % 2);
 
-        this.P1.v.copyFrom(ct.getP1().v);
-        this.P2.v.copyFrom(ct.getP2().v);
-        lineToDraw.getP1().v.copyFrom(this.P1.v);
-        lineToDraw.getP2().v.copyFrom(this.P2.v);
+        this.P1.copyCoordinatesFrom(ct.getP1());
+        this.P2.copyCoordinatesFrom(ct.getP2());
+        lineToDraw.getP1().copyCoordinatesFrom(this.P1);
+        lineToDraw.getP2().copyCoordinatesFrom(this.P2);
 
     }
 

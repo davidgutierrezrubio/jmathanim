@@ -33,6 +33,7 @@ import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
 import org.w3c.dom.Element;
@@ -258,7 +259,7 @@ class GeogebraCommandParser {
         double x = Double.valueOf(elCoords.getAttribute("x"));
         double y = Double.valueOf(elCoords.getAttribute("y"));
         if (!geogebraElements.containsKey(label)) {
-            resul = CTPoint.make(Point.at(x, y));
+            resul = CTPoint.make(Vec.to(x, y));
         } else {
             resul = (CTPoint) geogebraElements.get(label);
             resul.moveTo(x, y);
@@ -330,7 +331,7 @@ class GeogebraCommandParser {
             if ("".equals(labelAnchorPoint)) {//Point doesn't exist, create a new one
                 double x = Double.parseDouble(startPointElement.getAttribute("x"));
                 double y = Double.parseDouble(startPointElement.getAttribute("y"));
-                anchorPoint = CTPoint.make(Point.at(x, y));
+                anchorPoint = CTPoint.make(Vec.to(x, y));
             } else {
                 anchorPoint = (CTPoint) geogebraElements.get(labelAnchorPoint);
             }
@@ -379,7 +380,7 @@ class GeogebraCommandParser {
             return;
         }
         if (B instanceof HasDirection) {// Line parallel
-            registerGeogebraElement(label, CTLine.make(A, (HasDirection) B));
+            registerGeogebraElement(label, CTLine.makePointDir(A, (HasDirection) B));
         }
     }
 

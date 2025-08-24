@@ -175,43 +175,43 @@ public abstract class AbstractLaTeXMathObject<T extends AbstractLaTeXMathObject<
         Vec v = Vec.to(0, 0);
         switch (anchor) {
             case CENTER:
-                v = Anchor.getAnchorPoint(this, anchor).v.mult(-1);
+                v = Anchor.getAnchorPoint(this, anchor).mult(-1);
                 break;
             case UPPER:
-                v = Anchor.getAnchorPoint(this, anchor).v.mult(-1);
+                v = Anchor.getAnchorPoint(this, anchor).mult(-1);
                 break;
             case LOWER:
-                v = Anchor.getAnchorPoint(this, anchor).v.mult(-1);
+                v = Anchor.getAnchorPoint(this, anchor).mult(-1);
                 break;
             case LEFT:
-                v = Anchor.getAnchorPoint(this.get(0), anchor).v.mult(-1);
+                v = Anchor.getAnchorPoint(this.get(0), anchor).mult(-1);
                 break;
             case ULEFT:
-                v = Anchor.getAnchorPoint(this.get(0), anchor).v.mult(-1);
+                v = Anchor.getAnchorPoint(this.get(0), anchor).mult(-1);
                 break;
             case DLEFT:
-                v = Anchor.getAnchorPoint(this.get(0), anchor).v.mult(-1);
+                v = Anchor.getAnchorPoint(this.get(0), anchor).mult(-1);
                 break;
             case LLOWER:
-                v = Anchor.getAnchorPoint(this.get(0), anchor).v.mult(-1);
+                v = Anchor.getAnchorPoint(this.get(0), anchor).mult(-1);
                 break;
             case LUPPER:
-                v = Anchor.getAnchorPoint(this.get(0), anchor).v.mult(-1);
+                v = Anchor.getAnchorPoint(this.get(0), anchor).mult(-1);
                 break;
             case RIGHT:
-                v = Anchor.getAnchorPoint(this.get(-1), anchor).v.mult(-1);
+                v = Anchor.getAnchorPoint(this.get(-1), anchor).mult(-1);
                 break;
             case URIGHT:
-                v = Anchor.getAnchorPoint(this.get(-1), anchor).v.mult(-1);
+                v = Anchor.getAnchorPoint(this.get(-1), anchor).mult(-1);
                 break;
             case DRIGHT:
-                v = Anchor.getAnchorPoint(this.get(-1), anchor).v.mult(-1);
+                v = Anchor.getAnchorPoint(this.get(-1), anchor).mult(-1);
                 break;
             case RLOWER:
-                v = Anchor.getAnchorPoint(this.get(-1), anchor).v.mult(-1);
+                v = Anchor.getAnchorPoint(this.get(-1), anchor).mult(-1);
                 break;
             case RUPPER:
-                v = Anchor.getAnchorPoint(this.get(-1), anchor).v.mult(-1);
+                v = Anchor.getAnchorPoint(this.get(-1), anchor).mult(-1);
                 break;
 
         }

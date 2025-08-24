@@ -308,7 +308,7 @@ public class JavaFXRenderer extends Renderer {
     }
 
     @Override
-    public void drawPath(Shape mobj) {
+    public void drawPath(AbstractShape<?> mobj) {
         Camera cam = mobj.getCamera();
         if (cam == null) {
             cam = camera;
@@ -317,7 +317,7 @@ public class JavaFXRenderer extends Renderer {
     }
 
     @Override
-    public void drawPath(Shape mobj, Vec shiftVector, Camera cam) {
+    public void drawPath(AbstractShape<?> mobj, Vec shiftVector, Camera cam) {
         if (cam == null) {
             //If the object has not a camera assigned yet, set it to default
             cam = getCamera();
@@ -352,12 +352,12 @@ public class JavaFXRenderer extends Renderer {
         }
         String debugText = MediatorMathObject.getDebugText(mobj);
         if (!"".equals(debugText)) {
-            debugText(debugText, mobj.getCenter().v);
+            debugText(debugText, mobj.getCenter());
         }
     }
 
 
-    private void applyDrawingStyles(Path path, Shape mobj) {
+    private void applyDrawingStyles(Path path, AbstractShape<?> mobj) {
 
         path.setStrokeLineCap(mobj.getMp().getLineCap());
         path.setStrokeLineJoin(mobj.getMp().getLineJoin());
@@ -448,13 +448,13 @@ public class JavaFXRenderer extends Renderer {
     }
 
     @Override
-    public double ThicknessToMathWidth(MathObject obj) {
+    public double ThicknessToMathWidth(MathObject<?> obj) {
         Camera cam = (obj.getMp().isAbsoluteThickness() ? fixedCamera : camera);
         return obj.getMp().getThickness() / 1066 * 4 / cam.getMathView().getWidth();
     }
 
     @Override
-    public void drawAbsoluteCopy(Shape sh, Vec anchor) {
+    public void drawAbsoluteCopy(AbstractShape<?> sh, Vec anchor) {
         Vec vFixed = defaultToFixedCamera(anchor);
         drawPath(sh, vFixed.minus(anchor),fixedCamera);
     }

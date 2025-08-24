@@ -21,7 +21,6 @@ import com.jmathanim.Enum.JumpType;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.Point;
 
 import java.util.HashMap;
 
@@ -142,8 +141,8 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
         if (!effects.containsKey(obj)) {
             effects.put(obj, new AnimationEffect());
         }
-        Point c = obj.getCenter();
-        effects.get(obj).prepareJumpPath(c, c.copy().shift(shiftVector), obj);
+        Vec c = obj.getCenter();
+        effects.get(obj).prepareJumpPath(c, c.copy().add(shiftVector), obj);
 
         return (T) this;
     }

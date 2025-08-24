@@ -22,9 +22,9 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 
@@ -62,7 +62,7 @@ public class TickAxes extends MathObject {
     public static TickAxes makeXTick(double x, String latex, TickType tt, double maxShowScale) {
         double markScale = getMarkScaleFortype(tt);
         final Shape xtick = Shape
-                .segment(Point.at(x, -INITIAL_MARK_SCALE * markScale), Point.at(x, INITIAL_MARK_SCALE * markScale))
+                .segment(Vec.to(x, -INITIAL_MARK_SCALE * markScale), Vec.to(x, INITIAL_MARK_SCALE * markScale))
                 .style(getStyleNameFortype(tt));
         final LaTeXMathObject xtickLegend = LaTeXMathObject.make(latex).style("axislegenddefault");
         xtickLegend.scale(INITIAL_LEGEND_SCALE);
@@ -72,7 +72,7 @@ public class TickAxes extends MathObject {
     public static TickAxes makeYTick(double y, String latex, TickType tt, double maxShowScale) {
         double markScale = getMarkScaleFortype(tt);
         final Shape ytick = Shape
-                .segment(Point.at(-INITIAL_MARK_SCALE * markScale, y), Point.at(INITIAL_MARK_SCALE * markScale, y))
+                .segment(Vec.to(-INITIAL_MARK_SCALE * markScale, y), Vec.to(INITIAL_MARK_SCALE * markScale, y))
                 .style(getStyleNameFortype(tt));
 
         final LaTeXMathObject ytickLegend = LaTeXMathObject.make(latex).style("axislegenddefault");

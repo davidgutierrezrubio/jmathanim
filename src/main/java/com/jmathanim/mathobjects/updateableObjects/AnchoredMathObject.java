@@ -34,11 +34,11 @@ public class AnchoredMathObject implements Updateable {
     private double gap;
     private int updateLevel;
 
-    public AnchoredMathObject(MathObject mobj, AnchorType origAnchorType, MathObject dstObject, AnchorType dstAnchorType) {
+    public AnchoredMathObject(MathObject<?> mobj, AnchorType origAnchorType, MathObject<?> dstObject, AnchorType dstAnchorType) {
         this(mobj, origAnchorType, dstObject, dstAnchorType, 0);
     }
 
-    public AnchoredMathObject(MathObject mobj, AnchorType origAnchorType, MathObject dstObject, AnchorType dstAnchorType, double gap) {
+    public AnchoredMathObject(MathObject<?> mobj, AnchorType origAnchorType, MathObject<?> dstObject, AnchorType dstAnchorType, double gap) {
         this.mobj = mobj;
         this.dstObject = dstObject;
         this.origAnchorType = origAnchorType;

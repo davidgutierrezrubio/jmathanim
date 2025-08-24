@@ -1,10 +1,12 @@
 package com.jmathanim.mathobjects.Delimiters;
 
 import com.jmathanim.Enum.AnchorType;
+import com.jmathanim.Enum.DelimiterType;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.UsefulLambdas;
+import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.NullMathObject;
-import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
@@ -14,14 +16,14 @@ public class LengthMeasure extends Delimiter {
     private final double hgap;
     private Double thicknessShape;
 
-    public LengthMeasure(Point A, Point B, DelimiterType type, double gap) {
+    public LengthMeasure(Coordinates A, Coordinates B, DelimiterType type, double gap) {
         super(A, B, type, gap);
         this.gap = gap;
         hgap = .05;
         minimumWidthToShrink = .75;
     }
 
-    public static LengthMeasure make(Point A, Point B, DelimiterType type, double gap) {
+    public static LengthMeasure make(Coordinates A, Coordinates B, DelimiterType type, double gap) {
         LengthMeasure resul = new LengthMeasure(A, B, type, gap);
         resul.buildDelimiterShape();
         return resul;
@@ -33,8 +35,8 @@ public class LengthMeasure extends Delimiter {
 
         double width = A.to(B).norm();
         double angle = A.to(B).getAngle();
-        Point AA = Point.at(0, 0);
-        Point BB = Point.at(width, 0);
+        Vec AA = Vec.to(0, 0);
+        Vec BB = Vec.to(width, 0);
 
         delimiterShapeToDraw.getPath().clear();
 //        groupElementsToBeDrawn.clear();
@@ -51,12 +53,12 @@ public class LengthMeasure extends Delimiter {
                 xOffset = 0;
                 break;
         }
-        Shape verticalBar = Shape.polyLine(Point.at(xOffset, -vCenter), Point.at(0, 0), Point.at(xOffset, vCenter));
+        Shape verticalBar = Shape.polyLine(Vec.to(xOffset, -vCenter), Vec.to(0, 0), Vec.to(xOffset, vCenter));
         delimiterShapeToDraw.getPath().addJMPointsFrom(verticalBar.getPath());
 
         if (getLabel() instanceof NullMathObject) {
 
-            final Shape segment = Shape.segment(Point.at(0, 0), Point.at(width, 0));
+            final Shape segment = Shape.segment(Vec.to(0, 0), Vec.to(width, 0));
             delimiterShapeToDraw.getPath().addJMPointsFrom(segment.getPath());
         } else {
             delimiterLabelRigidBox.resetMatrix();
@@ -73,7 +75,7 @@ public class LengthMeasure extends Delimiter {
 
 
 //        segmentLength*=amplitudeScale;
-            final Shape segment = Shape.segment(Point.at(0, 0), Point.at(segmentLength, 0));
+            final Shape segment = Shape.segment(Vec.to(0, 0), Vec.to(segmentLength, 0));
             delimiterShapeToDraw.getPath().addJMPointsFrom(segment.getPath());
 
             //Manages rotation of label
@@ -91,14 +93,14 @@ public class LengthMeasure extends Delimiter {
 
             delimiterLabelRigidBox.stackTo(segment, AnchorType.RIGHT, gapToUse);
 
-            labelMarkPoint.copyFrom(delimiterLabelRigidBox.getCenter().v);
+            labelMarkPoint.copyCoordinatesFrom(delimiterLabelRigidBox.getCenter());
             Shape segCopy = segment.copy().stackTo(BB, AnchorType.LEFT);
             delimiterShapeToDraw.getPath().addJMPointsFrom(segCopy.getPath());
             delimiterLabelRigidBox.shift(0, +gap * amplitudeScale);
 
 //            delimiterLabelRigidBox.getMp().copyFrom(mpDelimiter.get(1));
         }
-        Shape vertCopy = verticalBar.copy().scale(Point.at(0, 0), -1, 1).shift(width, 0);
+        Shape vertCopy = verticalBar.copy().scale(Vec.to(0, 0), -1, 1).shift(width, 0);
         delimiterShapeToDraw.getPath().addJMPointsFrom(vertCopy.getPath());
         delimiterShapeToDraw.shift(0, +gap * amplitudeScale);
 

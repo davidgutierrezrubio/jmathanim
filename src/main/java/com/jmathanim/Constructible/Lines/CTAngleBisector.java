@@ -93,9 +93,9 @@ public class CTAngleBisector extends CTAbstractLine {
         switch (bisectorType) {
             case PointPointPoint:
                 Vec vdir = B.to(A).normalize().add(B.to(C).normalize());
-                dirPoint.v.copyFrom(B.getMathObject().add(vdir).v);
-                P1.v.copyFrom(B.v);
-                P2.v.copyFrom(dirPoint.v);
+                dirPoint.v.copyCoordinatesFrom(B.getMathObject().add(vdir).v);
+                P1.copyCoordinatesFrom(B.coordinatesOfPoint);
+                P2.copyCoordinatesFrom(dirPoint.v);
                 break;
             case LineLine:
                 //TODO: Implement
@@ -114,10 +114,4 @@ public class CTAngleBisector extends CTAbstractLine {
         }
     }
 
-    @Override
-    public Vec getHoldCoordinates(Vec coordinates) {
-        Vec v1 = getDirection().normalize();
-        Vec v2 = coordinates.minus(getP1().v);
-        return (getP1().v.add(v1.mult(v1.dot(v2))));
-    }
 }

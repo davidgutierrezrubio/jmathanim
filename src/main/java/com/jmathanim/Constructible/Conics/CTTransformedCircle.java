@@ -107,7 +107,7 @@ public class CTTransformedCircle extends CTCircle {
     }
 
     @Override
-    public CTCircle copy() {
+    public CTTransformedCircle copy() {
         CTTransformedCircle copy;
         switch (transType) {
             case AXISMIRROR:
@@ -135,28 +135,28 @@ public class CTTransformedCircle extends CTCircle {
                 tr = AffineJTransform.createReflectionByAxis(axis.getP1(), axis.getP2(), 1);
                 break;
             case CENTRALMIRROR:
-                tr = AffineJTransform.createScaleTransform(new Point(center.v.x,center.v.y), -1);
+                tr = AffineJTransform.createScaleTransform(new Point(center.coordinatesOfPoint.x,center.coordinatesOfPoint.y), -1);
                 break;
             case TRANSLATION:
                 tr = AffineJTransform.createTranslationTransform(translation.getDirection());
                 break;
             case ROTATION:
-                tr = AffineJTransform.create2DRotationTransform(new Point(center.v.x,center.v.y), angle.value);
+                tr = AffineJTransform.create2DRotationTransform(new Point(center.coordinatesOfPoint.x,center.coordinatesOfPoint.y), angle.value);
                 break;
             default:
                 tr = null;
         }
-        final Vec vv = circleToTransform.getCenter().v;
-        getCircleCenter().v.copyFrom(vv);
+        final Vec vv = circleToTransform.getCenter();
+        getCircleCenter().coordinatesOfPoint.copyCoordinatesFrom(vv);
         this.radius.setScalar(circleToTransform.radius.getScalar());
-        getCircleCenter().v.applyAffineTransform(tr);
+        getCircleCenter().coordinatesOfPoint.applyAffineTransform(tr);
         if (!isFreeMathObject()) {
             for (int i = 0; i < circleToDraw.size(); i++) {
                 JMPathPoint get = circleToDraw.get(i);
                 get.copyControlPointsFrom(originalCircle.get(i));
             }
             circleToDraw.scale(this.radius.value);
-            circleToDraw.shift(this.circleCenter.v);
+            circleToDraw.shift(this.circleCenter.coordinatesOfPoint);
         }
     }
 

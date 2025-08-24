@@ -20,7 +20,8 @@ package com.jmathanim.Utils.Layouts;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.BoxDirection;
 import com.jmathanim.Enum.RowAlignType;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.Coordinates;
 
 /**
  * An abstract class to implement boxed-like layouts, like BoxLayout and
@@ -33,7 +34,7 @@ public abstract class AbstractBoxLayout extends GroupLayout {
 
 
 
-    protected Point corner;
+    protected Vec corner;
     protected double inRowGap;
     protected double inColGap;
     AnchorType inRowStack;
@@ -41,10 +42,10 @@ public abstract class AbstractBoxLayout extends GroupLayout {
     AnchorType firstElementStack;
     RowAlignType rowAlignType;
 
-    public AbstractBoxLayout(Point corner, double inRowGap, double inColGap) {
+    public AbstractBoxLayout(Coordinates<?> corner, double inRowGap, double inColGap) {
         this.inRowGap = inRowGap;
         this.inColGap = inColGap;
-        this.corner = corner;
+        this.corner = corner.getVec();
     }
 
     public <T extends AbstractBoxLayout> T setDirection(BoxDirection dir) {
@@ -139,12 +140,12 @@ public abstract class AbstractBoxLayout extends GroupLayout {
         }
     }
 
-    public Point getCorner() {
+    public Vec getCorner() {
         return corner;
     }
 
-    public void setCorner(Point corner) {
-        this.corner = corner;
+    public void setCorner(Coordinates<?>  corner) {
+        this.corner = corner.getVec();
     }
 
     public double getInRowGap() {

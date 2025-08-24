@@ -35,7 +35,7 @@ public class TransformedObjects implements Updateable {
     private AffineJTransform transform;
     private final HashMap<MathObject, Boolean> dictWasInTheScene;
 
-    public static TransformedObjects make(MathObject... base) {
+    public static TransformedObjects make(MathObject<?>... base) {
         TransformedObjects resul = new TransformedObjects();
         for (MathObject obj : base) {
             resul.add(obj);

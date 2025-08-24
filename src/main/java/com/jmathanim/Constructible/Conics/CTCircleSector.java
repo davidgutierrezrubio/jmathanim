@@ -112,10 +112,10 @@ public class CTCircleSector extends CTAbstractCircle {
     @Override
     public void rebuildShape() {
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(
-                Point.at(0, 0),
-                Point.at(1, 0),
-                new Point(center.v.x,center.v.y),
-                new Point(A.v.x,A.v.y), 1);
+                Vec.to(0, 0),
+                Vec.to(1, 0),
+                Vec.to(center.coordinatesOfPoint.x,center.coordinatesOfPoint.y),
+                Vec.to(A.coordinatesOfPoint.x,A.coordinatesOfPoint.y), 1);
 
         Vec v1 = center.to(A);
         Vec v2 = center.to(B);
@@ -127,12 +127,12 @@ public class CTCircleSector extends CTAbstractCircle {
             }
             Shape referenceArc = Shape.arc(angle);
 
-            referenceArc.get(0).vEnter.copyFrom(referenceArc.get(0).v);
-            referenceArc.get(-1).vExit.copyFrom(referenceArc.get(-1).v);
+            referenceArc.get(0).vEnter.copyCoordinatesFrom(referenceArc.get(0).v);
+            referenceArc.get(-1).vExit.copyCoordinatesFrom(referenceArc.get(-1).v);
             referenceArc.get(0).isThisSegmentVisible = true;
             JMPathPoint pp = JMPathPoint.lineTo(Point.origin());
-            pp.vEnter.copyFrom(pp.v);
-            pp.vExit.copyFrom(pp.v);
+            pp.vEnter.copyCoordinatesFrom(pp.v);
+            pp.vExit.copyCoordinatesFrom(pp.v);
             referenceArc.getPath().jmPathPoints.add(0, pp);
             referenceArc.applyAffineTransform(tr);
             arcTODraw.getPath().clear();
@@ -149,8 +149,8 @@ public class CTCircleSector extends CTAbstractCircle {
     @Override
     public Vec getHoldCoordinates(Vec coordinates) {
         //TODO: Implement this, for now, act as a simple circle
-        Vec v = coordinates.minus(getCircleCenter().v).normalize().mult(getRadius().value);
-        return getCircleCenter().v.add(v);
+        Vec v = coordinates.minus(getCircleCenter().coordinatesOfPoint).normalize().mult(getRadius().value);
+        return getCircleCenter().coordinatesOfPoint.add(v);
 
     }
 }

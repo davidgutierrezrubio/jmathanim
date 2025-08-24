@@ -162,7 +162,6 @@ public class FunctionGraph extends MathObject<FunctionGraph> implements hasScala
      * @param numPoints Number of points to calculate
      */
     private FunctionGraph(DoubleBinaryOperator function, double xmin, double xmax, int numPoints) {
-        style("FunctionGraphDefault");// Default style, if any
         this.w = 1;
         this.function = function;
         this.functionBase = function;
@@ -170,6 +169,7 @@ public class FunctionGraph extends MathObject<FunctionGraph> implements hasScala
         this.xPoints = new ArrayList<>();
         this.numPoints = numPoints;
         functionShape=new Shape();
+        style("FunctionGraphDefault");// Default style, if any
         recomputeBasePoints(xmin, xmax);
     }
 
@@ -202,8 +202,7 @@ public class FunctionGraph extends MathObject<FunctionGraph> implements hasScala
         for (int n = 0; n < xPoints.size(); n++) {
             double x = xPoints.get(n);
             double y = getFunctionValue(x, this.w);
-            Point p = Point.at(x, y);
-            final JMPathPoint jmp = JMPathPoint.curveTo(p);
+            final JMPathPoint jmp = JMPathPoint.curveTo(Vec.to(x,y));
             functionShape.getPath().addJMPoint(jmp);
             if (n == 0) {
                 jmp.isThisSegmentVisible = false;
@@ -272,12 +271,12 @@ public class FunctionGraph extends MathObject<FunctionGraph> implements hasScala
                     slope = 0;
                 }
                 Vec v = new Vec(deltaX, slope * deltaX);
-                jmp.vExit.copyFrom(jmp.v.add(v));
+                jmp.vExit.copyCoordinatesFrom(jmp.v.add(v));
             }
             if (n > 0) {
                 final double deltaX = .3 * (xPoints.get(n - 1) - x);
                 Vec v = new Vec(deltaX, getSlope(x, -1) * deltaX);
-                jmp.vEnter.copyFrom(jmp.v.add(v));
+                jmp.vEnter.copyCoordinatesFrom(jmp.v.add(v));
                 double h = x - xPoints.get(n - 1);
                 double deriv = (getFunctionValue(x, this.w) - getFunctionValue(xPoints.get(n - 1), this.w)) / h;
                 jmp.isThisSegmentVisible = (Math.abs(deriv) < CONTINUUM_THRESHOLD);
@@ -352,8 +351,7 @@ public class FunctionGraph extends MathObject<FunctionGraph> implements hasScala
         }
         xPoints.add(n, x);
         double y = getFunctionValue(x, this.w);
-        Point p = Point.at(x, y);
-        final JMPathPoint jmp = JMPathPoint.curveTo(p);
+        final JMPathPoint jmp = JMPathPoint.curveTo(Vec.to(x,y));
         functionShape.getPath().jmPathPoints.add(n, jmp);
         return jmp;
     }
@@ -410,7 +408,7 @@ public class FunctionGraph extends MathObject<FunctionGraph> implements hasScala
         }
         funcAux.generateControlPoints();
         JMPath areaPath = funcAux.functionShape.getPath();
-        areaPath.addPoint(Point.at(mb, 0), Point.at(ma, 0));
+        areaPath.addPoint(Vec.to(mb, 0), Vec.to(ma, 0));
         areaPath.jmPathPoints.get(0).isThisSegmentVisible = true;
         return new Shape(areaPath);
     }

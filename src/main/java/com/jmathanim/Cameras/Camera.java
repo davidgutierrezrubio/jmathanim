@@ -21,6 +21,7 @@ import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.shouldUdpateWithCamera;
 
@@ -141,10 +142,9 @@ public class Camera implements Boxable {
 
     }
 
-    public void setCenter(MathObject obj) {
-        double xx = obj.getCenter().v.x;
-        double yy = obj.getCenter().v.y;
-        setCenter(xx, yy);
+    public void setCenter(Coordinates obj) {
+        Vec center = obj.getVec();
+        setCenter(center.x, center.y);
     }
 
     /**

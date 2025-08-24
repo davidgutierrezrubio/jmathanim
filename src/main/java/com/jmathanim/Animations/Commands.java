@@ -30,11 +30,10 @@ import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.*;
 import com.jmathanim.Utils.Layouts.GroupLayout;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
-import com.jmathanim.mathobjects.updaters.Coordinates;
 import javafx.scene.shape.StrokeLineCap;
 
 import java.util.ArrayList;
@@ -61,11 +60,11 @@ public class Commands {
      * @param objects
      * @return
      */
-    public static ShiftAnimation shift(double runtime, double dx, double dy, MathObject... objects) {
+    public static ShiftAnimation shift(double runtime, double dx, double dy, MathObject<?>... objects) {
         return shift(runtime, new Vec(dx, dy), objects);
     }
 
-    public static ShiftAnimation shift(double runtime, Vec sv, MathObject... objects) {
+    public static ShiftAnimation shift(double runtime, Vec sv, MathObject<?>... objects) {
         ShiftAnimation resul = new ShiftAnimation(runtime, objects) {
             @Override
             public boolean doInitialization() {
@@ -81,12 +80,12 @@ public class Commands {
         return resul;
     }
 
-    public static ShiftAnimation moveTo(double runtime, Point destiny, MathObject... objects) {
+    public static ShiftAnimation moveTo(double runtime, Coordinates<?> destiny, MathObject<?>... objects) {
         ShiftAnimation resul = new ShiftAnimation(runtime, objects) {
             @Override
             public boolean doInitialization() {
                 super.doInitialization();
-                for (MathObject obj : objects) {
+                for (MathObject<?> obj : objects) {
                     setShiftVector(obj, obj.getCenter().to(destiny));
                 }
                 return true;
@@ -104,7 +103,7 @@ public class Commands {
      * @param objects Objects to highlight
      * @return The animation, ready to play with the playAnim method
      */
-    public static Animation highlight(double runtime, MathObject... objects) {
+    public static Animation highlight(double runtime, MathObject<?>... objects) {
         return highlight(runtime, 1.5, objects);
     }
 
@@ -116,7 +115,7 @@ public class Commands {
      * @param mathObjects Objects to highlight
      * @return The animation, ready to play with the playAnim method
      */
-    public static Animation highlight(double runtime, double scale, MathObject... mathObjects) {
+    public static Animation highlight(double runtime, double scale, MathObject<?>... mathObjects) {
 
         Runnable initHook = () -> {
             for (MathObject obj : mathObjects) {
@@ -157,7 +156,7 @@ public class Commands {
      * @param objects Objects to animate
      * @return The animation, ready to play with the playAnim method
      */
-    public static AnimationGroup twistAndScale(double runtime, MathObject... objects) {
+    public static AnimationGroup twistAndScale(double runtime, MathObject<?>... objects) {
         return twistAndScale(runtime, 1.5, 15 * DEGREES, objects);
     }
 
@@ -170,7 +169,7 @@ public class Commands {
      * @param mathObjects Objects to animate
      * @return The animation, ready to play with the playAnim method
      */
-    public static AnimationGroup twistAndScale(double runtime, double scale, double twistAngle, MathObject... mathObjects) {
+    public static AnimationGroup twistAndScale(double runtime, double scale, double twistAngle, MathObject<?>... mathObjects) {
         HashMap<Constructible, Boolean> constructiblesFreeStatus = new HashMap<Constructible, Boolean>();
         Runnable initHook = () -> {
             for (MathObject obj : mathObjects) {
@@ -192,8 +191,8 @@ public class Commands {
         };
         AnimationGroup ag = new AnimationGroup();
 
-        for (MathObject obj : mathObjects) {
-            Point center = obj.getCenter();
+        for (MathObject<?> obj : mathObjects) {
+            Vec center = obj.getCenter();
             Animation rotateAnim = Commands.rotate(runtime, center, twistAngle, obj).setLambda(t -> Math.sin(4 * PI * t));
             ag.add(rotateAnim);
             ag.add(Commands.scale(runtime, center, scale, obj).setLambda(UsefulLambdas.backAndForth()).setUseObjectState(false));
@@ -212,9 +211,9 @@ public class Commands {
      * @param mathObjects Objects to animate
      * @return The animation, ready to play with the playAnim method
      */
-    public static Animation scale(double runtime, double sc, MathObject... mathObjects) {
+    public static Animation scale(double runtime, double sc, MathObject<?>... mathObjects) {
         AnimationGroup ag = new AnimationGroup();
-        Point center = MathObjectGroup.make(mathObjects).getCenter();
+        Vec center = MathObjectGroup.make(mathObjects).getCenter();
         for (MathObject obj : mathObjects) {
             ag.add(Commands.scale(runtime, center, sc, obj));
         }
@@ -230,25 +229,25 @@ public class Commands {
      * @param mathObjects Objects to animate
      * @return The animation, ready to play with the playAnim method
      */
-    public static Animation scale(double runtime, double scx, double scy, MathObject... mathObjects) {
+    public static Animation scale(double runtime, double scx, double scy, MathObject<?>... mathObjects) {
         AnimationGroup ag = new AnimationGroup();
-        Point center = MathObjectGroup.make(mathObjects).getCenter();
+        Vec center = MathObjectGroup.make(mathObjects).getCenter();
         for (MathObject obj : mathObjects) {
             ag.add(Commands.scale(runtime, center, scx, scy, 1, obj));
         }
         return ag;
     }
 
-    public static Animation scale(double runtime, Point c, double sc, MathObject... objects) {
+    public static Animation scale(double runtime, Coordinates c, double sc, MathObject<?>... objects) {
         return scale(runtime, c, sc, sc, sc, objects);
     }
 
-    public static Animation scale(double runtime, Point c, double scx, double scy, double scz, MathObject... objects) {
+    public static Animation scale(double runtime, Coordinates c, double scx, double scy, double scz, MathObject<?>... objects) {
         Animation resul = new Animation(runtime) {
             final double scalex = scx;
             final double scaley = scy;
             final double scalez = scz;
-            final Point scaleCenter = c;
+            final Coordinates scaleCenter = c;
             final MathObject[] mathObjects = objects;
 
             @Override
@@ -299,12 +298,12 @@ public class Commands {
         return resul;
     }
 
-    public static AnimationWithEffects rotate(double runtime, double ang, MathObject... objects) {
+    public static AnimationWithEffects rotate(double runtime, double ang, MathObject<?>... objects) {
         return rotate(runtime, null, ang, objects);
 
     }
 
-    public static AnimationWithEffects rotate(double runtime, Coordinates rotationCenter, double rotationAngle, MathObject... objects) {
+    public static AnimationWithEffects rotate(double runtime, Coordinates rotationCenter, double rotationAngle, MathObject<?>... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
             final double angle = rotationAngle;
             final MathObject[] mathObjects = objects;
@@ -371,18 +370,18 @@ public class Commands {
         return resul;
     }// End of rotate command
 
-    public static Animation rotate3d(double runtime, double angx, double angy, double angz, MathObject... objects) {
+    public static Animation rotate3d(double runtime, double angx, double angy, double angz, MathObject<?>... objects) {
         return rotate3d(runtime, null, angx, angy, angz, objects);
 
     }
 
-    public static Animation rotate3d(double runtime, Point c, double angx, double angy, double angz, MathObject... objects) {
+    public static Animation rotate3d(double runtime, Coordinates c, double angx, double angy, double angz, MathObject<?>... objects) {
         return new Animation(runtime) {
             final double anglex = angx;
             final double angley = angy;
             final double anglez = angz;
             final MathObject[] mathObjects = objects;
-            Point rotationCenter = null;
+            Vec rotationCenter = null;
 
             @Override
             public MathObjectGroup getIntermediateObject() {
@@ -394,7 +393,7 @@ public class Commands {
                 super.doInitialization();
                 saveStates(mathObjects);
                 if (c != null) {
-                    rotationCenter = c;
+                    rotationCenter = c.getVec();
                 }
                 return true;
             }
@@ -443,26 +442,27 @@ public class Commands {
      * @param objects
      * @return The transform
      */
-    public static AnimationWithEffects affineTransform(double runtime, Point A, Point B, Point C, Point D, Point E,
-                                                       Point F, MathObject... objects) {
+    public static AnimationWithEffects affineTransform(double runtime, Coordinates A, Coordinates B, Coordinates C, Coordinates D, Coordinates E,
+                                                       Coordinates F, MathObject<?>... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
-            final Point orig1 = Point.at(A.v);
-            final Point orig2 = Point.at(B.v);
-            final Point orig3 = Point.at(C.v);
-            final Point dst1 = Point.at(D.v);
-            final Point dst2 = Point.at(E.v);
-            final Point dst3 = Point.at(F.v);
             final MathObject[] mathObjects = objects;
+            Vec orig1, orig2, orig3, dst1, dst2, dst3;
             AffineJTransform tr;
 
             @Override
             public boolean doInitialization() {
+                orig1 = A.getVec().copy();
+                orig2 = B.getVec().copy();
+                orig3 = C.getVec().copy();
+                dst1 = D.getVec().copy();
+                dst2 = E.getVec().copy();
+                dst3 = F.getVec().copy();
                 super.doInitialization();
                 saveStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     tr = AffineJTransform.createAffineTransformation(orig1, orig2, orig3, dst1, dst2, dst3, 1);
-                    Point center = obj.getCenter();
-                    prepareJumpPath(center, tr.getTransformedObject(center), obj);
+                    Vec center = obj.getCenter();
+                    prepareJumpPath(center, center.applyAffineTransform(tr), obj);
                 }
                 return true;
             }
@@ -503,24 +503,8 @@ public class Commands {
         return resul;
     }// End of affineTransform command
 
-    /**
-     * Deprecated. Animation command that transforms a MathObject through an isomorphism. This is left for compatibility
-     * reasons. Use isomorphism instead.
-     *
-     * @param runtime Run time (in seconds)
-     * @param a       First origin point
-     * @param b       Second origin point
-     * @param c       First destiny point
-     * @param d       Second destiny point
-     * @param objects Objects to animate (varargs)
-     * @return Animation to run playAnimation method method
-     */
-    public static AnimationWithEffects homothecy(double runtime, Point a, Point b, Point c, Point d,
-                                                 MathObject... objects) {
-        return isomorphism(runtime, a, b, c, d, objects);
-    }
 
-    public static AnimationWithEffects isomorphism(double runtime, Rect rOrig, Rect rDst, MathObject... objects) {
+    public static AnimationWithEffects isomorphism(double runtime, Rect rOrig, Rect rDst, MathObject<?>... objects) {
         return isomorphism(runtime, rOrig.getUL(), rOrig.getDR(), rDst.getUL(), rDst.getDR(), objects);
     }
 
@@ -536,24 +520,25 @@ public class Commands {
      * @param objects Objects to animate (varargs)
      * @return Animation to run playAnimation method method
      */
-    public static AnimationWithEffects isomorphism(double runtime, Point a, Point b, Point c, Point d,
-                                                   MathObject... objects) {
+    public static AnimationWithEffects isomorphism(double runtime, Coordinates a, Coordinates b, Coordinates c, Coordinates d,
+                                                   MathObject<?>... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
-            final Point A = Point.at(a.v);
-            final Point B = Point.at(b.v);
-            final Point C = Point.at(c.v);
-            final Point D = Point.at(d.v);
             final MathObject[] mathObjects = objects;
             AffineJTransform tr;
+            Vec A, B, C, D;
 
             @Override
             public boolean doInitialization() {
+                A = a.getVec().copy();
+                B = b.getVec().copy();
+                C = c.getVec().copy();
+                D = d.getVec().copy();
                 super.doInitialization();
                 saveStates(mathObjects);
                 tr = AffineJTransform.createDirect2DIsomorphic(A, B, C, D, 1);
-                for (MathObject obj : mathObjects) {
-                    Point center = obj.getCenter();
-                    prepareJumpPath(center, tr.getTransformedObject(center), obj);
+                for (MathObject<?> obj : mathObjects) {
+                    Vec center = obj.getCenter();
+                    prepareJumpPath(center, center.applyAffineTransform(tr), obj);
                 }
                 return true;
             }
@@ -594,26 +579,30 @@ public class Commands {
         return resul;
     }// End of Isomorphism command
 
-    public static AnimationWithEffects isomorphism3d(double runtime, Point a, Point b1, Point b2, Point c, Point d1, Point d2,
-                                                     MathObject... objects) {
+    public static AnimationWithEffects isomorphism3d(double runtime, Coordinates a, Coordinates b1,
+                                                     Coordinates b2, Coordinates c, Coordinates d1,
+                                                     Coordinates d2,
+                                                     MathObject<?>... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
-            final Point A = Point.at(a.v);
-            final Point B1 = Point.at(b1.v);
-            final Point B2 = Point.at(b2.v);
-            final Point C =  Point.at(c.v);
-            final Point D1 =  Point.at(d1.v);
-            final Point D2 =  Point.at(d2.v);
-            final MathObject[] mathObjects = objects;
+            final MathObject<?>[] mathObjects = objects;
             AffineJTransform tr;
+            Vec A, B1, B2, C, D1, D2;
+
 
             @Override
             public boolean doInitialization() {
+                A = a.getVec().copy();
+                B1 = b1.getVec().copy();
+                B2 = b2.getVec().copy();
+                C = c.getVec().copy();
+                D1 = d1.getVec().copy();
+                D2 = d2.getVec().copy();
                 super.doInitialization();
                 saveStates(mathObjects);
                 tr = AffineJTransform.createDirect3DIsomorphic(A, B1, B2, C, D1, D2, 1);
-                for (MathObject obj : mathObjects) {
-                    Point center = obj.getCenter();
-                    prepareJumpPath(center, tr.getTransformedObject(center), obj);
+                for (MathObject<?> obj : mathObjects) {
+                    Vec center = obj.getCenter();
+                    prepareJumpPath(center, center.applyAffineTransform(tr), obj);
                 }
                 return true;
             }
@@ -666,15 +655,15 @@ public class Commands {
      * @param objects Objects to animate (varargs)
      * @return Animation to run playAnimation method method
      */
-    public static AnimationWithEffects inverseIsomorphism(double runtime, Point a, Point b, Point c, Point d,
-                                                          MathObject... objects) {
+    public static AnimationWithEffects inverseIsomorphism(double runtime, Coordinates a, Coordinates b, Coordinates c, Coordinates d,
+                                                          MathObject<?>... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
-            final Point A =  Point.at(a.v);
-            final Point B =  Point.at(b.v);
-            final Point C =  Point.at(c.v);
-            final Point D =  Point.at(d.v);
             final MathObject[] mathObjects = objects;
             AffineJTransform tr;
+            Vec A = a.getVec().copy();
+            Vec B = b.getVec().copy();
+            Vec C = c.getVec().copy();
+            Vec D = d.getVec().copy();
 
             @Override
             public boolean doInitialization() {
@@ -682,8 +671,8 @@ public class Commands {
                 saveStates(mathObjects);
                 tr = AffineJTransform.createInverse2DIsomorphic(A, B, C, D, 1);
                 for (MathObject obj : mathObjects) {
-                    Point center = obj.getCenter();
-                    prepareJumpPath(center, tr.getTransformedObject(center), obj);
+                    Vec center = obj.getCenter();
+                    prepareJumpPath(center, center.applyAffineTransform(tr), obj);
                 }
                 return true;
             }
@@ -733,11 +722,11 @@ public class Commands {
      * @param objects Objects to animate (varargs)
      * @return Animation to run with playAnim method
      */
-    public static AnimationWithEffects reflection(double runtime, Point A, Point B, MathObject... objects) {
+    public static AnimationWithEffects reflection(double runtime, Coordinates A, Coordinates B, MathObject<?>... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
-            final MathObject[] mathObjects = objects;
-            final Point axis1 =  Point.at(A.v);
-            final Point axis2 =  Point.at(B.v);
+            final MathObject<?>[] mathObjects = objects;
+            final Vec axis1 = A.getVec().copy();
+            final Vec axis2 = B.getVec().copy();
             AffineJTransform tr;
 
             @Override
@@ -746,8 +735,8 @@ public class Commands {
                 saveStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     tr = AffineJTransform.createReflection(axis1, axis2, 1);
-                    Point center = obj.getCenter();
-                    prepareJumpPath(center, tr.getTransformedObject(center), obj);
+                    Vec center = obj.getCenter();
+                    prepareJumpPath(center, center.applyAffineTransform(tr), obj);
                 }
                 return true;
             }
@@ -797,11 +786,11 @@ public class Commands {
      * @param objects Objects to animate (varargs)
      * @return Animation to run with playAnim method
      */
-    public static AnimationWithEffects reflectionByAxis(double runtime, Point A, Point B, MathObject... objects) {
+    public static AnimationWithEffects reflectionByAxis(double runtime, Coordinates A, Coordinates B, MathObject<?>... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
             final MathObject[] mathObjects = objects;
-            final Point axisPoint1 = Point.at(A.v);
-            final Point axisPoint2 =  Point.at(B.v);
+            final Vec axisPoint1 = A.getVec().copy();
+            final Vec axisPoint2 = B.getVec().copy();
             AffineJTransform tr;
 
             @Override
@@ -810,8 +799,8 @@ public class Commands {
                 saveStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     tr = AffineJTransform.createReflectionByAxis(axisPoint1, axisPoint2, 1);
-                    Point center = obj.getCenter();
-                    prepareJumpPath(center, tr.getTransformedObject(center), obj);
+                    Vec center = obj.getCenter();
+                    prepareJumpPath(center, center.applyAffineTransform(tr), obj);
                 }
                 return true;
             }
@@ -862,7 +851,7 @@ public class Commands {
      * @param objects   MathObjects to animate (varargs)
      * @return The animation to be played with the playAnimation method
      */
-    public static Animation setColor(double runtime, PaintStyle drawColor, PaintStyle fillColor, MathObject... objects) {
+    public static Animation setColor(double runtime, PaintStyle drawColor, PaintStyle fillColor, MathObject<?>... objects) {
         MODrawProperties mpDst = MODrawProperties.makeNullValues();
         if (drawColor != null) {
             mpDst.setDrawColor(drawColor);
@@ -885,7 +874,7 @@ public class Commands {
      * @param objects Objects to animate (varargs)
      * @return Animation to run with playAnim method
      */
-    public static Animation setMP(double runtime, Stylable mp, MathObject... objects) {
+    public static Animation setMP(double runtime, Stylable mp, MathObject<?>... objects) {
         Animation resul = new Animation(runtime) {
             final MathObject[] mathObjects = objects;
             final Stylable mpDst = mp;
@@ -939,7 +928,7 @@ public class Commands {
      * @param objects   Objects to animate (varargs)
      * @return Animation to run with playAnim method
      */
-    public static Animation setStyle(double runtime, String styleName, MathObject... objects) {
+    public static Animation setStyle(double runtime, String styleName, MathObject<?>... objects) {
         Animation resul = setMP(runtime, MODrawProperties.createFromStyle(styleName), objects);
         resul.setDebugName("setStyle");
         return resul;
@@ -954,7 +943,7 @@ public class Commands {
      * @param objs    Mathobjects to zoom to (varargs)
      * @return Animation to run with playAnim method
      */
-    public static Animation cameraZoomToObjects(double runtime, Camera camera, MathObject... objs) {
+    public static Animation cameraZoomToObjects(double runtime, Camera camera, MathObject<?>... objs) {
         Rect r = objs[0].getBoundingBox();
         for (MathObject obj : objs) {
             r = Rect.union(r, obj.getBoundingBox());
@@ -1085,7 +1074,7 @@ public class Commands {
      * @param objects Objects to animate (varargs)
      * @return Animation to run with playAnim method
      */
-    public static Animation shrinkOut(double runtime, MathObject... objects) {
+    public static Animation shrinkOut(double runtime, MathObject<?>... objects) {
         return shrinkOut(runtime, 0, objects);
     }
 
@@ -1098,7 +1087,7 @@ public class Commands {
      * @param objects Objects to animate (varargs)
      * @return Animation to run with playAnim method
      */
-    public static Animation shrinkOut(double runtime, double angle, MathObject... objects) {
+    public static Animation shrinkOut(double runtime, double angle, MathObject<?>... objects) {
         return shrinkOut(runtime, angle, OrientationType.BOTH, objects);
     }
 
@@ -1112,7 +1101,7 @@ public class Commands {
      * @param objects    Objects to animate (varargs)
      * @return Animation to run with playAnim method
      */
-    public static Animation shrinkOut(double runtime, double angle, OrientationType shrinkType, MathObject... objects) {
+    public static Animation shrinkOut(double runtime, double angle, OrientationType shrinkType, MathObject<?>... objects) {
         Animation anim = new Animation(runtime) {
             final MathObject[] mathObjects = objects;
 
@@ -1189,7 +1178,7 @@ public class Commands {
      * @param objects Objects to animate
      * @return Animation to run with playAnim method
      */
-    public static Animation growIn(double runtime, MathObject... objects) {
+    public static Animation growIn(double runtime, MathObject<?>... objects) {
         return growIn(runtime, 0, OrientationType.BOTH, objects);
     }
 
@@ -1202,7 +1191,7 @@ public class Commands {
      * @param objects Objects to animate (varargs)
      * @return Animation to run with playAnim method
      */
-    public static Animation growIn(double runtime, double angle, MathObject... objects) {
+    public static Animation growIn(double runtime, double angle, MathObject<?>... objects) {
         return growIn(runtime, angle, OrientationType.BOTH, objects);
     }
 
@@ -1216,7 +1205,7 @@ public class Commands {
      * @param objects  Objects to animate (varargs)
      * @return Animation to run with playAnim method
      */
-    public static Animation growIn(double runtime, double angle, OrientationType growType, MathObject... objects) {
+    public static Animation growIn(double runtime, double angle, OrientationType growType, MathObject<?>... objects) {
         Animation anim = new Animation(runtime) {
             MathObject[] mathObjects = objects;
 
@@ -1298,7 +1287,7 @@ public class Commands {
      * @param objects Objects to animate (varargs)
      * @return Animation to run with the playAnim method
      */
-    public static AnimationWithEffects fadeIn(double runtime, MathObject... objects) {
+    public static AnimationWithEffects fadeIn(double runtime, MathObject<?>... objects) {
         AnimationWithEffects anim = new AnimationWithEffects(runtime) {
             MathObject[] mathObjects = objects;
 
@@ -1368,7 +1357,7 @@ public class Commands {
      * @param objects Object to animate
      * @return Animation to run with playAnim method
      */
-    public static AnimationWithEffects fadeOut(double runtime, MathObject... objects) {
+    public static AnimationWithEffects fadeOut(double runtime, MathObject<?>... objects) {
         AnimationWithEffects anim = new AnimationWithEffects(runtime) {
             MathObject[] mathObjects = objects;
 
@@ -1428,38 +1417,37 @@ public class Commands {
     /**
      * Animated version of method setLayout for MathObjectGroup instances
      *
-     * @param runtime Duration in seconds
-     * @param corner  Corner to layout from. If null, first object of the group will be used
-     * @param layoutType  Type of anchor to apply layout as defined in the enum Type
-     * @param gap     Gap to apply between elements, in math units
-     * @param group   MathObjectGroup instance to apply the layout
+     * @param runtime    Duration in seconds
+     * @param corner     Corner to layout from. If null, first object of the group will be used
+     * @param layoutType Type of anchor to apply layout as defined in the enum Type
+     * @param gap        Gap to apply between elements, in math units
+     * @param group      MathObjectGroup instance to apply the layout
      * @return Animation to run with playAnim method
      */
-    public static ShiftAnimation setLayout(double runtime, MathObject corner, LayoutType layoutType, double gap,
+    public static ShiftAnimation setLayout(double runtime, Coordinates<?> corner, LayoutType layoutType, double gap,
                                            MathObjectGroup group) {
         group.saveState();
         group.setLayout(corner, layoutType, gap);
-        HashMap<MathObject, Point> centers = new HashMap<>();
+        HashMap<MathObject<?>, Vec> centers = new HashMap<>();
         int n = 0;
-        for (MathObject ob : group) {
+        for (MathObject<?> ob : group) {
             centers.put(ob, ob.getCenter());// The destination centers of the objects of the group
             n++;
         }
         group.restoreState();
-        MathObject[] mathobjects = group.getObjects().toArray(new MathObject[group.size()]);
+        MathObject<?>[] mathobjects = group.getObjects().toArray(new MathObject[group.size()]);
 
-        ShiftAnimation resul = getShiftAnimation(runtime, mathobjects, centers);
-        return resul;
+        return getShiftAnimation(runtime, mathobjects, centers);
     }
 
-    private static ShiftAnimation getShiftAnimation(double runtime, MathObject[] mathobjects, HashMap<MathObject, Point> centers) {
+    private static ShiftAnimation getShiftAnimation(double runtime, MathObject<?>[] mathobjects, HashMap<MathObject<?>, Vec> centers) {
         ShiftAnimation resul = new ShiftAnimation(runtime, mathobjects) {
             @Override
             public boolean doInitialization() {
                 super.doInitialization();
                 JMathAnimScene.logger.debug("Initialized setLayout animation");
                 for (MathObject obj : mathobjects) {
-                    Point dst = centers.get(obj);
+                    Vec dst = centers.get(obj);
                     setShiftVector(obj, obj.getCenter().to(dst));
                 }
                 return true;
@@ -1483,7 +1471,7 @@ public class Commands {
         MathObject[] mathobjects = group.getObjects().toArray(new MathObject[group.size()]);
 
         ShiftAnimation resul = new ShiftAnimation(runtime, mathobjects) {
-            final HashMap<MathObject, Point> centers = new HashMap<>();
+            final HashMap<MathObject<?>, Vec> centers = new HashMap<>();
 
             @Override
             public boolean doInitialization() {
@@ -1496,7 +1484,7 @@ public class Commands {
 
                 JMathAnimScene.logger.debug("Initialized setLayout animation");
                 for (MathObject obj : mathobjects) {
-                    Point dst = centers.get(obj);
+                    Vec dst = centers.get(obj);
                     setShiftVector(obj, obj.getCenter().to(dst));
                 }
                 return true;
@@ -1514,7 +1502,7 @@ public class Commands {
      * @param objects MathObjects to apply the animation (varargs)
      * @return Animation to run with playAnim method
      */
-    public static AnimationWithEffects changeFillAlpha(double runTime, MathObject... objects) {
+    public static AnimationWithEffects changeFillAlpha(double runTime, MathObject<?>... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runTime) {
             final MathObject[] mathObjects = objects;
             final ArrayList<Double> alphaOrig = new ArrayList<>();
@@ -1570,7 +1558,7 @@ public class Commands {
      * @param mathObjects Objects to exit (varargs)
      * @return this animation, ready to play with the playAnimation method
      */
-    public static ShiftAnimation moveOut(double runtime, AnchorType exitAnchor, MathObject... mathObjects) {
+    public static ShiftAnimation moveOut(double runtime, AnchorType exitAnchor, MathObject<?>... mathObjects) {
         ShiftAnimation resul = new ShiftAnimation(runtime, mathObjects) {
             @Override
             public boolean doInitialization() {
@@ -1584,18 +1572,18 @@ public class Commands {
                 JMathAnimScene.logger.debug("Initialized moveOut animation");
                 // Compute appropiate shift vectors
                 Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
-                for (MathObject obj : mathObjects) {
-                    Point objAnchor = Anchor.getAnchorPoint(obj, Anchor.reverseAnchorPoint(exitAnchor));
-                    Point screenAnchor = Anchor.getAnchorPoint(Shape.rectangle(r), exitAnchor, 1);
+                for (MathObject<?> obj : mathObjects) {
+                    Vec objAnchor = Anchor.getAnchorPoint(obj, Anchor.reverseAnchorPoint(exitAnchor));
+                    Vec screenAnchor = Anchor.getAnchorPoint(Shape.rectangle(r), exitAnchor, 1);
                     switch (exitAnchor) {
                         case LEFT:
-                            screenAnchor.v.y = objAnchor.v.y;
+                            screenAnchor.y = objAnchor.y;
                         case RIGHT:
-                            screenAnchor.v.y = objAnchor.v.y;
+                            screenAnchor.y = objAnchor.y;
                             break;
                         case UPPER:
                         case LOWER:
-                            screenAnchor.v.x = objAnchor.v.x;
+                            screenAnchor.x = objAnchor.x;
                             break;
                         default:
                             break;
@@ -1633,12 +1621,12 @@ public class Commands {
      * @param mathObjects Objects to enter (varargs)
      * @return this animation, ready to play with the playAnimation method
      */
-    public static ShiftAnimation moveIn(double runtime, AnchorType enterAnchor, MathObject... mathObjects) {
+    public static ShiftAnimation moveIn(double runtime, AnchorType enterAnchor, MathObject<?>... mathObjects) {
 
         Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
         Renderer rend = JMathAnimConfig.getConfig().getRenderer();
-        ArrayList<MathObject> toRemove = new ArrayList<>();
-        ArrayList<MathObject> toAnimateArrayList = new ArrayList<>(Arrays.asList(mathObjects));
+        ArrayList<MathObject<?>> toRemove = new ArrayList<>();
+        ArrayList<MathObject<?>> toAnimateArrayList = new ArrayList<>(Arrays.asList(mathObjects));
         final MathObject[] toAnimateArray = toAnimateArrayList.toArray(new MathObject[0]);
         ShiftAnimation resul = new ShiftAnimation(runtime, toAnimateArray) {
             @Override
@@ -1657,18 +1645,18 @@ public class Commands {
                 for (MathObject obj : toAnimateArray) {
                     double gap = rend.ThicknessToMathWidth(obj) * 2;
                     final AnchorType reverseAnchor = Anchor.reverseAnchorPoint(enterAnchor);
-                    Point p = Anchor.getAnchorPoint(obj, reverseAnchor);
+                    Vec p = Anchor.getAnchorPoint(obj, reverseAnchor);
                     Shape rectMathView = Shape.rectangle(r.copy().addGap(gap, gap));
-                    Point q = Anchor.getAnchorPoint(rectMathView, enterAnchor);
+                    Vec q = Anchor.getAnchorPoint(rectMathView, enterAnchor);
                     switch (enterAnchor) {
                         case LEFT:
-                            q.v.y = p.v.y;
+                            q.y = p.y;
                         case RIGHT:
-                            q.v.y = p.v.y;
+                            q.y = p.y;
                             break;
                         case UPPER:
                         case LOWER:
-                            q.v.x = p.v.x;
+                            q.x = p.x;
                             break;
                     }
                     obj.shift(p.to(q));
@@ -1723,14 +1711,14 @@ public class Commands {
      * @return The created animation
      */
     public static ShiftAnimation align(double runtime, MathObject dst, MathObject.Align type,
-                                       MathObject... mathobjects) {
+                                       MathObject<?>... mathobjects) {
         ShiftAnimation resul = new ShiftAnimation(runtime, mathobjects) {
             @Override
             public boolean doInitialization() {
                 super.doInitialization();
                 JMathAnimScene.logger.debug("Initialized align animation");
                 for (MathObject obj : mathobjects) {
-                    Point dstCenter = Shape.rectangle(obj.getBoundingBox()).align(dst, type).getCenter();
+                    Vec dstCenter = Shape.rectangle(obj.getBoundingBox()).align(dst, type).getCenter();
                     setShiftVector(obj, obj.getCenter().to(dstCenter));
                 }
                 return true;
@@ -1746,24 +1734,25 @@ public class Commands {
      * safely concatenated. If several objects are animated, the second will be stacked to the first, and so on
      *
      * @param runtime     time in seconds
-     * @param dst         Destiny object to align with
-     * @param anchorType        Type of stack, a value of Type enum
+     * @param dst         Destiny coordinates to stack
+     * @param anchorType  Type of stack, a value of Type enum
      * @param gap         Gap between the stacked objects
      * @param mathobjects Mathobjects to animate
      * @return The created animation
      */
-    public static ShiftAnimation stackTo(double runtime, MathObject dst, AnchorType anchorType, double gap,
-                                         MathObject... mathobjects) {
+    public static ShiftAnimation stackTo(double runtime, Coordinates<?> dst, AnchorType anchorType, double gap,
+                                         MathObject<?>... mathobjects) {
         ShiftAnimation resul = new ShiftAnimation(runtime, mathobjects) {
             @Override
             public boolean doInitialization() {
                 super.doInitialization();
-                MathObject previous = dst;
+                AnchorType reverse = Anchor.reverseAnchorPoint(anchorType);
+                Coordinates<?> previous = dst;
 
-                for (MathObject obj : mathobjects) {
-                    MathObject objc = Shape.rectangle(obj.getBoundingBox()).stackTo(previous, anchorType, gap);
-                    setShiftVector(obj, obj.getCenter().to(objc.getCenter()));
-                    previous = objc;
+                for (MathObject<?> obj : mathobjects) {
+                    Vec objAnchor = Anchor.getAnchorPoint(obj, reverse);
+                    setShiftVector(obj, objAnchor.to(previous));
+                    previous = Anchor.getAnchorPoint(obj,anchorType);
                 }
                 return true;
             }
@@ -1779,7 +1768,7 @@ public class Commands {
      * @param obj     Object to cross out
      * @return The created animation
      */
-    public static Animation crossOut(double runtime, MathObject obj) {
+    public static Animation crossOut(double runtime, MathObject<?> obj) {
         Rect bbox = obj.getBoundingBox();
         Shape s1 = Shape.segment(bbox.getUL(), bbox.getDR()).scale(.75).linecap(StrokeLineCap.BUTT)
                 .drawColor(JMColor.RED).layer(Integer.MAX_VALUE);
@@ -1800,8 +1789,8 @@ public class Commands {
     public static JoinAnimation crossAndFadeOut(double runtime, MathObject obj) {
         JoinAnimation resul = JoinAnimation.make(runtime);
         Rect bb = obj.getBoundingBox();
-        final Point a = bb.getUR();
-        final Point b = bb.getDL();
+        final Vec a = bb.getUR();
+        final Vec b = bb.getDL();
         double width = JMathAnimConfig.getConfig().getRenderer().MathWidthToThickness(a.to(b).norm());
         Shape cross = Shape.segment(a, b).thickness(width * .25).drawColor("red");
         cross.getMp().setLinecap(StrokeLineCap.SQUARE);
@@ -1814,8 +1803,8 @@ public class Commands {
     public static JoinAnimation crossAndShrink(double runtime, MathObject obj) {
         JoinAnimation resul = JoinAnimation.make(runtime);
         Rect bb = obj.getBoundingBox();
-        final Point a = bb.getUR();
-        final Point b = bb.getDL();
+        final Vec a = bb.getUR();
+        final Vec b = bb.getDL();
         double width = JMathAnimConfig.getConfig().getRenderer().MathWidthToThickness(a.to(b).norm());
         Shape cross = Shape.segment(a, b).thickness(width * .25).drawColor("red");
         cross.getMp().setLinecap(StrokeLineCap.SQUARE);
