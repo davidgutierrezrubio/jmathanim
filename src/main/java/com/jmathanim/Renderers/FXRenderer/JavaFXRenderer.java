@@ -273,6 +273,8 @@ public class JavaFXRenderer extends Renderer {
         } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
+        fxnodes.clear();
+        debugFXnodes.clear();
         return bi;
     }
 
@@ -303,8 +305,8 @@ public class JavaFXRenderer extends Renderer {
     @Override
     public void clearAndPrepareCanvasForAnotherFrame() {
         super.clearAndPrepareCanvasForAnotherFrame();
-        fxnodes.clear();
-        debugFXnodes.clear();
+//        fxnodes.clear();
+//        debugFXnodes.clear();
     }
 
     @Override

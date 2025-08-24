@@ -139,13 +139,13 @@ public class Arrow extends Constructible<Arrow> {
             //Always FIRST point to the RIGHT,
             //LAST point to the LEFT
             case NONE_BUTT:
-                return Shape.segment(Point.at(1, 0), Point.at(0, 0));
+                return Shape.segment(Vec.to(1, 0), Vec.to(0, 0));
             case NONE_ROUND:
                 resul = Shape.arc(PI);
                 resul.setProperty("gap", -1d);
                 return resul;
             case NONE_SQUARE:
-                return Shape.segment(Point.at(1, 0), Point.at(0, 0));
+                return Shape.segment(Vec.to(1, 0), Vec.to(0, 0));
             case ARROW1:
                 arrowUrl = rl.getResource("#arrow1.svg", "shapeResources/arrows");
                 return SVGMathObject.make(arrowUrl).get(0);
@@ -205,10 +205,10 @@ public class Arrow extends Constructible<Arrow> {
         head2.getPath().clear();
         head1.getPath().addJMPointsFrom(h1.getPath());
         head2.getPath().addJMPointsFrom(h2.getPath());
-        baseDist1 = head1.getPoint(0).to(head1.getPoint(-1)).norm();
-        baseDist2 = head2.getPoint(0).to(head2.getPoint(-1)).norm();
-        baseHeight1 = head1.getBoundingBox().ymax - head1.getPoint(0).v.y;
-        baseHeight2 = head2.getPoint(0).v.y - head2.getBoundingBox().ymin;
+        baseDist1 = head1.get(0).to(head1.get(-1)).norm();
+        baseDist2 = head2.get(0).to(head2.get(-1)).norm();
+        baseHeight1 = head1.getBoundingBox().ymax - head1.get(0).v.y;
+        baseHeight2 = head2.get(0).v.y - head2.getBoundingBox().ymin;
         baseRealHeight1 = head1.getHeight();
         baseRealHeight2 = head2.getHeight();
     }
@@ -236,23 +236,31 @@ public class Arrow extends Constructible<Arrow> {
         //Scale heads to adjust to thickness
         double rThickness = scene.getRenderer().ThicknessToMathWidth(arrowThickness * getAmplitudeScale());
 
+        //hh=total height of arrow heads if distance between head points was 1 unit apart
         double hh = (baseRealHeight1 - gapA) / baseDist1 + (baseRealHeight2 - gapB) / baseDist2;
-        rThickness = Math.min(rThickness, .75 * dist / hh);
+//        rThickness = Math.min(rThickness, .75 * dist / hh);
+        rThickness = Math.min(rThickness, dist / hh);
         h1A.scale(headStartMultiplier * rThickness / baseDist1);
         h1B.scale(headEndMultiplier * rThickness / baseDist2);
 
         double rbaseHeight1 = baseHeight1 * headStartMultiplier * rThickness / baseDist1;
         double rbaseHeight2 = baseHeight2 * headEndMultiplier * rThickness / baseDist2;
+        double aa=h1B.getHeight();
 
-        Point medA = h1A.getPoint(0).interpolate(h1A.getPoint(-1), .5);
-        Point medB = h1B.getPoint(0).interpolate(h1B.getPoint(-1), .5);
+        Vec medA = h1A.get(0).getVec().interpolate(h1A.get(-1), .5);
+
+        Vec p1b = h1B.get(0).v;
+        Vec p2b = h1B.get(-1).v;
+        Vec medB = p1b.interpolate(p2b, .5);
 
         h1B.shift(medB.to(medA));
+//        scene.add(h1B.copy().layer(3).drawColor("blue"));
 //        h1B.shift(h1B.getPoint(-1).to(h1A.getPoint(0)));//Align points 0 of bot shapes
         double rgapA = gapA * headStartMultiplier * rThickness / baseDist1;
         double rgapB = gapB * headEndMultiplier * rThickness / baseDist2;
         shapeToDraw.getPath().clear();
         double longBody = dist - rbaseHeight1 - rbaseHeight2 - rgapA - rgapB;
+        Vec endPOintBEfore=h1B.getBoundingBox().getLower().add(0, -rgapB);
         h1B.shift(0, -longBody);
         Vec startPoint = h1A.getBoundingBox().getUpper().add(0, rgapA);
         Vec endPoint = h1B.getBoundingBox().getLower().add(0, -rgapB);
@@ -366,7 +374,7 @@ public class Arrow extends Constructible<Arrow> {
             Vec v = cam.look.to(cam.eye);
             Vec C2 = Acopy.copy().add(v);
             tr = AffineJTransform.createDirect3DIsomorphic(Acopy, Bcopy, C, Acopy, Bcopy, C2, 1);
-            shapeToDraw.applyAffineTransform(tr);
+//            shapeToDraw.applyAffineTransform(tr);
             labelArcUpside.applyAffineTransform(tr);
             labelArcDownside.applyAffineTransform(tr);
         }

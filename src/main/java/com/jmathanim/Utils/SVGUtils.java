@@ -289,7 +289,7 @@ public class SVGUtils {
                 qy1,
                 qx2,
                 qy2;
-        JMPathPoint previousPoint = new JMPathPoint(new Point(0, 0), true, JMPathPoint.JMPathPointType.VERTEX);
+        JMPathPoint previousPoint = new JMPathPoint(Vec.to(0, 0), true, JMPathPoint.JMPathPointType.VERTEX);
         String processedCommandsString = sanitizeCommandsString(s);
         ArrayList<String> tokens = getPointTokens(processedCommandsString);
 
@@ -731,7 +731,7 @@ public class SVGUtils {
 
     // Adds a simple point to the path, with control points equal to the point
     private JMPathPoint pathLineTo(JMPath path, double currentX, double currentY, boolean isVisible) {
-        JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), isVisible, JMPathPoint.JMPathPointType.VERTEX);
+        JMPathPoint point = new JMPathPoint(Vec.to(currentX, currentY), isVisible, JMPathPoint.JMPathPointType.VERTEX);
         point.isCurved = false;
         point.vExit.x = currentX;
         point.vExit.y = currentY;
@@ -912,8 +912,8 @@ public class SVGUtils {
                 resul.setV2Img(c, d);
                 break;
         }
-        AffineJTransform sc1 = AffineJTransform.createScaleTransform(Point.origin(), 1, -1);
-        AffineJTransform sc2 = AffineJTransform.createScaleTransform(Point.origin(), 1, -1);
+        AffineJTransform sc1 = AffineJTransform.createScaleTransform(Vec.to(0,0), 1, -1);
+        AffineJTransform sc2 = AffineJTransform.createScaleTransform(Vec.to(0,0), 1, -1);
         resul = sc1.compose(resul).compose(sc2);
         return resul;
     }

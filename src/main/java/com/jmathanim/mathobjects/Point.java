@@ -131,14 +131,14 @@ public class Point extends AbstractPoint<Point> {
     }
 
     /**
-     * Returns a new Point with coordinates those of given vector. Vector coordinates are copied.
+     * Returns a new Point with coordinates those of given vector. Vector object is referenced
      *
      * @param coords Vector with coordinates
      * @return The new point
      */
-    public static Point at(Coordinates coords) {
+    public static Point at(Coordinates<?> coords) {
         Vec v = coords.getVec();
-        return new Point(v.x, v.y);
+        return new Point(v);
     }
 
     /**

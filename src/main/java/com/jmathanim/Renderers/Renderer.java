@@ -136,7 +136,7 @@ public abstract class Renderer {
      * Clear current renderer, with the background color
      */
     public void clearAndPrepareCanvasForAnotherFrame() {
-        for (MathObject obj: scene.getMathObjects()) {
+        for (MathObject<?> obj: scene.getMathObjects()) {
             MediatorMathObject.setHasBeenUpdated(obj,false);
         }
     };
