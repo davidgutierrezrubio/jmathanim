@@ -17,6 +17,7 @@
 package com.jmathanim.mathobjects.Tippable;
 
 import com.jmathanim.Enum.AnchorType;
+import com.jmathanim.Enum.ArrowType;
 import com.jmathanim.Enum.RotationType;
 import com.jmathanim.Enum.SlopeDirectionType;
 import com.jmathanim.Renderers.Renderer;
@@ -63,7 +64,7 @@ public class TippableObject extends AbstractTippableObject<TippableObject> {
         return resul;
     }
 
-    public static TippableObject arrowHead(Shape shape, double location,  Arrow.ArrowType type) {
+    public static TippableObject arrowHead(Shape shape, double location,  ArrowType type) {
         Shape arrowHead = Arrow.buildArrowHead(type);
         Renderer r = JMathAnimConfig.getConfig().getScene().getRenderer();
 //        arrowHead.setAbsoluteSize(Type.CENTER);

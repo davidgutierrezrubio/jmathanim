@@ -37,7 +37,7 @@ public class MathObjectGroup extends AbstractMathGroup<MathObjectGroup> {
     }
 
     public MathObjectGroup(ArrayList<MathObject<?>> objects) {
-        super();
+        super(objects);
 
     }
 

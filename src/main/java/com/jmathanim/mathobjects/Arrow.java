@@ -47,7 +47,7 @@ public class Arrow extends Constructible<Arrow> {
     public final Shape labelArcUpside;
     public final Shape labelArcDownside;
     protected final MODrawPropertiesArray mpArrow;
-    private final Vec Avcopy, Bvcopy;
+    private final Vec Acopy, Bcopy;
     private final Shape shapeToDraw;
     protected final MathObjectGroup groupElementsToBeDrawn;
     private final Shape head1, head2;
@@ -67,11 +67,9 @@ public class Arrow extends Constructible<Arrow> {
     private labelTypeEnum labelType;
     private String stringFormat;
 
-    private Arrow(Coordinates<?>  A, Coordinates<?>  B) {
+    private Arrow(Coordinates<?> A, Coordinates<?> B) {
         this.A = A.getVec();
         this.B = B.getVec();
-        Avcopy = this.A.copy();
-        Bvcopy = this.B.copy();
         labelType = labelTypeEnum.NORMAL;
         this.labelArcUpside = new Shape();
         this.labelArcDownside = new Shape();
@@ -83,6 +81,8 @@ public class Arrow extends Constructible<Arrow> {
         headStartMultiplier = 1d;
         headEndMultiplier = 1d;
         shapeToDraw = new Shape();
+        Acopy = this.A.copy();
+        Bcopy = this.B.copy();
         mpArrow = new MODrawPropertiesArray();
         mpArrow.add(shapeToDraw);
         groupElementsToBeDrawn = MathObjectGroup.make(shapeToDraw);
@@ -110,7 +110,7 @@ public class Arrow extends Constructible<Arrow> {
      * @param type Arrow type. A value of enum Arrowtype
      * @return The created object
      */
-    public static Arrow make(Coordinates<?> A, Coordinates<?>  B, ArrowType type) {
+    public static Arrow make(Coordinates<?> A, Coordinates<?> B, ArrowType type) {
         Arrow resul = new Arrow(A, B);
         resul.typeA = ArrowType.NONE_BUTT;
         resul.typeB = type;
@@ -120,7 +120,7 @@ public class Arrow extends Constructible<Arrow> {
         return resul;
     }
 
-    public static Arrow makeDouble(Coordinates<?>  A, Coordinates<?>  B, ArrowType typeA, ArrowType typeB) {
+    public static Arrow makeDouble(Coordinates<?> A, Coordinates<?> B, ArrowType typeA, ArrowType typeB) {
         Arrow resul = new Arrow(A, B);
         resul.typeA = typeA;
         resul.typeB = typeB;
@@ -139,13 +139,13 @@ public class Arrow extends Constructible<Arrow> {
             //Always FIRST point to the RIGHT,
             //LAST point to the LEFT
             case NONE_BUTT:
-                return Shape.segment(Vec.to(1, 0), Vec.to(0, 0));
+                return Shape.segment(Point.at(1, 0), Point.at(0, 0));
             case NONE_ROUND:
                 resul = Shape.arc(PI);
                 resul.setProperty("gap", -1d);
                 return resul;
             case NONE_SQUARE:
-                return Shape.segment(Vec.to(1, 0), Vec.to(0, 0));
+                return Shape.segment(Point.at(1, 0), Point.at(0, 0));
             case ARROW1:
                 arrowUrl = rl.getResource("#arrow1.svg", "shapeResources/arrows");
                 return SVGMathObject.make(arrowUrl).get(0);
@@ -221,11 +221,11 @@ public class Arrow extends Constructible<Arrow> {
         }
         //The distScale manages which scale should be the arrow drawn. It is used mostly by ShowCreation animation
 
-        Avcopy.copyCoordinatesFrom(A);
-        Bvcopy.copyCoordinatesFrom(A.interpolate(B, getAmplitudeScale()));
+        Acopy.copyCoordinatesFrom(A);
+        Bcopy.copyCoordinatesFrom(A.interpolate(B, getAmplitudeScale()));
         Shape h1A = head1.copy();
         Shape h1B = head2.copy();
-        double dist = Avcopy.to(Bvcopy).norm();
+        double dist = Acopy.to(Bcopy).norm();
         if (arrowLabel != null) {
             arrowLabel.update(scene);
             arrowLabel.getMathObject().scale(arrowLabel.pivotPointRefMathObject, getAmplitudeScale());
@@ -236,7 +236,6 @@ public class Arrow extends Constructible<Arrow> {
         //Scale heads to adjust to thickness
         double rThickness = scene.getRenderer().ThicknessToMathWidth(arrowThickness * getAmplitudeScale());
 
-        //Correction factor for arrow thickness
         double hh = (baseRealHeight1 - gapA) / baseDist1 + (baseRealHeight2 - gapB) / baseDist2;
         rThickness = Math.min(rThickness, .75 * dist / hh);
         h1A.scale(headStartMultiplier * rThickness / baseDist1);
@@ -255,8 +254,8 @@ public class Arrow extends Constructible<Arrow> {
         shapeToDraw.getPath().clear();
         double longBody = dist - rbaseHeight1 - rbaseHeight2 - rgapA - rgapB;
         h1B.shift(0, -longBody);
-        Vec startPoint = h1A.getBoundingBox().getUpper().add(Vec.to(0, rgapA));
-        Vec endPoint = h1B.getBoundingBox().getLower().add(Vec.to(0, -rgapB));
+        Vec startPoint = h1A.getBoundingBox().getUpper().add(0, rgapA);
+        Vec endPoint = h1B.getBoundingBox().getLower().add(0, -rgapB);
 
         if (angle == 0) {
             shapeToDraw.getPath().addJMPointsFrom(h1A.getPath());
@@ -339,23 +338,23 @@ public class Arrow extends Constructible<Arrow> {
         if (is3D){
             z1 = startPoint.copy().add(Vec.to(0, 0, 1));
 
-            Vec v = Avcopy.to(Bvcopy);
+            Vec v = Acopy.to(Bcopy);
             if ((v.x == 0) && (v.y == 0)) {
-                C = Avcopy.copy().add(Vec.to(0, 1, 0));
+                C = Acopy.getVec().copy().add(Vec.to(0, 1, 0));
             } else {
-                C = Avcopy.copy().add(Vec.to(0, 1, 0));
+                C = Acopy.getVec().copy().add(Vec.to(0, 0, 1));
             }
         }
 
 
 
         if (is3D) {
-            tr = AffineJTransform.createDirect3DIsomorphic(startPoint, endPoint, z1, Avcopy, Bvcopy, C, 1);
+            tr = AffineJTransform.createDirect3DIsomorphic(startPoint, endPoint, z1, Acopy, Bcopy, C, 1);
         } else {
-            tr = AffineJTransform.createDirect2DIsomorphic(startPoint, endPoint, Avcopy, Bvcopy, 1);
+            tr = AffineJTransform.createDirect2DIsomorphic(startPoint, endPoint, Acopy, Bcopy, 1);
         }
 
-//        shapeToDraw.getPath().applyAffineTransform(tr);
+        shapeToDraw.getPath().applyAffineTransform(tr);
         labelArcUpside.getPath().applyAffineTransform(tr);
         labelArcDownside.getPath().applyAffineTransform(tr);
 
@@ -365,8 +364,8 @@ public class Arrow extends Constructible<Arrow> {
             Camera3D cam = (Camera3D) scene.getCamera();
 //            Point C = A.copy().shift(0, 0, 1);
             Vec v = cam.look.to(cam.eye);
-            Vec C2 = Avcopy.copy().add(v);
-            tr = AffineJTransform.createDirect3DIsomorphic(Avcopy, Bvcopy, C, Avcopy, Bvcopy, C2, 1);
+            Vec C2 = Acopy.copy().add(v);
+            tr = AffineJTransform.createDirect3DIsomorphic(Acopy, Bcopy, C, Acopy, Bcopy, C2, 1);
             shapeToDraw.applyAffineTransform(tr);
             labelArcUpside.applyAffineTransform(tr);
             labelArcDownside.applyAffineTransform(tr);
@@ -411,8 +410,8 @@ public class Arrow extends Constructible<Arrow> {
             this.typeB = ar.typeB;
             this.A.copyCoordinatesFrom(ar.A);
             this.B.copyCoordinatesFrom(ar.B);
-            this.Avcopy.copyCoordinatesFrom(ar.Avcopy);
-            this.Bvcopy.copyCoordinatesFrom(ar.Bvcopy);
+            this.Acopy.copyCoordinatesFrom(ar.Acopy);
+            this.Bcopy.copyCoordinatesFrom(ar.Bcopy);
             this.gapA = ar.gapA;
             this.gapB = ar.gapB;
             this.baseDist1 = ar.baseDist1;
@@ -562,8 +561,8 @@ public class Arrow extends Constructible<Arrow> {
      *
      * @param A Starting point
      */
-    public void setStart(Coordinates<?>  A) {
-        this.A = A.getVec();
+    public void setStart(Vec A) {
+        this.A = A;
         rebuildShape();
     }
 
@@ -581,8 +580,8 @@ public class Arrow extends Constructible<Arrow> {
      *
      * @param B Ending point
      */
-    public void setEnd(Coordinates<?>  B) {
-        this.B = B.getVec();
+    public void setEnd(Vec B) {
+        this.B = B;
         rebuildShape();
     }
 
@@ -764,6 +763,7 @@ public class Arrow extends Constructible<Arrow> {
     }
 
     private enum labelTypeEnum {NORMAL, DISTANCE, COORDS}
+
 
     @Override
     public Arrow setFreeMathObject(boolean isMathObjectFree) {

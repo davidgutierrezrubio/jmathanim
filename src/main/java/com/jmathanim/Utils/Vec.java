@@ -70,6 +70,19 @@ public class Vec implements Stateable, HasDirection, Coordinates<Vec>, AffineTra
         return new Vec(x, y);
     }
 
+
+    /**
+     * Static builder.Creates and returns a new point at random coordinates, inside the math view.
+     *
+     * @return The created point
+     */
+    public static Vec random() {
+        Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
+        double x = r.xmin + (r.xmax - r.xmin) * Math.random();
+        double y = r.ymin + (r.ymax - r.ymin) * Math.random();
+        return new Vec(x, y);
+    }
+
     /**
      * Computes the dot product of this vector and a given one
      *

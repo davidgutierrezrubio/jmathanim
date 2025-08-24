@@ -19,7 +19,6 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 
 import java.text.DecimalFormat;
@@ -160,10 +159,7 @@ public class Point extends AbstractPoint<Point> {
      * @return The created point
      */
     public static Point random() {
-        Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
-        double x = r.xmin + (r.xmax - r.xmin) * Math.random();
-        double y = r.ymin + (r.ymax - r.ymin) * Math.random();
-        return new Point(x, y);
+        return new Point(Vec.random());
     }
 
     @Override

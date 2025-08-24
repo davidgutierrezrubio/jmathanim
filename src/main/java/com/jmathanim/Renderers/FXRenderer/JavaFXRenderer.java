@@ -450,7 +450,10 @@ public class JavaFXRenderer extends Renderer {
     @Override
     public double ThicknessToMathWidth(MathObject<?> obj) {
         Camera cam = (obj.getMp().isAbsoluteThickness() ? fixedCamera : camera);
-        return obj.getMp().getThickness() / 1066 * 4 / cam.getMathView().getWidth();
+
+//        return obj.getMp().getThickness() / 1066 * 4 / cam.getMathView().getWidth();
+        double th= obj.getMp().getThickness();
+        return th*cam.getMathView().getWidth()/ THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH;
     }
 
     @Override
@@ -546,6 +549,17 @@ public class JavaFXRenderer extends Renderer {
         rectangle.setStroke(Color.DARKBLUE);
 
         debugFXnodes.add(rectangle);
+        debugFXnodes.add(t);
+    }
+
+    public void addJavaFxText(String text) {
+        Text t = new Text(text);
+        t.setFont(Font.font("Verdana", FontWeight.BOLD, 48));
+        t.setFill(Color.ALICEBLUE);
+        t.setStroke(Color.BLACK);
+        t.setX(0);
+        t.setY(0);
+        t.setTextOrigin(VPos.TOP);
         debugFXnodes.add(t);
     }
 

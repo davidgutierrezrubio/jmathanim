@@ -19,9 +19,9 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Commands;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Arrow;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 
 /**
  * Transfom stratregy from one arrow to another. Currently only changes
@@ -43,10 +43,10 @@ public class ArrowTransform extends TransformStrategy {
     @Override
     public boolean doInitialization() {
         super.doInitialization();
-        Point a = ((Arrow) getOriginObject()).getStart().copy();
-        Point b = ((Arrow) getOriginObject()).getEnd().copy();
-        Point c = ((Arrow) getOriginObject()).getStart().copy();
-        Point d = ((Arrow) getDestinyObject()).getEnd().copy();
+        Vec a = ((Arrow) getOriginObject()).getStart().copy();
+        Vec b = ((Arrow) getOriginObject()).getEnd().copy();
+        Vec c = ((Arrow) getOriginObject()).getStart().copy();
+        Vec d = ((Arrow) getDestinyObject()).getEnd().copy();
         getIntermediateObject().copyStateFrom(this.getOriginObject());
         anim = Commands.isomorphism(runTime, a, b, c, d, getIntermediateObject());
         this.copyEffectParametersTo(anim);

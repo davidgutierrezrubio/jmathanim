@@ -18,6 +18,7 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Points.CTPoint;
+import com.jmathanim.Enum.ArrowType;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow;
@@ -75,7 +76,7 @@ public class CTVector extends CTAbstractLine {
         super();
         this.A = A;
         this.B = B;
-        arrowToDraw = Arrow.make(this.A.getMathObject().copy(), this.B.getMathObject().copy(),Arrow.ArrowType.ARROW1);
+        arrowToDraw = Arrow.make(this.A.getMathObject().copy(), this.B.getMathObject().copy(), ArrowType.ARROW1);
     }
 
     @Override
@@ -100,8 +101,8 @@ public class CTVector extends CTAbstractLine {
         this.P1.copyCoordinatesFrom(this.A.coordinatesOfPoint);
         this.P2.copyCoordinatesFrom(this.B.coordinatesOfPoint);
         if (!isFreeMathObject()) {
-            arrowToDraw.getStart().v.copyCoordinatesFrom(this.P1);
-            arrowToDraw.getEnd().v.copyCoordinatesFrom(this.P2);
+            arrowToDraw.getStart().copyCoordinatesFrom(this.P1);
+            arrowToDraw.getEnd().copyCoordinatesFrom(this.P2);
         }
     }
 

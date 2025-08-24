@@ -64,7 +64,7 @@ public abstract class Constructible<T extends Constructible<T>>  extends MathObj
      *                         parameters.
      * @return This object
      */
-    public <T extends Constructible<?>> T setFreeMathObject(boolean isMathObjectFree) {
+    public T setFreeMathObject(boolean isMathObjectFree) {
         if (!isMathObjectFree) {
             if (this.isMathObjectFree) {
                 rebuildShape();
@@ -144,7 +144,7 @@ public abstract class Constructible<T extends Constructible<T>>  extends MathObj
     }
 
     private void processDrawMathObjectGroup(MathObjectGroup group, JMathAnimScene scene, Renderer r, Camera cam) {
-        for (MathObject obj : group) {
+        for (MathObject<?> obj : group) {
             if (obj != null) {
                 if (obj instanceof MathObjectGroup) {
                     processDrawMathObjectGroup((MathObjectGroup) obj, scene, r, cam);
