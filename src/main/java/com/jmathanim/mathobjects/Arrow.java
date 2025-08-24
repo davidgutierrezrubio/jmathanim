@@ -24,6 +24,7 @@ import com.jmathanim.Constructible.Lines.CTLine;
 import com.jmathanim.Constructible.Lines.CTPerpBisector;
 import com.jmathanim.Constructible.Points.CTIntersectionPoint;
 import com.jmathanim.Enum.AnchorType;
+import com.jmathanim.Enum.ArrowType;
 import com.jmathanim.Enum.SlopeDirectionType;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
@@ -58,7 +59,7 @@ public class Arrow extends Constructible<Arrow> {
     private double baseRealHeight2;
     private double headStartMultiplier, headEndMultiplier;
     private double gapA, gapB;
-    private Point A, B;
+    private Vec A, B;
     private double baseDist1, baseDist2;
     private double arrowThickness;
     private ArrowType typeA, typeB;
@@ -66,9 +67,11 @@ public class Arrow extends Constructible<Arrow> {
     private labelTypeEnum labelType;
     private String stringFormat;
 
-    private Arrow(Point A, Point B) {
-        this.A = A;
-        this.B = B;
+    private Arrow(Coordinates<?>  A, Coordinates<?>  B) {
+        this.A = A.getVec();
+        this.B = B.getVec();
+        Avcopy = this.A.copy();
+        Bvcopy = this.B.copy();
         labelType = labelTypeEnum.NORMAL;
         this.labelArcUpside = new Shape();
         this.labelArcDownside = new Shape();
@@ -80,8 +83,6 @@ public class Arrow extends Constructible<Arrow> {
         headStartMultiplier = 1d;
         headEndMultiplier = 1d;
         shapeToDraw = new Shape();
-        Avcopy = A.v.copy();
-        Bvcopy = B.v.copy();
         mpArrow = new MODrawPropertiesArray();
         mpArrow.add(shapeToDraw);
         groupElementsToBeDrawn = MathObjectGroup.make(shapeToDraw);
@@ -109,7 +110,7 @@ public class Arrow extends Constructible<Arrow> {
      * @param type Arrow type. A value of enum Arrowtype
      * @return The created object
      */
-    public static Arrow make(Point A, Point B, ArrowType type) {
+    public static Arrow make(Coordinates<?> A, Coordinates<?>  B, ArrowType type) {
         Arrow resul = new Arrow(A, B);
         resul.typeA = ArrowType.NONE_BUTT;
         resul.typeB = type;
@@ -119,7 +120,7 @@ public class Arrow extends Constructible<Arrow> {
         return resul;
     }
 
-    public static Arrow makeDouble(Point A, Point B, ArrowType typeA, ArrowType typeB) {
+    public static Arrow makeDouble(Coordinates<?>  A, Coordinates<?>  B, ArrowType typeA, ArrowType typeB) {
         Arrow resul = new Arrow(A, B);
         resul.typeA = typeA;
         resul.typeB = typeB;
@@ -220,8 +221,8 @@ public class Arrow extends Constructible<Arrow> {
         }
         //The distScale manages which scale should be the arrow drawn. It is used mostly by ShowCreation animation
 
-        Avcopy.copyCoordinatesFrom(A.v);
-        Bvcopy.copyCoordinatesFrom(A.interpolate(B, getAmplitudeScale()).v);
+        Avcopy.copyCoordinatesFrom(A);
+        Bvcopy.copyCoordinatesFrom(A.interpolate(B, getAmplitudeScale()));
         Shape h1A = head1.copy();
         Shape h1B = head2.copy();
         double dist = Avcopy.to(Bvcopy).norm();
@@ -235,6 +236,7 @@ public class Arrow extends Constructible<Arrow> {
         //Scale heads to adjust to thickness
         double rThickness = scene.getRenderer().ThicknessToMathWidth(arrowThickness * getAmplitudeScale());
 
+        //Correction factor for arrow thickness
         double hh = (baseRealHeight1 - gapA) / baseDist1 + (baseRealHeight2 - gapB) / baseDist2;
         rThickness = Math.min(rThickness, .75 * dist / hh);
         h1A.scale(headStartMultiplier * rThickness / baseDist1);
@@ -353,7 +355,7 @@ public class Arrow extends Constructible<Arrow> {
             tr = AffineJTransform.createDirect2DIsomorphic(startPoint, endPoint, Avcopy, Bvcopy, 1);
         }
 
-        shapeToDraw.getPath().applyAffineTransform(tr);
+//        shapeToDraw.getPath().applyAffineTransform(tr);
         labelArcUpside.getPath().applyAffineTransform(tr);
         labelArcDownside.getPath().applyAffineTransform(tr);
 
@@ -407,8 +409,8 @@ public class Arrow extends Constructible<Arrow> {
             this.headEndMultiplier = ar.headEndMultiplier;
             this.typeA = ar.typeA;
             this.typeB = ar.typeB;
-            this.A.copyStateFrom(ar.A);
-            this.B.copyStateFrom(ar.B);
+            this.A.copyCoordinatesFrom(ar.A);
+            this.B.copyCoordinatesFrom(ar.B);
             this.Avcopy.copyCoordinatesFrom(ar.Avcopy);
             this.Bvcopy.copyCoordinatesFrom(ar.Bvcopy);
             this.gapA = ar.gapA;
@@ -551,7 +553,7 @@ public class Arrow extends Constructible<Arrow> {
      *
      * @return A reference to the starting Point object
      */
-    public Point getStart() {
+    public Vec getStart() {
         return A;
     }
 
@@ -560,8 +562,8 @@ public class Arrow extends Constructible<Arrow> {
      *
      * @param A Starting point
      */
-    public void setStart(Point A) {
-        this.A = A;
+    public void setStart(Coordinates<?>  A) {
+        this.A = A.getVec();
         rebuildShape();
     }
 
@@ -570,7 +572,7 @@ public class Arrow extends Constructible<Arrow> {
      *
      * @return A reference to the ending Point object
      */
-    public Point getEnd() {
+    public Vec getEnd() {
         return B;
     }
 
@@ -579,8 +581,8 @@ public class Arrow extends Constructible<Arrow> {
      *
      * @param B Ending point
      */
-    public void setEnd(Point B) {
-        this.B = B;
+    public void setEnd(Coordinates<?>  B) {
+        this.B = B.getVec();
         rebuildShape();
     }
 
@@ -762,17 +764,6 @@ public class Arrow extends Constructible<Arrow> {
     }
 
     private enum labelTypeEnum {NORMAL, DISTANCE, COORDS}
-
-    //TODO:
-    //Hacer que sea / no sea zoom-independent
-    //Archivo editable Inkscape con todas las flechas
-    //SVG: Flechas,
-    //Procedural: cuadrados, semicírculos, cuascírculos
-    //Implementar caps style proceduralmente
-    //Añadir gap interno para modificar punto al que señalan flechas
-    public enum ArrowType {
-        NONE_BUTT, NONE_ROUND, NONE_SQUARE, ARROW1, ARROW2, ARROW3, SQUARE, BULLET
-    }
 
     @Override
     public Arrow setFreeMathObject(boolean isMathObjectFree) {
