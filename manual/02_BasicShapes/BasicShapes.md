@@ -38,26 +38,40 @@ double x=p.v.x; //x-coordinate of p
 double d=p.v.norm(); //Distance of p to the origin
 ```
 
-A point can be represented in different styles, defined in the `DotStyle` enum, namely `CIRCLE, CROSS, PLUS` which are shown as this:
+A point can be represented in different styles, defined in the `DotStyle` enum, namely `CIRCLE, CROSS, PLUS,` etc,  which are shown as this:
 
 ![dots](dots.png)
 
 The code used was
 
 ``` java
- @Override
-    public void setupSketch() {
-        config.parseFile("#preview.xml");
-        config.parseFile("#light.xml");
-    }
+@Override
+public void setupSketch() {
+    config.parseFile("#preview.xml");
+    config.parseFile("#light.xml");
+}
 
 @Override
 public void runSketch() throws Exception {
-        Point A = Point.at(-.5, 0).dotStyle(Point.DotSyle.CIRCLE);
-        Point B = Point.at(0, 0).dotStyle(Point.DotSyle.CROSS);
-        Point C = Point.at(.5, 0).dotStyle(Point.DotSyle.PLUS);
-        add(A, B, C); //Add the 3 points to the scene
-        waitSeconds(5); //Give me time to do a screenshot!
+    Point A = Point.at(-1.75, 0).dotStyle(DotStyle.CIRCLE);
+    Point B = Point.at(-1.25, 0).dotStyle(DotStyle.CROSS);
+    Point C = Point.at(-.75, 0).dotStyle(DotStyle.PLUS);
+    Point D = Point.at(-.25, 0).dotStyle(DotStyle.RING);
+    Point E = Point.at(.25, 0).dotStyle(DotStyle.TRIANGLE_UP_HOLLOW);
+    Point F = Point.at(.75, 0).dotStyle(DotStyle.TRIANGLE_DOWN_HOLLOW);
+    Point G = Point.at(1.25, 0).dotStyle(DotStyle.TRIANGLE_UP_FILLED);
+    Point H = Point.at(1.75, 0).dotStyle(DotStyle.TRIANGLE_DOWN_FILLED);
+    add(A, B, C,D,E,F,G,H); //Add the 3 points to the scene
+
+    //Add an x-axis line, gray, under the points, for reference
+    add(
+        Line.XAxis()
+        .thickness(2)
+        .drawColor("gray")
+        .layer(-1)
+    );
+
+    waitSeconds(5); //Give me time to do a screenshot!
     }
 ```
 
@@ -102,7 +116,7 @@ You’ll obtain something like this:
 From version 0.9.8, Shapes can also be defined using LOGO commands:
 
 ``` java
-String logoCmd = "REPEAT 12 [FD .5 RT 150 FD .5 LT 120] CLO";
+String logoCmd = "REPEAT 12 [FD .5 RT 150 FD .5 LT 120] CLO";//The CLO command is an non-LOGO command added to close the path
 Shape logoShape = Shape.logo(logoCmd);
 add(logoShape.center().style("solidblue"));//Centered on screen and with a style filled blue
 waitSeconds(3);
@@ -186,8 +200,8 @@ This class represents an infinite line. Of course, the "trick" is that in every 
 Point A = Point.at(1, 1);
 Point B = Point.at(0, 1);
 Vec v = Vec.to(1, .2);
-Line line1 = Line.make(A, B).drawColor(JMColor.RED).thickness(6);//Line that pass through A and B, color red
-Line line2 = Line.make(A, v).drawColor(JMColor.BLUE).thickness(10);//Line that pass through A and A+v, color blue
+Line line1 = Line.make(A, B).drawColor("red").thickness(6);//Line that pass through A and B, color red
+Line line2 = Line.make(A, v).drawColor("blue").thickness(10);//Line that pass through A and A+v, color blue
 Line line3 = Line.XAxis().drawColor("darkorange");//Line y=0, color dark orange
 Line line4 = Line.YAxis().drawColor("darkmagenta");//Line x=0, color dark magenta
 Line line5 = Line.XYBisector().drawColor("darkgreen");//Line y=x, color dark green

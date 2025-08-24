@@ -17,7 +17,7 @@ public void setupSketch() {
 
 @Override
 public void runSketch() {
-	final Axes axes = new Axes();
+    final Axes axes = new Axes();
     axes.generatePrimaryXTicks(-2, 2, 1);
     axes.generatePrimaryYTicks(-2, 2, 1);
     add(axes);
@@ -25,7 +25,6 @@ public void runSketch() {
     //The function
     FunctionGraph cat = FunctionGraph.make(x -> (x - 1) * (x + 1) * (x - .5));
     cat.thickness(3).drawColor("darkblue");
-
 
     //The roots of f'(x)
     double root1 = -0.4342585459107;
@@ -45,12 +44,14 @@ public void runSketch() {
     //Now we shift the point A to the first root and fadeIn a illustrative text and a marker point
     play.shift(5, root1 - xStart, 0, A);
     Point marker1 = A.copy().dotStyle(Point.DotSyle.CROSS).drawColor("darkblue");
-    play.fadeIn(2, LaTeXMathObject.make("$$f'(x)=0$$").scale(.5).stackTo(A, Anchor.Type.UPPER, .1), marker1);
+
+    play.fadeIn(2, LaTeXMathObject.make("$$f'(x)=0$$").scale(.5).stackTo(A, AnchorType.UPPER, .1), marker1);
 
     //We do the same with the second root
     play.shift(5, root2 - root1, 0, A);
     Point marker2 = A.copy().dotStyle(Point.DotSyle.CROSS).drawColor("darkblue");
-    play.fadeIn(2, LaTeXMathObject.make("$$f'(x)=0$$").scale(.5).stackTo(A, Anchor.Type.LOWER, .1), marker2);
+
+    play.fadeIn(2, LaTeXMathObject.make("$$f'(x)=0$$").scale(.5).stackTo(A, AnchorType.LOWER, .1), marker2);
 
     play.shift(5, 1, 0, A);
 
@@ -89,25 +90,21 @@ public void runSketch() throws Exception {
     play.showCreation(sinFunction);
     waitSeconds(1);
 
-    FunctionGraph taylor[] = new FunctionGraph[orderTaylor];
-    LaTeXMathObject texts[] = new LaTeXMathObject[orderTaylor];
+    FunctionGraph[] taylor = new FunctionGraph[orderTaylor];
+    LaTeXMathObject[] texts = new LaTeXMathObject[orderTaylor];
     for (int n = 1; n < orderTaylor; n++) {
-        taylor[n] = FunctionGraph.make(TaylorExpansionSin(n),xmin,xmax)
-            .drawColor("#153e90")
-            .thickness(4);
-        texts[n]=LaTeXMathObject.make("Taylor order "+n)
-            .scale(3)
-            .stackToScreen(Anchor.Type.ULEFT,.2,.2);
+        taylor[n] = FunctionGraph.make(TaylorExpansionSin(n), xmin, xmax).drawColor("#153e90").thickness(4);
+        texts[n] = LaTeXMathObject.make("Taylor order " + n).scale(3).stackToScreen(AnchorType.ULEFT, .2, .2);
         texts[n].setColor("#153e90").layer(2);
     }
     final Rect r = texts[1].getBoundingBox().addGap(.1, .1);
-    Shape box=Shape.rectangle(r).fillColor(JMColor.WHITE).thickness(3).layer(1);
-    play.showCreation(taylor[1],texts[1],box);
+    Shape box = Shape.rectangle(r).fillColor(JMColor.WHITE).thickness(3).layer(1);
+    play.showCreation(taylor[1], texts[1], box);
     for (int n = 2; n < orderTaylor; n++) {
-        add(taylor[n-1].copy().thickness(1).drawColor(JMColor.GRAY));
-        Transform transformFunction = new Transform(2, taylor[n-1], taylor[n]);
-        Transform transformText=new Transform(2, texts[n-1], texts[n]);
-        playAnimation(transformFunction,transformText);
+        add(taylor[n - 1].copy().thickness(1).drawColor(JMColor.GRAY));
+        Transform transformFunction = new Transform(2, taylor[n - 1], taylor[n]);
+        Transform transformText = new Transform(2, texts[n - 1], texts[n]);
+        playAnimation(transformFunction, transformText);
     }
     waitSeconds(5);
 }
@@ -143,7 +140,7 @@ Two parametric curves expressed in polar coordinates. Note that we made a copy o
 
 ```java
 add(new Axes());
-ParametricCurve trifolium = ParametricCurve.makePolar(t -> 2*Math.cos(t)*(4*Math.sin(t)*Math.sin(t)-1), t -> t, 0, PI);
+ParametricCurve trifolium = ParametricCurve.makePolar(t -> 2 * Math.cos(t) * (4 * Math.sin(t) * Math.sin(t) - 1), t -> t, 0, PI);
 ParametricCurve nephroid = ParametricCurve.makePolar(t -> 1 + 2 * Math.sin(t / 2), t -> t, 0, 4 * PI);
 
 trifolium.drawColor("#153e90").thickness(3);
@@ -195,7 +192,7 @@ Here you have a GIF from the movie generated:
 ## The trail of the vertices of a square rotating over a line
 
 ```java
-Shape sq=Shape.square().scale(.2).stackToScreen(Anchor.Type.LEFT).shift(0,.1);
+Shape sq=Shape.square().scale(.2).stackToScreen(AnchorType.LEFT).shift(0,.1);
 add(Line.XAxis(),sq);
 int n=1;
 add(Trail.make(sq.getPoint(0)).drawColor(JMColor.RED).thickness(3)
@@ -242,7 +239,7 @@ private Shape getNextKochIteration(Shape previousShape) {
         .rotate(s1.getPoint(0), PI / 3)//rotated 60 degrees around left point of s1...
         .shift(s1.getPoint(0).to(s1.getPoint(-1)));//and moved to start at right point of s1...
     Shape s3 = s1.copy()//A copy of s1...
-        .rotate(s1.getPoint(0), -PI / 3)//rotated -60 degrees around left point of s1...
+        .rotate(s1.getPoint(0), -PI / 3)//rotated -60 degress around left point of s1...
         .shift(s1.getPoint(0).to(s2.getPoint(-1)));//and moved to start at right point of s2...
     Shape s4 = s1.copy()//A copy of s1...
         .shift(s1.getPoint(0).to(s3.getPoint(-1)));//moved to start at right point of s3..
@@ -332,7 +329,7 @@ for (int n = 0; n < numPoints; n++) {
 }
 
 add(outerCircle, rotatingCircle);
-MoveAlongPath mov = MoveAlongPath.make(10, path, rotatingCircle, Anchor.Type.CENTER,false,false);
+MoveAlongPath mov = MoveAlongPath.make(10, path, rotatingCircle, AnchorType.CENTER,false,false);
 Animation rot = Commands.rotate(10, -2 * PI, rotatingCircle).setUseObjectState(false);
 mov.setLambda(t -> t);//Uniform movement
 rot.setLambda(t -> t);//Uniform rotation
@@ -349,7 +346,7 @@ Here you have a GIF from the generated movie :
 //Two rectangles
 Shape sq1 = Shape.square().scale(2.5, 1).style("solidblue");
 Shape sq2 = Shape.square().scale(1.75, 1).style("solidred");
-sq2.stackTo(sq1, Anchor.Type.RIGHT, .5);
+sq2.stackTo(sq1, AnchorType.RIGHT, .5);
 add(sq1, sq2);
 
 //The colors chosen to the symbols a, b and c
@@ -359,10 +356,10 @@ JMColor colC = JMColor.parse("#6A2A5C");
 JMColor colArea = JMColor.parse("#B73A1C");
 
 //Brace delimiters
-Delimiter del1X = Delimiter.stackTo(sq1, Anchor.Type.LOWER, Delimiter.Type.BRACE, .1).setLabel("$b$", .1);
-Delimiter del1Y = Delimiter.stackTo(sq1, Anchor.Type.LEFT, Delimiter.Type.BRACE, .1).setLabel("$a$", .1);
-Delimiter del2X = Delimiter.stackTo(sq2, Anchor.Type.LOWER, Delimiter.Type.BRACE, .1).setLabel("$c$", .1);
-Delimiter del2Y = Delimiter.stackTo(sq2, Anchor.Type.RIGHT, Delimiter.Type.BRACE, .1).setLabel("$a$", .1);
+Delimiter del1X = Delimiter.stackTo(sq1, AnchorType.LOWER, Delimiter.Type.BRACE, .1).setLabel("$b$", .1);
+Delimiter del1Y = Delimiter.stackTo(sq1, AnchorType.LEFT, Delimiter.Type.BRACE, .1).setLabel("$a$", .1);
+Delimiter del2X = Delimiter.stackTo(sq2, AnchorType.LOWER, Delimiter.Type.BRACE, .1).setLabel("$c$", .1);
+Delimiter del2Y = Delimiter.stackTo(sq2, AnchorType.RIGHT, Delimiter.Type.BRACE, .1).setLabel("$a$", .1);
 
 //Need to declare this so that labels do not appear rotated (vertical delimiters)
 del1Y.setRotationType(Delimiter.Rotation.FIXED);
@@ -379,13 +376,13 @@ textBC.setColor(colB, 0);//"b" glyph
 textBC.setColor(colC, 2);//"c" glyph
 Delimiter del12X = Delimiter.stackTo(
     MathObjectGroup.make(sq1, sq2),//We group these 2 rectangles so the brace adjust to the 2 combined
-    Anchor.Type.UPPER, Delimiter.Type.BRACE, .1)
+    AnchorType.UPPER, Delimiter.Type.BRACE, .1)
     .setLabel(textBC, .1);
 
 //The upper formula  Area=a*b+a*c
 LaTeXMathObject formula1 = LaTeXMathObject.make("Area=$a\\cdot b+a\\cdot c$").scale(3);
 //Position formula .5 units above sq2...we will center it horizontally later
-formula1.stackTo(sq2, Anchor.Type.UPPER, .5);
+formula1.stackTo(sq2, AnchorType.UPPER, .5);
 //Apply colors
 formula1.setColor(colArea, 0, 1, 2, 3);//"Area"
 formula1.setColor(colA, 5, 9);//The "a" glyphs
@@ -667,7 +664,7 @@ Shape candy = Shape.circle().scale(.03).thickness(2);//base shape for candy
 int numCandies = 1000;//Number of candies to fall
 Point refPoint = Point.origin();
 //Locates the refPoint at the bottom of the screen, leaving a margin the size of a candy
-refPoint.stackToScreen(Anchor.Type.LOWER, candy.getWidth(), candy.getHeight());
+refPoint.stackToScreen(AnchorType.LOWER, candy.getWidth(), candy.getHeight());
 
 //Creates the group of candies
 MathObjectGroup candyHeap = MathObjectGroup.make();
@@ -690,6 +687,7 @@ auxCandyHeap.getObjects().addAll(candyHeap.getObjects());
 for (int n = 0; n < triangularNumber - numCandies; n++) {
     auxCandyHeap.add(candy.copy());//Virtual candies, these will be discarded later
 }
+
 //Reverse the order, so that the virtual candies will be on top of the Pascal Layout
 Collections.reverse(auxCandyHeap.getObjects());
 
@@ -697,7 +695,7 @@ double radius = .5 * candy.getHeight();//radius of a candy
 double vgap = radius * (Math.sqrt(3) - 2);//negative gap so that the circles will stick together
 PascalLayout layout = new PascalLayout(Point.origin(), 0, vgap);//The reference point here is meaningless, we will align the group later
 auxCandyHeap.setLayout(layout);
-auxCandyHeap.stackTo(refPoint, Anchor.Type.UPPER);
+auxCandyHeap.stackTo(refPoint, AnchorType.UPPER);
 
 //Note that we used auxCandyHeap only the set the layout of all elements of group candyHeap
 //Now perform animations. We will shuffle all elements in each row
@@ -719,7 +717,7 @@ for (MathObject r : rows) {
             Concatenate conc = Concatenate.make();
             final double wt = 2d * counter / candyHeap.size();
             conc.add(WaitAnimation.make(wt));
-            conc.add(Commands.moveIn(1-.9*rowCounter/rows.size(), Anchor.Type.UPPER, 						candyToFall).setLambda(t -> t * t));
+            conc.add(Commands.moveIn(1-.9*rowCounter/rows.size(), AnchorType.UPPER,candyToFall).setLambda(t -> t * t));
             anim.add(conc);
             counter++;
         }
@@ -752,7 +750,7 @@ double scaleSmallSquare = 2 * Math.tan(PI / numberSmallSquares);
 //Creates a base shape (a square, that can be changed)
 //and put it to the right of the point (1,0)
 Shape baseShape = Shape.square().scale(scaleSmallSquare);
-baseShape.stackTo(Point.at(1, 0), Anchor.Type.RIGHT);
+baseShape.stackTo(Point.at(1, 0), AnchorType.RIGHT);
 
 //Colors to alternate in base shape
 JMColor col1 = JMColor.parse("#512D6D");
