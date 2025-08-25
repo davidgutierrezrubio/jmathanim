@@ -209,35 +209,35 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
     }
 
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 29 * hash + Long.hashCode(Double.doubleToLongBits(this.x));
-        hash = 29 * hash + Long.hashCode(Double.doubleToLongBits(this.y));
-        hash = 29 * hash + Long.hashCode(Double.doubleToLongBits(this.z));
-        return hash;
-    }
+//    @Override
+//    public int hashCode() {
+//        int hash = 7;
+//        hash = 29 * hash + Long.hashCode(Double.doubleToLongBits(this.x));
+//        hash = 29 * hash + Long.hashCode(Double.doubleToLongBits(this.y));
+//        hash = 29 * hash + Long.hashCode(Double.doubleToLongBits(this.z));
+//        return hash;
+//    }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Vec other = (Vec) obj;
-        if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.x)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.y) != Double.doubleToLongBits(other.y)) {
-            return false;
-        }
-        return Double.doubleToLongBits(this.z) == Double.doubleToLongBits(other.z);
-    }
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (this == obj) {
+//            return true;
+//        }
+//        if (obj == null) {
+//            return false;
+//        }
+//        if (getClass() != obj.getClass()) {
+//            return false;
+//        }
+//        final Vec other = (Vec) obj;
+//        if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.x)) {
+//            return false;
+//        }
+//        if (Double.doubleToLongBits(this.y) != Double.doubleToLongBits(other.y)) {
+//            return false;
+//        }
+//        return Double.doubleToLongBits(this.z) == Double.doubleToLongBits(other.z);
+//    }
 
     @Override
     public String toString() {

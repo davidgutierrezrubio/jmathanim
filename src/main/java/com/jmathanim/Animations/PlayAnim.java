@@ -233,7 +233,7 @@ public class PlayAnim {
      * @param dy      y-coordinate of translation vector
      * @param objs    Mathobjects to animate (varargs)
      */
-    public void shift(double runtime, double dx, double dy, MathObject<?>... objs) {
+    public void shift(double runtime, double dx, double dy, AffineTransformable<?>... objs) {
         scene.playAnimation(Commands.shift(runtime, dx, dy, objs));
     }
 

@@ -165,12 +165,12 @@ public abstract class Delimiter extends Constructible<Delimiter> {
 
 
 
-    public Coordinates<?> getA() {
-        return A;
+    public Vec getA() {
+        return A.getVec();
     }
 
-    public Coordinates<?> getB() {
-        return B;
+    public Vec getB() {
+        return B.getVec();
     }
 
     @Override
@@ -375,5 +375,6 @@ public abstract class Delimiter extends Constructible<Delimiter> {
     public void update(JMathAnimScene scene) {
         super.update(scene);
         groupElementsToBeDrawn.update(scene);
+        rebuildShape();
     }
 }
