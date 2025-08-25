@@ -20,19 +20,16 @@ package com.jmathanim.mathobjects.updateableObjects;
 import com.jmathanim.Enum.BooleanOperation;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.Stateable;
 
 /**
- *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class BooleanShape extends Shape {
 
-    private BooleanOperation booleanOperation;
-
-
     Shape shape1, shape2;
+    private BooleanOperation booleanOperation;
 
     public BooleanShape(BooleanOperation booleanOperation, Shape shape1, Shape shape2) {
         this.shape1 = shape1;
@@ -73,15 +70,13 @@ public class BooleanShape extends Shape {
     }
 
     @Override
-    public void copyStateFrom(MathObject obj) {
-         super.copyStateFrom(obj);
-        if (obj instanceof BooleanShape) {
-            BooleanShape bs = (BooleanShape) obj;
-            this.shape1.copyStateFrom(bs.shape1);
-            this.shape2.copyStateFrom(bs.shape2);
-            this.booleanOperation = bs.booleanOperation;
-
-        }
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof BooleanShape)) return;
+        super.copyStateFrom(obj);
+        BooleanShape bs = (BooleanShape) obj;
+        this.shape1.copyStateFrom(bs.shape1);
+        this.shape2.copyStateFrom(bs.shape2);
+        this.booleanOperation = bs.booleanOperation;
     }
 
 }

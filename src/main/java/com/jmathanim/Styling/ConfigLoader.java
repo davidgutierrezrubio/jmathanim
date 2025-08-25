@@ -516,12 +516,6 @@ public class ConfigLoader {
                     break;
                 case "#text":
                     break;
-                case "scaleArrowHead1":
-                    mp.setScaleArrowHead1(Double.valueOf(item.getTextContent()));
-                    break;
-                case "scaleArrowHead2":
-                    mp.setScaleArrowHead2(Double.valueOf(item.getTextContent()));
-                    break;
                 case "#comment":
                     break;
                 default:

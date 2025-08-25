@@ -387,28 +387,27 @@ public abstract class AbstractLaTeXMathObject<T extends AbstractLaTeXMathObject<
 
     protected String replaceInnerReferencesInText(String text) {
         for (Integer index : variables.keySet()) {
-            text = text.replace("{#" + index + "}", df.format(variables.get(index).value));
+            text = text.replace("{#" + index + "}", df.format(variables.get(index).getValue()));
         }
         return text;
     }
 
     @Override
-    public void copyStateFrom(MathObject<?> obj) {
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof AbstractLaTeXMathObject)) return;
+        AbstractLaTeXMathObject<?> laTeXMathObject = (AbstractLaTeXMathObject<?>) obj;
         super.copyStateFrom(obj);
 
-        if (obj instanceof AbstractLaTeXMathObject<?>) {
-            AbstractLaTeXMathObject<?> copy = (AbstractLaTeXMathObject<?>) obj;
-            this.text = copy.getText();
-            getMp().copyFrom(copy.getMp());
-            clearShapes();
-            for (Shape sh : copy) {
-                final Shape copyShape = sh.copy();
-                add(copyShape);
-            }
-            this.absoluteSize = copy.absoluteSize;
-            this.modelMatrix.copyFrom(copy.modelMatrix);
-            this.getMp().setLatexStyle(copy.getMp().getLatexStyle());
-        }
+            this.text = laTeXMathObject.getText();
+//            getMp().copyFrom(obj.getMp());
+//            clearShapes();
+//            for (Shape sh : obj) {
+//                final Shape copyShape = sh.copy();
+//                add(copyShape);
+//            }
+            this.absoluteSize = laTeXMathObject.absoluteSize;
+            this.modelMatrix.copyFrom(laTeXMathObject.modelMatrix);
+            this.getMp().setLatexStyle(laTeXMathObject.getMp().getLatexStyle());//TODO: Create a specialized subclass por Latex objects
     }
 
     public String getText() {

@@ -6,7 +6,6 @@ import com.jmathanim.Enum.InnerAnchorType;
 import com.jmathanim.Enum.LayoutType;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
-import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.EmptyRect;
 import com.jmathanim.Utils.Layouts.GroupLayout;
@@ -17,7 +16,9 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>> extends MathObject<T> implements Iterable<MathObject<?>> {
+public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
+        extends MathObject<T>
+        implements Iterable<MathObject<?>> {
     protected final ArrayList<MathObject<?>> objects;
     protected final HashMap<String, MathObject<?>> dict;
     MODrawPropertiesArray mpArray;
@@ -284,13 +285,10 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>> extends 
     }
 
     @Override
-    public void copyStateFrom(MathObject<?> obj) {
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof AbstractMathGroup)) return;
+        AbstractMathGroup<?> mg = (AbstractMathGroup<?>) obj;
         super.copyStateFrom(obj);
-        if (!(obj instanceof MathObjectGroup)) {
-            return;
-        }
-        MathObjectGroup mg = (MathObjectGroup) obj;
-
         if (mg.size() == size()) {
             int n = 0;
             for (MathObject<?> o : getObjects()) {
@@ -337,21 +335,6 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>> extends 
         return objects.iterator();
     }
 
-    @Override
-    public void restoreState() {
-        mpArray.restoreState();
-        for (MathObject<?> obj : objects) {
-            obj.restoreState();
-        }
-    }
-
-    @Override
-    public void saveState() {
-        mpArray.saveState();
-        for (MathObject<?> obj : objects) {
-            obj.saveState();
-        }
-    }
 
     @Override
     public T setAbsoluteSize(AnchorType anchorType) {
@@ -470,7 +453,7 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>> extends 
     }
 
     @Override
-    public Stylable getMp() {
+    public MODrawPropertiesArray getMp() {
         return mpArray;
     }
 

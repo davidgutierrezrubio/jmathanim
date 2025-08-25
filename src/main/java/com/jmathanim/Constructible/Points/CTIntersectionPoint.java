@@ -27,7 +27,6 @@ import com.jmathanim.Constructible.Lines.CTSegment;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.Point;
 
 /**
  * Represents an intersection point of lines, rays, or circles
@@ -171,8 +170,8 @@ public class CTIntersectionPoint extends CTPoint {
                 break;
             case LINE_CIRCLE:
                 //A line/ray/segment with a circle
-                double radius = ctcircle1.getRadius().value;
-                Vec center = ctcircle1.getCircleCenter().coordinatesOfPoint;
+                double radius = ctcircle1.getCircleRadius().getValue();
+                Vec center = ctcircle1.getCircleCenter().getVec();
 
                 Vec A = ctline1.getP1().copy().add(center.mult(-1));
                 Vec B = ctline1.getP2().copy().add(center.mult(-1));
@@ -212,17 +211,17 @@ public class CTIntersectionPoint extends CTPoint {
             case CIRCLE_CIRCLE:
                 final Vec vecCenterCircles = ctcircle1.getCircleCenter().to(ctcircle2.getCircleCenter()).copy();
                 double d = vecCenterCircles.norm();
-                double r1 = ctcircle1.getRadius().value;
-                double r2 = ctcircle2.getRadius().value;
+                double r1 = ctcircle1.getCircleRadius().getValue();
+                double r2 = ctcircle2.getCircleRadius().getValue();
                 double alpha = .5 / d;
                 inter.x = alpha * (d * d - r2 * r2 + r1 * r1);
 
                 inter.y= alpha * Math.sqrt((-d + r2 - r1) * (-d - r2 + r1) * (-d + r2 + r1) * (d + r2 + r1));
-                Point p = Point.origin();
+                Vec p = Vec.to(0,0);
                 p.copyCoordinatesFrom(Vec.to(inter.x, (solNumber == 0 ? 1 : -1) * inter.y));
-                p.rotate(Point.origin(), vecCenterCircles.getAngle());
-                p.shift(ctcircle1.getCircleCenter().coordinatesOfPoint);
-                this.copyCoordinatesFrom(p.v);
+                p.rotate(vecCenterCircles.getAngle());
+                p.add(ctcircle1.getCircleCenter());
+                this.copyCoordinatesFrom(p);
                 break;
             case CIRCLE_CONIC:
             //Not implemented yet. Returns a NaN point

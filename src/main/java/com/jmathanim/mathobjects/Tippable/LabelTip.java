@@ -46,7 +46,7 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
     }
 
 
-    protected LabelTip(Shape shape, AbstractLaTeXMathObject<?> tipObject, Point anchorPoint, double locationParameter) {
+    protected LabelTip(Shape shape, AbstractLaTeXMathObject<?> tipObject, Coordinates<?> anchorPoint, double locationParameter) {
         super(shape, tipObject, locationParameter);
         setAnchorPoint(anchorPoint);
         laTeXMathObject = tipObject;
@@ -113,7 +113,7 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
         t.registerUpdater(new Updater() {
             @Override
             public void update(JMathAnimScene scene) {
-                t.getArg(0).setScalar(A.to(B).norm());
+                t.getArg(0).setValue(A.to(B).norm());
             }
         });
         resul.setRotationType(RotationType.SMART);

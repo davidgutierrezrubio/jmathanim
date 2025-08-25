@@ -243,7 +243,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
 
 
         // Calculate the vector needed to shift the pivotal point of the origin to the pivotal point of the destiny.
-        vShift = getIntermediateObject().get(numPivotalSegment).v.to(getDestinyObject().get(numPivotalSegment).v);
+        vShift = getIntermediateObject().get(numPivotalSegment).getV().to(getDestinyObject().get(numPivotalSegment).getV());
         int size = getIntermediateObject().size();
         originAngles = new double[size];
         destinyAngles = new double[size];
@@ -256,9 +256,9 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
 
         // First pass: Calculate absolute angles of each segment and the ratio of lengths.
         for (int i = 0; i < size - 1; i++) {
-            Vec v1 = getIntermediateObject().get(i).v.to(getIntermediateObject().get(i + 1).v);
+            Vec v1 = getIntermediateObject().get(i).getV().to(getIntermediateObject().get(i + 1).getV());
             tempOrigAngles[i] = v1.getAngle();
-            Vec v2 = getDestinyObject().get(i).v.to(getDestinyObject().get(i + 1).v);
+            Vec v2 = getDestinyObject().get(i).getV().to(getDestinyObject().get(i + 1).getV());
             tempDestinyAngles[i] = v2.getAngle();
             // Store the relative change in length, not the absolute ratio.
             ratioLengths[i] = v2.norm() / v1.norm() - 1;
@@ -328,7 +328,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
         double ltshiftPivotal = (lambdaShiftPivotal == null ? lt : lambdaShiftPivotal.applyAsDouble(rt));
         double ltscPivotal = (lambdaScalePivotal == null ? lt : lambdaScalePivotal.applyAsDouble(rt));
         // Apply transformations in a specific order, starting from the pivotal segment.
-        Vec pivotPoint = intermediateObject.get(numPivotalSegment).v;
+        Vec pivotPoint = intermediateObject.get(numPivotalSegment).getV();
         applyPivotalAlign(pivotPoint, ltshiftPivotal);
         applyPivotalScale(pivotPoint, ltscPivotal);
 
@@ -374,12 +374,12 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
         // 3. Scale the pivotal segment by shifting all subsequent points.
         // This moves the "end" of the pivotal segment, effectively stretching/shrinking it.
         if (numPivotalSegment + 1 < inter.size()) {
-            Vec nextPoint = inter.get(numPivotalSegment + 1).v;
+            Vec nextPoint = inter.get(numPivotalSegment + 1).getV();
             Vec v = pivotPoint.to(nextPoint);
             Vec shiftVector = v.mult(pivotalLengthRatio * lt);
             // Apply shift only to points after the pivotal segment.
             for (int i = numPivotalSegment + 1; i < inter.size(); i++) {
-                inter.get(i).v.add(shiftVector);
+                inter.get(i).getV().add(shiftVector);
             }
         }
     }
@@ -417,7 +417,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
             JMPathPoint nextPoint = inter.get(i + 1);
 
             // Calculate the vector for the current segment to determine the shift direction for scaling.
-            Vec v = currentPivot.v.to(nextPoint.v);
+            Vec v = currentPivot.getV().to(nextPoint.getV());
             // The shift amount depends on the length ratio and time.
             // This effectively scales the segment (i, i+1).
             Vec shiftVector = v.mult(ratioLengths[i] * ltd);
@@ -467,7 +467,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
             JMPathPoint prevPoint = inter.get(i - 1);
 
             // Calculate the vector for the current segment to determine the shift direction for scaling.
-            Vec v = currentPivot.v.to(prevPoint.v);
+            Vec v = currentPivot.getV().to(prevPoint.getV());
             // The shift amount depends on the length ratio of the previous segment and time.
             // This effectively scales the segment (i-1, i).
             Vec shiftVector = v.mult(ratioLengths[i - 1] * ltd);

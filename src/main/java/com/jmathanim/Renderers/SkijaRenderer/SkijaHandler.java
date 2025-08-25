@@ -1,8 +1,8 @@
 package com.jmathanim.Renderers.SkijaRenderer;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Styling.PaintStyle;
-import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.AbstractShape;
@@ -102,9 +102,9 @@ public abstract class SkijaHandler {
         return th / 1066;
     }
 
-    public double ThicknessToMathWidth(Stylable stylable) {
-        Camera cam = (stylable.isAbsoluteThickness() ? fixedCamera : camera);
-        return stylable.getThickness() / 1066 * 4 / cam.getMathView().getWidth();
+    public double ThicknessToMathWidth(DrawStyleProperties drawStyleProperties) {
+        Camera cam = (drawStyleProperties.isAbsoluteThickness() ? fixedCamera : camera);
+        return drawStyleProperties.getThickness() / 1066 * 4 / cam.getMathView().getWidth();
     }
 //
 //    public void saveFrame(int frameCount) {

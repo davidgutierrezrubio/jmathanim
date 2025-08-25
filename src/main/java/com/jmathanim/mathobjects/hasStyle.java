@@ -1,7 +1,7 @@
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Styling.Stylable;
+import com.jmathanim.Styling.DrawStyleProperties;
 
-public interface hasStyle {
-    public Stylable getMp();
+public interface hasStyle<T extends DrawStyleProperties> {
+    public T getMp();
 }

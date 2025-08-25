@@ -134,19 +134,19 @@ public class PointInterpolationCanonical extends TransformStrategy {
                 dstPoint = toPath.jmPathPoints.get(n);
 
                 // Interpolate point
-                interPoint.v.x = (1 - lt) * basePoint.v.x + lt * dstPoint.v.x;
-                interPoint.v.y = (1 - lt) * basePoint.v.y + lt * dstPoint.v.y;
-                interPoint.v.z = (1 - lt) * basePoint.v.z + lt * dstPoint.v.z;
+                interPoint.getV().x = (1 - lt) * basePoint.getV().x + lt * dstPoint.getV().x;
+                interPoint.getV().y = (1 - lt) * basePoint.getV().y + lt * dstPoint.getV().y;
+                interPoint.getV().z = (1 - lt) * basePoint.getV().z + lt * dstPoint.getV().z;
 
                 // Interpolate control point 1
-                interPoint.vExit.x = (1 - lt) * basePoint.vExit.x + lt * dstPoint.vExit.x;
-                interPoint.vExit.y = (1 - lt) * basePoint.vExit.y + lt * dstPoint.vExit.y;
-                interPoint.vExit.z = (1 - lt) * basePoint.vExit.z + lt * dstPoint.vExit.z;
+                interPoint.getvExit().x = (1 - lt) * basePoint.getvExit().x + lt * dstPoint.getvExit().x;
+                interPoint.getvExit().y = (1 - lt) * basePoint.getvExit().y + lt * dstPoint.getvExit().y;
+                interPoint.getvExit().z = (1 - lt) * basePoint.getvExit().z + lt * dstPoint.getvExit().z;
 
                 // Interpolate control point 2
-                interPoint.vEnter.x = (1 - lt) * basePoint.vEnter.x + lt * dstPoint.vEnter.x;
-                interPoint.vEnter.y = (1 - lt) * basePoint.vEnter.y + lt * dstPoint.vEnter.y;
-                interPoint.vEnter.z = (1 - lt) * basePoint.vEnter.z + lt * dstPoint.vEnter.z;
+                interPoint.getvEnter().x = (1 - lt) * basePoint.getvEnter().x + lt * dstPoint.getvEnter().x;
+                interPoint.getvEnter().y = (1 - lt) * basePoint.getvEnter().y + lt * dstPoint.getvEnter().y;
+                interPoint.getvEnter().z = (1 - lt) * basePoint.getvEnter().z + lt * dstPoint.getvEnter().z;
             }
 
         }
@@ -196,7 +196,7 @@ public class PointInterpolationCanonical extends TransformStrategy {
         for (int numConnected = 0; numConnected < this.connectedDst.getNumberOfPaths(); numConnected++) {
             JMPath convertedPath = connectedOrigin.get(numConnected);
             for (JMPathPoint p : convertedPath.jmPathPoints) {
-                p.isCurved = true;
+                p.setCurved(true);
             }
 
         }
@@ -234,7 +234,7 @@ public class PointInterpolationCanonical extends TransformStrategy {
 //                throw new Exception("Paths should have at least 2 points!");
 //            }
             // Last point of conSmall
-            Vec v = conSmall.get(n - 1).getJMPointAt(-1).v;
+            Vec v = conSmall.get(n - 1).getJMPointAt(-1).getV();
 
             // Create a dummy path with sizePathToAdd points, all equal
             JMPath pa = new JMPath();
@@ -242,7 +242,7 @@ public class PointInterpolationCanonical extends TransformStrategy {
                 JMPathPoint jmp = JMPathPoint.curveTo(v.copy());
                 pa.addJMPoint(jmp);
             }
-            pa.jmPathPoints.get(0).isThisSegmentVisible = false;
+            pa.jmPathPoints.get(0).setThisSegmentVisible(false);
             // Add the new path created
             conSmall.add(pa);
         }

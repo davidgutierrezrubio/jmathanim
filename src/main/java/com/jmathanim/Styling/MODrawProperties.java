@@ -23,7 +23,6 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Stateable;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 
@@ -37,7 +36,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class MODrawProperties implements Stylable, Stateable, hasStyle {
+public class MODrawProperties implements DrawStyleProperties, Stylable {
 
     // When added a new property here, remember to include it in rawCopyFrom and
     // copyFrom
@@ -47,7 +46,7 @@ public class MODrawProperties implements Stylable, Stateable, hasStyle {
     // to ensure zoom or resolution doesn't affect the result
     private Boolean absoluteThickness = true;
     private StrokeLineJoin linejoin;
-    private MathObject parent;
+    private MathObject<?> parent;
     private Boolean visible = true;
     private DashStyle dashStyle = DashStyle.SOLID;
     // Styles used for specified objects
@@ -57,10 +56,8 @@ public class MODrawProperties implements Stylable, Stateable, hasStyle {
     private PaintStyle fillColor;
     private Integer layer = null;
     private StrokeLineCap linecap = StrokeLineCap.ROUND;
-    private MODrawProperties mpBackup;
     private Double thickness = 1d;
-    private Double scaleArrowHead1 = 1d;
-    private Double scaleArrowHead2 = 1d;
+
     public MODrawProperties() {
         drawColor = new JMColor(1, 1, 1, 1);
         fillColor = new JMColor(0, 0, 0, 0);
@@ -163,8 +160,6 @@ public class MODrawProperties implements Stylable, Stateable, hasStyle {
         intersect.visible = (Objects.equals(A.visible, B.visible) ? A.visible : intersect.visible);
         intersect.faceToCamera = (Objects.equals(A.faceToCamera, B.faceToCamera) ? A.faceToCamera : intersect.faceToCamera);
         intersect.faceToCameraPivot = (Objects.equals(A.faceToCameraPivot, B.faceToCameraPivot) ? A.faceToCameraPivot : intersect.faceToCameraPivot);
-        intersect.scaleArrowHead1 = (Objects.equals(A.scaleArrowHead1, B.scaleArrowHead1) ? A.scaleArrowHead1 : intersect.scaleArrowHead1);
-        intersect.scaleArrowHead2 = (Objects.equals(A.scaleArrowHead2, B.scaleArrowHead2) ? A.scaleArrowHead2 : intersect.scaleArrowHead2);
         return intersect;
     }
 
@@ -186,7 +181,7 @@ public class MODrawProperties implements Stylable, Stateable, hasStyle {
      * @param prop
      */
     @Override
-    public void copyFrom(Stylable prop) {
+    public void copyFrom(DrawStyleProperties prop) {
         if (prop == null) {// Nothing to do here!
             return;
         }
@@ -206,8 +201,6 @@ public class MODrawProperties implements Stylable, Stateable, hasStyle {
         visible = (prop.isVisible() == null ? visible : prop.isVisible());
         faceToCamera = (prop.isFaceToCamera() == null ? faceToCamera : prop.isFaceToCamera());
         faceToCameraPivot = (prop.getFaceToCameraPivot() == null ? faceToCameraPivot : prop.getFaceToCameraPivot());
-        scaleArrowHead1 = (prop.getScaleArrowHead1() == null ? scaleArrowHead1 : prop.getScaleArrowHead1());
-        scaleArrowHead2 = (prop.getScaleArrowHead1() == null ? scaleArrowHead2 : prop.getScaleArrowHead2());
 
     }
 
@@ -235,8 +228,6 @@ public class MODrawProperties implements Stylable, Stateable, hasStyle {
         visible = mp.visible;
         faceToCamera = mp.faceToCamera;
         faceToCameraPivot = mp.faceToCameraPivot;
-        scaleArrowHead1 = mp.scaleArrowHead1;
-        scaleArrowHead2 = mp.scaleArrowHead2;
     }
 
     @Override
@@ -379,11 +370,6 @@ public class MODrawProperties implements Stylable, Stateable, hasStyle {
     }
 
     @Override
-    public Stylable getSubMP(int n) {
-        return this;// Nothing sub here...
-    }
-
-    @Override
     public Double getThickness() {
         return thickness;
     }
@@ -409,7 +395,7 @@ public class MODrawProperties implements Stylable, Stateable, hasStyle {
     }
 
     @Override
-    public void interpolateFrom(Stylable a, Stylable b, double alpha) {
+    public void interpolateFrom(DrawStyleProperties a, DrawStyleProperties b, double alpha) {
         if (alpha == 1)// in this case, copy directly all non-null attributes, including
         // non-interpolable
         {
@@ -431,7 +417,7 @@ public class MODrawProperties implements Stylable, Stateable, hasStyle {
     }
 
     @Override
-    public void interpolateFrom(Stylable dst, double alpha) {
+    public void interpolateFrom(DrawStyleProperties dst, double alpha) {
         interpolateFrom(this, dst, alpha);
     }
 
@@ -470,15 +456,6 @@ public class MODrawProperties implements Stylable, Stateable, hasStyle {
         setThickness(getThickness() * multT);
     }
 
-    @Override
-    public void restoreState() {
-        this.copyFrom(this.mpBackup);
-    }
-
-    @Override
-    public void saveState() {
-        this.mpBackup = this.copy();
-    }
 
     @Override
     public Boolean isFaceToCamera() {
@@ -501,27 +478,7 @@ public class MODrawProperties implements Stylable, Stateable, hasStyle {
     }
 
     @Override
-    public Double getScaleArrowHead1() {
-        return scaleArrowHead1;
-    }
-
-    @Override
-    public void setScaleArrowHead1(Double scale) {
-        this.scaleArrowHead1 = scale;
-    }
-
-    @Override
-    public Double getScaleArrowHead2() {
-        return scaleArrowHead2;
-    }
-
-    @Override
-    public void setScaleArrowHead2(Double scale) {
-        this.scaleArrowHead2 = scale;
-    }
-
-    @Override
-    public Stylable getMp() {
+    public DrawStyleProperties getMp() {
         return this;
     }
 }

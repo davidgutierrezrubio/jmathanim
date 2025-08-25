@@ -18,6 +18,7 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Enum.JumpType;
+import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.Utils.UsefulLambdas;
@@ -35,6 +36,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
  */
 public class AnimationEffect {
 
+    private final HashMap<AffineTransformable<?>, JMPath> jumpPaths;
     /**
      * Height of the jump, a negative one can be specified
      */
@@ -51,11 +53,15 @@ public class AnimationEffect {
      * Scale parameter. 1 means no effect
      */
     protected Double scaleEffect;
-    private final HashMap<MathObject, JMPath> jumpPaths;
+    /**
+     * Type of jump
+     */
+
+
+    JumpType jumpType;
 
     /**
-     * Creates a new AnimationEffect. This object stores effect parameters for
-     * those animation who support effects.
+     * Creates a new AnimationEffect. This object stores effect parameters for those animation who support effects.
      */
     public AnimationEffect() {
         this.jumpHeight = null;
@@ -67,19 +73,10 @@ public class AnimationEffect {
     }
 
     /**
-     * Type of jump
-     */
-
-
-    JumpType jumpType;
-
-    /**
-     * Adds a jump effect with a parabolical path and given height. Note that
-     * the direction of the jump is the vector start-end rotated 90 degrees
-     * counterclockwise.
+     * Adds a jump effect with a parabolical path and given height. Note that the direction of the jump is the vector
+     * start-end rotated 90 degrees counterclockwise.
      *
-     * @param height The height of the jump, in math coordinates. A negative
-     * height can be passed as parameter.
+     * @param height The height of the jump, in math coordinates. A negative height can be passed as parameter.
      */
     public void addJumpEffect(double height) {
         this.jumpHeight = height;
@@ -87,13 +84,11 @@ public class AnimationEffect {
     }
 
     /**
-     * Adds a jump effect with a given path and given height. Note that the
-     * direction of the jump is the vector start-end rotated 90 degrees
-     * counterclockwise.
+     * Adds a jump effect with a given path and given height. Note that the direction of the jump is the vector
+     * start-end rotated 90 degrees counterclockwise.
      *
-     * @param height The height of the jump, in math coordinates. A negative
-     * height can be passed as parameter.
-     * @param type Type of jump path. A value of enum JumpType
+     * @param height The height of the jump, in math coordinates. A negative height can be passed as parameter.
+     * @param type   Type of jump path. A value of enum JumpType
      */
     public void addJumpEffect(double height, JumpType type) {
         this.jumpHeight = height;
@@ -101,11 +96,9 @@ public class AnimationEffect {
     }
 
     /**
-     * Adds a rotation effect to the animation, rotating the animated objects a
-     * specified number of turns.
+     * Adds a rotation effect to the animation, rotating the animated objects a specified number of turns.
      *
-     * @param numTurns Number of turns. If positive, the turns are
-     * counterclockwise. If negative, clockwise.
+     * @param numTurns Number of turns. If positive, the turns are counterclockwise. If negative, clockwise.
      */
     public void addRotationEffect(int numTurns) {
         this.numTurns = numTurns;
@@ -114,9 +107,8 @@ public class AnimationEffect {
     /**
      * Adds an alpha effect to the animated objects.
      *
-     * @param alphaScale The alpha scale to apply. For example a value of 0.5
-     * will set the alpha of animated objects to 50% at t=0.5 and return to the
-     * previous values at the end of the animation.
+     * @param alphaScale The alpha scale to apply. For example a value of 0.5 will set the alpha of animated objects to
+     *                   50% at t=0.5 and return to the previous values at the end of the animation.
      */
     public void addAlphaEffect(double alphaScale) {
         this.alphaScaleEffect = alphaScale;
@@ -125,15 +117,14 @@ public class AnimationEffect {
     /**
      * Adds a scale effect to the animated objects
      *
-     * @param scale The scale to apply. For example a value of 2 will scale by 2
-     * all objects at t=0.5 and return to the previous values at the end of the
-     * animation.
+     * @param scale The scale to apply. For example a value of 2 will scale by 2 all objects at t=0.5 and return to the
+     *              previous values at the end of the animation.
      */
     public void addScaleEffect(double scale) {
         this.scaleEffect = scale;
     }
 
-    protected void applyScaleEffect(double t, MathObject obj) {
+    protected void applyScaleEffect(double t, AffineTransformable<?> obj) {
         if ((scaleEffect != null) && (scaleEffect != 1)) {
             double L = 4 * (1 - scaleEffect);
             double scalelt = 1 - t * (1 - t) * L;
@@ -141,14 +132,14 @@ public class AnimationEffect {
         }
     }
 
-    protected void applyRotationEffect(double t, MathObject obj) {
+    protected void applyRotationEffect(double t, AffineTransformable<?> obj) {
         if ((numTurns != null) && (numTurns != 0)) {
             double rotateAngle = 2 * PI * numTurns;
             obj.rotate(rotateAngle * t);
         }
     }
 
-    protected void applyAlphaScaleEffect(double t, MathObject obj) {
+    protected void applyAlphaScaleEffect(double t, Stylable<?> obj) {
         if ((alphaScaleEffect != null) && (alphaScaleEffect != 1)) {
             double L = 4 * (1 - alphaScaleEffect);
             double alphaScalelt = 1 - t * (1 - t) * L;
@@ -157,7 +148,7 @@ public class AnimationEffect {
         }
     }
 
-    protected void prepareJumpPath(Coordinates A, Coordinates B, MathObject<?> obj) {
+    protected void prepareJumpPath(Coordinates<?> A, Coordinates<?> B, AffineTransformable<?> obj) {
         if ((jumpHeight == null) || (jumpHeight == 0) || A.to(B).norm() == 0) {
             return;
         }
@@ -178,7 +169,7 @@ public class AnimationEffect {
                 break;
             case FOLIUM:
                 ResourceLoader rl = new ResourceLoader();
-                jumpPath = SVGMathObject.make("#foliumJumpPath.svg").get(0).scale(1,-1);
+                jumpPath = SVGMathObject.make("#foliumJumpPath.svg").get(0).scale(1, -1);
                 break;
             case PARABOLICAL:
                 jumpPath = new Shape(FunctionGraph.make(t -> 4 * t * (1 - t), 0, 1, 2).getFunctionShape().getPath());
@@ -215,7 +206,7 @@ public class AnimationEffect {
         }
     }
 
-    protected void applyJumpEffect(double t, MathObject obj) {
+    protected void applyJumpEffect(double t, AffineTransformable<?> obj) {
         if (jumpPaths.containsKey(obj)) {
             obj.moveTo(jumpPaths.get(obj).getParametrizedPointAt(t));
 //            obj.moveTo(jumpPaths.get(obj).getJMPointAt(t).p);
@@ -223,11 +214,12 @@ public class AnimationEffect {
 
     }
 
-    protected void applyAnimationEffects(double lt, MathObject obj) {
+    protected void applyAnimationEffects(double lt, AffineTransformable<?> obj) {
         applyJumpEffect(lt, obj);
         applyScaleEffect(lt, obj);
         applyRotationEffect(lt, obj);
-        applyAlphaScaleEffect(lt, obj);
+        if (obj instanceof Stylable)
+            applyAlphaScaleEffect(lt, (Stylable<?>) obj);
     }
 
     public void copyEffectParametersFrom(AnimationEffect obj) {

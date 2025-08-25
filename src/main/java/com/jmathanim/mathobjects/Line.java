@@ -20,10 +20,9 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Constructible.Lines.HasDirection;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Styling.Stylable;
+import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
 
 /**
  * Represents an infinite line, given by 2 points.
@@ -49,13 +48,13 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
         super();
         this.p1 = p1.getVec();
         this.p2 = p2.getVec();
-        bp1 = new JMPathPoint(Vec.to(0, 0), true, JMPathPointType.VERTEX);// trivial boundary points, just to
+        bp1 = new JMPathPoint(Vec.to(0, 0), true);// trivial boundary points, just to
         // initialize objects
-        bp2 = new JMPathPoint(Vec.to(0, 0), true, JMPathPointType.VERTEX);// trivial boundary points, just to
+        bp2 = new JMPathPoint(Vec.to(0, 0), true);// trivial boundary points, just to
         // initialize objects
         visiblePiece = new Shape();
         visiblePiece.getPath().addJMPoint(bp1, bp2);
-        visiblePiece.get(0).isThisSegmentVisible = false;
+        visiblePiece.get(0).setThisSegmentVisible(false);
         setCamera(JMathAnimConfig.getConfig().getCamera());//First default camera
         computeBoundPoints(getCamera());
     }
@@ -108,21 +107,21 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
 
         if (intersectLine == null) {
             // If there are no getIntersectionPath points, take p1 and p2 (workaround)
-            bp1.v.x = p1.x;
-            bp1.v.y = p1.y;
-            bp2.v.x = p2.x;
-            bp2.v.y = p2.y;
+            bp1.getV().x = p1.x;
+            bp1.getV().y = p1.y;
+            bp2.getV().x = p2.x;
+            bp2.getV().y = p2.y;
         } else {
-            bp1.v.x = intersectLine[0];
-            bp1.v.y = intersectLine[1];
-            bp2.v.x = intersectLine[2];
-            bp2.v.y = intersectLine[3];
+            bp1.getV().x = intersectLine[0];
+            bp1.getV().y = intersectLine[1];
+            bp2.getV().x = intersectLine[2];
+            bp2.getV().y = intersectLine[3];
         }
-        bp1.vExit.copyCoordinatesFrom(bp1.v);
-        bp1.vEnter.copyCoordinatesFrom(bp1.v);
-        bp2.vExit.copyCoordinatesFrom(bp2.v);
-        bp2.vEnter.copyCoordinatesFrom(bp2.v);
-        bp1.isThisSegmentVisible = false;
+        bp1.getvExit().copyCoordinatesFrom(bp1.getV());
+        bp1.getvEnter().copyCoordinatesFrom(bp1.getV());
+        bp2.getvExit().copyCoordinatesFrom(bp2.getV());
+        bp2.getvEnter().copyCoordinatesFrom(bp2.getV());
+        bp1.setThisSegmentVisible(false);
     }
 
     @Override
@@ -187,7 +186,7 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
     }
 
     @Override
-    public Stylable getMp() {
+    public DrawStyleProperties getMp() {
         return visiblePiece.getMp();
     }
 
@@ -210,19 +209,6 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
         dependsOn(scene, p1, p2);//You can safely pass null to this method
     }
 
-    @Override
-    public void restoreState() {
-        super.restoreState();
-        p1.restoreState();
-        p2.restoreState();
-    }
-
-    @Override
-    public void saveState() {
-        super.saveState();
-        p1.saveState();
-        p2.saveState();
-    }
 
     /**
      * Creates a finite Segment, that runs over the screen plus a percent gap

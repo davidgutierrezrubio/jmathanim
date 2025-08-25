@@ -20,7 +20,10 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.DashStyle;
-import com.jmathanim.Styling.*;
+import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Styling.PaintStyle;
+import com.jmathanim.Styling.RendererEffects;
+import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
@@ -36,7 +39,13 @@ import java.util.*;
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 @SuppressWarnings("ALL")
-public abstract class MathObject<T extends MathObject<T>> implements Drawable, Updateable, Stateable, Boxable, Linkable, hasStyle, AffineTransformable<T> {
+public abstract class MathObject<T extends MathObject<T>> implements
+        Drawable,
+        Updateable,
+        Boxable,
+        Linkable,
+        Stylable<T>,
+        AffineTransformable<T> {
     protected final AffineJTransform modelMatrix;
     private final HashSet<MathObject<?>> dependents;
     private final RendererEffects rendererEffects;
@@ -47,7 +56,6 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
     public Vec absoluteAnchorVec;
     protected JMathAnimScene scene;
     protected boolean isRigid = false;
-    private MODrawProperties mp;
     private boolean hasBeenUpdated = false;
     private Camera camera;
     private int updateLevel;
@@ -56,11 +64,6 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
     private double leftGap, upperGap, rightGap, lowerGap;
 
     public MathObject() {
-        this(null);
-
-    }
-
-    public MathObject(MODrawProperties prop) {
         this.updateLevel = -1;
         JMathAnimConfig config = JMathAnimConfig.getConfig();
         if (config.getRenderer() != null) {
@@ -72,7 +75,6 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
         if (scene != null) {
             camera = scene.getCamera();//Default camera
         }
-        mp = config.getDefaultMP();// Default MP values
         //Default values for an object that always updates
         dependents = new HashSet<>();
 
@@ -119,123 +121,6 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
     }
 
     /**
-     * Return center of object, intented by default as the center of bounding box.
-     *
-     * @return Vec object with center
-     */
-    public Vec getCenter() {
-        return this.getBoundingBox().getCenter();
-    }
-
-    /**
-     * Shift object with the given vector
-     *
-     * @param shiftVector Amount of shifting
-     * @return The same object, after shifting
-     */
-    public T shift(Vec shiftVector) {
-        AffineJTransform tr = AffineJTransform.createTranslationTransform(shiftVector);
-        tr.applyTransform(this);
-        return (T) this;
-    }
-
-    /**
-     * Shift object. Overloaded method (2D version)
-     *
-     * @param x x-coordinate of shift vector
-     * @param y y-coordinate of shift vector
-     * @return The same object, after shifting
-     */
-    public final T shift(double x, double y) {
-        return shift(new Vec(x, y));
-    }
-
-    /**
-     * Shift object.Overloaded method (3D version)
-     *
-     * @param x x-coordinate of shift vector
-     * @param y y-coordinate of shift vector
-     * @param z z-coordinate of shift vector
-     * @return The same object, after shifting
-     */
-    public final T shift(double x, double y, double z) {
-        return shift(new Vec(x, y, z));
-    }
-
-    /**
-     * Scale from center of object (2D version)
-     *
-     * @param sx x-scale factor
-     * @param sy y-scale factor
-     * @return The same object, after scaling
-     */
-    public T scale(double sx, double sy) {
-        scale(getCenter(), sx, sy);
-        return (T) this;
-    }
-
-    /**
-     * Scale from center of object (2D version) in a uniform scale
-     *
-     * @param s scale factor
-     * @return The same object, after scaling
-     */
-    public T scale(double s) {
-        return (T) scale(getCenter(), s, s);
-    }
-
-    /**
-     * Scale from a given center (uniform scale)
-     *
-     * @param scaleCenter Scale center
-     * @param scale       scale factor
-     * @return The same object, after scaling
-     */
-    public final T scale(Coordinates scaleCenter, double scale) {
-        return scale(scaleCenter, scale, scale, scale);
-    }
-
-    /**
-     * Scale from a given center (2D version)
-     *
-     * @param scaleCenter Scale center
-     * @param sx          x-scale factor
-     * @param sy          y-scale factor
-     * @return The same object, after scaling
-     */
-    public final T scale(Coordinates scaleCenter, double sx, double sy) {
-        return scale(scaleCenter, sx, sy, 1);
-    }
-
-    /**
-     * Scale from the center of object (3D version)
-     *
-     * @param sx x-scale factor
-     * @param sy y-scale factor
-     * @param sz z-scale factor
-     * @return The same object, after scaling
-     */
-    public final T scale(double sx, double sy, double sz) {
-        scale(getBoundingBox().getCenter(), sx, sy, sz);
-        return (T) this;
-    }
-
-    /**
-     * Scale from a given center (3D version)
-     *
-     * @param scaleCenter Scale center
-     * @param sx          x-scale factor
-     * @param sy          y-scale factor
-     * @param sz          z-scale factor
-     * @return The same object, after scaling
-     */
-    public T scale(Coordinates scaleCenter, double sx, double sy, double sz) {
-        AffineJTransform tr = AffineJTransform.createScaleTransform(scaleCenter.getVec(), sx, sy, sz);
-        tr.applyTransform(this);
-        return (T) this;
-    }
-
-    /**
      * Center the object in the math view. This command is equivalent this.stackToScreen(Type.BY_CENTER);
      *
      * @return The same object
@@ -269,55 +154,6 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
         return (T) this;
     }
 
-    /**
-     * Performs a 2D-Rotation of the MathObject around the object center
-     *
-     * @param angle Angle, in radians
-     * @return The same object, after rotating
-     */
-    public T rotate(double angle) {
-        return rotate(getCenter(), angle);
-    }
-
-    /**
-     * Performs a 2D-Rotation of the MathObject around the given rotation center
-     *
-     * @param center Rotation center
-     * @param angle  Angle, in radians
-     * @return The same object, after rotating
-     */
-    public T rotate(Coordinates center, double angle) {
-        AffineJTransform tr = AffineJTransform.create2DRotationTransform(center, angle);
-        tr.applyTransform(this);
-        return (T) this;
-    }
-
-    /**
-     * Performs a 3D-Rotation of the MathObject around the center of the object
-     *
-     * @param anglex Rotation angle in x axis, in radians
-     * @param angley Rotation angle in y axis, in radians
-     * @param anglez Rotation angle in z axis, in radians
-     * @return The same object, after rotating
-     */
-    public T rotate3d(double anglex, double angley, double anglez) {
-        return rotate3d(this.getCenter(), anglex, angley, anglez);
-    }
-
-    /**
-     * Performs a 2D-Rotation of the MathObject around the given rotation center
-     *
-     * @param center Rotation center
-     * @param anglex Rotation angle in x axis, in radians
-     * @param angley Rotation angle in y axis, in radians
-     * @param anglez Rotation angle in z axis, in radians
-     * @return The same object, after rotating
-     */
-    public T rotate3d(Coordinates center, double anglex, double angley, double anglez) {
-        AffineJTransform tr = AffineJTransform.create3DRotationTransform(center, anglex, angley, anglez, 1);
-        tr.applyTransform(this);
-        return (T) this;
-    }
 
     /**
      * Returns a copy of the object
@@ -332,15 +168,17 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
      *
      * @param obj The object to copy state from.
      */
-    public void copyStateFrom(MathObject<?> obj) {
-        if (obj == null) return;
-        this.setCamera(obj.getCamera());
-        getMp().copyFrom(obj.getMp());
+    @Override
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof MathObject<?>)) return;
+            MathObject mathObject = (MathObject) obj;
+            this.setCamera(mathObject.getCamera());
+            getMp().copyFrom(mathObject.getMp());
 //        this.getMp().copyFrom(obj.getMp());
-        if (this.getRendererEffects() != null) {
-            this.getRendererEffects().copyFrom(rendererEffects);
-        }
-        this.modelMatrix.copyFrom(obj.modelMatrix);
+            if (this.getRendererEffects() != null) {
+                this.getRendererEffects().copyFrom(rendererEffects);
+            }
+            this.modelMatrix.copyFrom(mathObject.modelMatrix);
     }
 
 
@@ -366,24 +204,7 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
         fillAlpha(t);
     }
 
-    @Override
-    public void saveState() {
-        getMp().saveState();
-    }
 
-    @Override
-    public void restoreState() {
-        getMp().restoreState();
-    }
-
-    /**
-     * Return the current drawing attributes object
-     *
-     * @return The drawing attributes object
-     */
-    public Stylable getMp() {
-        return mp;
-    }
 
     /**
      * Copy draw attributes from another one.
@@ -397,133 +218,9 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
     }
 
 
-    protected Stylable createDefaultMPForThisObject() {
-        return JMathAnimConfig.getConfig().getDefaultMP();// Default MP values
-    }
 
-    /**
-     * Changes both draw and fill color
-     *
-     * @param dc A PaintStyle object. Can be a JMColor, a gradient or image pattern
-     * @return This object
-     */
-    public T color(PaintStyle dc) {
-        drawColor(dc);
-        fillColor(dc);
-        return (T) this;
-    }
 
-    /**
-     * Overloaded method. Sets both draw and fill color
-     *
-     * @param str A string representing the draw color, as in the JMcolor.parse method
-     * @return This object
-     */
-    public T color(String str) {
-        drawColor(str);
-        fillColor(str);
-        return (T) this;
-    }
 
-    /**
-     * Sets the draw color of the object
-     *
-     * @param dc A JMcolor object with the draw color
-     * @return The MathObject subclass
-     */
-    public T drawColor(PaintStyle dc) {
-        getMp().setDrawColor(dc);
-        return (T) this;
-    }
-
-    /**
-     * Sets the draw color of the object. Overloaded method.
-     *
-     * @param str A string representing the draw color, as in the JMcolor.parse method
-     * @return The MathObject subclass
-     */
-    public final T drawColor(String str) {
-        drawColor(JMColor.parse(str));
-        return (T) this;
-    }
-
-    /**
-     * Sets the fill color of the object
-     *
-     * @param fc A JMcolor object with the fill color
-     * @return The MathObject subclass
-     */
-    public T fillColor(PaintStyle fc) {
-        getMp().setFillColor(fc);
-        return (T) this;
-    }
-
-    /**
-     * Sets the fill color of the object. Overloaded method.
-     *
-     * @param str A string representing the fill color, as in the JMcolor.parse method
-     * @return The MathObject subclass
-     */
-    public T fillColor(String str) {
-        fillColor(JMColor.parse(str));
-        return (T) this;
-    }
-
-    /**
-     * Sets the alpha component of the draw color
-     *
-     * @param alpha Alpha value, between 0 (transparent) and 1 (opaque)
-     * @return The MathObject subclass
-     */
-    public T drawAlpha(double alpha) {
-        getMp().setDrawAlpha(alpha);
-        return (T) this;
-    }
-
-    /**
-     * Sets the alpha component of the fill color
-     *
-     * @param alpha Alpha value, between 0 (transparent) and 1 (opaque)
-     * @return This MathObject subclass
-     */
-    public T fillAlpha(double alpha) {
-        getMp().setFillAlpha(alpha);
-        return (T) this;
-    }
-
-    /**
-     * Sets the thickness to draw the contour of the object
-     *
-     * @param newThickness Thickness
-     * @return This MathObject subclass
-     */
-    public T thickness(double newThickness) {
-        getMp().setThickness(newThickness);
-        return (T) this;
-    }
-
-    /**
-     * Sets the dashStyle, from one of the types defined in the enum DashStyle
-     *
-     * @param dashStyle A value from enum DashStyle
-     * @return This MathObject subclass
-     */
-    public T dashStyle(DashStyle dashStyle) {
-        getMp().setDashStyle(dashStyle);
-        return (T) this;
-    }
-
-    /**
-     * Sets the flag visible. If false, the object won't be draw using the renderer, although it still will be in the
-     * scene.
-     *
-     * @param visible True if objet is visible, false otherwise
-     * @return This MathObject subclass
-     */
-    public T visible(boolean visible) {
-        getMp().setVisible(visible);
-        return (T) this;
-    }
 
     public Vec getAbsoluteAnchor() {
         return Anchor.getAnchorPoint(this, absoluteAnchorAnchorType);
@@ -712,26 +409,6 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
         return this.shift(A.to(B));
     }
 
-    /**
-     * Shifts the object so that its center lies at the specified location
-     *
-     * @param p Destination point
-     * @return The current object
-     */
-    public final T moveTo(Coordinates p) {
-        return stackTo(p, AnchorType.CENTER);
-    }
-
-    /**
-     * Overloaded method. Shifts the object so that its center lies at the specified location
-     *
-     * @param x x destiny coordinate
-     * @param y y destiny coordinate
-     * @return The current object
-     */
-    public T moveTo(double x, double y) {
-        return moveTo(Vec.to(x, y));
-    }
 
 
     /**
@@ -1090,33 +767,7 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
         return (T) this;
     }
 
-    /**
-     * Move the object the minimum so that fits inside the given bounding box object and given gaps. If the bounding box
-     * of the object is already inside the bounding box, this method has no effect. If the bounding box of the object is
-     * wider or taller than the container box, nothing is done.
-     *
-     * @param containerBox  Boxable to smash object. May be a Rect, MathObject or Camera
-     * @param horizontalGap Horizontal gap between the smashed object and the container bounding box
-     * @param verticalGap   Vertical gap between the smashed object and the container bounding box
-     * @return This object
-     */
-    public T smash(Boxable containerBox, double horizontalGap, double verticalGap) {
-        Rect rObj = this.getBoundingBox();
-        rObj.smash(containerBox, horizontalGap, verticalGap);
-        shift(getCenter().to(rObj.getCenter()));
-        return (T) this;
-    }
 
-    /**
-     * Overloaded method. Move the object the minimum so that fits inside the given bounding box object and no gaps. If
-     * the bounding box of the object is already inside the bounding box, this method has no effect.
-     *
-     * @param containerBox Boxable to smash object. May be a Rect, MathObject or Camera
-     * @return This object
-     */
-    public T smash(Boxable containerBox) {
-        return smash(containerBox, 0, 0);
-    }
 
 //    //Style hooks
 //    @Override
@@ -1164,4 +815,146 @@ public abstract class MathObject<T extends MathObject<T>> implements Drawable, U
         LEFT, RIGHT, UPPER, LOWER, HCENTER, VCENTER
     }
 
+    //Overriden methods to ensure proper return value
+
+
+    @Override
+    public T drawColor(PaintStyle<?> dc) {
+        return Stylable.super.drawColor(dc);
+    }
+
+    @Override
+    public T drawColor(String str) {
+        return Stylable.super.drawColor(str);
+    }
+
+    @Override
+    public T drawAlpha(double alpha) {
+        return Stylable.super.drawAlpha(alpha);
+    }
+
+    @Override
+    public T fillAlpha(double alpha) {
+        return Stylable.super.fillAlpha(alpha);
+    }
+
+    @Override
+    public T thickness(double newThickness) {
+        return Stylable.super.thickness(newThickness);
+    }
+
+    @Override
+    public T dashStyle(DashStyle dashStyle) {
+        return Stylable.super.dashStyle(dashStyle);
+    }
+
+    @Override
+    public T visible(boolean visible) {
+        return Stylable.super.visible(visible);
+    }
+
+    @Override
+    public T color(PaintStyle dc) {
+        return Stylable.super.color(dc);
+    }
+
+    @Override
+    public T color(String str) {
+        return Stylable.super.color(str);
+    }
+
+    @Override
+    public T fillColor(PaintStyle fc) {
+        return Stylable.super.fillColor(fc);
+    }
+
+    @Override
+    public T fillColor(String str) {
+        return Stylable.super.fillColor(str);
+    }
+
+    @Override
+    public T shift(Coordinates<?> shiftVector) {
+        return AffineTransformable.super.shift(shiftVector);
+    }
+
+    @Override
+    public T shift(double x, double y) {
+        return AffineTransformable.super.shift(x, y);
+    }
+
+    @Override
+    public T shift(double x, double y, double z) {
+        return AffineTransformable.super.shift(x, y, z);
+    }
+
+    @Override
+    public T scale(double sx, double sy) {
+        return AffineTransformable.super.scale(sx, sy);
+    }
+
+    @Override
+    public T scale(double s) {
+        return AffineTransformable.super.scale(s);
+    }
+
+    @Override
+    public T scale(Coordinates<?> scaleCenter, double scale) {
+        return AffineTransformable.super.scale(scaleCenter, scale);
+    }
+
+    @Override
+    public T scale(Coordinates<?> scaleCenter, double sx, double sy) {
+        return AffineTransformable.super.scale(scaleCenter, sx, sy);
+    }
+
+    @Override
+    public T scale(double sx, double sy, double sz) {
+        return AffineTransformable.super.scale(sx, sy, sz);
+    }
+
+    @Override
+    public T scale(Coordinates<?> scaleCenter, double sx, double sy, double sz) {
+        return AffineTransformable.super.scale(scaleCenter, sx, sy, sz);
+    }
+
+    @Override
+    public T rotate(double angle) {
+        return AffineTransformable.super.rotate(angle);
+    }
+
+    @Override
+    public T rotate(Coordinates<?> center, double angle) {
+        return AffineTransformable.super.rotate(center, angle);
+    }
+
+    @Override
+    public T rotate3d(double anglex, double angley, double anglez) {
+        return AffineTransformable.super.rotate3d(anglex, angley, anglez);
+    }
+
+    @Override
+    public T rotate3d(Coordinates<?> center, double anglex, double angley, double anglez) {
+        return AffineTransformable.super.rotate3d(center, anglex, angley, anglez);
+    }
+
+    @Override
+    public T moveTo(Coordinates<?> p) {
+        return AffineTransformable.super.moveTo(p);
+    }
+
+    @Override
+    public T moveTo(double x, double y) {
+        return AffineTransformable.super.moveTo(x, y);
+    }
+
+    @Override
+    public T smash(Boxable containerBox, double horizontalGap, double verticalGap) {
+        return AffineTransformable.super.smash(containerBox, horizontalGap, verticalGap);
+    }
+
+    @Override
+    public T smash(Boxable containerBox) {
+        return AffineTransformable.super.smash(containerBox);
+    }
 }

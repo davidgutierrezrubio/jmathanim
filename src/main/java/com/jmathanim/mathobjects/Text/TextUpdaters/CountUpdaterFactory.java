@@ -19,7 +19,7 @@ public class CountUpdaterFactory extends TextUpdaterFactory{
         this.updater=new Updater() {
             @Override
             public void update(JMathAnimScene scene) {
-                t.getArg(0).setScalar(getElementCount(objectToCount));
+                t.getArg(0).setValue(getElementCount(objectToCount));
             }
         };
     }

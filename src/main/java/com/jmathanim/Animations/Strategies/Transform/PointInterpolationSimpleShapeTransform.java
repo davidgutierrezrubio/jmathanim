@@ -38,11 +38,12 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
     public PointInterpolationSimpleShapeTransform(double runtime, Shape origin, Shape destiny) {
         super(runtime);
         this.setOrigin(origin);
-        this.setIntermediate(new Shape());
+
         this.setDestiny(destiny);
         //Cast variables
         this.shDestiny = destiny;
-        this.shIntermediate = (Shape) getIntermediateObject();
+        this.shIntermediate = new Shape();
+//        this.setIntermediate(new Shape());
 
         origCenter = this.getOriginObject().getCenter();
         dstCenter = this.getDestinyObject().getCenter();
@@ -63,7 +64,7 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
         optimizeStrategy.optimizePaths(shIntermediate, shDestiny);
         // Mark all points as curved during transformation
         for (JMPathPoint jmp : shIntermediate.getPath().jmPathPoints) {
-            jmp.isCurved = true;
+            jmp.setCurved(true);
         }
         originBase = getIntermediateObject().copy();
 
@@ -82,19 +83,19 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
             dstPoint = shDestiny.get(n);
 
             // Interpolate point
-            interPoint.v.x = (1 - lt) * basePoint.v.x + lt * dstPoint.v.x;
-            interPoint.v.y = (1 - lt) * basePoint.v.y + lt * dstPoint.v.y;
-            interPoint.v.z = (1 - lt) * basePoint.v.z + lt * dstPoint.v.z;
+            interPoint.getV().x = (1 - lt) * basePoint.getV().x + lt * dstPoint.getV().x;
+            interPoint.getV().y = (1 - lt) * basePoint.getV().y + lt * dstPoint.getV().y;
+            interPoint.getV().z = (1 - lt) * basePoint.getV().z + lt * dstPoint.getV().z;
 
             // Interpolate control point 1
-            interPoint.vExit.x = (1 - lt) * basePoint.vExit.x + lt * dstPoint.vExit.x;
-            interPoint.vExit.y = (1 - lt) * basePoint.vExit.y + lt * dstPoint.vExit.y;
-            interPoint.vExit.z = (1 - lt) * basePoint.vExit.z + lt * dstPoint.vExit.z;
+            interPoint.getvExit().x = (1 - lt) * basePoint.getvExit().x + lt * dstPoint.getvExit().x;
+            interPoint.getvExit().y = (1 - lt) * basePoint.getvExit().y + lt * dstPoint.getvExit().y;
+            interPoint.getvExit().z = (1 - lt) * basePoint.getvExit().z + lt * dstPoint.getvExit().z;
 
             // Interpolate control point 2
-            interPoint.vEnter.x = (1 - lt) * basePoint.vEnter.x + lt * dstPoint.vEnter.x;
-            interPoint.vEnter.y = (1 - lt) * basePoint.vEnter.y + lt * dstPoint.vEnter.y;
-            interPoint.vEnter.z = (1 - lt) * basePoint.vEnter.z + lt * dstPoint.vEnter.z;
+            interPoint.getvEnter().x = (1 - lt) * basePoint.getvEnter().x + lt * dstPoint.getvEnter().x;
+            interPoint.getvEnter().y = (1 - lt) * basePoint.getvEnter().y + lt * dstPoint.getvEnter().y;
+            interPoint.getvEnter().z = (1 - lt) * basePoint.getvEnter().z + lt * dstPoint.getvEnter().z;
         }
         if (isShouldInterpolateStyles()) {
             // Style interpolation

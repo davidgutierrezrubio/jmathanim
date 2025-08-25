@@ -19,7 +19,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Styling.Stylable;
+import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
@@ -51,12 +51,12 @@ public class FunctionGraph extends MathObject<FunctionGraph> implements hasScala
     private final Shape functionShape;
 
     @Override
-    public double getScalar() {
+    public double getValue() {
         return this.w;
     }
 
     @Override
-    public void setScalar(double scalar) {
+    public void setValue(double scalar) {
         this.w = scalar;
         updatePoints();
     }
@@ -76,7 +76,7 @@ public class FunctionGraph extends MathObject<FunctionGraph> implements hasScala
     }
 
     public Vec get(int i) {
-        return functionShape.get(i).v;
+        return functionShape.get(i).getV();
     }
 
     /**
@@ -174,7 +174,7 @@ public class FunctionGraph extends MathObject<FunctionGraph> implements hasScala
     }
 
     @Override
-    public Stylable getMp() {
+    public DrawStyleProperties getMp() {
         return functionShape.getMp();
     }
 
@@ -205,7 +205,7 @@ public class FunctionGraph extends MathObject<FunctionGraph> implements hasScala
             final JMPathPoint jmp = JMPathPoint.curveTo(Vec.to(x,y));
             functionShape.getPath().addJMPoint(jmp);
             if (n == 0) {
-                jmp.isThisSegmentVisible = false;
+                jmp.setThisSegmentVisible(false);
             }
         }
 
@@ -261,7 +261,7 @@ public class FunctionGraph extends MathObject<FunctionGraph> implements hasScala
     protected void generateControlPoints() {
         for (int n = 0; n < xPoints.size(); n++) {
             JMPathPoint jmp = functionShape.get(n);
-            double x = jmp.v.x;
+            double x = jmp.getV().x;
             if (n < xPoints.size() - 1) {
                 double deltaX = .3 * (xPoints.get(n + 1) - x);
                 double slope = getSlope(x, 1);
@@ -271,15 +271,15 @@ public class FunctionGraph extends MathObject<FunctionGraph> implements hasScala
                     slope = 0;
                 }
                 Vec v = new Vec(deltaX, slope * deltaX);
-                jmp.vExit.copyCoordinatesFrom(jmp.v.add(v));
+                jmp.getvExit().copyCoordinatesFrom(jmp.getV().add(v));
             }
             if (n > 0) {
                 final double deltaX = .3 * (xPoints.get(n - 1) - x);
                 Vec v = new Vec(deltaX, getSlope(x, -1) * deltaX);
-                jmp.vEnter.copyCoordinatesFrom(jmp.v.add(v));
+                jmp.getvEnter().copyCoordinatesFrom(jmp.getV().add(v));
                 double h = x - xPoints.get(n - 1);
                 double deriv = (getFunctionValue(x, this.w) - getFunctionValue(xPoints.get(n - 1), this.w)) / h;
-                jmp.isThisSegmentVisible = (Math.abs(deriv) < CONTINUUM_THRESHOLD);
+                jmp.setThisSegmentVisible((Math.abs(deriv) < CONTINUUM_THRESHOLD));
             }
 
         }
@@ -292,7 +292,7 @@ public class FunctionGraph extends MathObject<FunctionGraph> implements hasScala
      */
     public void updatePoints() {
         for (JMPathPoint jmp : functionShape.getPath().jmPathPoints) {
-            jmp.v.y = getFunctionValue(jmp.v.x, this.w);
+            jmp.getV().y = getFunctionValue(jmp.getV().x, this.w);
         }
         generateControlPoints();
     }
@@ -377,17 +377,6 @@ public class FunctionGraph extends MathObject<FunctionGraph> implements hasScala
         return null;
     }
 
-    @Override
-    public void saveState() {
-        super.saveState();
-        this.functionBase = this.function;
-    }
-
-    @Override
-    public void restoreState() {
-        super.restoreState();
-        this.functionBase = this.function;
-    }
 
     /**
      * Returns a Shape object representing the enclosed of the funcion between
@@ -409,16 +398,16 @@ public class FunctionGraph extends MathObject<FunctionGraph> implements hasScala
         funcAux.generateControlPoints();
         JMPath areaPath = funcAux.functionShape.getPath();
         areaPath.addPoint(Vec.to(mb, 0), Vec.to(ma, 0));
-        areaPath.jmPathPoints.get(0).isThisSegmentVisible = true;
+        areaPath.jmPathPoints.get(0).setThisSegmentVisible(true);
         return new Shape(areaPath);
     }
 
     @Override
-    public void copyStateFrom(MathObject obj) {
-         super.copyStateFrom(obj);
+    public void copyStateFrom(Stateable obj) {
         if (!(obj instanceof FunctionGraph)) {
             return;
         }
+        super.copyStateFrom(obj);
         FunctionGraph fg = (FunctionGraph) obj;
         xPoints.clear();
         xPoints.addAll(fg.xPoints);
@@ -426,7 +415,7 @@ public class FunctionGraph extends MathObject<FunctionGraph> implements hasScala
 //        functionShape.getPath().copyStateFrom(fg.functionShape.getPath());
         functionShape.copyStateFrom(fg.functionShape);
         function = fg.function;
-        setScalar(fg.getScalar());
+        setValue(fg.getValue());
     }
 
     /**

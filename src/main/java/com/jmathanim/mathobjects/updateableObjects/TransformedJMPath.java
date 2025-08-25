@@ -55,13 +55,13 @@ public class TransformedJMPath extends Shape {
         for (int n = 0; n < size; n++) {
             JMPathPoint jmPDst = get(n);
 
-            jmPDst.v.copyCoordinatesFrom(jmPDst.v);
-            jmPDst.vExit.copyCoordinatesFrom(jmPDst.vExit);
-            jmPDst.vEnter.copyCoordinatesFrom(jmPDst.vEnter);
+            jmPDst.getV().copyCoordinatesFrom(jmPDst.getV());
+            jmPDst.getvExit().copyCoordinatesFrom(jmPDst.getvExit());
+            jmPDst.getvEnter().copyCoordinatesFrom(jmPDst.getvEnter());
 
-            jmPDst.v.applyAffineTransform(transform);
-            jmPDst.vExit.applyAffineTransform(transform);
-            jmPDst.vEnter.applyAffineTransform(transform);
+            jmPDst.getV().applyAffineTransform(transform);
+            jmPDst.getvExit().applyAffineTransform(transform);
+            jmPDst.getvEnter().applyAffineTransform(transform);
 
         }
     }

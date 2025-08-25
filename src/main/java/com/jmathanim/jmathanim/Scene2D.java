@@ -54,5 +54,12 @@ public abstract class Scene2D extends JMathAnimScene {
 		fixedCamera = renderer.getFixedCamera();
 		super.renderer = renderer;
 	}
+	protected void addFXNode(javafx.scene.Node node) {
+		renderer.addJavaFXNode(node);
+	}
+	protected void removeFXNode(javafx.scene.Node node) {
+		renderer.removeJavaFXNode(node);
+	}
+
 
 }

@@ -20,6 +20,7 @@ package com.jmathanim.Styling;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Coordinates;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -32,7 +33,7 @@ import java.util.Objects;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class JMLinearGradient extends PaintStyle {
+public class JMLinearGradient extends PaintStyle<JMLinearGradient> {
 
     protected Vec start, end;
     protected GradientStop stops;
@@ -103,7 +104,7 @@ public class JMLinearGradient extends PaintStyle {
     }
 
     @Override
-    public PaintStyle interpolate(PaintStyle p, double t) {
+    public JMLinearGradient interpolate(PaintStyle<?>p, double t) {
         if (p instanceof JMColor) {
             JMColor pc = (JMColor) p;
             JMLinearGradient resul = this.copy();
@@ -140,6 +141,7 @@ public class JMLinearGradient extends PaintStyle {
             }
 
         }
+        JMathAnimScene.logger.warn("Can't interpolate JMLinearGradient with " + p.getClass().getSimpleName()+". A copy of the object is returned");
 
         return this.copy();//Do nothing, return a copy of same object
     }

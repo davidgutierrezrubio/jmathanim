@@ -20,9 +20,9 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.Stateable;
 
 /**
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
@@ -79,13 +79,12 @@ public class CTAngleMark extends Constructible<CTAngleMark> {
     }
 
     @Override
-    public void copyStateFrom(MathObject obj) {
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof CTAngleMark)) return;
         super.copyStateFrom(obj);
-        if (obj instanceof CTAngleMark) {
-            CTAngleMark ang = (CTAngleMark) obj;
-            this.setFreeMathObject(ang.isFreeMathObject());
-            this.getMathObject().copyStateFrom(ang.getMathObject());
-        }
+        CTAngleMark ang = (CTAngleMark) obj;
+        this.setFreeMathObject(ang.isFreeMathObject());
+        this.getMathObject().copyStateFrom(ang.getMathObject());
     }
 
     @Override
@@ -107,22 +106,22 @@ public class CTAngleMark extends Constructible<CTAngleMark> {
         JMPath pa = arcToDraw.getPath();
         pa.clear();
 //        pa.addPoint(center.getMathObject().copy());
-        pa.addPoint(center.coordinatesOfPoint);
+        pa.addPoint(center);
         Vec v1 = center.to(A).normalize();
         Vec v2 = center.to(B).normalize();
         double dotProduct = v1.dot(v2);
         if ((isRight) || (dotProduct == 0)) {//Right angle
             arc = Shape.polyLine(
-                    center.coordinatesOfPoint.add(v1.mult(radius)),
-                    center.coordinatesOfPoint.add(v1.mult(radius)).add(v2.mult(radius)),
-                    (center.coordinatesOfPoint.add(v2.mult(radius)))
+                    center.add(v1.mult(radius)),
+                    center.add(v1.mult(radius)).add(v2.mult(radius)),
+                    (center.add(v2.mult(radius)))
             );
         } else {
-             angle = Math.acos(dotProduct);
+            angle = Math.acos(dotProduct);
             arc = Shape.arc(angle)
                     .scale(Point.origin(), radius)
                     .rotate(Point.origin(), v1.getAngle())
-                    .shift(center.coordinatesOfPoint);
+                    .shift(center.getVec());
         }
         arcToDraw.merge(arc, true, true);
         arcToDraw.getPath().distille();

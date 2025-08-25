@@ -182,7 +182,7 @@ public class CrossOutMathElements extends AnimationGroup {
         generateCrosses();
         for (Shape cross : crossesShapes) {
             final JMPath path = cross.getPath();
-            Vec shiftVector = path.get(0).v.to(path.get(1).v);
+            Vec shiftVector = path.get(0).getV().to(path.get(1).getV());
             path.get(1).copyControlPointsFrom(path.get(0));
             path.get(2).copyControlPointsFrom(path.get(3));
             final ShiftAnimation animShift = Commands.shift(runTime, shiftVector, path.get(1), path.get(2));

@@ -26,6 +26,6 @@ package com.jmathanim.mathobjects;
  */
 public interface hasScalarParameter {
 
-    double getScalar();
-    void setScalar(double scalar);
+    double getValue();
+    void setValue(double scalar);
 }

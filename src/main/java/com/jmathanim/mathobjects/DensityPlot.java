@@ -31,8 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This class represents a density plot in a specified area given by a Rect
- * object and a Bifunction object
+ * This class represents a density plot in a specified area given by a Rect object and a Bifunction object
  *
  * @author David Gutiérrez davidgutierrezrubio@gmail.com
  */
@@ -46,10 +45,22 @@ public class DensityPlot extends AbstractJMImage implements hasScalarParameter {
     private ColorScale colorScale;
     private double scalar;
 
+    private DensityPlot(Rect area, TriFunction<Double, Double, Double, Double> densityMap) {
+        super();
+        this.bbox = area.copy();
+        this.densityLambdaFunction = densityMap;
+        widthView = -1;// Ensures that will create the raster image in the first update of the object
+        heightView = -1;
+        colorScale = new ColorScale();
+        this.scalar = 0;
+        scene = JMathAnimConfig.getConfig().getScene();
+
+    }
+
     /**
      * Creates a new Densityplot with the given domain
      *
-     * @param area The domain to represent, in a Rect object
+     * @param area       The domain to represent, in a Rect object
      * @param densityMap A lambda function, for example (x,y)-&gt;x*y
      * @return The density plot created
      */
@@ -61,22 +72,12 @@ public class DensityPlot extends AbstractJMImage implements hasScalarParameter {
     /**
      * Creates a new Densityplot with the given domain
      *
-     * @param area The domain to represent, in a Rect object
+     * @param area       The domain to represent, in a Rect object
      * @param densityMap A lambda function, for example (x,y)-&gt;x*y
      * @return The density plot created
      */
     public static DensityPlot make(Rect area, TriFunction<Double, Double, Double, Double> densityMap) {
         return new DensityPlot(area, densityMap);
-    }
-
-    private DensityPlot(Rect area, TriFunction<Double, Double, Double, Double> densityMap) {
-        this.bbox = area.copy();
-        this.densityLambdaFunction = densityMap;
-        widthView = -1;// Ensures that will create the raster image in the first update of the object
-        heightView = -1;
-        colorScale = new ColorScale();
-        this.scalar = 0;
-        scene = JMathAnimConfig.getConfig().getScene();
     }
 
     @Override
@@ -86,12 +87,13 @@ public class DensityPlot extends AbstractJMImage implements hasScalarParameter {
         return this;
     }
 
+
     @Override
-    public void copyStateFrom(MathObject obj) {
-         super.copyStateFrom(obj);
+    public void copyStateFrom(Stateable obj) {
         if (!(obj instanceof DensityPlot)) {
             return;
         }
+        super.copyStateFrom(obj);
         DensityPlot dp = (DensityPlot) obj;
         this.bbox.copyFrom(dp.bbox);
         this.densityLambdaFunction = dp.densityLambdaFunction;
@@ -132,11 +134,11 @@ public class DensityPlot extends AbstractJMImage implements hasScalarParameter {
             for (int i = 0; i < wRaster; i++) {
                 for (int j = 0; j < hRaster; j++) {
                     Vec p = bbox.getRelCoordinates(i * 1d / wRaster, 1 - j * 1d / hRaster);
-                    double z = densityLambdaFunction.apply(p.x, p.y, getScalar());
+                    double z = densityLambdaFunction.apply(p.x, p.y, getValue());
                     pixelWriter.setColor(i, j, colorScale.getColorValue(z).getFXColor());
                 }
             }
-            
+
             return 0;
         });
         Platform.runLater(task);
@@ -155,7 +157,7 @@ public class DensityPlot extends AbstractJMImage implements hasScalarParameter {
             for (int i = 0; i < wRaster; i++) {
                 for (int j = 0; j < hRaster; j++) {
                     Vec p = bbox.getRelCoordinates(i * 1d / wRaster, 1 - j * 1d / hRaster);
-                    double z = densityLambdaFunction.apply(p.x, p.y, getScalar());
+                    double z = densityLambdaFunction.apply(p.x, p.y, getValue());
                     if (z < a) {
                         a = z;
                     }
@@ -212,12 +214,12 @@ public class DensityPlot extends AbstractJMImage implements hasScalarParameter {
     }
 
     @Override
-    public double getScalar() {
+    public double getValue() {
         return scalar;
     }
 
     @Override
-    public void setScalar(double scalar) {
+    public void setValue(double scalar) {
         this.scalar = scalar;
         updatePixels();
     }

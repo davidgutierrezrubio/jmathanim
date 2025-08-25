@@ -22,10 +22,10 @@ import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.Stateable;
 
 /**
  * Creates the only ellipse with 2 given focus that pass through a third point
@@ -33,75 +33,58 @@ import com.jmathanim.mathobjects.Shape;
  * @author David Gutierrez Rubio
  */
 public class CTEllipse extends Constructible<CTEllipse> {
-    
-    CTPoint focus1, focus2, A;
+
     private final Shape originalShape;
     private final Shape ellipseToDraw;
+    Vec focus1, focus2, A;
+
 
     /**
-     * Creates a constructible ellipse with given focus and a point of the
-     * ellipse
+     * Creates a constructible ellipse with given focus and a point of the ellipse
      *
      * @param focus1 First focus
      * @param focus2 Second focus
-     * @param A A point from the ellipse
-     * @return The created constructible ellipse
+     * @param A      A point from the ellipse
      */
-    public static CTEllipse make(CTPoint focus1, CTPoint focus2, CTPoint A) {
-        CTEllipse resul = new CTEllipse(focus1, focus2, A);
-        resul.rebuildShape();
-        return resul;
+    private CTEllipse(Coordinates<?> focus1, Coordinates<?> focus2, Coordinates<?> A) {
+        this.focus1 = focus1.getVec();
+        this.focus2 = focus2.getVec();
+        this.A = A.getVec();
+        originalShape = Shape.circle();
+        ellipseToDraw = Shape.circle();
     }
 
     /**
-     * Overloaded method. Creates a constructible ellipse with given focus and a
-     * point of the ellipse
+     * Creates a constructible ellipse with given focus and a point of the ellipse
      *
      * @param focus1 First focus
      * @param focus2 Second focus
-     * @param A A point from the ellipse
+     * @param A      A point from the ellipse
      * @return The created constructible ellipse
      */
-    public static CTEllipse make(Point focus1, Point focus2, Point A) {
+    public static CTEllipse make(Coordinates<?> focus1, Coordinates<?> focus2, Coordinates<?> A) {
         CTEllipse resul = new CTEllipse(CTPoint.make(focus1), CTPoint.make(focus2), CTPoint.make(A));
         resul.rebuildShape();
         return resul;
     }
 
-    /**
-     * Creates a constructible ellipse with given focus and a point of the
-     * ellipse
-     *
-     * @param focus1 First focus
-     * @param focus2 Second focus
-     * @param A A point from the ellipse
-     * @return The created constructible ellipse
-     */
-    private CTEllipse(CTPoint focus1, CTPoint focus2, CTPoint A) {
-        this.focus1 = focus1;
-        this.focus2 = focus2;
-        this.A = A;
-        originalShape = Shape.circle();
-        ellipseToDraw = Shape.circle();
-    }
-    
     @Override
     public Shape getMathObject() {
         return ellipseToDraw;
     }
-    
+
     @Override
     public void rebuildShape() {
         double centerToFocus = focus1.to(focus2).norm() / 2;
         double d = focus1.to(A).norm() + focus2.to(A).norm();
         double minAxis = Math.sqrt(.25 * d * d - centerToFocus * centerToFocus);
         double maxAxis = d / 2;
-        
-        Point centerEllipse = focus1.getMathObject().interpolate(focus2.getMathObject(), .5);
-        Vec centerToRightPoint = centerEllipse.to(focus2.getMathObject()).normalize();
-        Point rightPoint = centerEllipse.add(centerToRightPoint.mult(maxAxis));
+
+        Vec centerEllipse = focus1.interpolate(focus2, .5);
+        Vec centerToRightPoint = centerEllipse.to(focus2.normalize());
+        Vec rightPoint = centerEllipse.add(centerToRightPoint.mult(maxAxis));
         Vec centerToUpperPoint = Vec.to(-centerToRightPoint.y, centerToRightPoint.x);//Rotated 90 degrees
-        Point upperPoint = centerEllipse.add(centerToUpperPoint.mult(minAxis));
+        Vec upperPoint = centerEllipse.add(centerToUpperPoint.mult(minAxis));
 
         //Now we "reset" the shape to draw to a unit circle and apply a linear transformation
         for (int i = 0; i < ellipseToDraw.size(); i++) {
@@ -111,26 +94,28 @@ public class CTEllipse extends Constructible<CTEllipse> {
 
         //Create the affine transformation by 3 points: center, right and upper
         AffineJTransform tr = AffineJTransform.createAffineTransformation(
-                Vec.to(0,0),
+                Vec.to(0, 0),
                 Vec.to(1, 0),
                 Vec.to(0, 1),
                 centerEllipse, rightPoint, upperPoint, 1);
         tr.applyTransform(ellipseToDraw);
     }
-    
+
     @Override
     public CTEllipse copy() {
         CTEllipse copy = CTEllipse.make(focus1.copy(), focus2.copy(), A.copy());
         copy.copyStateFrom(this);
         return copy;
     }
-    
+
     @Override
-    public void copyStateFrom(MathObject obj) {
-        this.getMp().copyFrom(obj.getMp());
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof CTEllipse)) return;
+        CTEllipse ctEllipse = (CTEllipse) obj;
+        this.getMp().copyFrom(ctEllipse.getMp());
         super.copyStateFrom(obj);
     }
-    
+
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
         dependsOn(scene, this.focus1, this.focus2, this.A);

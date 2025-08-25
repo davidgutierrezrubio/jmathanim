@@ -19,6 +19,7 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Enum.JumpType;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.AffineTransformable;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 
@@ -34,22 +35,23 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
 
     private double delayPercentage;
 
-    private final MathObject[] mathObjects;
-    private final HashMap<MathObject, Vec> shiftVectors;
-    private final HashMap<MathObject, AnimationEffect> effects;
-    private final HashMap<MathObject, Double> beginningTimes;
-    private final HashMap<MathObject, Double> rotationAngles;
+    private final AffineTransformable<?>[] objectsToShift;
+    private final HashMap<AffineTransformable<?>, Vec> shiftVectors;
+    private final HashMap<AffineTransformable<?>, AnimationEffect> effects;
+    private final HashMap<AffineTransformable<?>, Double> beginningTimes;
+    private final HashMap<AffineTransformable<?>, Double> rotationAngles;
     protected boolean[] shouldBeAdded;
+    private MathObjectGroup intermediateObject;
 
-    public ShiftAnimation(double runTime, MathObject[] mathObjects) {
+    public ShiftAnimation(double runTime, AffineTransformable<?>[] objectsToShift) {
         super(runTime);
-        this.mathObjects = mathObjects;
+        this.objectsToShift = objectsToShift;
         shiftVectors = new HashMap<>();
         effects = new HashMap<>();
         beginningTimes = new HashMap<>();
         rotationAngles = new HashMap<>();
         delayPercentage = 0;
-        for (MathObject obj : mathObjects) {
+        for (AffineTransformable<?> obj : objectsToShift) {
             effects.put(obj, new AnimationEffect());
             rotationAngles.put(obj, 0d);
         }
@@ -58,17 +60,25 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
     @Override
     public boolean doInitialization() {
         super.doInitialization();
-        saveStates(mathObjects);
-        shouldBeAdded=new boolean[mathObjects.length];
-        for (int i = 0; i < mathObjects.length; i++) {
+
+        intermediateObject = MathObjectGroup.make(filterMathObjects(objectsToShift));
+
+        saveStates(objectsToShift);
+        shouldBeAdded=new boolean[objectsToShift.length];
+        for (int i = 0; i < objectsToShift.length; i++) {
             //True if object is NOT added to the scene
-            shouldBeAdded[i]=!scene.isInScene(mathObjects[i]);
+            if (objectsToShift[i] instanceof MathObject<?>) {
+                MathObject<?> obj= (MathObject<?>) objectsToShift[i];
+                shouldBeAdded[i]=!scene.isInScene(obj);
+
+            }
+
         }
         
-        int size = mathObjects.length;
+        int size = objectsToShift.length;
         int k = 0;
         if (size > 1) {// Only works when group has at least 2 members...
-            for (MathObject obj : mathObjects) {
+            for (AffineTransformable<?> obj : objectsToShift) {
                 beginningTimes.put(obj, k * (delayPercentage) / (size - 1));
                 k++;
             }
@@ -98,11 +108,11 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
     @Override
     public void doAnim(double t) {
          super.doAnim(t);
-        int size = mathObjects.length;
+        int size = objectsToShift.length;
         double getLt = getLT(t);
-        restoreStates(mathObjects);
+        restoreStates(objectsToShift);
         double b = (1 - delayPercentage);
-        for (MathObject obj : mathObjects) {
+        for (AffineTransformable<?> obj : objectsToShift) {
             double lt=getLt;
             Vec v = shiftVectors.get(obj);// Gets the shift vector for this object
             if ((size > 1) && (delayPercentage > 0)) {
@@ -136,7 +146,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
      * @param shiftVector Shift vector
      * @return This object
      */
-    public <T extends ShiftAnimation> T setShiftVector(MathObject obj, Vec shiftVector) {
+    public <T extends ShiftAnimation> T setShiftVector(AffineTransformable<?> obj, Vec shiftVector) {
         this.shiftVectors.put(obj, shiftVector);
         if (!effects.containsKey(obj)) {
             effects.put(obj, new AnimationEffect());
@@ -188,7 +198,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
      * @param jumpType Jump path, a value of enum JumpType
      * @return This object
      */
-    public ShiftAnimation addJumpEffect(MathObject obj, double jumpHeight,
+    public ShiftAnimation addJumpEffect(AffineTransformable<?> obj, double jumpHeight,
             JumpType jumpType) {
         if (!effects.containsKey(obj)) {
             effects.put(obj, new AnimationEffect());
@@ -206,7 +216,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
      * @param jumpHeight Height of the jump. Negative heights can be passed.
      * @return This object
      */
-    public <T extends ShiftAnimation> T addJumpEffect(MathObject obj, double jumpHeight) {
+    public <T extends ShiftAnimation> T addJumpEffect(AffineTransformable<?> obj, double jumpHeight) {
         addJumpEffect(obj, jumpHeight, JumpType.PARABOLICAL);
         return (T) this;
     }
@@ -219,7 +229,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
      */
     @Override
     public ShiftAnimation addJumpEffect(double jumpHeight) {
-        for (MathObject obj : mathObjects) {
+        for (AffineTransformable<?> obj : objectsToShift) {
             addJumpEffect(obj, jumpHeight);
         }
         return this;
@@ -233,7 +243,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
      * @return This object
      */
     public ShiftAnimation addJumpEffect(double jumpHeight, JumpType jumpType) {
-        for (MathObject obj : mathObjects) {
+        for (AffineTransformable<?> obj : objectsToShift) {
             addJumpEffect(obj, jumpHeight, jumpType);
         }
         return this;
@@ -248,7 +258,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
      * effect.
      * @return This object
      */
-    public <T extends ShiftAnimation> T addScaleEffect(MathObject obj, double scaleEffect) {
+    public <T extends ShiftAnimation> T addScaleEffect(AffineTransformable<?> obj, double scaleEffect) {
         effects.get(obj).addScaleEffect(scaleEffect);
         return (T) this;
     }
@@ -263,7 +273,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
      */
     @Override
     public ShiftAnimation addScaleEffect(double scaleEffect) {
-        for (MathObject obj : mathObjects) {
+        for (AffineTransformable<?> obj : objectsToShift) {
             addScaleEffect(obj, scaleEffect);
         }
         return this;
@@ -277,7 +287,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
      * @param numTurns Angle ro rotate. A value of null or 0 means no effect
      * @return This object
      */
-    public <T extends ShiftAnimation> T addRotationEffect(MathObject obj, int numTurns) {
+    public <T extends ShiftAnimation> T addRotationEffect(AffineTransformable<?> obj, int numTurns) {
         effects.get(obj).addRotationEffect(numTurns);
         return (T) this;
     }
@@ -290,7 +300,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
      */
     @Override
     public ShiftAnimation addRotationEffect(int numTurns) {
-        for (MathObject obj : mathObjects) {
+        for (AffineTransformable<?> obj : objectsToShift) {
             addRotationEffect(obj, numTurns);
         }
         return this;
@@ -305,7 +315,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
      * @return This object
      */
     public <T extends ShiftAnimation> T addRotationEffectByAngle(double rotationAngle) {
-        for (MathObject obj : mathObjects) {
+        for (AffineTransformable<?> obj : objectsToShift) {
             addRotationEffectByAngle(obj, rotationAngle);
         }
         return (T) this;
@@ -320,7 +330,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
      * @param rotationAngle Rotation angle
      * @return This object
      */
-    public <T extends ShiftAnimation> T addRotationEffectByAngle(MathObject obj, double rotationAngle) {
+    public <T extends ShiftAnimation> T addRotationEffectByAngle(AffineTransformable<?> obj, double rotationAngle) {
         rotationAngles.put(obj, rotationAngle);
         return (T) this;
     }
@@ -335,7 +345,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
      * alpha to 50% at the middle of the animation.
      * @return This object
      */
-    public <T extends ShiftAnimation> T addAlphaScaleEffect(MathObject obj, double alphaScale) {
+    public <T extends ShiftAnimation> T addAlphaScaleEffect(AffineTransformable<?> obj, double alphaScale) {
         effects.get(obj).addAlphaEffect(alphaScale);
         return (T) this;
     }
@@ -364,7 +374,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
 
     @Override
     protected void copyEffectParametersFrom(AnimationWithEffects anim) {
-        for (MathObject obj : mathObjects) {
+        for (AffineTransformable<?> obj : objectsToShift) {
             effects.get(obj).copyEffectParametersFrom(anim.getEffect());
         }
     }
@@ -373,17 +383,24 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
     public void cleanAnimationAt(double t) {
         double lt=getLT(t);
         if (lt==0) {
-            for (int i = 0; i < mathObjects.length; i++) {
+            for (int i = 0; i < objectsToShift.length; i++) {
                 //If object initially wasn't in the scene, remove it
                 if (shouldBeAdded[i]){
-                    scene.remove(mathObjects[i]);
+                    if (objectsToShift[i] instanceof MathObject<?>) {
+                        MathObject<?> obj= (MathObject<?>) objectsToShift[i];
+                        scene.remove(obj);
+                    }
                 }
             }
         }
         else {
             //for any other lt, object are automatically added to the scene
-            for (MathObject mathObject : mathObjects) {
-                scene.add(mathObject);
+            for (AffineTransformable<?> mathObject : objectsToShift) {
+                if (mathObject instanceof MathObject<?>) {
+                    MathObjectGroup object = (MathObjectGroup) mathObject;
+                    scene.add(object);
+                }
+
             }
     }
         
@@ -394,12 +411,13 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
     @Override
     public void prepareForAnim(double t) {
         //It is a good idea to ensure that objects we are moving are in the scene, just in case
-        addObjectsToscene(mathObjects);
+        MathObject<?>[] mathobjects = filterMathObjects(objectsToShift);
+        addObjectsToscene(mathobjects);
     }
 
     @Override
     public MathObjectGroup getIntermediateObject() {
-        return MathObjectGroup.make(mathObjects);
+        return intermediateObject;
     }
     
     

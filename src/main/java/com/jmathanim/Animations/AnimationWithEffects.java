@@ -18,6 +18,7 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Enum.JumpType;
+import com.jmathanim.mathobjects.AffineTransformable;
 import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.MathObject;
 
@@ -68,7 +69,7 @@ public abstract class AnimationWithEffects extends Animation {
         effect.prepareJumpPath(A, B, obj);
     }
 
-    protected void applyAnimationEffects(double lt, MathObject<?> obj) {
+    protected void applyAnimationEffects(double lt, AffineTransformable<?> obj) {
         effect.applyAnimationEffects(lt, obj);
     }
 

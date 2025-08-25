@@ -98,8 +98,8 @@ public class CTVector extends CTAbstractLine {
 
     @Override
     public void rebuildShape() {
-        this.P1.copyCoordinatesFrom(this.A.coordinatesOfPoint);
-        this.P2.copyCoordinatesFrom(this.B.coordinatesOfPoint);
+        this.P1.copyCoordinatesFrom(this.A);
+        this.P2.copyCoordinatesFrom(this.B);
         if (!isFreeMathObject()) {
             arrowToDraw.getStart().copyCoordinatesFrom(this.P1);
             arrowToDraw.getEnd().copyCoordinatesFrom(this.P2);

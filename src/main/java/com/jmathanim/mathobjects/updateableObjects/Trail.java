@@ -19,7 +19,7 @@ package com.jmathanim.mathobjects.updateableObjects;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Styling.Stylable;
+import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPathPoint;
@@ -60,12 +60,12 @@ public class Trail extends MathObject<Trail> {
         this.marker = marker;
         shapeTrail = new Shape();
         shapeTrail.getPath().addPoint(marker.getCenter());
-        shapeTrail.get(0).isThisSegmentVisible = false;
+        shapeTrail.get(0).setThisSegmentVisible(false);
     }
 
 
     @Override
-    public Stylable getMp() {
+    public DrawStyleProperties getMp() {
         return shapeTrail.getMp();
     }
 
@@ -84,7 +84,7 @@ public class Trail extends MathObject<Trail> {
         super.update(scene);
         if (draw) {
             JMPathPoint pa = JMPathPoint.lineTo(marker.getCenter());
-            pa.isThisSegmentVisible = !cutNext;
+            pa.setThisSegmentVisible(!cutNext);
             cutNext = false;
             shapeTrail.getPath().addJMPoint(pa);
         }
@@ -101,7 +101,7 @@ public class Trail extends MathObject<Trail> {
 
     /**
      * Disables adding new elements to the trail, until a call to
-     * {@link lowerPen} is made.
+     *  lowerPen is made.
      */
     public void raisePen() {
         draw = false;

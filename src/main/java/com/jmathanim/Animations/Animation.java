@@ -21,8 +21,10 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.jmathanim.LogUtils;
+import com.jmathanim.mathobjects.Copyable;
 import com.jmathanim.mathobjects.MathObject;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.function.DoubleUnaryOperator;
@@ -37,7 +39,7 @@ public abstract class Animation {
     protected final HashSet<MathObject<?>> removeThisAtTheEnd;
     protected final HashSet<MathObject<?>> addThisAtTheEnd;
     private final JMathAnimConfig config;
-    private final HashMap<MathObject<?>, MathObject<?>> backups;
+    private final HashMap<Copyable<?>, Copyable<?>> backups;
     protected double lastTComputed;
     protected double t, dt;
     protected boolean printProgressBar;
@@ -325,13 +327,14 @@ public abstract class Animation {
     /**
      * Save state of all given mathobjects.If the useObjectState flag is set to false, this method does nothing
      *
-     * @param mathObjects MathObjects to save state (varargs)
+     * @param copyables MathObjects to save state (varargs)
      */
-    protected void saveStates(MathObject<?>... mathObjects) {
+    protected void saveStates(Copyable<?>... copyables) {
         if (this.isUseObjectState()) {
             backups.clear();
-            for (MathObject obj : mathObjects) {
+            for (Copyable<?> obj : copyables) {
 //                obj.saveState();
+                Object aa = obj.copy();
                 backups.put(obj, obj.copy());
             }
         }
@@ -340,11 +343,11 @@ public abstract class Animation {
     /**
      * Restore state of all given mathobjects.If the useObjectState flag is set to false, this method does nothing
      *
-     * @param mathObjects MathObjects to restore state (varargs)
+     * @param copyables MathObjects to restore state (varargs)
      */
-    protected void restoreStates(MathObject<?>... mathObjects) {
+    protected void restoreStates(Copyable<?>... copyables) {
         if (this.isUseObjectState()) {
-            for (MathObject obj : mathObjects) {
+            for (Copyable<?> obj : copyables) {
                 obj.copyStateFrom(backups.get(obj));
             }
         }
@@ -527,6 +530,17 @@ public abstract class Animation {
         return (T) this;
     }
 
+    /**
+     * Filter MathObjects from an array
+     * @param objects Objects to filter
+     * @return An array of MathObjects
+     */
+    protected MathObject<?>[] filterMathObjects(Object[] objects) {
+        return Arrays.stream(objects)
+                .filter(a -> a instanceof MathObject<?>)
+                .map(a -> (MathObject<?>) a)
+                .toArray(MathObject<?>[]::new);
+    }
 
     /**
      * Animation status

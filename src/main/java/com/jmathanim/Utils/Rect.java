@@ -20,7 +20,6 @@ package com.jmathanim.Utils;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Stateable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +29,7 @@ import java.util.List;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coordinates
+public class Rect implements  Boxable {// TODO: Adjust this to 3D coordinates
 
     public double xmin, ymin, xmax, ymax, zmin, zmax;
     private Rect rBackup;
@@ -535,17 +534,6 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
         this.ymax = r.ymax;
         this.zmin = r.zmin;
         this.zmax = r.zmax;
-    }
-
-    @Override
-    public void saveState() {
-        rBackup = new Rect(0, 0, 0, 0, 0, 0);
-        this.rBackup.copyFrom(this);
-    }
-
-    @Override
-    public void restoreState() {
-        this.copyFrom(this.rBackup);
     }
 
     /**

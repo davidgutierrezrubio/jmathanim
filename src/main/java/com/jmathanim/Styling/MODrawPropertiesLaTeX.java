@@ -33,7 +33,7 @@ public class MODrawPropertiesLaTeX extends MODrawProperties {
     }
 
     @Override
-    public void copyFrom(Stylable prop) {
+    public void copyFrom(DrawStyleProperties prop) {
         super.copyFrom(prop);
         if (prop instanceof MODrawPropertiesLaTeX) {
             MODrawPropertiesLaTeX moDrawPropertiesLaTeX = (MODrawPropertiesLaTeX) prop;

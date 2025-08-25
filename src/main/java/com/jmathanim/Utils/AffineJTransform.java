@@ -19,7 +19,6 @@ package com.jmathanim.Utils;
 
 import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Stateable;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
@@ -36,7 +35,7 @@ import org.apache.commons.math3.linear.RealMatrix;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class AffineJTransform implements Stateable {
+public class AffineJTransform  {
 
     /**
      * Matrix that stores the transform, with the following form: {{1, x, y, z},
@@ -763,17 +762,6 @@ public class AffineJTransform implements Stateable {
 
     public void copyFrom(AffineJTransform resul) {
         this.setMatrix(resul.getMatrix().copy());
-    }
-
-    @Override
-    public void saveState() {
-        matrixBackup = matrix.copy();
-
-    }
-
-    @Override
-    public void restoreState() {
-        matrix = matrixBackup;
     }
 
 }

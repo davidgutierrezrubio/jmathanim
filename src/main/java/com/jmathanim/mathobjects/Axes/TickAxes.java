@@ -19,13 +19,14 @@ package com.jmathanim.mathobjects.Axes;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Styling.MODrawPropertiesArray;
-import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.Stateable;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 
 /**
@@ -109,11 +110,11 @@ public class TickAxes extends MathObject {
     }
 
     @Override
-    public void copyStateFrom(MathObject obj) {
-         super.copyStateFrom(obj);
+    public void copyStateFrom(Stateable obj) {
         if (!(obj instanceof TickAxes)) {
             return;
         }
+        super.copyStateFrom(obj);
         TickAxes t = (TickAxes) obj;
         getLegend().copyStateFrom(t.getLegend());
         getTick().copyStateFrom(t.getTick());
@@ -149,7 +150,7 @@ public class TickAxes extends MathObject {
     }
 
     @Override
-    public Stylable getMp() {
+    public DrawStyleProperties getMp() {
         return mpArray;
     }
 

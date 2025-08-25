@@ -19,14 +19,15 @@ package com.jmathanim.Constructible;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Styling.RendererEffects;
-import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MediatorMathObject;
+import com.jmathanim.mathobjects.Stateable;
 
 /**
  * This class representas a constructible object, derived from another ones. For example a circle that pass for 3 points
@@ -35,7 +36,7 @@ import com.jmathanim.mathobjects.MediatorMathObject;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class Constructible<T extends Constructible<T>>  extends MathObject<T> {
+public abstract class Constructible<T extends Constructible<T>> extends MathObject<T> {
 
     private boolean isMathObjectFree;
     private String label = "";
@@ -59,7 +60,6 @@ public abstract class Constructible<T extends Constructible<T>>  extends MathObj
      * not be updated and can be freely animated. Altering the drawn MathObject does not affect the Constructible
      * parameters.
      *
-     * @param <T>              Class object
      * @param isMathObjectFree Boolean flag. True if drawn MathObject is no longer to be updated with constructible
      *                         parameters.
      * @return This object
@@ -79,14 +79,16 @@ public abstract class Constructible<T extends Constructible<T>>  extends MathObj
      *
      * @return The MathObject
      */
-    public abstract MathObject getMathObject();
+    public abstract MathObject<?> getMathObject();
 
     @Override
     public abstract T copy();
 
     @Override
-    public Stylable getMp() {
+    public DrawStyleProperties getMp() {
+
         return getMathObject().getMp();
+
     }
 
     @Override
@@ -113,20 +115,15 @@ public abstract class Constructible<T extends Constructible<T>>  extends MathObj
         getMathObject().applyAffineTransform(transform);
         return (T) this;
     }
-
     @Override
-    public void copyStateFrom(MathObject obj) {
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof Constructible)) return;
+        Constructible<?> cnst = (Constructible<?>) obj;
         super.copyStateFrom(obj);
-        if (obj == null) {
-            return;
-        }
-        if (obj instanceof Constructible) {
-            Constructible cnst = (Constructible) obj;
-            getMathObject().copyStateFrom(cnst.getMathObject());
-            this.setFreeMathObject(cnst.isFreeMathObject());
-        } else {
-            getMathObject().copyStateFrom(obj);
-        }
+        MathObject<?> mathObject = cnst.getMathObject();
+
+        getMathObject().copyStateFrom(mathObject);
+        this.setFreeMathObject(cnst.isFreeMathObject());
     }
 
     @Override

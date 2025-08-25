@@ -52,15 +52,13 @@ public class DivideOnSensiblePointsStrategy implements OptimizePathsStrategy {
 		for (int n = n2; n < Math.min(n2, n1); n++) {
 			for (int k = 0; k < pa2.size(); k++) {
 				JMPathPoint jmp = pa2.jmPathPoints.get(k);
-				if (jmp.type != JMPathPoint.JMPathPointType.INTERPOLATION_POINT) {
 					JMPathPoint jmpNext = pa2.jmPathPoints.get(k + 1);
-					if ((jmp.isThisSegmentVisible) && (!jmp.isCurved)) {
-						if ((jmpNext.isThisSegmentVisible)) {
+					if ((jmp.isThisSegmentVisible()) && (!jmp.isCurved())) {
+						if ((jmpNext.isThisSegmentVisible())) {
 							pa2.separate(k);
 							break;
 						}
 					}
-				}
 			}
 
 		}

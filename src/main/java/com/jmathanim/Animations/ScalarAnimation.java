@@ -59,7 +59,7 @@ public class ScalarAnimation extends Animation {
         super.doAnim(t);
         double lt = getLT(t);
         for (hasScalarParameter obj : scalarsToAnimate) {
-            obj.setScalar(a + (b - a) * lt);
+            obj.setValue(a + (b - a) * lt);
         }
 
     }

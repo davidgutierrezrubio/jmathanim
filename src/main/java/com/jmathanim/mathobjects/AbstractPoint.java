@@ -3,9 +3,9 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
-import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
@@ -21,12 +21,19 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
     //Current position of the Shape representing the point
     protected final Vec previousVecPosition;
     protected final Shape dotShape;
+    private final MODrawProperties mpPoint;
 
+    protected AbstractPoint() {
+        this(Vec.to(0, 0));
+    }
 
     protected AbstractPoint(Vec v) {
         this.v = v;
         previousVecPosition = this.getVec().copy();
         this.dotShape = new Shape();
+        mpPoint = JMathAnimConfig.getConfig().getDefaultMP();
+        mpPoint.copyFrom(JMathAnimConfig.getConfig().getStyles().get("dotdefault"));
+        mpPoint.setAbsoluteThickness(true);
     }
 
     @Override
@@ -47,10 +54,7 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
     }
 
     @Override
-    protected Stylable createDefaultMPForThisObject() {
-        MODrawProperties mpPoint = JMathAnimConfig.getConfig().getDefaultMP();
-        mpPoint.copyFrom(JMathAnimConfig.getConfig().getStyles().get("dotdefault"));
-        mpPoint.setAbsoluteThickness(true);
+    public DrawStyleProperties getMp() {
         return mpPoint;
     }
 
@@ -95,14 +99,14 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
         switch (getMp().getDotStyle()) {
             case CROSS:
                 dotShape.getPath().addPoint(Vec.to(-sc, sc), Vec.to(sc, -sc), Vec.to(sc, sc), Vec.to(-sc, -sc));
-                dotShape.get(0).isThisSegmentVisible = false;
-                dotShape.get(2).isThisSegmentVisible = false;
+                dotShape.get(0).setThisSegmentVisible(false);
+                dotShape.get(2).setThisSegmentVisible(false);
                 dotShape.shift(previousVecPosition).drawColor(getMp().getDrawColor()).thickness(.25 * th);
                 break;
             case PLUS:
                 dotShape.getPath().addPoint(Vec.to(0, 1), Vec.to(0, -1), Vec.to(1, 0), Vec.to(-1, 0));
-                dotShape.get(0).isThisSegmentVisible = false;
-                dotShape.get(2).isThisSegmentVisible = false;
+                dotShape.get(0).setThisSegmentVisible(false);
+                dotShape.get(2).setThisSegmentVisible(false);
                 dotShape.shift(previousVecPosition).scale(.5 * st).drawColor(getMp().getDrawColor()).thickness(.25 * th);
                 break;
             case TRIANGLE_DOWN_HOLLOW:
@@ -189,17 +193,6 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
         return new Rect(v.x, v.y, v.z, v.x, v.y, v.z);
     }
 
-    @Override
-    public void saveState() {
-        super.saveState();
-        this.v.saveState();
-    }
-
-    @Override
-    public void restoreState() {
-        super.restoreState();
-        this.v.restoreState();
-    }
 
     /**
      * Copy full state form another point p
@@ -207,18 +200,15 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
      * @param obj
      */
     @Override
-    public void copyStateFrom(MathObject<?> obj) {
-        super.copyStateFrom(obj);
-        if (!(obj instanceof AbstractPoint<?>)) {
-            return;
-        }
-
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof AbstractPoint)) return;
         AbstractPoint<?> p2 = (AbstractPoint<?>) obj;
+        super.copyStateFrom(obj);
         this.v.copyCoordinatesFrom(p2.v);//Copy coordinates
         this.previousVecPosition.copyCoordinatesFrom(p2.previousVecPosition);//Copy coordinates
         generateDotShape();
 
-        this.scene = obj.scene;
+        this.scene = p2.scene;
 
     }
 

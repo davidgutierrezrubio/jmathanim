@@ -22,6 +22,14 @@ public interface Coordinates<T extends Coordinates<T>> extends Boxable, Updateab
             v1.z = v2.z;
         }
     }
+
+    default void copyCoordinatesFrom(double x, double y) {
+        Vec v1 = getVec();
+        v1.x = x;
+        v1.y = y;
+    }
+
+
     /**
      * Adds the given vector to this and stores the resul. The original vector is altered and the method returns this
      * object.
@@ -37,7 +45,6 @@ public interface Coordinates<T extends Coordinates<T>> extends Boxable, Updateab
         v1.z += v2.z;
         return (T) this;
     }
-
 
 
     /**
@@ -102,9 +109,6 @@ public interface Coordinates<T extends Coordinates<T>> extends Boxable, Updateab
     public T mult(double lambda);
 
 
-
-
-
     default Vec to(Coordinates<?> b2) {
         return Vec.to(b2.getVec().x - this.getVec().x, b2.getVec().y - this.getVec().y, b2.getVec().z - this.getVec().z);
     }
@@ -114,4 +118,15 @@ public interface Coordinates<T extends Coordinates<T>> extends Boxable, Updateab
         return Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
     }
 
+    T copy();
+
+    /**
+     * Checkif any of its components is Nan
+     *
+     * @return True if x, y or z is NaN. False otherwise
+     */
+    default boolean isNaN() {
+        Vec v1=getVec();
+        return (Double.isNaN(v1.x)) || (Double.isNaN(v1.y)) || Double.isNaN(v1.z);
+    }
 }

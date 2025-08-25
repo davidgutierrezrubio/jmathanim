@@ -19,6 +19,7 @@ package com.jmathanim.Styling;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMImage;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
@@ -29,7 +30,7 @@ import java.util.Objects;
  * Creates a new image pattern
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class JMImagePattern extends PaintStyle {
+public class JMImagePattern extends PaintStyle<JMImagePattern> {
 
     JMImage img;
 
@@ -45,7 +46,7 @@ public class JMImagePattern extends PaintStyle {
     }
 
     @Override
-    public PaintStyle copy() {
+    public JMImagePattern copy() {
         return new JMImagePattern(img);
     }
 
@@ -64,8 +65,9 @@ public class JMImagePattern extends PaintStyle {
     }
 
     @Override
-    public PaintStyle interpolate(PaintStyle p, double t) {
-        return this;//Can't interpolate an image yet
+    public JMImagePattern interpolate(PaintStyle<?> p, double t) {
+        JMathAnimScene.logger.warn("Image interpolation still not implemented, returning original object");
+        return this.copy();//Can't interpolate an image yet
     }
 
     public JMImagePattern  setPatternHeight(double h) {

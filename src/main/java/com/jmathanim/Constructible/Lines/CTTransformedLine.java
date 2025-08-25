@@ -21,7 +21,6 @@ import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
 
 /**
@@ -111,13 +110,13 @@ public class CTTransformedLine extends CTAbstractLine<CTTransformedLine> {
                 tr = AffineJTransform.createReflectionByAxis(axis.getP1(), axis.getP2(), 1);
                 break;
             case CENTRALMIRROR:
-                tr = AffineJTransform.createScaleTransform(new Point(center.coordinatesOfPoint.x,center.coordinatesOfPoint.y), -1);
+                tr = AffineJTransform.createScaleTransform(center.getVec().copy(), -1);
                 break;
             case TRANSLATION:
                 tr = AffineJTransform.createTranslationTransform(translation.getDirection());
                 break;
             default:
-                tr = AffineJTransform.create2DRotationTransform(new Point(center.coordinatesOfPoint.x, center.coordinatesOfPoint.y), angle.value);
+                tr = AffineJTransform.create2DRotationTransform(center.getVec().copy(), angle.getValue());
         }
         getP1().copyCoordinatesFrom(lineToTransform.getP1());
         getP2().copyCoordinatesFrom(lineToTransform.getP2());

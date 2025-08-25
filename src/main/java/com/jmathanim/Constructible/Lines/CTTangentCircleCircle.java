@@ -61,8 +61,8 @@ public class CTTangentCircleCircle extends CTAbstractLine<CTTangentCircleCircle>
 
     @Override
     public void rebuildShape() {
-        double r1 = c1.getRadius().value;
-        double r2 = c2.getRadius().value;
+        double r1 = c1.getCircleRadius().getValue();
+        double r2 = c2.getCircleRadius().getValue();
         double baricentricCoordinates;
         if ((numTangent == 0) || (numTangent == 1)) {//External tangents
             //If r1>r2, intersection of tangents has baricentric coordinates
@@ -79,7 +79,7 @@ public class CTTangentCircleCircle extends CTAbstractLine<CTTangentCircleCircle>
             return;
         }
         Vec v = c1.getCenter().interpolate(c2.getCenter(), baricentricCoordinates);
-        intersectionTangents.coordinatesOfPoint.copyCoordinatesFrom(v);
+        intersectionTangents.copyCoordinatesFrom(v);
         intersectionTangents.rebuildShape();
         CTTangentPointCircle ct = CTTangentPointCircle.make(intersectionTangents, c1, numTangent % 2);
 

@@ -46,8 +46,8 @@ public class FunctionSimpleInterpolateTransform extends TransformStrategy {
     public void doAnim(double t) {
         super.doAnim(t);
         double lt = getLT(t);
-        double w1 = this.origin.getScalar();
-        double w2 = this.destiny.getScalar();
+        double w1 = this.origin.getValue();
+        double w2 = this.destiny.getValue();
         this.intermediate.function = (x, w) -> (1 - lt) * originFunction.applyAsDouble(x, w1)
                 + lt * destinyFunction.applyAsDouble(x, w2);
         this.intermediate.updatePoints();

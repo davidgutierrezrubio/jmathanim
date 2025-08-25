@@ -1,8 +1,9 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Renderers.FXRenderer.FXPathUtils;
+import com.jmathanim.Renderers.FXRenderer.JavaFXRendererUtils;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -12,20 +13,33 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.OptionalInt;
 
-public abstract class AbstractShape <T extends AbstractShape<T>>  extends MathObject<T>{
+public abstract class
+        AbstractShape<T extends AbstractShape<T>>
+        extends MathObject<T> {
     protected final JMPath jmpath;
     protected boolean showDebugPoints = false;
     protected boolean isConvex = false;
+    private final DrawStyleProperties mpShape;
+
 
     protected AbstractShape() {
-        super();
-        this.jmpath = new JMPath();
-
+        this(new JMPath());
     }
+
+
 
     protected AbstractShape(JMPath jmpath) {
         super();
         this.jmpath = jmpath;
+        this.mpShape=JMathAnimConfig.getConfig().getDefaultMP();
+    }
+    @Override
+    public T copy() {
+        return null;
+    }
+    @Override
+    public DrawStyleProperties getMp() {
+        return mpShape;
     }
 
     /**
@@ -75,33 +89,33 @@ public abstract class AbstractShape <T extends AbstractShape<T>>  extends MathOb
     }
 
     @Override
-        protected Rect computeBoundingBox () {
-            return jmpath.getBoundingBox();
-        }
+    protected Rect computeBoundingBox() {
+        return jmpath.getBoundingBox();
+    }
 
     /**
-         * Overloaded method. Check if a given point is inside the shape
-         *
-         * @param p Point to check
-         * @return True if p lies inside of the shape (regardless of being filled or not). False otherwise.
-         */
-        public boolean containsPoint (Point p){
-            return containsPoint(p.v);
-        }
+     * Overloaded method. Check if a given point is inside the shape
+     *
+     * @param p Point to check
+     * @return True if p lies inside of the shape (regardless of being filled or not). False otherwise.
+     */
+    public boolean containsPoint(Point p) {
+        return containsPoint(p.v);
+    }
 
     /**
-         * Check if a given vector is inside the shape
-         *
-         * @param v Vector to check
-         * @return True if v lies inside of the shape (regardless of being filled or not). False otherwise.
-         */
-        public boolean containsPoint (Vec v){
-            Camera dummyCamera = JMathAnimConfig.getConfig().getFixedCamera();
-            Path path = FXPathUtils.createFXPathFromJMPath(jmpath, Vec.to(0, 0), dummyCamera);
-            path.setFill(JMColor.parse("black").getFXColor()); // It's necessary that the javafx path is filled to work
-            double[] xy = dummyCamera.mathToScreenFX(v);
-            return path.contains(xy[0], xy[1]);
-        }
+     * Check if a given vector is inside the shape
+     *
+     * @param v Vector to check
+     * @return True if v lies inside of the shape (regardless of being filled or not). False otherwise.
+     */
+    public boolean containsPoint(Vec v) {
+        Camera dummyCamera = JMathAnimConfig.getConfig().getFixedCamera();
+        Path path = JavaFXRendererUtils.createFXPathFromJMPath(jmpath, Vec.to(0, 0), dummyCamera);
+        path.setFill(JMColor.parse("black").getFXColor()); // It's necessary that the javafx path is filled to work
+        double[] xy = dummyCamera.mathToScreenFX(v);
+        return path.contains(xy[0], xy[1]);
+    }
 
     /**
      * Returns the n-th JMPathPoint of path.
@@ -109,7 +123,7 @@ public abstract class AbstractShape <T extends AbstractShape<T>>  extends MathOb
      * @param n index. A cyclic index, so that 0 means the first point and -1 the last one
      * @return The JMPathPoint
      */
-    public JMPathPoint get ( int n){
+    public JMPathPoint get(int n) {
         return jmpath.jmPathPoints.get(n);
     }
 
@@ -119,7 +133,7 @@ public abstract class AbstractShape <T extends AbstractShape<T>>  extends MathOb
      * @param n Point number. A cyclic index, so that 0 means the first point and -1 the last one
      * @return The point
      */
-    public Point getPoint ( int n){
+    public Point getPoint(int n) {
         return jmpath.get(n).getPoint();
     }
 
@@ -128,7 +142,7 @@ public abstract class AbstractShape <T extends AbstractShape<T>>  extends MathOb
      *
      * @return A JMPath object
      */
-    public JMPath getPath () {
+    public JMPath getPath() {
         return jmpath;
     }
 
@@ -139,7 +153,7 @@ public abstract class AbstractShape <T extends AbstractShape<T>>  extends MathOb
      * @param b End parameter
      * @return A Shape object
      */
-    public Shape getSubShape ( double a, double b){
+    public Shape getSubShape(double a, double b) {
         Shape subShape = new Shape();
         subShape.getMp().copyFrom(this.getMp());
         if (!jmpath.isEmpty()) {
@@ -154,7 +168,7 @@ public abstract class AbstractShape <T extends AbstractShape<T>>  extends MathOb
      *
      * @return If true, the point number will be superimposed on screen when drawing this shape
      */
-    public boolean isShowDebugPoints () {
+    public boolean isShowDebugPoints() {
         return showDebugPoints;
     }
 
@@ -165,7 +179,7 @@ public abstract class AbstractShape <T extends AbstractShape<T>>  extends MathOb
      * @param showDebugPoints
      * @return This object
      */
-    protected void setShowDebugPoints ( boolean showDebugPoints){
+    protected void setShowDebugPoints(boolean showDebugPoints) {
         this.showDebugPoints = showDebugPoints;
     }
 
@@ -174,7 +188,7 @@ public abstract class AbstractShape <T extends AbstractShape<T>>  extends MathOb
      *
      * @return Number of JMPathPoints
      */
-    public int size () {
+    public int size() {
         return jmpath.size();
     }
 
@@ -183,12 +197,12 @@ public abstract class AbstractShape <T extends AbstractShape<T>>  extends MathOb
      *
      * @return The normal vector
      */
-    public Vec getNormalVector () {
+    public Vec getNormalVector() {
         if (size() < 3) {
             return Vec.to(0, 0, 0);
         }
-        Vec v1 = get(0).v.minus(get(size() / 3).v);
-        Vec v2 = get(size() / 2).v.minus(get(size() / 3).v);
+        Vec v1 = get(0).getV().minus(get(size() / 3).getV());
+        Vec v2 = get(size() / 2).getV().minus(get(size() / 3).getV());
         return v1.cross(v2);
     }
 
@@ -197,32 +211,19 @@ public abstract class AbstractShape <T extends AbstractShape<T>>  extends MathOb
      *
      * @return This object
      */
-    public T reverse () {
+    public T reverse() {
         getPath().reverse();
         return (T) this;
     }
 
     @Override
-    public String toString () {
+    public String toString() {
         return "Shape " + objectLabel + ": " + jmpath.toString();
     }
 
-    @Override
-    public void restoreState () {
-        super.restoreState();
-        jmpath.restoreState();
-        this.getMp().restoreState();
-    }
 
     @Override
-    public void saveState () {
-        super.saveState();
-        jmpath.saveState();
-        this.getMp().saveState();
-    }
-
-    @Override
-    public void registerUpdateableHook (JMathAnimScene scene){
+    public void registerUpdateableHook(JMathAnimScene scene) {
         OptionalInt m = getPath().jmPathPoints.stream().mapToInt(t -> t.getUpdateLevel()).max();
         if (m.isPresent()) {
             setUpdateLevel(m.getAsInt() + 1);
@@ -241,20 +242,17 @@ public abstract class AbstractShape <T extends AbstractShape<T>>  extends MathOb
      * @param connectBtoA If true, the end of path B will be connected to the beginning of path A by a straight line
      * @return This object
      */
-    public T merge (AbstractShape<?> sh,boolean connectAtoB, boolean connectBtoA){
+    public T merge(AbstractShape<?> sh, boolean connectAtoB, boolean connectBtoA) {
         jmpath.merge(sh.getPath().copy(), connectAtoB, connectBtoA);
         return (T) this;
     }
 
     @Override
-    public void copyStateFrom (MathObject<?> obj){
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof AbstractShape)) return;
+        AbstractShape<?> msh = (AbstractShape<?>) obj;
         super.copyStateFrom(obj);
-
-        if (!(obj instanceof AbstractShape<?>)) {
-            return;
-        }
         AbstractShape<?> sh2 = (AbstractShape<?>) obj;
-
         if (!isRigid) {
             getPath().copyStateFrom(sh2.getPath());
         }
@@ -262,13 +260,13 @@ public abstract class AbstractShape <T extends AbstractShape<T>>  extends MathOb
         isConvex = sh2.isConvex;
         showDebugPoints = sh2.showDebugPoints;
         if (!Objects.equals(getDebugText(), "")) {
-            setDebugText(getDebugText()+"_copy");
+            setDebugText(getDebugText() + "_copy");
 
         }
     }
 
     @Override
-    public void draw (JMathAnimScene scene, Renderer r, Camera cam){
+    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
         if (isVisible()) {
             if (absoluteSize) {
                 r.drawAbsoluteCopy(this, getAbsoluteAnchor());
@@ -284,7 +282,7 @@ public abstract class AbstractShape <T extends AbstractShape<T>>  extends MathOb
         }
     }
 
-    public ArrayList<ArrayList<float[]>> computePolygonalPieces () {
+    public ArrayList<ArrayList<float[]>> computePolygonalPieces() {
         return jmpath.computePolygonalPieces(scene.getCamera());
     }
 }

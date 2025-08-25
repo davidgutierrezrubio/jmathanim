@@ -20,8 +20,8 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Styling.MODrawProperties;
-import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.EmptyRect;
 import com.jmathanim.Utils.Rect;
@@ -49,7 +49,7 @@ public class NullMathObject extends Constructible<NullMathObject> {
     }
 
     @Override
-    public void copyStateFrom(MathObject obj) {
+    public void copyStateFrom(Stateable obj) {
     }
 
     @Override
@@ -77,7 +77,7 @@ public class NullMathObject extends Constructible<NullMathObject> {
     }
 
     @Override
-    public Stylable getMp() {
+    public DrawStyleProperties getMp() {
         return MODrawProperties.makeNullValues();
     }
 

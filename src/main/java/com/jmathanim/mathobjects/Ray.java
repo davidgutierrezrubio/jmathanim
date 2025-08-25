@@ -20,14 +20,13 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Constructible.Lines.HasDirection;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Styling.MODrawPropertiesArray;
-import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
 
 /**
  * Represents an infinite ray from A an direction AB
@@ -64,13 +63,13 @@ public class Ray extends MathObject<Ray> implements HasDirection {
         mpArray.copyFrom(JMathAnimConfig.getConfig().getDefaultMP());// Default MP values);
         this.p1 = p1;
         this.p2 = p2;
-        bp1 = new JMPathPoint(this.p1, true, JMPathPointType.VERTEX);// trivial boundary points, just to
+        bp1 = new JMPathPoint(this.p1, true);// trivial boundary points, just to
         // initialize objects
-        bp2 = new JMPathPoint(new Point(0, 0), true, JMPathPointType.VERTEX);// trivial boundary points, just to
+        bp2 = new JMPathPoint(new Point(0, 0), true);// trivial boundary points, just to
         // initialize objects
         visiblePiece = new Shape();
         visiblePiece.getPath().addJMPoint(bp1, bp2);
-        visiblePiece.get(0).isThisSegmentVisible = false;
+        visiblePiece.get(0).setThisSegmentVisible(false);
         mpArray.add(visiblePiece);
     }
 
@@ -145,15 +144,15 @@ public class Ray extends MathObject<Ray> implements HasDirection {
 
         if (intersectLine == null) {
             // If there are no getIntersectionPath points, take p1 and p2 (workaround)
-           bp2.v.copyCoordinatesFrom(p2v);
+           bp2.getV().copyCoordinatesFrom(p2v);
         } else {
-            bp2.v.x = intersectLine[2];
-            bp2.v.y = intersectLine[3];
+            bp2.getV().x = intersectLine[2];
+            bp2.getV().y = intersectLine[3];
         }
-        bp2.vExit.x = bp2.v.x;
-        bp2.vExit.y = bp2.v.y;
-        bp2.vEnter.x = bp2.v.x;
-        bp2.vEnter.y = bp2.v.y;
+        bp2.getvExit().x = bp2.getV().x;
+        bp2.getvExit().y = bp2.getV().y;
+        bp2.getvEnter().x = bp2.getV().x;
+        bp2.getvEnter().y = bp2.getV().y;
 
     }
 
@@ -187,7 +186,7 @@ public class Ray extends MathObject<Ray> implements HasDirection {
      */
     public Vec getBorderPoint1(JMathAnimScene scene) {
         update(scene);
-        return bp1.v;
+        return bp1.getV();
     }
 
     /**
@@ -199,7 +198,7 @@ public class Ray extends MathObject<Ray> implements HasDirection {
      */
     public Vec getBorderPoint2(JMathAnimScene scene) {
         update(scene);
-        return bp2.v;
+        return bp2.getV();
     }
 
     /**
@@ -219,7 +218,7 @@ public class Ray extends MathObject<Ray> implements HasDirection {
     }
 
     @Override
-    public final Stylable getMp() {
+    public final DrawStyleProperties getMp() {
         return visiblePiece.getMp();
     }
 
@@ -237,19 +236,6 @@ public class Ray extends MathObject<Ray> implements HasDirection {
         setUpdateLevel(Math.max(p1.getUpdateLevel(), p2.getUpdateLevel()) + 1);
     }
 
-    @Override
-    public void restoreState() {
-        super.restoreState();
-//        p1.restoreState();
-//        p2.restoreState();
-    }
-
-    @Override
-    public void saveState() {
-        super.saveState();
-//        p1.saveState();
-//        p2.saveState();
-    }
 
     /**
      * Creates a finite Segment, that runs over the screen plus a percent gap

@@ -98,7 +98,7 @@ public class CTLineOrthogonal extends CTAbstractLine<CTLineOrthogonal> {
 
     @Override
     public void rebuildShape() {
-        Vec v = A.coordinatesOfPoint;
+        Vec v = A.getVec();
         Vec direction = dir.getDirection();
         P1.copyCoordinatesFrom(v);
 

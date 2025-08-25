@@ -14,7 +14,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class AbstractMultiShapeObject<T extends AbstractMultiShapeObject<T>> extends MathObject<T> implements Iterable<Shape> {
+public abstract class
+AbstractMultiShapeObject<T extends AbstractMultiShapeObject<T>>
+        extends MathObject<T>
+        implements Iterable<Shape> {
+
     protected final MODrawPropertiesArray mpMultiShape;
     protected final ArrayList<Shape> shapes;
     public boolean isAddedToScene;
@@ -69,13 +73,10 @@ public abstract class AbstractMultiShapeObject<T extends AbstractMultiShapeObjec
     }
 
     @Override
-    public void copyStateFrom(MathObject<?> obj) {
-        super.copyStateFrom(obj);
-        if (!(obj instanceof AbstractMultiShapeObject<?>)) {
-            return;
-        }
-
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof AbstractMultiShapeObject)) return;
         AbstractMultiShapeObject<?> msh = (AbstractMultiShapeObject<?>) obj;
+        super.copyStateFrom(msh);
         int n = 0;
         //Assuming this shape and obj has the same number of items
         if (size() == msh.size()) {
@@ -142,23 +143,6 @@ public abstract class AbstractMultiShapeObject<T extends AbstractMultiShapeObjec
         return shapes.get(n);
     }
 
-    @Override
-    public void restoreState() {
-        super.restoreState();
-        getMp().restoreState();
-        for (Shape o : shapes) {
-            o.restoreState();
-        }
-    }
-
-    @Override
-    public void saveState() {
-        super.saveState();
-        getMp().saveState();
-        for (Shape o : shapes) {
-            o.saveState();
-        }
-    }
 
     public ArrayList<Shape> getShapes() {
         return shapes;

@@ -381,7 +381,7 @@ public class JMathAnimConfig {
         return showPreview;
     }
 
-    public MODrawProperties createStyleFrom(Stylable mp, String styleName) {
+    public MODrawProperties createStyleFrom(DrawStyleProperties mp, String styleName) {
         logger.info("Creating style {}", styleName.toUpperCase());
         MODrawProperties mpO = mp.getFirstMP();
         return styles.put(styleName.toUpperCase(), mpO);

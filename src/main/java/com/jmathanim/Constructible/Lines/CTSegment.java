@@ -93,8 +93,8 @@ public class CTSegment extends CTAbstractLine<CTSegment> implements hasScalarPar
         this.P1.copyCoordinatesFrom(this.A.getVec());
         this.P2.copyCoordinatesFrom(this.B.getVec());
         if (!isFreeMathObject()) {
-            segmentToDraw.get(0).v.copyCoordinatesFrom(this.P1);
-            segmentToDraw.get(1).v.copyCoordinatesFrom(this.P2);
+            segmentToDraw.get(0).getV().copyCoordinatesFrom(this.P1);
+            segmentToDraw.get(1).getV().copyCoordinatesFrom(this.P2);
         }
     }
 
@@ -109,12 +109,12 @@ public class CTSegment extends CTAbstractLine<CTSegment> implements hasScalarPar
     }
 
     @Override
-    public double getScalar() {
+    public double getValue() {
         return getP1().to(getP2()).norm();
     }
 
     @Override
-    public void setScalar(double scalar) {
+    public void setValue(double scalar) {
         //Cannot change
     }
 }

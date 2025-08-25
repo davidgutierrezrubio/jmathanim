@@ -186,7 +186,6 @@ public class SVGUtils {
                             PathUtils pathUtils = new PathUtils();
                             pathUtils.determineStraightSegments(path);
                             if (!path.jmPathPoints.isEmpty()) {
-                                path.pathType = JMPath.SVG_PATH; // Mark this as an SVG path
                                 shape = new Shape(path);
                                 shape.getMp().copyFrom(mpCopy);
                                 transfCopy.applyTransform(shape);
@@ -289,7 +288,7 @@ public class SVGUtils {
                 qy1,
                 qx2,
                 qy2;
-        JMPathPoint previousPoint = new JMPathPoint(Vec.to(0, 0), true, JMPathPoint.JMPathPointType.VERTEX);
+        JMPathPoint previousPoint = new JMPathPoint(Vec.to(0, 0), true);
         String processedCommandsString = sanitizeCommandsString(s);
         ArrayList<String> tokens = getPointTokens(processedCommandsString);
 
@@ -299,8 +298,8 @@ public class SVGUtils {
         String previousCommand = "";
         currentX = 0;
         currentY = 0;
-        previousPoint.v.x = 0;
-        previousPoint.v.y = 0;
+        previousPoint.getV().x = 0;
+        previousPoint.getV().y = 0;
         while (it.hasNext()) {
             // Main loop, looking for commands
             String token = it.next().trim();
@@ -322,13 +321,13 @@ public class SVGUtils {
                     previousPoint = pathLineTo(resul, currentX, currentY, false);
                     closeX = currentX;
                     closeY = currentY;
-                    previousPoint.isThisSegmentVisible = false;
+                    previousPoint.setThisSegmentVisible(false);
 //                    previousPoint = pathM(path, currentX, currentY);
                     break;
                 case "m":
                     previousCommand = token;
-                    xx = previousPoint.v.x;
-                    yy = previousPoint.v.y;
+                    xx = previousPoint.getV().x;
+                    yy = previousPoint.getV().y;
                     getPoint(it.next(), it.next());
                     currentX += xx;
                     currentY += yy;
@@ -336,7 +335,7 @@ public class SVGUtils {
                     closeY = currentY;
                     // First point. Creatline do the same as a the first point
                     previousPoint = pathLineTo(resul, currentX, currentY, false);
-                    previousPoint.isThisSegmentVisible = false;
+                    previousPoint.setThisSegmentVisible(false);
 //                    previousPoint = pathM(path, currentX, currentY);
                     break;
 
@@ -347,8 +346,8 @@ public class SVGUtils {
                     break;
                 case "l": // Line
                     previousCommand = token;
-                    xx = previousPoint.v.x;
-                    yy = previousPoint.v.y;
+                    xx = previousPoint.getV().x;
+                    yy = previousPoint.getV().y;
                     getPoint(it.next(), it.next());
                     currentX += xx;
                     currentY += yy;
@@ -365,7 +364,7 @@ public class SVGUtils {
                 case "h": // Horizontal line
                     previousCommand = token;
 
-                    xx = previousPoint.v.x;
+                    xx = previousPoint.getV().x;
                     getPointX(it.next());
                     currentX += xx;
                     previousPoint = pathLineTo(resul, currentX, currentY, true);
@@ -379,7 +378,7 @@ public class SVGUtils {
                 case "v": // Vertical line
                     previousCommand = token;
 
-                    yy = previousPoint.v.y;
+                    yy = previousPoint.getV().y;
                     getPointY(it.next());
                     currentY += yy;
                     previousPoint = pathLineTo(resul, currentX, currentY, true);
@@ -410,8 +409,8 @@ public class SVGUtils {
                 // c 1,1 2,2 3,3 4,4 5,5 6,6 would become C 1,1 2,2 3,3 C 7,7 8,8 9,9
                 case "q": // Quadratic Bezier
                     previousCommand = token;
-                    qx0 = previousPoint.v.x;
-                    qy0 = previousPoint.v.y;
+                    qx0 = previousPoint.getV().x;
+                    qy0 = previousPoint.getV().y;
                     qx1 = qx0 + Double.parseDouble(it.next());
                     qy1 = qy0 - Double.parseDouble(it.next());
                     getPoint(it.next(), it.next());
@@ -426,8 +425,8 @@ public class SVGUtils {
                 case "c": // Cubic Bezier
                     previousCommand = token;
 
-                    xx = previousPoint.v.x;
-                    yy = previousPoint.v.y;
+                    xx = previousPoint.getV().x;
+                    yy = previousPoint.getV().y;
                     cx1 = xx + Double.parseDouble(it.next());
                     cy1 = yy - Double.parseDouble(it.next());
                     cx2 = xx + Double.parseDouble(it.next());
@@ -442,8 +441,8 @@ public class SVGUtils {
                     // one
                     previousCommand = token;
 
-                    cx1 = previousPoint.v.x - (previousPoint.vEnter.x - previousPoint.v.x);
-                    cy1 = previousPoint.v.y - (previousPoint.vEnter.y - previousPoint.v.y);
+                    cx1 = previousPoint.getV().x - (previousPoint.getvEnter().x - previousPoint.getV().x);
+                    cy1 = previousPoint.getV().y - (previousPoint.getvEnter().y - previousPoint.getV().y);
                     cx2 = Double.parseDouble(it.next());
                     cy2 = -Double.parseDouble(it.next());
                     getPoint(it.next(), it.next());
@@ -454,10 +453,10 @@ public class SVGUtils {
                     // previous one
                     previousCommand = token;
 
-                    cx1 = previousPoint.v.x - (previousPoint.vEnter.x - previousPoint.v.x);
-                    cy1 = previousPoint.v.y - (previousPoint.vEnter.y - previousPoint.v.y);
-                    xx = previousPoint.v.x;
-                    yy = previousPoint.v.y;
+                    cx1 = previousPoint.getV().x - (previousPoint.getvEnter().x - previousPoint.getV().x);
+                    cy1 = previousPoint.getV().y - (previousPoint.getvEnter().y - previousPoint.getV().y);
+                    xx = previousPoint.getV().x;
+                    yy = previousPoint.getV().y;
                     cx2 = xx + Double.parseDouble(it.next());
                     cy2 = yy - Double.parseDouble(it.next());
                     getPoint(it.next(), it.next());
@@ -489,14 +488,14 @@ public class SVGUtils {
                                 break;
                             case "h":
                                 previousCommand = "h";
-                                xx = previousPoint.v.x;
+                                xx = previousPoint.getV().x;
                                 getPointX(token);
                                 currentX += xx;
                                 previousPoint = pathLineTo(resul, currentX, currentY, true);
                                 break;
                             case "v":
                                 previousCommand = "v";
-                                yy = previousPoint.v.y;
+                                yy = previousPoint.getV().y;
                                 getPointY(token);
                                 currentY += yy;
                                 previousPoint = pathLineTo(resul, currentX, currentY, true);
@@ -515,8 +514,8 @@ public class SVGUtils {
                                 break;
                             case "m":
                                 previousCommand = "l";
-                                xx = previousPoint.v.x;
-                                yy = previousPoint.v.y;
+                                xx = previousPoint.getV().x;
+                                yy = previousPoint.getV().y;
                                 getPointX(token);
                                 getPointY(it.next());
                                 currentX += xx;
@@ -525,8 +524,8 @@ public class SVGUtils {
                                 break;
                             case "l":
                                 previousCommand = "l";
-                                xx = previousPoint.v.x;
-                                yy = previousPoint.v.y;
+                                xx = previousPoint.getV().x;
+                                yy = previousPoint.getV().y;
                                 getPointX(token);
                                 getPointY(it.next());
                                 currentX += xx;
@@ -542,8 +541,8 @@ public class SVGUtils {
                                 previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
                                 break;
                             case "c":
-                                xx = previousPoint.v.x;
-                                yy = previousPoint.v.y;
+                                xx = previousPoint.getV().x;
+                                yy = previousPoint.getV().y;
                                 cx1 = xx + Double.parseDouble(token);
                                 cy1 = yy - Double.parseDouble(it.next());
                                 cx2 = xx + Double.parseDouble(it.next());
@@ -555,8 +554,8 @@ public class SVGUtils {
                                 break;
                             case "S": // Simplified Cubic Bezier. Take first control point as a reflection of previous
                                 // one
-                                cx1 = previousPoint.v.x - (previousPoint.vEnter.x - previousPoint.v.x);
-                                cy1 = previousPoint.v.y - (previousPoint.vEnter.y - previousPoint.v.y);
+                                cx1 = previousPoint.getV().x - (previousPoint.getvEnter().x - previousPoint.getV().x);
+                                cy1 = previousPoint.getV().y - (previousPoint.getvEnter().y - previousPoint.getV().y);
                                 cx2 = Double.parseDouble(token);
                                 cy2 = -Double.parseDouble(it.next());
                                 getPoint(it.next(), it.next());
@@ -564,10 +563,10 @@ public class SVGUtils {
                                 break;
                             case "s": // Simplified relative Cubic Bezier. Take first control point as a reflection of
                                 // previous one
-                                cx1 = previousPoint.v.x - (previousPoint.vEnter.x - previousPoint.v.x);
-                                cy1 = previousPoint.v.y - (previousPoint.vEnter.y - previousPoint.v.y);
-                                xx = previousPoint.v.x;
-                                yy = previousPoint.v.y;
+                                cx1 = previousPoint.getV().x - (previousPoint.getvEnter().x - previousPoint.getV().x);
+                                cy1 = previousPoint.getV().y - (previousPoint.getvEnter().y - previousPoint.getV().y);
+                                xx = previousPoint.getV().x;
+                                yy = previousPoint.getV().y;
                                 cx2 = xx + Double.parseDouble(token);
                                 cy2 = yy - Double.parseDouble(it.next());
                                 getPoint(it.next(), it.next());
@@ -719,24 +718,24 @@ public class SVGUtils {
      */
     private JMPathPoint pathCubicBezier(JMPath path, JMPathPoint previousPoint, double cx1, double cy1, double cx2,
                                         double cy2, double x, double y) {
-        JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true, JMPathPoint.JMPathPointType.VERTEX);
-        point.isCurved = true;
-        previousPoint.vExit.x = cx1;
-        previousPoint.vExit.y = cy1;
-        point.vEnter.x = cx2;
-        point.vEnter.y = cy2;
+        JMPathPoint point = new JMPathPoint(Vec.to(currentX, currentY), true);
+        point.setCurved(true);
+        previousPoint.getvExit().x = cx1;
+        previousPoint.getvExit().y = cy1;
+        point.getvEnter().x = cx2;
+        point.getvEnter().y = cy2;
         path.addJMPoint(point);
         return point;
     }
 
     // Adds a simple point to the path, with control points equal to the point
     private JMPathPoint pathLineTo(JMPath path, double currentX, double currentY, boolean isVisible) {
-        JMPathPoint point = new JMPathPoint(Vec.to(currentX, currentY), isVisible, JMPathPoint.JMPathPointType.VERTEX);
-        point.isCurved = false;
-        point.vExit.x = currentX;
-        point.vExit.y = currentY;
-        point.vEnter.x = currentX;
-        point.vEnter.y = currentY;
+        JMPathPoint point = new JMPathPoint(Vec.to(currentX, currentY), isVisible);
+        point.setCurved(false);
+        point.getvExit().x = currentX;
+        point.getvExit().y = currentY;
+        point.getvEnter().x = currentX;
+        point.getvEnter().y = currentY;
         path.addJMPoint(point);
         return point;
     }
@@ -870,7 +869,7 @@ public class SVGUtils {
                 } catch (ArrayIndexOutOfBoundsException ex) {
                     b = a;
                 }
-                resul = AffineJTransform.createScaleTransform(Point.origin(), a, b);
+                resul = AffineJTransform.createScaleTransform(Vec.to(0,0), a, b);
                 break;
             case "ROTATE":
                 //(a x y) or (a)

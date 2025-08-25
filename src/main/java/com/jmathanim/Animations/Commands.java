@@ -23,23 +23,17 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.LayoutType;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
-import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.*;
 import com.jmathanim.Utils.Layouts.GroupLayout;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Coordinates;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.*;
 import javafx.scene.shape.StrokeLineCap;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.DEGREES;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
@@ -60,16 +54,16 @@ public class Commands {
      * @param objects
      * @return
      */
-    public static ShiftAnimation shift(double runtime, double dx, double dy, MathObject<?>... objects) {
+    public static ShiftAnimation shift(double runtime, double dx, double dy, AffineTransformable<?>... objects) {
         return shift(runtime, new Vec(dx, dy), objects);
     }
 
-    public static ShiftAnimation shift(double runtime, Vec sv, MathObject<?>... objects) {
+    public static ShiftAnimation shift(double runtime, Vec sv, AffineTransformable<?>... objects) {
         ShiftAnimation resul = new ShiftAnimation(runtime, objects) {
             @Override
             public boolean doInitialization() {
                 super.doInitialization();
-                for (MathObject obj : objects) {
+                for (AffineTransformable obj : objects) {
                     setShiftVector(obj, sv);
                 }
                 return true;
@@ -80,12 +74,12 @@ public class Commands {
         return resul;
     }
 
-    public static ShiftAnimation moveTo(double runtime, Coordinates<?> destiny, MathObject<?>... objects) {
+    public static ShiftAnimation moveTo(double runtime, Coordinates<?> destiny, AffineTransformable<?>... objects) {
         ShiftAnimation resul = new ShiftAnimation(runtime, objects) {
             @Override
             public boolean doInitialization() {
                 super.doInitialization();
-                for (MathObject<?> obj : objects) {
+                for (AffineTransformable<?> obj : objects) {
                     setShiftVector(obj, obj.getCenter().to(destiny));
                 }
                 return true;
@@ -226,29 +220,34 @@ public class Commands {
      * @param runtime     Duration in seconds
      * @param scx         X scale to apply
      * @param scy         Y scale to apply
-     * @param mathObjects Objects to animate
+     * @param objectsToScale Objects to animate
      * @return The animation, ready to play with the playAnim method
      */
-    public static Animation scale(double runtime, double scx, double scy, MathObject<?>... mathObjects) {
+    public static Animation scale(double runtime, double scx, double scy, AffineTransformable<?>... objectsToScale) {
         AnimationGroup ag = new AnimationGroup();
-        Vec center = MathObjectGroup.make(mathObjects).getCenter();
-        for (MathObject obj : mathObjects) {
+        //Compute combined center
+        Rect r=objectsToScale[0].getBoundingBox();
+        for (AffineTransformable<?> obj : objectsToScale) {
+            r=Rect.union(r,obj.getBoundingBox());
+        }
+        Vec center = r.getCenter();
+        for (AffineTransformable<?> obj : objectsToScale) {
             ag.add(Commands.scale(runtime, center, scx, scy, 1, obj));
         }
         return ag;
     }
 
-    public static Animation scale(double runtime, Coordinates c, double sc, MathObject<?>... objects) {
+    public static Animation scale(double runtime, Coordinates c, double sc, AffineTransformable<?>... objects) {
         return scale(runtime, c, sc, sc, sc, objects);
     }
 
-    public static Animation scale(double runtime, Coordinates c, double scx, double scy, double scz, MathObject<?>... objects) {
+    public static Animation scale(double runtime, Coordinates c, double scx, double scy, double scz, AffineTransformable<?>... objects) {
         Animation resul = new Animation(runtime) {
             final double scalex = scx;
             final double scaley = scy;
             final double scalez = scz;
             final Coordinates scaleCenter = c;
-            final MathObject[] mathObjects = objects;
+            final AffineTransformable<?>[] mathObjects = objects;
 
             @Override
             public boolean doInitialization() {
@@ -259,7 +258,7 @@ public class Commands {
 
             @Override
             public MathObjectGroup getIntermediateObject() {
-                return MathObjectGroup.make(mathObjects);
+                return MathObjectGroup.make(filterMathObjects(mathObjects));
             }
 
             @Override
@@ -267,7 +266,7 @@ public class Commands {
                 super.doAnim(t);
                 double lt = getLT(t);
                 restoreStates(mathObjects);
-                for (MathObject obj : mathObjects) {
+                for (AffineTransformable<?> obj : mathObjects) {
                     double scax = 1 - lt + scalex * lt;
                     double scay = 1 - lt + scaley * lt;
                     double scaz = 1 - lt + scalez * lt;
@@ -291,47 +290,61 @@ public class Commands {
 
             @Override
             public void prepareForAnim(double t) {
-                addObjectsToscene(mathObjects);
+                addObjectsToscene(filterMathObjects(mathObjects));
             }
         };
         resul.setDebugName("Scale");
         return resul;
     }
 
-    public static AnimationWithEffects rotate(double runtime, double ang, MathObject<?>... objects) {
-        return rotate(runtime, null, ang, objects);
-
+    public static AnimationWithEffects rotate(double runtime, double rotationAngle, AffineTransformable<?>... objects) {
+        return rotate(runtime, null, rotationAngle, objects);
+    }
+    public static AnimationWithEffects rotate(double runtime, double rotationAngle, List<? extends AffineTransformable<?>> objects) {
+        AffineTransformable<?>[] arObjects = objects.toArray(new AffineTransformable[0]);
+        return rotate(runtime, null, rotationAngle, arObjects);
     }
 
-    public static AnimationWithEffects rotate(double runtime, Coordinates rotationCenter, double rotationAngle, MathObject<?>... objects) {
+    public static AnimationWithEffects rotate(double runtime, Coordinates<?> rotationCenter, double rotationAngle, List<? extends AffineTransformable<?>> objects) {
+        AffineTransformable<?>[] arObjects = objects.toArray(new AffineTransformable[0]);
+        return rotate(runtime, rotationCenter, rotationAngle, arObjects);
+    }
+
+
+        public static AnimationWithEffects rotate(double runtime, Coordinates<?> rotationCenter, double rotationAngle, AffineTransformable<?>... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
             final double angle = rotationAngle;
-            final MathObject[] mathObjects = objects;
+            final AffineTransformable[] objectsToRotate = objects;
             private boolean[] shouldBeAdded;
 
             @Override
             public boolean doInitialization() {
                 super.doInitialization();
-                saveStates(mathObjects);
-                shouldBeAdded = new boolean[mathObjects.length];
-                for (int i = 0; i < mathObjects.length; i++) {
+                saveStates(objectsToRotate);
+                shouldBeAdded = new boolean[objectsToRotate.length];
+                for (int i = 0; i < objectsToRotate.length; i++) {
                     //True if object is NOT added to the scene
-                    shouldBeAdded[i] = !scene.isInScene(mathObjects[i]);
+                    if (objectsToRotate[i] instanceof MathObject) {
+                        MathObject<?> mathObject = (MathObject<?>) objectsToRotate[i];
+                        shouldBeAdded[i] = !scene.isInScene(mathObject);
+
+                    }
+
                 }
                 return true;
             }
 
             @Override
             public MathObjectGroup getIntermediateObject() {
-                return MathObjectGroup.make(mathObjects);
+                return MathObjectGroup.make(filterMathObjects(objectsToRotate));
             }
 
             @Override
             public void doAnim(double t) {
                 super.doAnim(t);
                 double lt = getLT(t);
-                restoreStates(mathObjects);
-                for (MathObject obj : mathObjects) {
+                restoreStates(objectsToRotate);
+                for (AffineTransformable<?> obj : objectsToRotate) {
                     if (rotationCenter == null) {
                         obj.rotate(obj.getCenter(), angle * lt);
                     } else {
@@ -351,10 +364,14 @@ public class Commands {
             public void cleanAnimationAt(double t) {
                 double lt = getLT(t);
                 if (lt == 0) {
-                    for (int i = 0; i < mathObjects.length; i++) {
+                    for (int i = 0; i < objectsToRotate.length; i++) {
                         //If object initially wasn't in the scene, remove it
                         if (shouldBeAdded[i]) {
-                            scene.remove(mathObjects[i]);
+                            if (objectsToRotate[i] instanceof MathObject) {
+                                MathObject<?> mathObject = (MathObject<?>) objectsToRotate[i];
+                                scene.remove(mathObject);
+                            }
+
                         }
                     }
                 }
@@ -362,7 +379,7 @@ public class Commands {
 
             @Override
             public void prepareForAnim(double t) {
-                addObjectsToscene(mathObjects);
+                addObjectsToscene(filterMathObjects(objectsToRotate));
             }
         };
         resul.setDebugName("Rotate");
@@ -874,10 +891,10 @@ public class Commands {
      * @param objects Objects to animate (varargs)
      * @return Animation to run with playAnim method
      */
-    public static Animation setMP(double runtime, Stylable mp, MathObject<?>... objects) {
+    public static Animation setMP(double runtime, DrawStyleProperties mp, MathObject<?>... objects) {
         Animation resul = new Animation(runtime) {
             final MathObject[] mathObjects = objects;
-            final Stylable mpDst = mp;
+            final DrawStyleProperties mpDst = mp;
 
             @Override
             public boolean doInitialization() {
@@ -1426,15 +1443,16 @@ public class Commands {
      */
     public static ShiftAnimation setLayout(double runtime, Coordinates<?> corner, LayoutType layoutType, double gap,
                                            MathObjectGroup group) {
-        group.saveState();
-        group.setLayout(corner, layoutType, gap);
+        //Create a simple group with rectangles
+        Shape[] shapes = group.getObjects().stream().map(t->Shape.rectangle(t.getBoundingBox())).toArray(Shape[]::new);
+        MathObjectGroup groupCopy=MathObjectGroup.make(shapes);
+        groupCopy.setLayout(corner, layoutType, gap);
         HashMap<MathObject<?>, Vec> centers = new HashMap<>();
         int n = 0;
-        for (MathObject<?> ob : group) {
+        for (MathObject<?> ob : groupCopy) {
             centers.put(ob, ob.getCenter());// The destination centers of the objects of the group
             n++;
         }
-        group.restoreState();
         MathObject<?>[] mathobjects = group.getObjects().toArray(new MathObject[group.size()]);
 
         return getShiftAnimation(runtime, mathobjects, centers);

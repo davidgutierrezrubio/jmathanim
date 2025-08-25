@@ -17,7 +17,7 @@
 package com.jmathanim.mathobjects.Text;
 
 import com.jmathanim.Enum.AnchorType;
-import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Stateable;
 import com.jmathanim.mathobjects.hasScalarParameter;
 
 import java.text.DecimalFormat;
@@ -29,16 +29,9 @@ import java.text.DecimalFormat;
  */
 public class JMNumber extends AbstractLaTeXMathObject<JMNumber> implements hasScalarParameter {
 
+    private final DecimalFormat formatter;
     private double value;
     private String format;
-    private final DecimalFormat formatter;
-
-    public static JMNumber make(double d) {
-        JMNumber resul = new JMNumber(d);
-        resul.style("latexdefault");
-        resul.setScalar(d);
-        return resul;
-    }
 
     protected JMNumber(double value) {
         super(AnchorType.LEFT);
@@ -46,13 +39,20 @@ public class JMNumber extends AbstractLaTeXMathObject<JMNumber> implements hasSc
         format = "";
     }
 
+    public static JMNumber make(double d) {
+        JMNumber resul = new JMNumber(d);
+        resul.style("latexdefault");
+        resul.setValue(d);
+        return resul;
+    }
+
     @Override
-    public double getScalar() {
+    public double getValue() {
         return value;
     }
 
     @Override
-    public void setScalar(double scalar) {
+    public void setValue(double scalar) {
         value = scalar;
         String text = formatter.format(value);
         changeInnerLaTeX(text);
@@ -60,22 +60,21 @@ public class JMNumber extends AbstractLaTeXMathObject<JMNumber> implements hasSc
 
     @Override
     public JMNumber copy() {
-        JMNumber resul = new JMNumber(getScalar());
+        JMNumber resul = new JMNumber(getValue());
         resul.copyStateFrom(this);
-        resul.setScalar(value);
+        resul.setValue(value);
         return resul;
     }
 
     @Override
-    public void copyStateFrom(MathObject obj) {
-         super.copyStateFrom(obj);
-        if (obj instanceof JMNumber) {
-            JMNumber copy = (JMNumber) obj;
-            this.anchor = copy.anchor;
-            this.format = copy.format;
-            this.formatter.applyPattern(format);
-            super.copyStateFrom(obj);
-        }
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof JMNumber)) return;
+        super.copyStateFrom(obj);
+        JMNumber copy = (JMNumber) obj;
+        this.anchor = copy.anchor;
+        this.format = copy.format;
+        this.formatter.applyPattern(format);
+        super.copyStateFrom(obj);
     }
 
     /**

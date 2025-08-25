@@ -134,12 +134,12 @@ public class CTLine extends CTAbstractLine<CTLine> {
     public void rebuildShape() {
         switch (lineType) {
             case POINT_POINT:
-                P1.copyCoordinatesFrom(A.coordinatesOfPoint);
-                P2.copyCoordinatesFrom(B.coordinatesOfPoint);
+                P1.copyCoordinatesFrom(A.getVec());
+                P2.copyCoordinatesFrom(B.getVec());
                 break;
             case POINT_DIRECTION:
-                P1.copyCoordinatesFrom(A.coordinatesOfPoint);
-                P2.copyCoordinatesFrom(A.coordinatesOfPoint.add(dir.getDirection()));
+                P1.copyCoordinatesFrom(A.getVec());
+                P2.copyCoordinatesFrom(A.getVec().add(dir.getDirection()));
         }
         if (!isFreeMathObject()) {
             lineToDraw.getP1().copyCoordinatesFrom(P1);

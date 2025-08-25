@@ -23,21 +23,25 @@ import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
 
 /**
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTTransformedCircle extends CTCircle {
+public class CTTransformedCircle extends CTAbstractCircle<CTTransformedCircle> {
 
     private final CTCircle circleToTransform;
     private final CTLine axis;
     private final CTPoint center;
     private final CTVector translation;
     private final Scalar angle;
+
+    @Override
+    public Vec getHoldCoordinates(Vec coordinates) {
+        JMathAnimScene.logger.warn("Hold coordinates not implemented yet for CTTransformedCircle");
+        return null;//TODO: IMplement this
+    }
 
     private enum transformType {
         ROTATION, TRANSLATION, AXISMIRROR, CENTRALMIRROR
@@ -135,28 +139,26 @@ public class CTTransformedCircle extends CTCircle {
                 tr = AffineJTransform.createReflectionByAxis(axis.getP1(), axis.getP2(), 1);
                 break;
             case CENTRALMIRROR:
-                tr = AffineJTransform.createScaleTransform(new Point(center.coordinatesOfPoint.x,center.coordinatesOfPoint.y), -1);
+                tr = AffineJTransform.createScaleTransform(center, -1);
                 break;
             case TRANSLATION:
                 tr = AffineJTransform.createTranslationTransform(translation.getDirection());
                 break;
             case ROTATION:
-                tr = AffineJTransform.create2DRotationTransform(new Point(center.coordinatesOfPoint.x,center.coordinatesOfPoint.y), angle.value);
+                tr = AffineJTransform.create2DRotationTransform(center, angle.getValue());
                 break;
             default:
                 tr = null;
         }
-        final Vec vv = circleToTransform.getCenter();
-        getCircleCenter().coordinatesOfPoint.copyCoordinatesFrom(vv);
-        this.radius.setScalar(circleToTransform.radius.getScalar());
-        getCircleCenter().coordinatesOfPoint.applyAffineTransform(tr);
+        final Vec vv = circleToTransform.getCircleCenter().getVec().copy();
+        setCircleCenter(vv);
+        getCircleCenter().getVec().applyAffineTransform(tr);
+        setCircleRadius(circleToTransform.getCircleRadius());
+
         if (!isFreeMathObject()) {
-            for (int i = 0; i < circleToDraw.size(); i++) {
-                JMPathPoint get = circleToDraw.get(i);
-                get.copyControlPointsFrom(originalCircle.get(i));
-            }
-            circleToDraw.scale(this.radius.value);
-            circleToDraw.shift(this.circleCenter.coordinatesOfPoint);
+            getMathObject().copyStateFrom(circleToTransform);
+            getMathObject().scale(this.getCircleRadius().getValue());
+            getMathObject().shift(this.getCircleCenter());
         }
     }
 

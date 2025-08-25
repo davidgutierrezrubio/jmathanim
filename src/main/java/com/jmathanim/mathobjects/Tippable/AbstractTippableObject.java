@@ -21,7 +21,6 @@ import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.RotationType;
 import com.jmathanim.Enum.SlopeDirectionType;
 import com.jmathanim.Styling.MODrawPropertiesArray;
-import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Vec;
@@ -33,11 +32,12 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 /**
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>> extends Constructible<T> implements hasScalarParameter {
+public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>>
+        extends Constructible<T> implements hasScalarParameter {
 
-    public final Point pivotPointRefMathObject;
-    public final Point markPoint;
-    public final Point pivotPointRefShape;
+    public final Vec pivotPointRefMathObject;
+    public final Vec markPoint;
+    public final Vec pivotPointRefShape;
     public final RigidBox tipObjectRigidBox;
     private final MODrawPropertiesArray mpArray;
     public Shape shape;
@@ -67,13 +67,13 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
         rotationAngleAroundCenterOfMathObject = 0;
         anchor = AnchorType.UPPER;
         anchorType = AnchorTypeUsed.ANCHOR;
-        pivotPointRefMathObject = new Point();
+        pivotPointRefMathObject =Vec.to(0,0);
 
         //Point of the Shape
-        markPoint = Point.origin();
+        markPoint = Vec.to(0,0);
 
         //Reference point where the MathObject will be anchored, calculated at a certain distance from the markPoint
-        pivotPointRefShape = Point.origin();
+        pivotPointRefShape = Vec.to(0,0);
         isParametrized = false;
         mpArray = new MODrawPropertiesArray();
         mpArray.copyFrom(tipObject.getMp());
@@ -95,15 +95,15 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
             if (anchorPoint == null) {
                 anchorPoint = Anchor.getAnchorPoint(tipObjectRigidBox, AnchorType.CENTER);
             }
-            this.pivotPointRefMathObject.v.copyCoordinatesFrom(anchorPoint);
+            this.pivotPointRefMathObject.copyCoordinatesFrom(anchorPoint);
         } else {
-            this.pivotPointRefMathObject.v.copyCoordinatesFrom(Anchor.getAnchorPoint(tipObjectRigidBox, this.anchor));
+            this.pivotPointRefMathObject.copyCoordinatesFrom(Anchor.getAnchorPoint(tipObjectRigidBox, this.anchor));
         }
     }
 
-    protected T setAnchorPoint(Coordinates anchorPoint) {
+    protected T setAnchorPoint(Coordinates<?> anchorPoint) {
         this.anchorPoint = anchorPoint.getVec();
-        this.pivotPointRefMathObject.v.copyCoordinatesFrom(this.anchorPoint);
+        this.pivotPointRefMathObject.copyCoordinatesFrom(this.anchorPoint);
         anchorType = AnchorTypeUsed.FIXED_POINT;
         rebuildShape();
         return (T) this;
@@ -143,7 +143,7 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
         return distanceToShape;
     }
 
-    public  T setDistanceToShape(Double distanceToShape) {
+    public T setDistanceToShape(Double distanceToShape) {
         this.distanceToShape = distanceToShape;
         rebuildShape();
         return (T) this;
@@ -160,35 +160,35 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
     }
 
     @Override
-    public MathObject getMathObject() {
+    public MathObject<?> getMathObject() {
         return tipObjectRigidBox;
     }
 
     @Override
-    public Stylable getMp() {
+    public MODrawPropertiesArray getMp() {
         return mpArray;
     }
 
     @Override
-    public void copyStateFrom(MathObject obj) {
+    public void copyStateFrom(Stateable obj) {
+
+        if (!(obj instanceof AbstractTippableObject)) return;
         super.copyStateFrom(obj);
-        if (obj instanceof AbstractTippableObject) {
-            AbstractTippableObject nt = (AbstractTippableObject) obj;
-            pivotPointRefMathObject.v.copyCoordinatesFrom(nt.pivotPointRefMathObject.v);
-            correctionAngle = nt.correctionAngle;
-            this.tipObjectRigidBox.copyStateFrom(nt.tipObjectRigidBox);
-            this.tipObjectRigidBox.getReferenceMathObject().copyStateFrom(nt.tipObjectRigidBox.getReferenceMathObject());
-            this.pivotPointRefMathObject.copyStateFrom(nt.pivotPointRefMathObject);
-            this.locationParameterOnShape = nt.locationParameterOnShape;
-            this.distanceToShape = nt.distanceToShape;
-            this.rotationType = nt.rotationType;
+        AbstractTippableObject<?> nt = (AbstractTippableObject<?>) obj;
+        pivotPointRefMathObject.copyCoordinatesFrom(nt.pivotPointRefMathObject);
+        correctionAngle = nt.correctionAngle;
+        this.tipObjectRigidBox.copyStateFrom(nt.tipObjectRigidBox);
+        this.tipObjectRigidBox.getReferenceMathObject().copyStateFrom(nt.tipObjectRigidBox.getReferenceMathObject());
+        this.pivotPointRefMathObject.copyStateFrom(nt.pivotPointRefMathObject);
+        this.locationParameterOnShape = nt.locationParameterOnShape;
+        this.distanceToShape = nt.distanceToShape;
+        this.rotationType = nt.rotationType;
 //            this.rotationAngleAroundPivotPoint = nt.rotationAngleAroundPivotPoint;
-            this.markPoint.copyStateFrom(nt.markPoint);
-            this.pivotPointRefShape.copyStateFrom(nt.pivotPointRefShape);
-            this.isParametrized = nt.isParametrized;
-            this.slopeDirectionType = nt.slopeDirectionType;
-            rebuildShape();
-        }
+        this.markPoint.copyStateFrom(nt.markPoint);
+        this.pivotPointRefShape.copyStateFrom(nt.pivotPointRefShape);
+        this.isParametrized = nt.isParametrized;
+        this.slopeDirectionType = nt.slopeDirectionType;
+        rebuildShape();
 
     }
 
@@ -245,17 +245,17 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
 
 
         if (isParametrized) {
-            markPoint.v.copyCoordinatesFrom(shape.getParametrizedPointAt(locationParameterOnShape));
+            markPoint.copyCoordinatesFrom(shape.getParametrizedVecAt(locationParameterOnShape));
         } else {
-            markPoint.v.copyCoordinatesFrom(shape.getPointAt(locationParameterOnShape).v);
+            markPoint.copyCoordinatesFrom(shape.getVecAt(locationParameterOnShape));
         }
 //        Point labelAnchorPointDst=markPoint.copy();
-        pivotPointRefShape.v.copyCoordinatesFrom(markPoint.v);
+        pivotPointRefShape.copyCoordinatesFrom(markPoint);
 
         if (distanceToShape != null)
-            pivotPointRefShape.v.addInSite(normal.multInSite(distanceToShape));
+            pivotPointRefShape.addInSite(normal.multInSite(distanceToShape));
         else
-            pivotPointRefShape.v.addInSite(normal.multInSite(tipObjectRigidBox.getHeight() * .5));
+            pivotPointRefShape.addInSite(normal.multInSite(tipObjectRigidBox.getHeight() * .5));
         Vec shiftVector = pivotPointRefMathObject.to(pivotPointRefShape);
         tipObjectRigidBox.shift(shiftVector);
 
@@ -263,12 +263,12 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
     }
 
     @Override
-    public double getScalar() {
+    public double getValue() {
         return locationParameterOnShape;
     }
 
     @Override
-    public void setScalar(double scalar) {
+    public void setValue(double scalar) {
         locationParameterOnShape = scalar;
         rebuildShape();
     }
@@ -288,7 +288,7 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
         dependsOn(scene, this.shape);
     }
 
-    public Point getMarkPoint() {
+    public Vec getMarkLabelLocation() {
         return markPoint;
     }
 

@@ -77,6 +77,11 @@ public class ShowCreation extends Animation {
             addThisAtTheEnd.add(origObj);
             return true;
         }
+        if (mobj instanceof Arrow) {
+            this.mobj = mobj;
+            addThisAtTheEnd.add(origObj);
+            return true;
+        }
         if (mobj instanceof Constructible) {
             this.mobj = ((Constructible) mobj).getMathObject();
             removeThisAtTheEnd.add(this.mobj);

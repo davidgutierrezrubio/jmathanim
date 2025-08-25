@@ -28,7 +28,6 @@ import com.jmathanim.Enum.ArrowType;
 import com.jmathanim.Enum.SlopeDirectionType;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
-import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Text.AbstractLaTeXMathObject;
@@ -47,9 +46,9 @@ public class Arrow extends Constructible<Arrow> {
     public final Shape labelArcUpside;
     public final Shape labelArcDownside;
     protected final MODrawPropertiesArray mpArrow;
+    protected final MathObjectGroup groupElementsToBeDrawn;
     private final Vec Acopy, Bcopy;
     private final Shape shapeToDraw;
-    protected final MathObjectGroup groupElementsToBeDrawn;
     private final Shape head1, head2;
     private double amplitudeScale;
     private double angle;
@@ -176,7 +175,7 @@ public class Arrow extends Constructible<Arrow> {
     }
 
     @Override
-    public Stylable getMp() {
+    public MODrawPropertiesArray getMp() {
         return mpArrow;
     }
 
@@ -207,8 +206,8 @@ public class Arrow extends Constructible<Arrow> {
         head2.getPath().addJMPointsFrom(h2.getPath());
         baseDist1 = head1.get(0).to(head1.get(-1)).norm();
         baseDist2 = head2.get(0).to(head2.get(-1)).norm();
-        baseHeight1 = head1.getBoundingBox().ymax - head1.get(0).v.y;
-        baseHeight2 = head2.get(0).v.y - head2.getBoundingBox().ymin;
+        baseHeight1 = head1.getBoundingBox().ymax - head1.get(0).getV().y;
+        baseHeight2 = head2.get(0).getV().y - head2.getBoundingBox().ymin;
         baseRealHeight1 = head1.getHeight();
         baseRealHeight2 = head2.getHeight();
     }
@@ -245,12 +244,12 @@ public class Arrow extends Constructible<Arrow> {
 
         double rbaseHeight1 = baseHeight1 * headStartMultiplier * rThickness / baseDist1;
         double rbaseHeight2 = baseHeight2 * headEndMultiplier * rThickness / baseDist2;
-        double aa=h1B.getHeight();
+        double aa = h1B.getHeight();
 
         Vec medA = h1A.get(0).getVec().interpolate(h1A.get(-1), .5);
 
-        Vec p1b = h1B.get(0).v;
-        Vec p2b = h1B.get(-1).v;
+        Vec p1b = h1B.get(0).getV();
+        Vec p2b = h1B.get(-1).getV();
         Vec medB = p1b.interpolate(p2b, .5);
 
         h1B.shift(medB.to(medA));
@@ -260,7 +259,7 @@ public class Arrow extends Constructible<Arrow> {
         double rgapB = gapB * headEndMultiplier * rThickness / baseDist2;
         shapeToDraw.getPath().clear();
         double longBody = dist - rbaseHeight1 - rbaseHeight2 - rgapA - rgapB;
-        Vec endPOintBEfore=h1B.getBoundingBox().getLower().add(0, -rgapB);
+        Vec endPOintBEfore = h1B.getBoundingBox().getLower().add(0, -rgapB);
         h1B.shift(0, -longBody);
         Vec startPoint = h1A.getBoundingBox().getUpper().add(0, rgapA);
         Vec endPoint = h1B.getBoundingBox().getLower().add(0, -rgapB);
@@ -272,12 +271,12 @@ public class Arrow extends Constructible<Arrow> {
             labelArcUpside.getPath().clear();
             labelArcUpside.getPath().addPoint(h1A.get(0).copy());
             labelArcUpside.getPath().addPoint(h1B.get(-1).copy());
-            labelArcUpside.get(0).isThisSegmentVisible = false;
+            labelArcUpside.get(0).setThisSegmentVisible(false);
 
             labelArcDownside.getPath().clear();
             labelArcDownside.getPath().addPoint(h1A.get(-1).copy());
             labelArcDownside.getPath().addPoint(h1B.get(0).copy());
-            labelArcDownside.get(0).isThisSegmentVisible = false;
+            labelArcDownside.get(0).setThisSegmentVisible(false);
 
         } else {
 
@@ -339,11 +338,11 @@ public class Arrow extends Constructible<Arrow> {
 //        shapeToDraw.getPath().applyAffineTransform(trShift);
 //        shapeToDraw.getPath().applyAffineTransform(trRotate);
 
-        Vec C=null;
-        Vec z1=null;
+        Vec C = null;
+        Vec z1 = null;
         AffineJTransform tr;
         boolean is3D = scene.getCamera() instanceof Camera3D;
-        if (is3D){
+        if (is3D) {
             z1 = startPoint.copy().add(Vec.to(0, 0, 1));
 
             Vec v = Acopy.to(Bcopy);
@@ -353,7 +352,6 @@ public class Arrow extends Constructible<Arrow> {
                 C = Acopy.getVec().copy().add(Vec.to(0, 0, 1));
             }
         }
-
 
 
         if (is3D) {
@@ -400,52 +398,51 @@ public class Arrow extends Constructible<Arrow> {
     }
 
     @Override
-    public void copyStateFrom(MathObject obj) {
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof Arrow)) return;
         super.copyStateFrom(obj);
-        if (obj instanceof Arrow) {
-            Arrow ar = (Arrow) obj;
-            this.arrowThickness = ar.arrowThickness;
-            this.angle = ar.angle;
-            this.scene = ar.scene;
-            this.setAmplitudeScale(ar.getAmplitudeScale());
-            this.baseHeight1 = ar.baseHeight1;
-            this.baseHeight2 = ar.baseHeight2;
-            this.baseRealHeight1 = ar.baseRealHeight1;
-            this.baseRealHeight2 = ar.baseRealHeight2;
-            this.headStartMultiplier = ar.headStartMultiplier;
-            this.headEndMultiplier = ar.headEndMultiplier;
-            this.typeA = ar.typeA;
-            this.typeB = ar.typeB;
-            this.A.copyCoordinatesFrom(ar.A);
-            this.B.copyCoordinatesFrom(ar.B);
-            this.Acopy.copyCoordinatesFrom(ar.Acopy);
-            this.Bcopy.copyCoordinatesFrom(ar.Bcopy);
-            this.gapA = ar.gapA;
-            this.gapB = ar.gapB;
-            this.baseDist1 = ar.baseDist1;
-            this.baseDist2 = ar.baseDist2;
-            this.setFreeMathObject(ar.isFreeMathObject());
+        Arrow ar = (Arrow) obj;
+        this.arrowThickness = ar.arrowThickness;
+        this.angle = ar.angle;
+        this.scene = ar.scene;
+        this.setAmplitudeScale(ar.getAmplitudeScale());
+        this.baseHeight1 = ar.baseHeight1;
+        this.baseHeight2 = ar.baseHeight2;
+        this.baseRealHeight1 = ar.baseRealHeight1;
+        this.baseRealHeight2 = ar.baseRealHeight2;
+        this.headStartMultiplier = ar.headStartMultiplier;
+        this.headEndMultiplier = ar.headEndMultiplier;
+        this.typeA = ar.typeA;
+        this.typeB = ar.typeB;
+        this.A.copyCoordinatesFrom(ar.A);
+        this.B.copyCoordinatesFrom(ar.B);
+        this.Acopy.copyCoordinatesFrom(ar.Acopy);
+        this.Bcopy.copyCoordinatesFrom(ar.Bcopy);
+        this.gapA = ar.gapA;
+        this.gapB = ar.gapB;
+        this.baseDist1 = ar.baseDist1;
+        this.baseDist2 = ar.baseDist2;
+        this.setFreeMathObject(ar.isFreeMathObject());
 
 
-            JMPath copyPath = ar.head1.getPath().copy();
-            this.head1.getPath().clear();
-            this.head1.getPath().addJMPointsFrom(copyPath);
+        JMPath copyPath = ar.head1.getPath().copy();
+        this.head1.getPath().clear();
+        this.head1.getPath().addJMPointsFrom(copyPath);
 
-            copyPath = ar.head2.getPath().copy();
-            this.head2.getPath().clear();
-            this.head2.getPath().addJMPointsFrom(copyPath);
+        copyPath = ar.head2.getPath().copy();
+        this.head2.getPath().clear();
+        this.head2.getPath().addJMPointsFrom(copyPath);
 
 
-            copyPath = ar.shapeToDraw.getPath().copy();
-            this.shapeToDraw.getPath().clear();
-            this.shapeToDraw.getPath().addJMPointsFrom(copyPath);
+        copyPath = ar.shapeToDraw.getPath().copy();
+        this.shapeToDraw.getPath().clear();
+        this.shapeToDraw.getPath().addJMPointsFrom(copyPath);
 
 //            this.getMp().copyFrom(ar.getMp());
-            this.shapeToDraw.getMp().copyFrom(ar.shapeToDraw.getMp());
+        this.shapeToDraw.getMp().copyFrom(ar.shapeToDraw.getMp());
 
-            if (this.arrowLabel != null) {
-                this.arrowLabel.copyStateFrom(ar.arrowLabel);
-            }
+        if (this.arrowLabel != null) {
+            this.arrowLabel.copyStateFrom(ar.arrowLabel);
         }
     }
 
@@ -679,7 +676,7 @@ public class Arrow extends Constructible<Arrow> {
 
             @Override
             public void update(JMathAnimScene scene) {
-                t.getArg(0).setScalar(A.to(B).norm());
+                t.getArg(0).setValue(A.to(B).norm());
 
             }
         });
@@ -713,8 +710,8 @@ public class Arrow extends Constructible<Arrow> {
             @Override
             public void update(JMathAnimScene scene) {
                 Vec vAB = A.to(B);
-                t.getArg(0).setScalar(vAB.x);
-                t.getArg(1).setScalar(vAB.y);
+                t.getArg(0).setValue(vAB.x);
+                t.getArg(1).setValue(vAB.y);
             }
         });
 
@@ -770,15 +767,15 @@ public class Arrow extends Constructible<Arrow> {
         return shapeToDraw;
     }
 
-    private enum labelTypeEnum {NORMAL, DISTANCE, COORDS}
-
-
     @Override
     public Arrow setFreeMathObject(boolean isMathObjectFree) {
         super.setFreeMathObject(isMathObjectFree);
-        if (getLabel()!=null) {
+        if (getLabel() != null) {
             getLabel().setFreeMathObject(isMathObjectFree);
         }
         return this;
     }
+
+
+    private enum labelTypeEnum {NORMAL, DISTANCE, COORDS}
 }

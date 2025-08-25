@@ -5,7 +5,6 @@ import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.DelimiterType;
 import com.jmathanim.Enum.RotationType;
 import com.jmathanim.Styling.MODrawPropertiesArray;
-import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
@@ -180,7 +179,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
     }
 
     @Override
-    public Stylable getMp() {
+    public MODrawPropertiesArray getMp() {
         return mpDelimiter;
     }
 
@@ -262,18 +261,18 @@ public abstract class Delimiter extends Constructible<Delimiter> {
 
 
     @Override
-    public void copyStateFrom(MathObject obj) {
-        super.copyStateFrom(obj);
+    public void copyStateFrom(Stateable obj) {
         if (!(obj instanceof Delimiter)) {
             return;
         }
+        super.copyStateFrom(obj);
         Delimiter del = (Delimiter) obj;
         delimiterShapeToDraw.copyStateFrom(del.delimiterShapeToDraw);
         delimiterLabelRigidBox.copyStateFrom(del.delimiterLabelRigidBox);
 
         this.A.copyCoordinatesFrom(del.A);
         this.B.copyCoordinatesFrom(del.B);
-        getMp().copyFrom(obj.getMp());
+        getMp().copyFrom(del.getMp());
         this.labelMarkGap = del.labelMarkGap;
         this.mpDelimiter.copyFrom(del.mpDelimiter);
 

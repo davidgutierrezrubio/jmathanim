@@ -62,7 +62,7 @@ public class PathUtils {
     public static void generateControlPointsBySimpleSlopes(JMPath path, double tension) // For now, only one method
     {
         for (JMPathPoint jMPathPoint : path) {
-            jMPathPoint.isCurved = true;
+            jMPathPoint.setCurved(true);
         }
 
         int numPoints = path.jmPathPoints.size();
@@ -76,37 +76,37 @@ public class PathUtils {
             JMPathPoint p3 = path.jmPathPoints.get(k);// Compute cp2 for this
             JMPathPoint p4 = path.jmPathPoints.get(L);
 
-            double x1 = p1.v.x;
-            double y1 = p1.v.y;
-            double z1 = p1.v.z;
-            double x2 = p2.v.x;
-            double y2 = p2.v.y;
-            double z2 = p2.v.z;
-            double x3 = p3.v.x;
-            double y3 = p3.v.y;
-            double z3 = p3.v.z;
-            double x4 = p4.v.x;
-            double y4 = p4.v.y;
-            double z4 = p4.v.z;
+            double x1 = p1.getV().x;
+            double y1 = p1.getV().y;
+            double z1 = p1.getV().z;
+            double x2 = p2.getV().x;
+            double y2 = p2.getV().y;
+            double z2 = p2.getV().z;
+            double x3 = p3.getV().x;
+            double y3 = p3.getV().y;
+            double z3 = p3.getV().z;
+            double x4 = p4.getV().x;
+            double y4 = p4.getV().y;
+            double z4 = p4.getV().z;
 //            if (p3.isCurved) {
 //                double mod31 = Math.sqrt((x3 - x1) * (x3 - x1) + (y3 - y1) * (y3 - y1));//||p1-p3||
 //                double mod42 = Math.sqrt((x4 - x2) * (x4 - x2) + (y4 - y2) * (y4 - y2));//||p2-p4||
 //                double mod23 = Math.sqrt((x3 - x2) * (x3 - x2) + (y3 - y2) * (y3 - y2));//||p2-p3||
-            double mod31 = p1.v.minus(p3.v).norm();
-            double mod42 = p4.v.minus(p2.v).norm();
-            double mod23 = p2.v.minus(p3.v).norm();
+            double mod31 = p1.getV().minus(p3.getV()).norm();
+            double mod42 = p4.getV().minus(p2.getV()).norm();
+            double mod23 = p2.getV().minus(p3.getV()).norm();
             double cx1 = x2 + mod23 / mod31 * (1 - tension) * (x3 - x1);
             double cy1 = y2 + mod23 / mod31 * (1 - tension) * (y3 - y1);
             double cz1 = z2 + mod23 / mod31 * (1 - tension) * (z3 - z1);
             double cx2 = x3 - mod23 / mod42 * (1 - tension) * (x4 - x2);
             double cy2 = y3 - mod23 / mod42 * (1 - tension) * (y4 - y2);
             double cz2 = z3 - mod23 / mod42 * (1 - tension) * (z4 - z2);
-            p2.vExit.x = cx1;
-            p2.vExit.y = cy1;
-            p2.vExit.z = cz1;
-            p3.vEnter.x = cx2;
-            p3.vEnter.y = cy2;
-            p3.vEnter.z = cz2;
+            p2.getvExit().x = cx1;
+            p2.getvExit().y = cy1;
+            p2.getvExit().z = cz1;
+            p3.getvEnter().x = cx2;
+            p3.getvEnter().y = cy2;
+            p3.getvEnter().z = cz2;
 //            } else {
 //                // If this path is straight, control points becomes vertices. Although this is
 //                // not used
@@ -121,16 +121,16 @@ public class PathUtils {
         Vec v;
         // Compute cp1 and cp2 from first and last points
         jp0 = path.jmPathPoints.get(0);
-        if (!jp0.isThisSegmentVisible) {
+        if (!jp0.isThisSegmentVisible()) {
             jp1 = path.jmPathPoints.get(1);
-            v = jp1.vEnter.minus(jp0.v).multInSite(PathUtils.DEFAULT_TENSION);
-            jp0.vExit.copyCoordinatesFrom(jp0.v.add(v));
+            v = jp1.getvEnter().minus(jp0.getV()).multInSite(PathUtils.DEFAULT_TENSION);
+            jp0.getvExit().copyCoordinatesFrom(jp0.getV().add(v));
 
             jp1 = path.jmPathPoints.get(numPoints - 2);
             jp0 = path.jmPathPoints.get(numPoints - 1);
 //            if (jp0.isCurved) {
-            v = jp1.vExit.minus(jp0.v).multInSite(PathUtils.DEFAULT_TENSION);
-            jp0.vEnter.copyCoordinatesFrom(jp0.v.add(v));
+            v = jp1.getvExit().minus(jp0.getV()).multInSite(PathUtils.DEFAULT_TENSION);
+            jp0.getvEnter().copyCoordinatesFrom(jp0.getV().add(v));
 //            }
         }
     }
@@ -143,9 +143,9 @@ public class PathUtils {
 
     private static void addJMPathPointToScene(JMPathPoint p, JMathAnimScene scene) {
         scene.add(p.getPoint().drawColor("green"));//Point of the curve
-        Point pointCPEnter = Point.at(p.vEnter).dotStyle(DotStyle.CROSS).drawColor("blue");
+        Point pointCPEnter = Point.at(p.getvEnter()).dotStyle(DotStyle.CROSS).drawColor("blue");
         scene.add(pointCPEnter);//Control point that "enters" into the point
-        Point pointCPExit = Point.at(p.vExit).dotStyle(DotStyle.PLUS).drawColor("red");
+        Point pointCPExit = Point.at(p.getvExit()).dotStyle(DotStyle.PLUS).drawColor("red");
         scene.add(pointCPExit);//Control point that "exits" from the point
         scene.add(Shape.segment(p.getPoint(), pointCPExit)
                 .dashStyle(DashStyle.DASHED)
@@ -158,7 +158,7 @@ public class PathUtils {
     public static double pathLength(JMPath path) {
         double resul = 0;
         for (int i = 1; i < path.size(); i++) {
-            resul += path.get(i - 1).v.minus(path.get(i).v).norm();
+            resul += path.get(i - 1).getV().minus(path.get(i).getV()).norm();
         }
         return resul;
     }
@@ -170,9 +170,9 @@ public class PathUtils {
      */
     public static void rectifyPath(JMPath path) {
         for (JMPathPoint jmp : path) {
-            jmp.isCurved = false;
-            jmp.vEnter.copyCoordinatesFrom(jmp.v);
-            jmp.vExit.copyCoordinatesFrom(jmp.v);
+            jmp.setCurved(false);
+            jmp.getvEnter().copyCoordinatesFrom(jmp.getV());
+            jmp.getvExit().copyCoordinatesFrom(jmp.getV());
         }
     }
 
@@ -182,12 +182,12 @@ public class PathUtils {
         Shape sh2 = sh.copy();
         sh2.getPath().openPath();
         //First point
-        Point p = Point.origin();
+        Vec p = Vec.to(0,0);
         resul.getPath().addPoint(p);
-        resul.get(0).isThisSegmentVisible = false;
+        resul.get(0).setThisSegmentVisible(false);
         for (int i = 1; i < sh2.getPath().size(); i++) {
             double dist = sh2.getPoint(i - 1).to(sh2.getPoint(i)).norm();
-            p = p.copy().shift(dist, 0);
+            p = p.copy().add(dist, 0);
             resul.getPath().addPoint(p);
         }
         int shSize = sh2.size() - 1;
@@ -198,10 +198,10 @@ public class PathUtils {
         while (pivotalSegment >= shSize) {
             pivotalSegment -= shSize;
         }
-        Point A = resul.getPoint(pivotalSegment);
-        Point B = resul.getPoint(pivotalSegment + 1);
-        Point C = sh2.getPoint(pivotalSegment);
-        Point D = sh2.getPoint(pivotalSegment + 1);
+        Vec A = resul.get(pivotalSegment).getV();
+        Vec B = resul.get(pivotalSegment+1).getV();
+        Vec C = sh2.get(pivotalSegment).getV();
+        Vec D = sh2.get(pivotalSegment + 1).getV();
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(A, B, C, D, 1);
         resul.applyAffineTransform(tr);
 
@@ -236,7 +236,7 @@ public class PathUtils {
         for (int n = 0; n < path.size(); n++) {
             JMPathPoint p1 = jmPathPoints.get(n);
             JMPathPoint p2 = jmPathPoints.get(n + 1);
-            p2.isCurved = !((p1.v.minus(p1.vExit).norm() < .0001) && (p2.v.minus(p2.vEnter).norm() < .0001));
+            p2.setCurved(!((p1.getV().minus(p1.getvExit()).norm() < .0001) && (p2.getV().minus(p2.getvEnter()).norm() < .0001)));
         }
     }
 
@@ -264,7 +264,7 @@ public class PathUtils {
             JMPathPoint p = jmPathPoints.get(n);
             JMPathPoint q = jmPathPoints.get(n + 1);
 
-            if (q.isThisSegmentVisible) {
+            if (q.isThisSegmentVisible()) {
                 computeStraightenedPoints(connectedSegments, p, q, cam);
 //                connectedSegments.addAll(seg);
             } else {
@@ -280,16 +280,16 @@ public class PathUtils {
 
     private void computeStraightenedPoints(ArrayList<Vec> connectedSegments, JMPathPoint p, JMPathPoint q, Camera cam) {
         if (connectedSegments.isEmpty()) {
-            connectedSegments.add(p.v);
+            connectedSegments.add(p.getV());
         }
-        if (q.isCurved) {
-            int num = appropiateSubdivisionNumber(p.v, q.v, cam);
+        if (q.isCurved()) {
+            int num = appropiateSubdivisionNumber(p.getV(), q.getV(), cam);
             for (int n = 1; n < num; n++) {
-                connectedSegments.add(p.interpolate(q, n * 1d / num).v);
+                connectedSegments.add(p.interpolate(q, n * 1d / num).getV());
             }
 
         }
-        connectedSegments.add(q.v);
+        connectedSegments.add(q.getV());
     }
 
     private int appropiateSubdivisionNumber(Vec v1, Vec v2, Camera cam) {

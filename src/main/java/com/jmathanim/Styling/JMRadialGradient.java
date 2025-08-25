@@ -32,7 +32,8 @@ import java.util.TreeMap;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class JMRadialGradient extends PaintStyle {
+
+public class JMRadialGradient extends PaintStyle<JMRadialGradient>{
 
     protected Vec center;
     protected double focusAngle;
@@ -119,7 +120,7 @@ public class JMRadialGradient extends PaintStyle {
     }
 
     @Override
-    public PaintStyle interpolate(PaintStyle p, double t) {
+    public JMRadialGradient interpolate(PaintStyle<?> p, double t) {
         if (p instanceof JMColor) {
             JMColor pc = (JMColor) p;
             JMRadialGradient resul = this.copy();
@@ -258,9 +259,9 @@ public class JMRadialGradient extends PaintStyle {
     public int hashCode() {
         int hash = 7;
         hash = 83 * hash + Objects.hashCode(this.center);
-        hash = 83 * hash + (int) (Double.doubleToLongBits(this.focusAngle) ^ (Double.doubleToLongBits(this.focusAngle) >>> 32));
-        hash = 83 * hash + (int) (Double.doubleToLongBits(this.focusDistance) ^ (Double.doubleToLongBits(this.focusDistance) >>> 32));
-        hash = 83 * hash + (int) (Double.doubleToLongBits(this.radius) ^ (Double.doubleToLongBits(this.radius) >>> 32));
+        hash = 83 * hash + Long.hashCode(Double.doubleToLongBits(this.focusAngle));
+        hash = 83 * hash + Long.hashCode(Double.doubleToLongBits(this.focusDistance));
+        hash = 83 * hash + Long.hashCode(Double.doubleToLongBits(this.radius));
         hash = 83 * hash + Objects.hashCode(this.stops);
         hash = 83 * hash + (this.relativeToShape ? 1 : 0);
         hash = 83 * hash + Objects.hashCode(this.cycleMethod);

@@ -203,12 +203,12 @@ public class ParametricCurve extends Shape implements hasScalarParameter {
     }
 
     @Override
-    public double getScalar() {
+    public double getValue() {
         return this.w;
     }
 
     @Override
-    public void setScalar(double scalar) {
+    public void setValue(double scalar) {
         this.w = scalar;
         generateFunctionPoints();
     }
@@ -230,7 +230,7 @@ public class ParametricCurve extends Shape implements hasScalarParameter {
             this.getPath().addJMPoint(jmp);
 
         }
-        this.get(0).isThisSegmentVisible = this.getPoint(0).isEquivalentTo(this.getPoint(-1), 0.0000001);
+        this.get(0).setThisSegmentVisible(this.getPoint(0).isEquivalentTo(this.getPoint(-1), 0.0000001));
 
         generateControlPoints();
     }
@@ -247,13 +247,13 @@ public class ParametricCurve extends Shape implements hasScalarParameter {
                 Vec tv = getTangentVector(t, 1);
                 final double delta = .3 * (tPoints.get(n + 1) - t);
                 Vec v = tv.mult(delta);
-                jmp.vExit.copyCoordinatesFrom(jmp.v.add(v));
+                jmp.getvExit().copyCoordinatesFrom(jmp.getV().add(v));
             }
             if (n > 0) {
                 Vec tv = getTangentVector(t, -1);
                 final double delta = .3 * (tPoints.get(n - 1) - t);
                 Vec v = tv.mult(delta);
-                jmp.vEnter.copyCoordinatesFrom(jmp.v.add(v));
+                jmp.getvEnter().copyCoordinatesFrom(jmp.getV().add(v));
             }
 
         }
@@ -342,21 +342,6 @@ public class ParametricCurve extends Shape implements hasScalarParameter {
         return resul;
     }
 
-    @Override
-    public void saveState() {
-        super.saveState();
-        this.functionXBackup = this.functionX;
-        this.functionYBackup = this.functionY;
-        this.functionZBackup = this.functionZ;
-    }
-
-    @Override
-    public void restoreState() {
-        super.restoreState();
-        this.functionX = this.functionXBackup;
-        this.functionY = this.functionYBackup;
-        this.functionZ = this.functionZBackup;
-    }
 
     /**
      * Returns a Shape object with the form of the curve

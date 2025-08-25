@@ -19,8 +19,8 @@ package com.jmathanim.mathobjects.Text;
 
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Scalar;
+import com.jmathanim.mathobjects.Stateable;
 import com.jmathanim.mathobjects.hasArguments;
 
 import java.util.Map;
@@ -76,8 +76,6 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject<LaTeXMathObject> im
     }
 
 
-
-
     @Override
     public LaTeXMathObject copy() {
         LaTeXMathObject resul = new LaTeXMathObject(this.anchor);
@@ -86,16 +84,15 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject<LaTeXMathObject> im
     }
 
     @Override
-    public void copyStateFrom(MathObject obj) {
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof LaTeXMathObject)) return;
+        LaTeXMathObject copy = (LaTeXMathObject) obj;
         super.copyStateFrom(obj);
-        if (obj instanceof LaTeXMathObject) {
-            LaTeXMathObject copy = (LaTeXMathObject) obj;
-            this.origText = copy.origText;
-            this.anchor = copy.anchor;
-            //copy all variable values
-            for (Map.Entry<Integer, Scalar> pair : copy.variables.entrySet()) {
-                variables.get(pair.getKey()).setScalar(pair.getValue().value);
-            }
+        this.origText = copy.origText;
+        this.anchor = copy.anchor;
+        //copy all variable values
+        for (Map.Entry<Integer, Scalar> pair : copy.variables.entrySet()) {
+            variables.get(pair.getKey()).setValue(pair.getValue().getValue());
         }
 
     }
@@ -110,7 +107,7 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject<LaTeXMathObject> im
         //Actualizo numeros
         String newText = origText;
         for (Integer index : variables.keySet()) {
-            newText = newText.replace("{#" + index + "}", df.format(variables.get(index).value));
+            newText = newText.replace("{#" + index + "}", df.format(variables.get(index).getValue()));
         }
         if (!newText.equals(origText)) {//No need to update if text has not changed
             changeInnerLaTeX(newText);

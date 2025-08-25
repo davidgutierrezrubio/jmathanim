@@ -485,7 +485,7 @@ class GeogebraCommandParser {
         String[] outputs = getArrayOfOutputs(el);
 
         MathObject[] objs = getArrayOfParameters(el);
-        final double dSides = ((Scalar) objs[2]).value;
+        final double dSides = ((Scalar) objs[2]).getValue();
         int sides = (int) dSides;
         ArrayList<CTSegment> segments = new ArrayList<>();
         ArrayList<CTPoint> vertices = new ArrayList<>();
@@ -601,7 +601,7 @@ class GeogebraCommandParser {
         if (nonNullArgs > 2) {//Third parameter, intersection number
             //if a2="n" it computes only the n-th intersection point
             //For line(A,B)-circle, "1" stands for closest point to A, "2" for farthest
-            numPoint = (int) ((Scalar) objs[2]).value;
+            numPoint = (int) ((Scalar) objs[2]).getValue();
             registerGeogebraElement(label, CTIntersectionPoint.make(ob1, ob2, numPoint - 1));
         }
         if (nonNullArgs == 2) {

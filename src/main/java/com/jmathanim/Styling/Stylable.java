@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
+ * Copyright (C) 2022 David
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,154 +18,135 @@
 package com.jmathanim.Styling;
 
 import com.jmathanim.Enum.DashStyle;
-import com.jmathanim.Enum.DotStyle;
-import com.jmathanim.Utils.Vec;
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeLineJoin;
 
 /**
- * The {@code Stylable} interface provides a contract for objects that
- * possess styling properties such as colors, transparency, thickness,
- * and other graphical attributes. It also supports state management,
- * interpolation, and hierarchical styling through child sub-properties.
+ *
+ * @author David
  */
-public interface Stylable {
+public interface Stylable<T extends Stylable<T>> {
+     DrawStyleProperties getMp();
 
-    /**
-     * Returns a copy of this object. All objects are raw-copied.
-     *
-     * @return A raw copy of the object.
-     */
-    MODrawProperties copy();
+     /**
+      * Sets the draw color of the object
+      *
+      * @param dc A JMcolor object with the draw color
+      * @return The MathObject subclass
+      */
+     default T drawColor(PaintStyle<?> dc) {
+          getMp().setDrawColor(dc);
+          return (T) this;
+     }
 
-    /**
-     * Absorb all non-null properties of a given properties class
-     *
-     * @param prop
-     */
-    void copyFrom(Stylable prop);
+     /**
+      * Sets the draw color of the object. Overloaded method.
+      *
+      * @param str A string representing the draw color, as in the JMcolor.parse method
+      * @return The MathObject subclass
+      */
+     default T drawColor(String str) {
+          drawColor(JMColor.parse(str));
+          return (T) this;
+     }
+     /**
+      * Sets the alpha component of the draw color
+      *
+      * @param alpha Alpha value, between 0 (transparent) and 1 (opaque)
+      * @return The MathObject subclass
+      */
+     default T drawAlpha(double alpha) {
+          getMp().setDrawAlpha(alpha);
+          return (T) this;
+     }
 
-    /**
-     * Copy the interpolated values from two MathObjecDrawingProperties. Only
-     * drawColor, fillColor and thickness are actually interpolated
-     *
-     * @param a base drawing parameters
-     * @param b Destination drawing parameters
-     * @param alpha Interpolation parameter
-     */
-    void interpolateFrom(Stylable a, Stylable b, double alpha);
+     /**
+      * Sets the alpha component of the fill color
+      *
+      * @param alpha Alpha value, between 0 (transparent) and 1 (opaque)
+      * @return This MathObject subclass
+      */
+     default T fillAlpha(double alpha) {
+          getMp().setFillAlpha(alpha);
+          return (T) this;
+     }
 
-    /**
-     * Interpolate values with another MathObjecDrawingProperties. Only
-     * drawColor, fillColor and thickness are actually interpolated
-     *
-     * @param dst Destination drawing parameters
-     * @param alpha Interpolation parameter
-     */
-    void interpolateFrom(Stylable dst, double alpha);
+     /**
+      * Sets the thickness to draw the contour of the object
+      *
+      * @param newThickness Thickness
+      * @return This MathObject subclass
+      */
+     default T thickness(double newThickness) {
+          getMp().setThickness(newThickness);
+          return (T) this;
+     }
 
-    /**
-     * Load attributes from given style. If such style doesn't exist, no changes
-     * are done, and a warning log is showed.
-     *
-     * @param name The name of the style
-     */
-    void loadFromStyle(String name);
+     /**
+      * Sets the dashStyle, from one of the types defined in the enum DashStyle
+      *
+      * @param dashStyle A value from enum DashStyle
+      * @return This MathObject subclass
+      */
+     default T dashStyle(DashStyle dashStyle) {
+          getMp().setDashStyle(dashStyle);
+          return (T) this;
+     }
 
-    /**
-     * Copy attributes from the given {@link MODrawProperties} object Null
-     * values are copied also
-     *
-     * @param mp The object to copy attributes from.
-     */
-    void rawCopyFrom(MODrawProperties mp);
+     /**
+      * Sets the flag visible. If false, the object won't be draw using the renderer, although it still will be in the
+      * scene.
+      *
+      * @param visible True if objet is visible, false otherwise
+      * @return This MathObject subclass
+      */
+     default T visible(boolean visible) {
+          getMp().setVisible(visible);
+          return (T) this;
+     }
 
-    void restoreState();
+     /**
+      * Changes both draw and fill color
+      *
+      * @param dc A PaintStyle object. Can be a JMColor, a gradient or image pattern
+      * @return This object
+      */
+     default T color(PaintStyle dc) {
+          drawColor(dc);
+          fillColor(dc);
+          return (T) this;
+     }
 
-    void saveState();
+     /**
+      * Overloaded method. Sets both draw and fill color
+      *
+      * @param str A string representing the draw color, as in the JMcolor.parse method
+      * @return This object
+      */
+     default T color(String str) {
+          drawColor(str);
+          fillColor(str);
+          return (T) this;
+     }
 
-    void setDrawAlpha(double alpha);
 
-    void setDrawColor(PaintStyle drawColor);
+     /**
+      * Sets the fill color of the object
+      *
+      * @param fc A JMcolor object with the fill color
+      * @return The MathObject subclass
+      */
+     default T fillColor(PaintStyle fc) {
+          getMp().setFillColor(fc);
+          return (T) this;
+     }
 
-    void setFillAlpha(double alpha);
-
-    void setFillColor(PaintStyle fillColor);
-
-    void setLayer(int layer);
-
-    Integer getLayer();
-
-    PaintStyle getDrawColor();
-
-    PaintStyle getFillColor();
-
-    StrokeLineCap getLineCap();
-    
-    StrokeLineJoin getLineJoin();
-
-    void setLinecap(StrokeLineCap linecap);
-    
-    void setLineJoin(StrokeLineJoin linejoin);
-
-    Double getThickness();
-
-    void setThickness(Double thickness);
-
-    void setDotStyle(DotStyle dotStyle);
-
-    DotStyle getDotStyle();
-
-    void setDashStyle(DashStyle dashStyle);
-
-    DashStyle getDashStyle();
-
-    Boolean isAbsoluteThickness();
-
-    void setAbsoluteThickness(Boolean absThickness);
-
-    void setVisible(Boolean absThickness);
-
-    Boolean isVisible();
-
-    Boolean isFaceToCamera();
-
-    Vec getFaceToCameraPivot();
-
-    void setFaceToCamera(Boolean faceToCamera);
-
-    void setFaceToCameraPivot(Vec pivot);
-
-    void setScaleArrowHead1(Double scale);
-
-    void setScaleArrowHead2(Double scale);
-
-    Double getScaleArrowHead1();
-
-    Double getScaleArrowHead2();
-
-    Stylable getSubMP(int n);
-
-    /**
-     * Multiplies the current thickness by given factor
-     *
-     * @param multT Factor
-     */
-    void multThickness(double multT);
-
-    /**
-     * Multiplies the current draw alpha by given factor
-     *
-     * @param mult Factor
-     */
-    void multDrawAlpha(double mult);
-
-    /**
-     * Multiplies the current fill alpha by given factor
-     *
-     * @param mult Factor
-     */
-    void multFillAlpha(double mult);
-
-    MODrawProperties getFirstMP();
+     /**
+      * Sets the fill color of the object. Overloaded method.
+      *
+      * @param str A string representing the fill color, as in the JMcolor.parse method
+      * @return The MathObject subclass
+      */
+     default T fillColor(String str) {
+          fillColor(JMColor.parse(str));
+          return (T) this;
+     }
 }

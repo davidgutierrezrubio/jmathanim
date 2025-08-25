@@ -32,7 +32,7 @@ import java.util.TreeMap;
  * between 0 and 1. It provides methods for managing colors, including creation,
  * conversion, interpolation, inversion, and parsing from string formats.
  */
-public class JMColor extends PaintStyle {
+public class JMColor extends PaintStyle<JMColor> {
 
     public static JMColor NONE = new JMColor(0, 0, 0, 0);
     public static JMColor WHITE = new JMColor(1, 1, 1, 1);
@@ -42,22 +42,24 @@ public class JMColor extends PaintStyle {
     public static JMColor BLUE = new JMColor(0, 0, 1, 1);
     public static JMColor GRAY = new JMColor(.5, .5, .5, 1);
 
-    public double r, g, b;
+    private double red;
+    private double green;
+    private double blue;
     private double alpha;
 
     /**
      * Creates a new JMColor with the specified red, green, blue, and alpha
      * components, from 0 to 1.
      *
-     * @param r Red component 0-1
-     * @param g Green component 0-1
-     * @param b Blue component 0-1
+     * @param red Red component 0-1
+     * @param green Green component 0-1
+     * @param blue Blue component 0-1
      * @param alpha Alpha component 0-1
      */
-    public JMColor(double r, double g, double b, double alpha) {
-        this.r = r;
-        this.g = g;
-        this.b = b;
+    public JMColor(double red, double green, double blue, double alpha) {
+        this.setRed(red);
+        this.setGreen(green);
+        this.setBlue(blue);
         this.alpha = alpha;
     }
 
@@ -81,7 +83,7 @@ public class JMColor extends PaintStyle {
      * @return Color
      */
     public java.awt.Color getAwtColor() {
-        return new java.awt.Color((float) r, (float) g, (float) b, (float) alpha);
+        return new java.awt.Color((float) getRed(), (float) getGreen(), (float) getBlue(), (float) alpha);
     }
 
     /**
@@ -90,14 +92,14 @@ public class JMColor extends PaintStyle {
      * @return Color
      */
     public javafx.scene.paint.Color getFXColor() {
-        r = r < 0 ? 0 : r;
-        g = g < 0 ? 0 : g;
-        b = b < 0 ? 0 : b;
+        setRed(getRed() < 0 ? 0 : getRed());
+        setGreen(getGreen() < 0 ? 0 : getGreen());
+        setBlue(getBlue() < 0 ? 0 : getBlue());
 
-        r = r > 1 ? 1 : r;
-        g = g > 1 ? 1 : g;
-        b = b > 1 ? 1 : b;
-        return new javafx.scene.paint.Color((float) r, (float) g, (float) b, (float) alpha);
+        setRed(getRed() > 1 ? 1 : getRed());
+        setGreen(getGreen() > 1 ? 1 : getGreen());
+        setBlue(getBlue() > 1 ? 1 : getBlue());
+        return new javafx.scene.paint.Color((float) getRed(), (float) getGreen(), (float) getBlue(), (float) alpha);
     }
 
     /**
@@ -108,7 +110,7 @@ public class JMColor extends PaintStyle {
      * @return Color
      */
     public javafx.scene.paint.Color getFXColor(double alpha) {
-        return new javafx.scene.paint.Color((float) r, (float) g, (float) b, (float) alpha);
+        return new javafx.scene.paint.Color((float) getRed(), (float) getGreen(), (float) getBlue(), (float) alpha);
     }
 
     /**
@@ -117,7 +119,7 @@ public class JMColor extends PaintStyle {
      * @return The inverse color
      */
     public JMColor getInverse() {
-        return new JMColor(1 - r, 1 - g, 1 - b, alpha);
+        return new JMColor(1 - getRed(), 1 - getGreen(), 1 - getBlue(), alpha);
     }
 
     /**
@@ -127,7 +129,7 @@ public class JMColor extends PaintStyle {
      */
     @Override
     public JMColor copy() {
-        return new JMColor(r, g, b, alpha);
+        return new JMColor(getRed(), getGreen(), getBlue(), alpha);
     }
 
     /**
@@ -143,9 +145,9 @@ public class JMColor extends PaintStyle {
         }
         if (ps instanceof JMColor) {
             JMColor jmColor = (JMColor) ps;
-            r = jmColor.r;
-            g = jmColor.g;
-            b = jmColor.b;
+            setRed(jmColor.getRed());
+            setGreen(jmColor.getGreen());
+            setBlue(jmColor.getBlue());
             alpha = jmColor.alpha;
         }
         //If PaintStyle is a linear gradient, take the first color
@@ -182,24 +184,24 @@ public class JMColor extends PaintStyle {
      * @return A JMcolor with components interpolated
      */
     @Override
-    public PaintStyle interpolate(PaintStyle p, double t) {
+    public JMColor interpolate(PaintStyle<?> p, double t) {
         t = (t < 0 ? 0 : t);
         t = (t > 1 ? 1 : t);
         if (p instanceof JMColor) {
             JMColor B = (JMColor) p;
 
-            double rr = (1 - t) * r + t * B.r;
-            double gg = (1 - t) * g + t * B.g;
-            double bb = (1 - t) * b + t * B.b;
+            double rr = (1 - t) * getRed() + t * B.getRed();
+            double gg = (1 - t) * getGreen() + t * B.getGreen();
+            double bb = (1 - t) * getBlue() + t * B.getBlue();
             double aa = (1 - t) * alpha + t * B.alpha;
             return new JMColor(rr, gg, bb, aa);
         }
-        if (p instanceof JMLinearGradient) {
-            return p.interpolate(this, 1 - t);
-        }
-        if (p instanceof JMRadialGradient) {
-            return p.interpolate(this, 1 - t);
-        }
+//        if (p instanceof JMLinearGradient) {
+//            return p.interpolate(this, 1 - t);
+//        }
+//        if (p instanceof JMRadialGradient) {
+//            return p.interpolate(this, 1 - t);
+//        }
         return this.copy();//I don't know what to do here, so I return the same.
     }
 
@@ -303,16 +305,16 @@ public class JMColor extends PaintStyle {
 
     public static JMColor fromFXColor(javafx.scene.paint.Color col) {
         JMColor resul = new JMColor(1, 1, 1, 1);
-        resul.r = col.getRed();
-        resul.g = col.getGreen();
-        resul.b = col.getBlue();
+        resul.setRed(col.getRed());
+        resul.setGreen(col.getGreen());
+        resul.setBlue(col.getBlue());
         resul.alpha = col.getOpacity();
         return resul;
     }
 
     @Override
     public String toString() {
-        return "JMcolor(" + r + ", " + g + "," + b + ", " + alpha + ')';
+        return "JMcolor(" + getRed() + ", " + getGreen() + "," + getBlue() + ", " + alpha + ')';
     }
 
     @Override
@@ -334,10 +336,10 @@ public class JMColor extends PaintStyle {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 53 * hash + (int) (Double.doubleToLongBits(this.r) ^ (Double.doubleToLongBits(this.r) >>> 32));
-        hash = 53 * hash + (int) (Double.doubleToLongBits(this.g) ^ (Double.doubleToLongBits(this.g) >>> 32));
-        hash = 53 * hash + (int) (Double.doubleToLongBits(this.b) ^ (Double.doubleToLongBits(this.b) >>> 32));
-        hash = 53 * hash + (int) (Double.doubleToLongBits(this.alpha) ^ (Double.doubleToLongBits(this.alpha) >>> 32));
+        hash = 53 * hash + Long.hashCode(Double.doubleToLongBits(this.getRed()));
+        hash = 53 * hash + Long.hashCode(Double.doubleToLongBits(this.getGreen()));
+        hash = 53 * hash + Long.hashCode(Double.doubleToLongBits(this.getBlue()));
+        hash = 53 * hash + Long.hashCode(Double.doubleToLongBits(this.alpha));
         return hash;
     }
 
@@ -353,16 +355,39 @@ public class JMColor extends PaintStyle {
             return false;
         }
         final JMColor other = (JMColor) obj;
-        if (Double.doubleToLongBits(this.r) != Double.doubleToLongBits(other.r)) {
+        if (Double.doubleToLongBits(this.getRed()) != Double.doubleToLongBits(other.getRed())) {
             return false;
         }
-        if (Double.doubleToLongBits(this.g) != Double.doubleToLongBits(other.g)) {
+        if (Double.doubleToLongBits(this.getGreen()) != Double.doubleToLongBits(other.getGreen())) {
             return false;
         }
-        if (Double.doubleToLongBits(this.b) != Double.doubleToLongBits(other.b)) {
+        if (Double.doubleToLongBits(this.getBlue()) != Double.doubleToLongBits(other.getBlue())) {
             return false;
         }
         return Double.doubleToLongBits(this.alpha) == Double.doubleToLongBits(other.alpha);
     }
 
+    public double getRed() {
+        return red;
+    }
+
+    public void setRed(double red) {
+        this.red = red;
+    }
+
+    public double getGreen() {
+        return green;
+    }
+
+    public void setGreen(double green) {
+        this.green = green;
+    }
+
+    public double getBlue() {
+        return blue;
+    }
+
+    public void setBlue(double blue) {
+        this.blue = blue;
+    }
 }

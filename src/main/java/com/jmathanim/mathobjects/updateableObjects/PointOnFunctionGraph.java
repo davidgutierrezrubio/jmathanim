@@ -22,47 +22,46 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.AbstractPoint;
 import com.jmathanim.mathobjects.FunctionGraph;
-import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Stateable;
 
 /**
- * Updateable point which updates the y-coordinate to be f(x). Shifting this
- * point horizontally moves the point along the funcion graph
+ * Updateable point which updates the y-coordinate to be f(x). Shifting this point horizontally moves the point along
+ * the funcion graph
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class PointOnFunctionGraph extends AbstractPoint<PointOnFunctionGraph> {
 
-    FunctionGraph fg;
+    private static double DELTA_DERIVATE = 0.000001d;
     private final Vec slopePointRight;
     private final Vec slopePointLeft;
     private final Vec pointOnFunction;
-    private static double DELTA_DERIVATE=0.000001d;
+    FunctionGraph fg;
+
+    /**
+     * Creates an updateable point which automatically updates the y-component to be so that lies in the function graph
+     *
+     * @param x  The initial x component of the point
+     * @param fg Function graph
+     */
+    public PointOnFunctionGraph(double x, FunctionGraph fg) {
+        super(Vec.to(0, 0));
+        this.fg = fg;
+        slopePointRight = Vec.to(x, 0);
+        slopePointLeft = Vec.to(x, 0);
+        pointOnFunction = getVec();
+        computePoints();
+    }
 
     /**
      * Static builder. Creates and returns a new point at given coordinates.
      *
-     * @param x x coordinate
+     * @param x  x coordinate
      * @param fg Function graph
      * @return The created point
      */
     public static PointOnFunctionGraph make(double x, FunctionGraph fg) {
         return new PointOnFunctionGraph(x, fg);
-    }
-
-    /**
-     * Creates an updateable point which automatically updates the y-component
-     * to be so that lies in the function graph
-     *
-     * @param x The initial x component of the point
-     * @param fg Function graph
-     */
-    public PointOnFunctionGraph(double x, FunctionGraph fg) {
-        super(Vec.to(0,0));
-        this.fg = fg;
-        slopePointRight = Vec.to(x, 0);
-        slopePointLeft = Vec.to(x, 0);
-        pointOnFunction=getVec();
-        computePoints();
     }
 
     @Override
@@ -110,7 +109,8 @@ public class PointOnFunctionGraph extends AbstractPoint<PointOnFunctionGraph> {
     }
 
     @Override
-    public void copyStateFrom(MathObject<?> obj) {
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof PointOnFunctionGraph)) return;
         super.copyStateFrom(obj);
         PointOnFunctionGraph pg = (PointOnFunctionGraph) obj;
         pointOnFunction.y = pg.pointOnFunction.y;

@@ -61,14 +61,14 @@ public abstract class SingleCommandAnimation extends Animation {
 
             @Override
             public void command() {
-                oldValue = scalar.getScalar();
-                scalar.setScalar(value);
+                oldValue = scalar.getValue();
+                scalar.setValue(value);
             }
 
             @Override
             public void undo() {
                 if (oldValue != null) {
-                    scalar.setScalar(oldValue);
+                    scalar.setValue(oldValue);
                 }
             }
         };
@@ -81,14 +81,14 @@ public abstract class SingleCommandAnimation extends Animation {
 
             @Override
             public void command() {
-                oldValue = scalar.getScalar();
-                scalar.setScalar(oldValue+delta);
+                oldValue = scalar.getValue();
+                scalar.setValue(oldValue+delta);
             }
 
             @Override
             public void undo() {
                 if (oldValue != null) {
-                    scalar.setScalar(oldValue);
+                    scalar.setValue(oldValue);
                 }
             }
         };

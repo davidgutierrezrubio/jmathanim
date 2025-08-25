@@ -67,7 +67,7 @@ public class CTPolygon extends Constructible<CTPolygon> {
         if (!isFreeMathObject()) {
             for (int i = 0; i < points.length; i++) {
                 CTPoint point = points[i];
-                shapeToDraw.get(i).v.copyCoordinatesFrom(point.coordinatesOfPoint);
+                shapeToDraw.get(i).getV().copyCoordinatesFrom(point.getVec());
             }
         }
     }

@@ -20,8 +20,8 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
+import com.jmathanim.mathobjects.Stateable;
 import com.jmathanim.mathobjects.shouldUdpateWithCamera;
 
 /**
@@ -175,11 +175,12 @@ public class CartesianGrid extends MathObjectGroup implements shouldUdpateWithCa
     }
 
     @Override
-    public void copyStateFrom(MathObject obj) {
-         super.copyStateFrom(obj);
+    public void copyStateFrom(Stateable obj) {
+
         if (obj instanceof CartesianGrid) {
-            CartesianGrid grid = (CartesianGrid) obj;
+            CartesianGrid grid = (CartesianGrid) obj;//TODO: implement
         }
+        super.copyStateFrom(obj);
     }
 
     public void rebuildShape() {

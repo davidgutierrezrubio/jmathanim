@@ -2,16 +2,16 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Styling.Stylable;
+import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 public class RigidBox extends MathObject<RigidBox> {
+    protected final AffineJTransform baseModelMatrix;
     private MathObject<?> mathObjectReference;
     private MathObject<?> mathObjectCopyToDraw;
     private boolean isCopyToDrawTransformedByMatrix;
-    protected final AffineJTransform baseModelMatrix;
 
     public RigidBox(MathObject<?> mathObject) {
         this.mathObjectReference = mathObject;
@@ -22,7 +22,7 @@ public class RigidBox extends MathObject<RigidBox> {
     }
 
     @Override
-    public Stylable getMp() {
+    public DrawStyleProperties getMp() {
         return mathObjectReference.getMp();
     }
 
@@ -53,14 +53,11 @@ public class RigidBox extends MathObject<RigidBox> {
     }
 
     @Override
-    public void copyStateFrom(MathObject<?> obj) {
-
-//        super.copyStateFrom(obj);
-        if (obj instanceof RigidBox) {
-            RigidBox rigidBox = (RigidBox) obj;
-            modelMatrix.copyFrom(rigidBox.modelMatrix);
-            baseModelMatrix.copyFrom(rigidBox.baseModelMatrix);
-        }
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof RigidBox)) return;
+        RigidBox rigidBox = (RigidBox) obj;
+        modelMatrix.copyFrom(rigidBox.modelMatrix);
+        baseModelMatrix.copyFrom(rigidBox.baseModelMatrix);
     }
 
     @Override
@@ -87,7 +84,6 @@ public class RigidBox extends MathObject<RigidBox> {
         baseModelMatrix.copyFrom(compose);
         return this;
     }
-
 
 
     public void resetMatrix() {

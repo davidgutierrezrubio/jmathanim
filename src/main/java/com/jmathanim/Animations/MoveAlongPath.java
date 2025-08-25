@@ -107,13 +107,13 @@ public class MoveAlongPath extends Animation {
         super.doAnim(t);
         double lt = getLT(t);
         restoreStates(mobjTransformed);
-        Vec destinyPoint = (parametrized ? path.getParametrizedPointAt(lt) : path.getJMPointAt(lt).v);
+        Vec destinyPoint = (parametrized ? path.getParametrizedPointAt(lt) : path.getJMPointAt(lt).getV());
         Vec anchPoint = Anchor.getAnchorPoint(mobjTransformed, anchorType);
         mobjTransformed.shift(destinyPoint.minus(anchPoint));
 
         if (shouldRotate) {
             JMPathPoint pp = path.getJMPointAt(lt);
-            Vec tangent = pp.vExit.minus(pp.v);
+            Vec tangent = pp.getvExit().minus(pp.getV());
             mobjTransformed.rotate(destinyPoint, tangent.getAngle());
         }
     }

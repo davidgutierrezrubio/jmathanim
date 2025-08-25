@@ -33,7 +33,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI2;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Vec implements Stateable, HasDirection, Coordinates<Vec>, AffineTransformable<Vec>, Interpolable<Vec> {
+public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<Vec>, Interpolable<Vec> {
 
     public double x, y, z;
     public double xState, yState, zState;
@@ -144,21 +144,6 @@ public class Vec implements Stateable, HasDirection, Coordinates<Vec>, AffineTra
         return new Vec(x, y, z);
     }
 
-
-    @Override
-    public void saveState() {
-        xState = x;
-        yState = y;
-        zState = z;
-    }
-
-    @Override
-    public void restoreState() {
-        x = xState;
-        y = yState;
-        z = zState;
-
-    }
 
     /**
      * Return the angle of the vector, between 0 and 2*PI (2d version)
@@ -274,14 +259,7 @@ public class Vec implements Stateable, HasDirection, Coordinates<Vec>, AffineTra
         }
     }
 
-    /**
-     * Checkif any of its components is Nan
-     *
-     * @return True if x, y or z is NaN. False otherwise
-     */
-    public boolean isNaN() {
-        return (Double.isNaN(x)) || (Double.isNaN(y)) || Double.isNaN(z);
-    }
+
 
     @Override
     public Vec getDirection() {
@@ -354,4 +332,10 @@ public class Vec implements Stateable, HasDirection, Coordinates<Vec>, AffineTra
     }
 
 
+    @Override
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof Vec)) return;
+        Vec v = (Vec) obj;
+        copyCoordinatesFrom(v);
+    }
 }

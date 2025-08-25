@@ -74,9 +74,10 @@ public class JavaFXRenderer extends Renderer {
     private static final double XMAX_DEFAULT = 2;
     private static final double MIN_THICKNESS = .2d;
     private static final double THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH=5000;
-    public final FXPathUtils fXPathUtils;
+    public final JavaFXRendererUtils fXRendererUtilsJava;
     protected final ArrayList<Node> fxnodes;
     protected final ArrayList<Node> debugFXnodes;
+    protected final ArrayList<Node> javaFXNodes;
     private final HashMap<JMPath, Path> storedPaths;
     private final HashMap<String, Image> images;
     public Camera camera;
@@ -99,9 +100,10 @@ public class JavaFXRenderer extends Renderer {
         super(parentScene);
         fxnodes = new ArrayList<>();
         debugFXnodes = new ArrayList<>();
+        javaFXNodes = new ArrayList<>();
         images = new HashMap<>();
         storedPaths = new HashMap<>();
-        fXPathUtils = new FXPathUtils();
+        fXRendererUtilsJava = new JavaFXRendererUtils();
         camera = new Camera(scene, config.mediaW, config.mediaH);
         fixedCamera = new Camera(scene, config.mediaW, config.mediaH);
         correctionThickness = config.mediaW * 1d / THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH;//Correction factor for thickness
@@ -255,6 +257,7 @@ public class JavaFXRenderer extends Renderer {
                 showDebugFrame(frameCount, 1d * frameCount / config.fps);
             }
             groupDebug.getChildren().addAll(debugFXnodes);
+            groupDebug.getChildren().addAll(javaFXNodes);
             if (config.drawShadow) {
                 group.setEffect(dropShadow);
             }
@@ -345,7 +348,7 @@ public class JavaFXRenderer extends Renderer {
 //                path.getTransforms().add(new Scale(1, -1));
 //                path.getTransforms().add(FXPathUtils.screenToCamAffineTransfrom(mobj.getCamera()));
 //            } else {
-            path = FXPathUtils.createFXPathFromJMPath(objectPath, shiftVector,cam);
+            path = JavaFXRendererUtils.createFXPathFromJMPath(objectPath, shiftVector,cam);
 //            }
             applyDrawingStyles(path, mobj);
             applyRendererEffects(path, mobj.getRendererEffects());
@@ -524,12 +527,12 @@ public class JavaFXRenderer extends Renderer {
 
         imageView.setOpacity(obj.getMp().getDrawColor().getAlpha());
 
-        Affine camToScreen = FXPathUtils.camToScreenAffineTransform(cam);
+        Affine camToScreen = JavaFXRendererUtils.camToScreenAffineTransform(cam);
         imageView.getTransforms().add(camToScreen);
 
 //        //Swap y coordinate
         imageView.getTransforms().add(new Scale(1, -1));
-        imageView.getTransforms().add(FXPathUtils.affineJToAffine(obj.getCurrentViewTransform()));
+        imageView.getTransforms().add(JavaFXRendererUtils.affineJToAffine(obj.getCurrentViewTransform()));
         imageView.getTransforms().add(new Scale(1, -1));
         fxnodes.add(imageView);
     }
@@ -554,16 +557,16 @@ public class JavaFXRenderer extends Renderer {
         debugFXnodes.add(t);
     }
 
-    public void addJavaFxText(String text) {
-        Text t = new Text(text);
-        t.setFont(Font.font("Verdana", FontWeight.BOLD, 48));
-        t.setFill(Color.ALICEBLUE);
-        t.setStroke(Color.BLACK);
-        t.setX(0);
-        t.setY(0);
-        t.setTextOrigin(VPos.TOP);
-        debugFXnodes.add(t);
+    public void addJavaFXNode(Node node) {
+        javaFXNodes.add(node);
+
     }
+
+
+    public void removeJavaFXNode(Node node) {
+        javaFXNodes.remove(node);
+    }
+
 
     protected void showDebugFrame(int numFrame, double time) {
         Text t = new Text("Frame: " + numFrame + " (" + String.format("%.2f", time) + "s)");
