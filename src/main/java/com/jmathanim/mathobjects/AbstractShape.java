@@ -33,6 +33,28 @@ public abstract class
         this.jmpath = jmpath;
         this.mpShape=JMathAnimConfig.getConfig().getDefaultMP();
     }
+
+    /**
+     * Returns a new Point object lying in the Shape, at the given position
+     *
+     * @param t Position parameter, from 0 (beginning) to 1 (end)
+     * @return a new Point object at the specified position of the shape.
+     */
+    public Vec getVecAt(double t) {
+        return getPath().getJMPointAt(t).getV();
+    }
+
+    /**
+     * Returns a new Point object lying in the Shape, at the given parametrized position, considering the arclentgh of
+     * the curve.
+     *
+     * @param t Position parameter, from 0 (beginning) to 1 (end)
+     * @return a new Point object at the specified position of the shape.
+     */
+    public Vec getParametrizedVecAt(double t) {
+        return getPath().getParametrizedPointAt(t);
+    }
+
     @Override
     public T copy() {
         return null;

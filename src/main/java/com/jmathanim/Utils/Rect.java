@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Rect implements  Boxable {// TODO: Adjust this to 3D coordinates
+public class Rect implements Boxable {// TODO: Adjust this to 3D coordinates
 
     public double xmin, ymin, xmax, ymax, zmin, zmax;
     private Rect rBackup;
@@ -348,7 +348,10 @@ public class Rect implements  Boxable {// TODO: Adjust this to 3D coordinates
 
     @Override
     public String toString() {
-        return "Rect{" + "xmin=" + xmin + ", ymin=" + ymin + ", zmin=" + zmin + ", xmax=" + xmax + ", ymax=" + ymax + ", zmax=" + zmax + '}';
+        if ((zmin == 0) && (zmax == 0))
+            return String.format("Rect[%1.2f, %1.2f][%1.2f, %1.2f]", xmin, ymin, xmax, ymax);
+        else
+            return String.format("Rect[%1.2f, %1.2f, %1.2f][%1.2f, %1.2f, %1.2f]", xmin, ymin, zmin, xmax, ymax, zmax);
     }
 
     /**

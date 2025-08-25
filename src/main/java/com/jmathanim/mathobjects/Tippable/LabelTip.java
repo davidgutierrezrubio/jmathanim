@@ -37,7 +37,7 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
 
     private final AbstractLaTeXMathObject<?> laTeXMathObject;
 
-    protected LabelTip(Shape shape, AbstractLaTeXMathObject<?> tipLabel, AnchorType anchor, double locationParameter) {
+    protected LabelTip(AbstractShape<?> shape, AbstractLaTeXMathObject<?> tipLabel, AnchorType anchor, double locationParameter) {
         super(shape, tipLabel, locationParameter);
         setAnchor(anchor);
         laTeXMathObject = tipLabel;
@@ -46,7 +46,7 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
     }
 
 
-    protected LabelTip(Shape shape, AbstractLaTeXMathObject<?> tipObject, Coordinates<?> anchorPoint, double locationParameter) {
+    protected LabelTip(AbstractShape<?> shape, AbstractLaTeXMathObject<?> tipObject, Coordinates<?> anchorPoint, double locationParameter) {
         super(shape, tipObject, locationParameter);
         setAnchorPoint(anchorPoint);
         laTeXMathObject = tipObject;
@@ -66,7 +66,7 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
      *                          the exterior or counterclockwise shapes like Shape.circle() for example.
      * @return The LabelTip object created
      */
-    public static LabelTip makeLabelTip(Shape shape, double locationParameter, String latexText, boolean upSide) {
+    public static LabelTip makeLabelTip(AbstractShape<?> shape, double locationParameter, String latexText, boolean upSide) {
         LabelTip resul = makeLabelTip(shape, locationParameter, LaTeXMathObject.make(latexText), upSide);
         if (!upSide) {
             resul.setSlopeDirection(SlopeDirectionType.NEGATIVE)
@@ -86,7 +86,7 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
      * @param latexText         Text to display. A LaTeX String.
      * @return The LabelTip object created
      */
-    public static LabelTip makeLabelTip(Shape shape, double locationParameter, String latexText) {
+    public static LabelTip makeLabelTip(AbstractShape<?> shape, double locationParameter, String latexText) {
         return makeLabelTip(shape, locationParameter, latexText, true);
     }
 
@@ -136,7 +136,7 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
      *                          will be located in the opposite side.
      * @return The tippable object
      */
-    public static LabelTip makeLabelTip(Shape shape, double locationParameter, AbstractLaTeXMathObject<?> tipLabel, boolean upSide) {
+    public static LabelTip makeLabelTip(AbstractShape<?> shape, double locationParameter, AbstractLaTeXMathObject<?> tipLabel, boolean upSide) {
 
         LabelTip resul = new LabelTip(shape, tipLabel, AnchorType.LOWER, locationParameter);
         resul.setDistanceToShape(tipLabel.getHeight() * .25);

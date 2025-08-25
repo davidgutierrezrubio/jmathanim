@@ -40,7 +40,7 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
     public final Vec pivotPointRefShape;
     public final RigidBox tipObjectRigidBox;
     private final MODrawPropertiesArray mpArray;
-    public Shape shape;
+    public AbstractShape<?> shape;
     public double locationParameterOnShape;
     public Double distanceToShape;
     //    public double rotationAngleAroundPivotPoint;
@@ -55,7 +55,7 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
     private Vec anchorPoint;
 
 
-    protected AbstractTippableObject(Shape shape, MathObject tipObject, double location) {
+    protected AbstractTippableObject(AbstractShape<?> shape, MathObject tipObject, double location) {
         correctionAngle = PI / 2;
         this.shape = shape;
         this.tipObjectRigidBox = new RigidBox(tipObject);

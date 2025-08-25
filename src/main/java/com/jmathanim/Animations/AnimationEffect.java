@@ -172,24 +172,24 @@ public class AnimationEffect {
                 jumpPath = SVGMathObject.make("#foliumJumpPath.svg").get(0).scale(1, -1);
                 break;
             case PARABOLICAL:
-                jumpPath = new Shape(FunctionGraph.make(t -> 4 * t * (1 - t), 0, 1, 2).getFunctionShape().getPath());
+                jumpPath = new Shape(FunctionGraph.make(t -> 4 * t * (1 - t), 0, 1, 2).getPath());
                 break;
             case SINUSOIDAL:
-                jumpPath = new Shape(FunctionGraph.make(t -> Math.sin(PI * t), 0, 1, 2).getFunctionShape().getPath());
+                jumpPath = new Shape(FunctionGraph.make(t -> Math.sin(PI * t), 0, 1, 2).getPath());
                 break;
             case SINUSOIDAL2:
 //                jumpPath = new Shape(FunctionGraph.make(t -> 10.39230484541326*t*(1-t)*(1-2*t), 0, 1).getPath());
-                jumpPath = new Shape(FunctionGraph.make(t -> Math.sin(2 * PI * t), 0, 1, 3).getFunctionShape().getPath());
+                jumpPath = new Shape(FunctionGraph.make(t -> Math.sin(2 * PI * t), 0, 1, 3).getPath());
                 break;
             case CRANE:
                 jumpPath = Shape.polyLine(Point.origin(), Vec.to(0, .7), Vec.to(0, 1), Vec.to(.3, 1), Vec.to(.7, 1),
                         Vec.to(1, 1), Vec.to(1, .7), Vec.to(1, 0));
                 break;
             case BOUNCE1:
-                jumpPath = new Shape(FunctionGraph.make(UsefulLambdas.backAndForthBounce1(), 0, 1).getFunctionShape().getPath());
+                jumpPath = new Shape(FunctionGraph.make(UsefulLambdas.backAndForthBounce1(), 0, 1).getPath());
                 break;
             case BOUNCE2:
-                jumpPath = new Shape(FunctionGraph.make(UsefulLambdas.backAndForthBounce2(), 0, 1).getFunctionShape().getPath());
+                jumpPath = new Shape(FunctionGraph.make(UsefulLambdas.backAndForthBounce2(), 0, 1).getPath());
                 break;
         }
 

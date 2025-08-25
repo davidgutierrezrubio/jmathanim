@@ -241,7 +241,11 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
 
     @Override
     public String toString() {
-        return String.format("Vec(%.2f, %.2f, %.2f)", x, y, z);
+        if (z == 0)
+            return String.format("Vec(%.2f, %.2f)", x, y);
+        else
+            return String.format("Vec(%.2f, %.2f, %.2f)", x, y, z);
+
     }
 
     /**
@@ -258,7 +262,6 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
             return this;
         }
     }
-
 
 
     @Override
@@ -282,8 +285,6 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
         z = pNew.getEntry(0, 3);
         return this;
     }
-
-
 
 
     public boolean isEquivalentTo(Vec v2, double epsilon) {

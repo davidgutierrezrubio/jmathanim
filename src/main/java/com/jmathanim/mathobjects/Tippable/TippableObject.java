@@ -40,7 +40,7 @@ public class TippableObject extends AbstractTippableObject<TippableObject> {
 //        AbstractTippableObject resul = new TippableObject(shape, tipObject, anchorPoint, location);
 //        return resul;
 //    }
-    protected TippableObject(Shape shape, MathObject<?> tipObject, double location) {
+    protected TippableObject(AbstractShape<?> shape, MathObject<?> tipObject, double location) {
         super(shape, tipObject, location);
     }
 
@@ -52,7 +52,7 @@ public class TippableObject extends AbstractTippableObject<TippableObject> {
      * @param numberOfMarks Number of marks to draw
      * @return The tippable object
      */
-    public static TippableObject equalLengthTip(Shape shape, double location, int numberOfMarks) {
+    public static TippableObject equalLengthTip(AbstractShape<?> shape, double location, int numberOfMarks) {
         MultiShapeObject parallelSign = MultiShapeObject.make();
         for (int i = 0; i < numberOfMarks; i++) {
             parallelSign.add(Shape.segment(Vec.to(0, i), Vec.to(2, i)));
@@ -64,7 +64,7 @@ public class TippableObject extends AbstractTippableObject<TippableObject> {
         return resul;
     }
 
-    public static TippableObject arrowHead(Shape shape, double location,  ArrowType type) {
+    public static TippableObject arrowHead(AbstractShape<?> shape, double location,  ArrowType type) {
         Shape arrowHead = Arrow.buildArrowHead(type);
         Renderer r = JMathAnimConfig.getConfig().getScene().getRenderer();
 //        arrowHead.setAbsoluteSize(Type.CENTER);
@@ -82,11 +82,11 @@ public class TippableObject extends AbstractTippableObject<TippableObject> {
         return resul;
     }
 
-    public static TippableObject make(Shape shape, double location, SlopeDirectionType dir, MathObject<?> tipObject) {
+    public static TippableObject make(AbstractShape<?> shape, double location, SlopeDirectionType dir, MathObject<?> tipObject) {
         return make(shape, location, dir, tipObject, AnchorType.CENTER);
     }
 
-    public static TippableObject make(Shape shape, double location, SlopeDirectionType dir, MathObject<?> tipObject, AnchorType anchor) {
+    public static TippableObject make(AbstractShape<?> shape, double location, SlopeDirectionType dir, MathObject<?> tipObject, AnchorType anchor) {
 //        Vec anchorPoint = Anchor.getAnchorPoint(tipObject, anchor);
         TippableObject resul = new TippableObject(shape, tipObject,  location);
         resul.setDistanceToShape(0d);
@@ -95,7 +95,7 @@ public class TippableObject extends AbstractTippableObject<TippableObject> {
         return resul;
     }
 
-    public static TippableObject make(Shape shape, MathObject<?> tipObject, Point anchorPoint, double location) {
+    public static TippableObject make(AbstractShape<?> shape, MathObject<?> tipObject, Point anchorPoint, double location) {
         TippableObject resul = new TippableObject(shape, tipObject, location);
         resul.setAnchorPoint(anchorPoint);
         resul.setDistanceToShape(0d);
