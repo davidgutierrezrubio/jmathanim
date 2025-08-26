@@ -8,42 +8,51 @@ import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class
-AbstractMultiShapeObject<T extends AbstractMultiShapeObject<T>>
-        extends MathObject<T>
-        implements Iterable<Shape> {
+//public abstract class
+//AbstractMultiShapeObject<T extends AbstractShape<T>>
+//        extends MathObject<T>
+//        implements Iterable<AbstractShape<T>> {
+
+public abstract class AbstractMultiShapeObject<
+        S extends AbstractMultiShapeObject<S, T>,
+        T extends AbstractShape<T>>
+        extends MathObject<S> implements Iterable<T> {
+
 
     protected final MODrawPropertiesArray mpMultiShape;
-    protected final ArrayList<Shape> shapes;
+    protected final ArrayList<T> shapes;
+    private final Class<T> clazz;
     public boolean isAddedToScene;
 
-    protected AbstractMultiShapeObject() {
-        this(new ArrayList<>());
+
+
+    protected AbstractMultiShapeObject(Class<T> clazz) {
+        this(clazz, new ArrayList<>());
     }
 
-    protected AbstractMultiShapeObject(List<Shape> shapes) {
+    protected AbstractMultiShapeObject(Class<T> clazz, List<T> shapes) {
         super();
+        this.clazz = clazz;
         isAddedToScene = false;
         this.shapes = new ArrayList<>();
         this.shapes.addAll(shapes);
         mpMultiShape = new MODrawPropertiesArray();
-        for (MathObject sh : shapes) {
+        for (MathObject<?> sh : shapes) {
             mpMultiShape.add(sh);
         }
     }
 
-    public boolean add(Shape e) {
+    public boolean add(T e) {
         mpMultiShape.add(e);
         return shapes.add(e);
     }
 
-    public Shape setShapeAt(int index, Shape element) {
+    abstract protected T createEmptyShapeAt(int index);
+
+    public T setShapeAt(int index, T element) {
         mpMultiShape.add(element);
         return shapes.set(index, element);
 
@@ -54,58 +63,62 @@ AbstractMultiShapeObject<T extends AbstractMultiShapeObject<T>>
         mpMultiShape.getObjects().clear();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public T fillColor(PaintStyle fc) {
-        for (Shape jmp : shapes) {
+    public S fillColor(PaintStyle fc) {
+        for (T jmp : shapes) {
             jmp.fillColor(fc);
         }
         super.fillColor(fc);
-        return (T) this;
+        return (S) this;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public T drawColor(PaintStyle dc) {
-        for (Shape jmp : shapes) {
+    public S drawColor(PaintStyle<?> dc) {
+        for (AbstractShape<?> jmp : shapes) {
             jmp.drawColor(dc);
         }
         super.drawColor(dc);
-        return (T) this;
+        return (S) this;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void copyStateFrom(Stateable obj) {
-        if (!(obj instanceof AbstractMultiShapeObject)) return;
-        AbstractMultiShapeObject<?> msh = (AbstractMultiShapeObject<?>) obj;
+        if (!(obj instanceof AbstractMultiShapeObject<?, ?>)) return;
+        AbstractMultiShapeObject<?, ?> msh = (AbstractMultiShapeObject<S,T>) obj;
         super.copyStateFrom(msh);
         int n = 0;
         //Assuming this shape and obj has the same number of items
         if (size() == msh.size()) {
-            for (Shape s : shapes) {
+            for (T s : shapes) {
                 s.copyStateFrom(msh.get(n));
                 n++;
             }
         } else {//If there is discrepancy, turn it off and on!
             shapes.clear();
-            for (Shape sh : msh) {
-                add(sh.copy());
+            for (AbstractShape<?> sh : msh.shapes) {
+                T sh2=(T) sh;
+                add(sh2.copy());
             }
         }
     }
-
+    @SuppressWarnings("unchecked")
     @Override
-    public T setAbsoluteSize(AnchorType anchorType) {
+    public S setAbsoluteSize(AnchorType anchorType) {
         super.setAbsoluteSize(anchorType);
         Vec p = Anchor.getAnchorPoint(this, anchorType);
-        for (Shape sh : shapes) {
+        for (T sh : shapes) {
             sh.setAbsoluteSize(p);
         }
-        return (T) this;
+        return (S) this;
     }
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
         if (isVisible()) {
-            for (Shape jmp : shapes) {
+            for (T jmp : shapes) {
                 //Store camera and temporary use MultiShapeObject camera
                 if ((jmp.isVisible()) && (!scene.isAlreadydrawn(jmp))) {
                     if (absoluteSize) {
@@ -126,30 +139,25 @@ AbstractMultiShapeObject<T extends AbstractMultiShapeObject<T>>
     @Override
     protected Rect computeBoundingBox() {
         Rect resul = null;
-        for (Shape jmp : shapes) {
+        for (T jmp : shapes) {
             if (!jmp.isEmpty()) {
                 resul = Rect.union(resul, jmp.getBoundingBox());
             }
         }
-
-        if (resul == null) {
-            return new EmptyRect();
-        } else {
-            return resul;
-        }
+        return Objects.requireNonNullElseGet(resul, EmptyRect::new);
     }
 
-    public Shape get(int n) {
+    public T get(int n) {
         return shapes.get(n);
     }
 
 
-    public ArrayList<Shape> getShapes() {
+    public ArrayList<T> getShapes() {
         return shapes;
     }
 
     @Override
-    public Iterator<Shape> iterator() {
+    public Iterator<T> iterator() {
         return shapes.iterator();
     }
 
@@ -166,9 +174,10 @@ AbstractMultiShapeObject<T extends AbstractMultiShapeObject<T>>
      * @param indexOtherObject Index of the shape of the other multishape to align with
      * @return This object
      */
-    public T alignCenter(int index, AbstractMultiShapeObject<?> otherObject, int indexOtherObject) {
+    @SuppressWarnings("unchecked")
+    public S alignCenter(int index, T otherObject, int indexOtherObject) {
         shift(this.get(index).getCenter().to(otherObject.get(indexOtherObject).getCenter()));
-        return (T) this;
+        return (S) this;
     }
 
     /**
@@ -178,8 +187,9 @@ AbstractMultiShapeObject<T extends AbstractMultiShapeObject<T>>
      */
     @Override
     public boolean isEmpty() {
+        if (size() == 0) return true;
         boolean resul = false;
-        for (Shape sh : shapes) {
+        for (AbstractShape<?> sh : shapes) {
             resul = resul | sh.isEmpty();
         }
         return resul;
@@ -193,20 +203,20 @@ AbstractMultiShapeObject<T extends AbstractMultiShapeObject<T>>
      * @param indices indices to slice (varargs)
      * @return A new multishape instance with the extracted shapes.
      */
-    public T slice(boolean delete, int... indices) {
+    public S slice(boolean delete, int... indices) {
         List<Integer> list = Arrays.stream(indices).boxed().collect(Collectors.toList());//Arrays.asList(indices);
-        T resul = (T) this.copy();
+        S resul = (S) this.copy();
         //Populate the new MultiShape with n empty shapes
         for (int n = 0; n < resul.size(); n++) {
-            resul.setShapeAt(n, new Shape());
+            resul.createEmptyShapeAt(n);
         }
         for (int n = 0; n < this.shapes.size(); n++) {
             if (list.contains(n)) {
-                final Shape copy = this.get(n).copy();
+                final T copy = this.get(n).copy();
                 resul.setShapeAt(n, copy);
                 if (delete) {// if this index is marked for extraction...
                     this.mpMultiShape.remove(this.get(n));
-                    this.setShapeAt(n, new Shape());
+                    resul.createEmptyShapeAt(n);
                 }
 
             }
@@ -222,7 +232,7 @@ AbstractMultiShapeObject<T extends AbstractMultiShapeObject<T>>
      * @return A new multishape instance with the extracted shapes. The original multishape object is altered as the
      * extracted shapes becomes null shapes
      */
-    public T slice(int... indices) {
+    public S slice(int... indices) {
         return slice(true, indices);
     }
 
@@ -230,14 +240,15 @@ AbstractMultiShapeObject<T extends AbstractMultiShapeObject<T>>
      * Gets an array of Shapes with the given indices. This method is used mostly to combine with animations that
      * accepts a varargs of MathObject
      *
-     * @param indices
-     * @return
+     * @param indices Indices to extract
+     * @return An array of shapes
      */
-    public Shape[] getSubArray(int... indices) {
-        Shape[] resul = new Shape[indices.length];
+    public T[] getSubArray(int... indices) {
+        @SuppressWarnings("unchecked")
+        T[] resul = (T[]) java.lang.reflect.Array.newInstance(clazz, indices.length);
         int k = 0;
         for (int n : indices) {
-            resul[k] = shapes.get(n);
+            resul[k] = (T) shapes.get(n);
             k++;
         }
 
@@ -250,23 +261,24 @@ AbstractMultiShapeObject<T extends AbstractMultiShapeObject<T>>
      * @param indices Indices of the shapes
      * @return A new MultiShapeObject with the specified shapes
      */
-    public MultiShapeObject getSubMultiShape(int... indices) {
-        MultiShapeObject resul = MultiShapeObject.make();
+    @SuppressWarnings("unchecked")
+    public S getSubMultiShape(int... indices) {
+        S resul = makeNewEmptyInstance();
         resul.getMp().copyFrom(this.getMp());
         for (int n : indices) {
             resul.add(shapes.get(n));
         }
-        return resul;
+        return (S)resul;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public T applyAffineTransform(AffineJTransform tr) {
-        for (Shape sh : shapes) {
+    public S applyAffineTransform(AffineJTransform tr) {
+        for (T sh : shapes) {
             sh.applyAffineTransform(tr);
         }
-
         tr.applyTransformsToDrawingProperties(this);
-        return (T) this;
+        return (S) this;
     }
 
     @Override
@@ -279,7 +291,7 @@ AbstractMultiShapeObject<T extends AbstractMultiShapeObject<T>>
     }
 
     public boolean containsPoint(Vec v) {
-        for (Shape sh : shapes) {
+        for (T sh : shapes) {
             if (sh.containsPoint(v)) {
                 return true;
             }
@@ -292,8 +304,10 @@ AbstractMultiShapeObject<T extends AbstractMultiShapeObject<T>>
      *
      * @return The array
      */
-    public Shape[] toArray() {
-        return shapes.toArray(new Shape[0]);
+    public T[] toArray() {
+        @SuppressWarnings("unchecked")
+        T[] arr = (T[]) java.lang.reflect.Array.newInstance(clazz, shapes.size());
+        return shapes.toArray(arr);
     }
 
     /**
@@ -306,8 +320,8 @@ AbstractMultiShapeObject<T extends AbstractMultiShapeObject<T>>
      */
     public Shape merge(boolean connect, boolean close) {
         Shape resul = new Shape();
-        for (Shape sht : this) {
-            Shape sh = sht.copy();
+        for (T sht : this) {
+            T sh = sht.copy();
             sh.getPath().openPath();
             resul.merge(sh, connect, false);
         }
@@ -323,12 +337,17 @@ AbstractMultiShapeObject<T extends AbstractMultiShapeObject<T>>
         return "MultiShape " + objectLabel + "(" + size() + " elements)";
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public T setCamera(Camera camera) {
+    public S setCamera(Camera camera) {
         super.setCamera(camera);
-        for (Shape sh : this) {
+        for (T sh : this) {
             sh.setCamera(camera);
         }
-        return (T) this;
+        return (S) this;
     }
+
+    protected abstract S makeNewEmptyInstance();
+
+
 }

@@ -107,7 +107,7 @@ public class ShowCreation extends Animation {
         super.doInitialization();
         //First, extract MathObjects if passed object is a container (RigidBox, Constructible, etc.)
         while (!extractMathObjectToCreate(this.mobj));
-        try {
+//        try {
             if (strategyType == ShowCreationStrategy.NONE) {
                 determineCreationStrategy(this.mobj);
             }
@@ -117,10 +117,10 @@ public class ShowCreation extends Animation {
             creationStrategy.setShouldInterpolateStyles(this.isShouldInterpolateStyles());
             creationStrategy.setUseObjectState(this.isUseObjectState());
             creationStrategy.initialize(scene);
-        } catch (NullPointerException | ClassCastException e) {
-            JMathAnimScene.logger.error("Couldn't create ShowCreation strategy for "
-                    + this.mobj.getClass().getCanonicalName() + ". No animation will be done. (" + e + ")");
-        }
+//        } catch (NullPointerException | ClassCastException e) {
+//            JMathAnimScene.logger.error("Couldn't create ShowCreation strategy for "
+//                    + this.mobj.getClass().getCanonicalName() + ". No animation will be done. (" + e + ")");
+//        }
         return true;
     }
 
@@ -206,7 +206,7 @@ public class ShowCreation extends Animation {
             this.strategyType = ShowCreationStrategy.RAY_CREATION;
             return;
         }
-        if (mobj instanceof Shape) {
+        if (mobj instanceof AbstractShape<?>) {
 //            this.strategyType = ShowCreationStrategy.SIMPLE_SHAPE_CREATION;
             this.strategyType = ShowCreationStrategy.FIRST_DRAW_AND_THEN_FILL;
         }

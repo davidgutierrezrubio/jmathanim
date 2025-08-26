@@ -25,18 +25,17 @@ import java.util.List;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class MultiShapeObject extends AbstractMultiShapeObject<MultiShapeObject> {
+public class MultiShapeObject extends AbstractMultiShapeObject<MultiShapeObject,Shape> {
 
     public MultiShapeObject() {
-        super();
+        super(Shape.class);
     }
 
 
     protected MultiShapeObject(List<Shape> shapes) {
-        super(shapes);
+        super(Shape.class,shapes);
 
     }
-
     public static MultiShapeObject make(Shape... shapes) {
         return new MultiShapeObject(Arrays.asList(shapes));
     }
@@ -47,5 +46,17 @@ public class MultiShapeObject extends AbstractMultiShapeObject<MultiShapeObject>
         MultiShapeObject copy = MultiShapeObject.make();
         copy.copyStateFrom(this);
         return copy;
+    }
+
+    @Override
+    protected Shape createEmptyShapeAt(int index) {
+        Shape sh = new Shape();
+        shapes.add(index, sh);
+        return sh;
+    }
+
+    @Override
+    protected MultiShapeObject makeNewEmptyInstance() {
+        return MultiShapeObject.make();
     }
 }

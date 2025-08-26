@@ -116,11 +116,11 @@ public class SVGUtils {
                 .replaceAll("^ +| +$|( )+", "$1");
     }
 
-    public void importSVG(URL urlSvg, AbstractMultiShapeObject<?> msh) throws Exception {
+    public void importSVG(URL urlSvg, MultiShapeObject msh) throws Exception {
         importSVG(urlSvg, msh, MODrawProperties.makeNullValues());
     }
 
-    public void importSVG(URL urlSvg, AbstractMultiShapeObject<?> msh, MODrawProperties base) throws Exception {
+    public void importSVG(URL urlSvg, MultiShapeObject msh, MODrawProperties base) throws Exception {
         JMathAnimScene.logger.debug("Importing SVG file {}", urlSvg.toString());
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         // Disabling these features will speed up the load of the svg
