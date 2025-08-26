@@ -295,8 +295,10 @@ public class SVGUtils {
                     case "defs":
                         //Nothing to do here yet...
                         break;
+                    case "metadata":
+                        break;
                     default:
-                        JMathAnimScene.logger.error("Unknow command: <" + el.getTagName() + ">");
+                        JMathAnimScene.logger.warn("Unknow command: <" + el.getTagName() + ">");
                 }
             }
         }

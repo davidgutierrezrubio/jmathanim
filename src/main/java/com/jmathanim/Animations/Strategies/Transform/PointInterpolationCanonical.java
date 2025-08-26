@@ -20,10 +20,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.DivideOnSensiblePointsStrategy;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.CanonicalJMPath;
-import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -35,10 +32,10 @@ import java.util.Comparator;
  */
 public class PointInterpolationCanonical extends TransformStrategy {
 
-    private final Shape destinyCopy;
-    private final Shape shOrigin;
-    private final Shape shDestiny;
-    private final Shape shIntermediate;
+    private final AbstractShape<?> destinyCopy;
+    private final AbstractShape<?> shOrigin;
+    private final AbstractShape<?> shDestiny;
+    private final AbstractShape<?> shIntermediate;
     public CanonicalJMPath connectedOrigin, connectedDst, connectedOriginaRawCopy;
     private final ArrayList<Shape> addedAuxiliaryObjectsToScene;
 //    private final Shape mobjDestinyOrig;
@@ -54,7 +51,7 @@ public class PointInterpolationCanonical extends TransformStrategy {
      * @param origin Origin shape
      * @param destiny Destinty Shape
      */
-    public PointInterpolationCanonical(double runtime, Shape origin, Shape destiny) {
+    public PointInterpolationCanonical(double runtime, AbstractShape<?> origin, AbstractShape<?> destiny) {
         super(runtime);
         this.setOrigin(origin);
         this.setIntermediate(new Shape());

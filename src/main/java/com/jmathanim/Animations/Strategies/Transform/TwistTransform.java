@@ -3,6 +3,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.AbstractShape;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Shape;
 
@@ -86,7 +87,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
      * @param destiny           The target shape.
      * @param numPivotalSegment The index of the point that starts the pivotal segment.
      */
-    protected TwistTransform(double runTime, Shape origin, Shape destiny, int numPivotalSegment) {
+    protected TwistTransform(double runTime, AbstractShape<?> origin, AbstractShape<?> destiny, int numPivotalSegment) {
         super(runTime);
         setOrigin(origin);
         setDestiny(destiny);
@@ -131,7 +132,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
      * @param destiny The target shape. It should have the same number of points as the origin shape.
      * @return A new TwistTransform instance.
      */
-    public static TwistTransform make(double runTime, Shape origin, Shape destiny) {
+    public static TwistTransform make(double runTime, AbstractShape<?> origin, AbstractShape<?> destiny) {
         return new TwistTransform(runTime, origin, destiny, origin.size() / 2);
     }
 
@@ -320,7 +321,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
         double lt = getLT(t);
         double rt = allocateT(t);// Raw time, clamped to [0,1], allocated with delay effect
 
-        Shape intermediateObject = getIntermediateObject();
+        AbstractShape<?> intermediateObject = getIntermediateObject();
         // Restore the intermediate object to its original state (the origin shape) before applying the new frame's transformation.
         restoreStates(intermediateObject);
 
@@ -354,7 +355,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
      * @param lt         The interpolated time, from 0 to 1.
      */
     private void applyPivotalAlign(Vec pivotPoint, double lt) {
-        Shape inter = getIntermediateObject();
+        AbstractShape<?> inter = getIntermediateObject();
         // 1. Translate the whole shape to align the pivotal points.
         inter.shift(vShift.mult(lt));
 
@@ -369,7 +370,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
      * @param lt         The interpolated time, from 0 to 1.
      */
     private void applyPivotalScale(Vec pivotPoint, double lt) {
-        Shape inter = getIntermediateObject();
+        AbstractShape<?> inter = getIntermediateObject();
 
         // 3. Scale the pivotal segment by shifting all subsequent points.
         // This moves the "end" of the pivotal segment, effectively stretching/shrinking it.
@@ -394,7 +395,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
      * @param t                 The interpolated time, from 0 to 1.
      */
     private void applyTransformForwardPoints(int numPivotalSegment, double t) {
-        Shape inter = getIntermediateObject();
+        AbstractShape<?> inter = getIntermediateObject();
         int size = inter.size();
         if (numPivotalSegment >= size - 1) {
             return; // No forward points to transform
@@ -444,7 +445,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
      * @param t                The interpolated time, from 0 to 1.
      */
     private void applyTransformBackwardPoints(int numPivotalSegment, double t) {
-        Shape inter = getIntermediateObject();
+        AbstractShape<?> inter = getIntermediateObject();
         if (numPivotalSegment <= 0) {
             return; // No backward points to transform
         }

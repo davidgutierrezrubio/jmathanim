@@ -19,7 +19,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.AbstractShape;
 
 /**
  *
@@ -28,7 +28,7 @@ import com.jmathanim.mathobjects.Shape;
 public class RotateAndScaleXYTransform extends AffineTransformStrategy {
 
 
-    public RotateAndScaleXYTransform(double runtime, Shape origin, Shape destiny) {
+    public RotateAndScaleXYTransform(double runtime, AbstractShape<?> origin, AbstractShape<?> destiny) {
         super(runtime,origin,destiny);
     }
 

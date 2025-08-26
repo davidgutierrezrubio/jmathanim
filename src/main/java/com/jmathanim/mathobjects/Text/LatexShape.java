@@ -7,6 +7,13 @@ public class LatexShape extends AbstractShape<LatexShape> {
     public LatexShape() {
     }
 
+    @Override
+    public LatexShape copy() {
+     LatexShape copy=new LatexShape();
+     copy.copyStateFrom(this);
+     return copy;
+    }
+
     public Shape toShape() {
         Shape resul = new Shape();
         resul.getPath().getJmPathPoints().addAll(getPath().getJmPathPoints());

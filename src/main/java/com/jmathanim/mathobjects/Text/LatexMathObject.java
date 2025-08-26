@@ -135,7 +135,7 @@ public class LatexMathObject extends AbstractLatexMathObject<LatexMathObject> im
     }
 
     @Override
-    protected LatexMathObject makeNewEmptyInstance() {
+    public LatexMathObject makeNewEmptyInstance() {
             return new LatexMathObject(AnchorType.CENTER);
     }
 }

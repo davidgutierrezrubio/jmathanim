@@ -148,7 +148,7 @@ public class MODrawPropertiesArray implements DrawStyleProperties, Stylable {
      */
     @Override
     public void setVisible(Boolean visible) {
-        for (MathObject obj : objects) {
+        for (MathObject<?> obj : objects) {
             obj.getMp().setVisible(visible);
         }
         mpRef.setVisible(visible);

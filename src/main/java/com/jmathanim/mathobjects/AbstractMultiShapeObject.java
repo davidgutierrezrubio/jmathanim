@@ -45,10 +45,12 @@ public abstract class AbstractMultiShapeObject<
         }
     }
 
-    public boolean add(T e) {
+    public boolean add( T e) {
         mpMultiShape.add(e);
         return shapes.add(e);
     }
+
+
 
     abstract protected T createEmptyShapeAt(int index);
 
@@ -100,7 +102,8 @@ public abstract class AbstractMultiShapeObject<
             shapes.clear();
             for (AbstractShape<?> sh : msh.shapes) {
                 T sh2=(T) sh;
-                add(sh2.copy());
+                T copy = sh2.copy();
+                add(copy);
             }
         }
     }
@@ -347,7 +350,6 @@ public abstract class AbstractMultiShapeObject<
         return (S) this;
     }
 
-    protected abstract S makeNewEmptyInstance();
-
+    public abstract S makeNewEmptyInstance();
 
 }

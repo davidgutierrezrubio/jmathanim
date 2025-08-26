@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Animations.Strategies.Transform.Optimizers;
 
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.AbstractShape;
 
 /**
  * Null optimization. This class does nothing and it is implemented for
@@ -28,7 +28,7 @@ import com.jmathanim.mathobjects.Shape;
 public class NullOptimizationStrategy implements OptimizePathsStrategy {
 
 	@Override
-	public void optimizePaths(Shape sh1, Shape sh2) {
+	public void optimizePaths(AbstractShape<?> sh1, AbstractShape<?> sh2) {
 	}
 
 }

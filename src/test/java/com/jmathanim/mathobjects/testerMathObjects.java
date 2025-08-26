@@ -34,7 +34,7 @@ public class testerMathObjects {
         }
     }
 
-    public static void assertShapeEquals(Shape sh1, Shape sh2, String errorMessage) {
+    public static void assertShapeEquals(AbstractShape<?> sh1, AbstractShape<?> sh2, String errorMessage) {
         assertJMPathEquals(sh1.getPath(), sh2.getPath(), errorMessage);
         assertsMODrawPropertiesEquals(sh1.getMp(), sh2.getMp(), errorMessage);
     }
@@ -73,8 +73,8 @@ public class testerMathObjects {
         
         //Multishape
         if (ob1 instanceof AbstractMultiShapeObject) {
-            AbstractMultiShapeObject <?> msh1= (AbstractMultiShapeObject<?>) ob1;
-            AbstractMultiShapeObject <?> msh2= (AbstractMultiShapeObject<?>) ob2;
+            AbstractMultiShapeObject <?,?> msh1= (AbstractMultiShapeObject<?,?>) ob1;
+            AbstractMultiShapeObject <?,?> msh2= (AbstractMultiShapeObject<?,?>) ob2;
 
             assertEquals(msh1.size(),msh2.size(),"different sizes "+msh1.size()+" vs "+msh2.size()+" ->"+errorMessage);
             for (int i = 0; i < msh1.size(); i++) {

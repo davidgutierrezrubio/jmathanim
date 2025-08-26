@@ -80,7 +80,7 @@ public class SVGMathObject extends AbstractMultiShapeObject<SVGMathObject,Shape>
     }
 
     @Override
-    protected SVGMathObject makeNewEmptyInstance() {
+    public SVGMathObject makeNewEmptyInstance() {
         return SVGMathObject.make();
     }
 }

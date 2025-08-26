@@ -36,8 +36,8 @@ public class Transform extends AnimationWithEffects {
         ARROW_TRANSFORM
     }
 
-    private final MathObject mobjDestiny;
-    private MathObject mobjTransformed;
+    private final MathObject<?> mobjDestiny;
+    private MathObject<?> mobjTransformed;
     private TransformMethod transformMethod;
     private boolean shouldOptimizePathsFirst;
     private TransformStrategy transformStrategy;
@@ -128,16 +128,16 @@ public class Transform extends AnimationWithEffects {
         if (mobjTransformed instanceof Line) {
             mobjTransformed = ((Line) mobjTransformed).toSegment(JMathAnimConfig.getConfig().getCamera(), 2);
         }
-        if ((mobjTransformed instanceof Shape) && (mobjDestiny instanceof MultiShapeObject)) {
+        if ((mobjTransformed instanceof AbstractShape<?>) && (mobjDestiny instanceof AbstractMultiShapeObject<?,?>)) {
             transformMethod = TransformMethod.MULTISHAPE_TRANSFORM;
             return;
         }
-        if ((mobjTransformed instanceof MultiShapeObject) && (mobjDestiny instanceof Shape)) {
+        if ((mobjTransformed instanceof AbstractMultiShapeObject<?,?>) && (mobjDestiny instanceof AbstractShape<?>)) {
             transformMethod = TransformMethod.MULTISHAPE_TRANSFORM;
             return;
         }
 
-        if ((mobjTransformed instanceof MultiShapeObject) && (mobjDestiny instanceof MultiShapeObject)) {
+        if ((mobjTransformed instanceof AbstractMultiShapeObject<?,?>) && (mobjDestiny instanceof AbstractMultiShapeObject<?,?>)) {
             transformMethod = TransformMethod.MULTISHAPE_TRANSFORM;
             return;
         }
@@ -162,12 +162,12 @@ public class Transform extends AnimationWithEffects {
                 transformMethod = TransformMethod.GENERAL_AFFINE_TRANSFORM;
                 return;
             }
-            // If 2 simple, closed curves, I have something simpler in mind...
-            if ((shTr.getPath().getNumberOfConnectedComponents() == 0)
-                    && (shDst.getPath().getNumberOfConnectedComponents() == 0)) {
-                transformMethod = TransformMethod.INTERPOLATE_SIMPLE_SHAPES_BY_POINT;
-                return;
-            }
+//            // If 2 simple, closed curves, I have something simpler in mind...
+//            if ((shTr.getPath().getNumberOfConnectedComponents() == 1)
+//                    && (shDst.getPath().getNumberOfConnectedComponents() == 1)) {
+//                transformMethod = TransformMethod.INTERPOLATE_SIMPLE_SHAPES_BY_POINT;
+//                return;
+//            }
         }
         // Nothing previous worked...try with the most general method
         transformMethod = TransformMethod.INTERPOLATE_POINT_BY_POINT;
@@ -186,39 +186,40 @@ public class Transform extends AnimationWithEffects {
 
     private void createTransformStrategy() {
         // Now I choose strategy
-        try {
+//        try {
             switch (transformMethod) {
                 case ARROW_TRANSFORM:
                     transformStrategy = new ArrowTransform(runTime, (Arrow) mobjTransformed, (Arrow) mobjDestiny);
                     JMathAnimScene.logger.debug("Transform method: Arrow2D");
                     break;
                 case MULTISHAPE_TRANSFORM:
-                    transformStrategy = new MultiShapeTransform(runTime, convertToMultiShapeObject(mobjTransformed),
-                            convertToMultiShapeObject(mobjDestiny));
+//                    transformStrategy = new MultiShapeTransform(runTime, convertToMultiShapeObject(mobjTransformed),
+//                            convertToMultiShapeObject(mobjDestiny));
+                    transformStrategy = new MultiShapeTransform(runTime, (AbstractMultiShapeObject<?, ?>) mobjTransformed, (AbstractMultiShapeObject<?, ?>) mobjDestiny);
                     JMathAnimScene.logger.debug("Transform method: Multishape");
                     break;
 
                 case INTERPOLATE_SIMPLE_SHAPES_BY_POINT:
-                    transformStrategy = new PointInterpolationSimpleShapeTransform(runTime, (Shape) mobjTransformed,
-                            (Shape) mobjDestiny);
+                    transformStrategy = new PointInterpolationSimpleShapeTransform(runTime, (AbstractShape<?>) mobjTransformed,
+                            (AbstractShape<?>) mobjDestiny);
                     JMathAnimScene.logger.debug("Transform method: Point interpolation between 2 simple closed curves (PointInterpolationSimpleShapeTransform)");
                     break;
                 case INTERPOLATE_POINT_BY_POINT:
-                    transformStrategy = new PointInterpolationCanonical(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
+                    transformStrategy = new PointInterpolationCanonical(runTime, (AbstractShape<?>) mobjTransformed, (AbstractShape<?>) mobjDestiny);
                     JMathAnimScene.logger.debug("Transform method: Point interpolation between 2 curves (PointInterpolationCanonical)");
                     break;
                 case ISOMORPHIC_TRANSFORM:
-                    transformStrategy = new IsomorphicTransformAnimation(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
+                    transformStrategy = new IsomorphicTransformAnimation(runTime, (AbstractShape<?>) mobjTransformed, (AbstractShape<?>) mobjDestiny);
                     JMathAnimScene.logger.debug("Transform method: Isomorphic");
 
                     break;
                 case ROTATE_AND_SCALEXY_TRANSFORM:
-                    transformStrategy = new RotateAndScaleXYTransform(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
+                    transformStrategy = new RotateAndScaleXYTransform(runTime, (AbstractShape<?>) mobjTransformed, (AbstractShape<?>) mobjDestiny);
                     JMathAnimScene.logger.debug("Transform method: Rotate and Scale XY");
                     break;
                 case GENERAL_AFFINE_TRANSFORM:
-                    transformStrategy = new GeneralAffineTransformAnimation(runTime, (Shape) mobjTransformed,
-                            (Shape) mobjDestiny);
+                    transformStrategy = new GeneralAffineTransformAnimation(runTime, (AbstractShape<?>) mobjTransformed,
+                            (AbstractShape<?>) mobjDestiny);
                     JMathAnimScene.logger.debug("Transform method: General affine transform");
                     break;
                 case FUNCTION_INTERPOLATION:
@@ -233,9 +234,9 @@ public class Transform extends AnimationWithEffects {
             } else {
                 JMathAnimScene.logger.error("Cannot apply effects to current transform");
             }
-        } catch (ClassCastException e) {
-            JMathAnimScene.logger.error("You are trying to animate something that I don't know how");
-        }
+//        } catch (ClassCastException e) {
+//            JMathAnimScene.logger.error("You are trying to animate something that I don't know how");
+//        }
     }
 
     @Override

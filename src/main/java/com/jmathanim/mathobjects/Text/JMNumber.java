@@ -83,7 +83,7 @@ public class JMNumber extends AbstractLatexMathObject<JMNumber> implements hasSc
     }
 
     @Override
-    protected JMNumber makeNewEmptyInstance() {
+    public JMNumber makeNewEmptyInstance() {
         return null;
     }
 

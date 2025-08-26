@@ -22,8 +22,9 @@ import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.Commands;
 import com.jmathanim.Animations.JoinAnimation;
 import com.jmathanim.Styling.MODrawProperties;
-import com.jmathanim.mathobjects.*;
-import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
+import com.jmathanim.mathobjects.AbstractMultiShapeObject;
+import com.jmathanim.mathobjects.AbstractShape;
+import com.jmathanim.mathobjects.MathObjectGroup;
 
 /**
  * Animation that draws and object and then changes its alpha fill from 0 to current. If used in a multishape, a
@@ -48,8 +49,8 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
     @Override
     public boolean doInitialization() {
         super.doInitialization();
-        originShapes = converToShapeArray(originObject);
-        this.intermediateShapes = new Shape[originShapes.length];
+        originShapes=originObject.toArray();
+        this.intermediateShapes = new AbstractShape<?>[originShapes.length];
         for (int i = 0; i < originShapes.length; i++) {
             this.intermediateShapes[i] = originShapes[i].copy();
 
@@ -97,28 +98,6 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
         super.finishAnimation();
     }
 
-    private AbstractShape<?>[] converToShapeArray(MathObject obj) {
-
-        if (obj instanceof MultiShapeObject) {
-            MultiShapeObject multiShapeObject = (MultiShapeObject) obj;
-            return multiShapeObject.toArray();
-        }
-        if (obj instanceof MathObjectGroup) {
-            //This may lead to error if any element is not a Shape
-            MathObjectGroup mg = (MathObjectGroup) obj;
-            Shape[] shapes = new Shape[mg.size()];
-            for (int i = 0; i < shapes.length; i++) {
-                shapes[i] = (Shape) mg.get(i);
-            }
-            return shapes;
-        }
-        if (obj instanceof AbstractShape<?>) {
-            Shape shape = (Shape) obj;
-            return new Shape[]{shape};
-        }
-        return null;
-    }
-
     @Override
     public void cleanAnimationAt(double t) {
         //Child animation is not designed to properly clean, we must do it here
@@ -140,7 +119,7 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
     }
 
     @Override
-    public MathObject getIntermediateObject() {
+    public MathObjectGroup getIntermediateObject() {
         return anim.getIntermediateObject();
     }
 

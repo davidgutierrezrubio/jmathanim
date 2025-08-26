@@ -18,7 +18,7 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.AbstractShape;
 
 /**
  *
@@ -26,7 +26,7 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class IsomorphicTransformAnimation extends AffineTransformStrategy {
 
-    public IsomorphicTransformAnimation(double runTime, Shape origin, Shape destiny) {
+    public IsomorphicTransformAnimation(double runTime, AbstractShape<?> origin, AbstractShape<?> destiny) {
         super(runTime, origin, destiny);
     }
 

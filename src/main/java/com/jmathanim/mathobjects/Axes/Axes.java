@@ -20,6 +20,7 @@ package com.jmathanim.mathobjects.Axes;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
@@ -27,7 +28,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.MathObjectGroup;
+import com.jmathanim.mathobjects.MathObject;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -38,7 +39,7 @@ import java.util.Locale;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Axes extends MathObjectGroup {
+public class Axes extends MathObject<Axes> {
 
     public static final double LEGEND_TICKS_GAP = .5;
     DecimalFormat format;
@@ -345,6 +346,11 @@ public class Axes extends MathObjectGroup {
     }
 
     @Override
+    public DrawStyleProperties getMp() {
+        return mpArray;
+    }
+
+    @Override
     public Axes thickness(double newThickness) {
         xAxis.thickness(newThickness);
         yAxis.thickness(newThickness);
@@ -366,7 +372,7 @@ public class Axes extends MathObjectGroup {
         xticks.clear();
         for (int n = 0; n < xticksBase.size(); n++) {
             if (xticksBase.get(n).shouldDraw(getCamera())) {
-                TickAxes copy = xticksBase.get(n).copy();
+                TickAxes copy = xticksBase.get(n).copy();//TODO: Optimize this
                 copy.tick.scale(scale);
                 copy.legend.scale(scale);
                 copy.legend.stackTo(copy.tick, AnchorType.LOWER, LEGEND_TICKS_GAP * copy.legend.getHeight());

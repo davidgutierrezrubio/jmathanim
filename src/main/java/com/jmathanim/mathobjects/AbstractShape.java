@@ -56,10 +56,6 @@ public abstract class
     }
 
     @Override
-    public T copy() {
-        return null;
-    }
-    @Override
     public DrawStyleProperties getMp() {
         return mpShape;
     }

@@ -25,12 +25,12 @@ import com.jmathanim.mathobjects.MathObject;
  *
  * @author David
  */
-public abstract class TransformStrategy extends AnimationWithEffects {
+public abstract class TransformStrategy<T extends MathObject<?>> extends AnimationWithEffects {
 
     OptimizePathsStrategy optimizeStrategy = null;
-    private MathObject origin;
-    private MathObject destiny;
-    private MathObject intermediate;
+    private T origin;
+    private T destiny;
+    private T intermediate;
     protected boolean destinyWasAddedAtFirst, originWasAddedAtFirst;
 
     public TransformStrategy(double runTime) {
@@ -38,27 +38,27 @@ public abstract class TransformStrategy extends AnimationWithEffects {
     }
 
     @Override
-    public <T extends MathObject> T getIntermediateObject() {
-        return (T) intermediate;
+    public  T getIntermediateObject() {
+        return  intermediate;
     }
 
-    public <T extends MathObject> T  getOriginObject() {
-        return (T) origin;
+    public  T  getOriginObject() {
+        return  origin;
     }
 
-    public <T extends MathObject> T  getDestinyObject() {
-        return (T) destiny;
+    public  T  getDestinyObject() {
+        return  destiny;
     }
 
-    public void setOrigin(MathObject origin) {
+    public void setOrigin(T origin) {
         this.origin = origin;
     }
 
-    public void setDestiny(MathObject destiny) {
+    public void setDestiny(T destiny) {
         this.destiny = destiny;
     }
 
-    public void setIntermediate(MathObject intermediate) {
+    public void setIntermediate(T intermediate) {
         this.intermediate = intermediate;
     }
 
@@ -69,7 +69,7 @@ public abstract class TransformStrategy extends AnimationWithEffects {
      * @param strategy Optimization strategy
      * @return This object
      */
-    public TransformStrategy setOptimizationStrategy(OptimizePathsStrategy strategy) {
+    public TransformStrategy<T> setOptimizationStrategy(OptimizePathsStrategy strategy) {
         optimizeStrategy = strategy;
         return this;
     }

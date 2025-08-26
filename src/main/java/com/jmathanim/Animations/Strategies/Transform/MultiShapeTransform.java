@@ -19,7 +19,11 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.Transform;
+import com.jmathanim.mathobjects.AbstractMultiShapeObject;
+import com.jmathanim.mathobjects.AbstractShape;
 import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
+
+import java.util.ArrayList;
 
 /**
  * Animation strategy between 2 multishapes A and B. If size(A) equals size(B)
@@ -33,14 +37,16 @@ import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
  */
 public class MultiShapeTransform extends TransformStrategy {
 
-    private MultiShapeObject dst;
-    private MultiShapeObject tr;
-    private final MultiShapeObject mshOrigin;
-    private final MultiShapeObject mshDestiny;
+//    private AbstractMultiShapeObject<?,?>  dst;
+//    private AbstractMultiShapeObject<?,?>  tr;
+    ArrayList<AbstractShape<?>> destinyShapes;
+    ArrayList<AbstractShape<?>> originShapes;
+    private final AbstractMultiShapeObject<?,?>  mshOrigin;
+    private final AbstractMultiShapeObject<?,?>  mshDestiny;
     private final AnimationGroup anim;
 //    public boolean isOriginInScene;
 
-    public MultiShapeTransform(double runtime, MultiShapeObject origin, MultiShapeObject destiny) {
+    public MultiShapeTransform(double runtime, AbstractMultiShapeObject<?,?> origin, AbstractMultiShapeObject<?,?>  destiny) {
         super(runtime);
         this.setDestiny(destiny);
         this.setOrigin(origin);
@@ -60,33 +66,35 @@ public class MultiShapeTransform extends TransformStrategy {
     public boolean doInitialization() {
         super.doInitialization();
 
-        dst = MultiShapeObject.make();
-        tr = MultiShapeObject.make();
+//        dst = mshDestiny.makeNewEmptyInstance();
+//        tr = mshDestiny.makeNewEmptyInstance();
+        destinyShapes = new ArrayList<>();
+        originShapes = new ArrayList<>();
         int sizeTr = mshOrigin.size();
         int sizeDst = mshDestiny.size();
         int numAnims = Math.max(sizeTr, sizeDst);
 
         if (sizeDst < sizeTr) {
             for (int i = 0; i < sizeTr; i++) {
-                dst.add(mshDestiny.get(i * sizeDst / sizeTr).copy());//remove copy
+                AbstractShape<?> copy = mshDestiny.get(i * sizeDst / sizeTr).copy();
+                destinyShapes.add(copy);//remove copy
             }
-            tr.copyStateFrom(mshOrigin);
+            originShapes.addAll(mshOrigin.copy().getShapes());
         }
 
         if (sizeTr < sizeDst) {
-            tr.getShapes().clear();
             for (int i = 0; i < sizeDst; i++) {
-                tr.add(mshOrigin.get(i * sizeTr / sizeDst).copy());
+                originShapes.add(mshOrigin.get(i * sizeTr / sizeDst).copy());
             }
-            dst = mshDestiny.copy();
+            destinyShapes.addAll(mshDestiny.copy().getShapes());
         }
         if (sizeDst == sizeTr) {
-            dst = mshDestiny.copy();
-            tr.copyStateFrom(mshOrigin);
+            destinyShapes.addAll(mshDestiny.copy().getShapes());
+            originShapes.addAll(mshOrigin.copy().getShapes());
         }
 
         for (int n = 0; n < numAnims; n++) {
-            Transform transformAnim = new Transform(this.runTime, tr.get(n), dst.get(n));
+            Transform transformAnim = new Transform(this.runTime, originShapes.get(n), destinyShapes.get(n));
             this.copyEffectParametersTo(transformAnim);
             anim.add(transformAnim);
             anim.setLambda(getTotalLambda());
@@ -104,7 +112,8 @@ public class MultiShapeTransform extends TransformStrategy {
     public void cleanAnimationAt(double t) {
         anim.cleanAnimationAt(t);
         super.cleanAnimationAt(t);
-        removeObjectsFromScene(dst);
+        AbstractShape<?>[] arr = destinyShapes.toArray(new AbstractShape<?>[0]);
+        removeObjectsFromScene(arr);
 
     }
   @Override

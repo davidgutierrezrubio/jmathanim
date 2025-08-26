@@ -59,7 +59,7 @@ public class MultiShapeObject extends AbstractMultiShapeObject<MultiShapeObject,
     }
 
     @Override
-    protected MultiShapeObject makeNewEmptyInstance() {
+    public MultiShapeObject makeNewEmptyInstance() {
         return MultiShapeObject.make();
     }
 }

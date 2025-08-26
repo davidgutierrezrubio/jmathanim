@@ -19,7 +19,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.AbstractShape;
 
 /**
  * A general abstract affine transform strategy
@@ -28,8 +28,8 @@ import com.jmathanim.mathobjects.Shape;
  */
 public abstract class AffineTransformStrategy extends TransformStrategy {
 
-    protected final Shape shDestiny;
-    protected final Shape shOrigin;
+    protected final AbstractShape<?> shDestiny;
+    protected final AbstractShape<?> shOrigin;
     Vec A;
     Vec B;
     Vec C;
@@ -37,7 +37,7 @@ public abstract class AffineTransformStrategy extends TransformStrategy {
     Vec E;
     Vec F;
 
-    public AffineTransformStrategy(double runTime, Shape origin, Shape destiny) {
+    public AffineTransformStrategy(double runTime, AbstractShape<?> origin, AbstractShape<?> destiny) {
         super(runTime);
         this.setDestiny(destiny);
         this.setOrigin(origin);

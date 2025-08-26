@@ -142,6 +142,18 @@ public class Point extends AbstractPoint<Point> {
     }
 
     /**
+     * Returns a new Point with coordinates those of given vector. Vector object is copied
+     *
+     * @param coords Vector with coordinates
+     * @return The new point
+     */
+    public static Point atCopy(Coordinates<?> coords) {
+        Vec v = coords.getVec().copy();
+        return new Point(v);
+    }
+
+
+    /**
      * Static builder. Creates and returns a new point at given coordinates (3d space).
      *
      * @param x x coordinate

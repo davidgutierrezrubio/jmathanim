@@ -17,33 +17,27 @@
  */
 package com.jmathanim.mathobjects.updateableObjects;
 
-import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Styling.DrawStyleProperties;
-import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.AbstractShape;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Shape;
 
 /**
  * Shape representing the trail drawn by a moving a point
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Trail extends MathObject<Trail> {
+public class Trail extends AbstractShape<Trail> {
 
     MathObject<?> marker;
     private boolean cutNext = true;
     private boolean draw = true;
-    private final Shape shapeTrail;
-
 
     /**
      * Builds new Trail object. A trail is a updateable Shape that adds a copy
      * of a marker point every frame.
      *
-     * @param marker Point to be followed
+     * @param marker Object to be followed. The center of this object will be used as reference point
      * @return The new Trail object
      */
     public static Trail make(MathObject<?> marker) {
@@ -58,26 +52,16 @@ public class Trail extends MathObject<Trail> {
      */
     public Trail(MathObject<?> marker) {
         this.marker = marker;
-        shapeTrail = new Shape();
-        shapeTrail.getPath().addPoint(marker.getCenter());
-        shapeTrail.get(0).setThisSegmentVisible(false);
+        getPath().addPoint(marker.getCenter());
+        get(0).setThisSegmentVisible(false);
     }
 
-
-    @Override
-    public DrawStyleProperties getMp() {
-        return shapeTrail.getMp();
-    }
 
     @Override
     public Trail copy() {
         return new Trail(marker.copy());
     }
 
-    @Override
-    protected Rect computeBoundingBox() {
-        return null;
-    }
 
     @Override
     public void update(JMathAnimScene scene) {
@@ -86,17 +70,13 @@ public class Trail extends MathObject<Trail> {
             JMPathPoint pa = JMPathPoint.lineTo(marker.getCenter());
             pa.setThisSegmentVisible(!cutNext);
             cutNext = false;
-            shapeTrail.getPath().addJMPoint(pa);
+            getPath().addJMPoint(pa);
         }
     }
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
         dependsOn(scene, marker);
-    }
-
-    public Shape getShapeTrail() {
-        return shapeTrail;
     }
 
     /**
@@ -113,10 +93,5 @@ public class Trail extends MathObject<Trail> {
     public void lowerPen() {
         draw = true;
         cutNext = true;
-    }
-
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r, Camera camera) {
-        shapeTrail.draw(scene,r,camera);
     }
 }

@@ -388,7 +388,7 @@ public class ShowCreation extends Animation {
     }
 
     @Override
-    public MathObject getIntermediateObject() {
+    public MathObject<?> getIntermediateObject() {
         if (creationStrategy == null) return new NullMathObject();
         return creationStrategy.getIntermediateObject();
     }

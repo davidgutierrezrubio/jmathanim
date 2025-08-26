@@ -17,8 +17,8 @@
  */
 package com.jmathanim.Animations.Strategies.Transform.Optimizers;
 
+import com.jmathanim.mathobjects.AbstractShape;
 import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.Shape;
 
 /**
  * Optimizes the paths when the transformed path has a number of connected
@@ -30,7 +30,7 @@ import com.jmathanim.mathobjects.Shape;
 public class DivideEquallyStrategy implements OptimizePathsStrategy {
 
 	@Override
-	public void optimizePaths(Shape sh1, Shape sh2) {
+	public void optimizePaths(AbstractShape<?> sh1, AbstractShape<?> sh2) {
 		JMPath pa1 = sh1.getPath();
 		JMPath pa2 = sh2.getPath();
 		int n1 = pa1.getNumberOfConnectedComponents();

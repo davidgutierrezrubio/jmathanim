@@ -440,13 +440,20 @@ public abstract class JMathAnimScene {
         // them by the updatelevel variable
         // updatelevel 0 gets updated first (although negative values can be set too)
         // Objects with updatelevel n depend directly from those with level n-1
-        objectsToBeUpdated.sort((Updateable o1, Updateable o2) -> o1.getUpdateLevel() - o2.getUpdateLevel());
+        objectsToBeUpdated.sort(Comparator.comparingInt(Updateable::getUpdateLevel));
+//        objectsToBeUpdated.sort((Updateable o1, Updateable o2) -> o1.getUpdateLevel() - o2.getUpdateLevel());
 
         ArrayList<Updateable> updatesCopy = new ArrayList<>();
         updatesCopy.addAll(objectsToBeUpdated);
 
         for (Updateable obj : updatesCopy) {
             obj.update(this);
+        }
+    }
+    public void printUpdateables() {
+        objectsToBeUpdated.sort(Comparator.comparingInt(Updateable::getUpdateLevel));
+        for (Updateable obj : objectsToBeUpdated) {
+            System.out.println(obj.getUpdateLevel()+"   "+obj);
         }
     }
 
