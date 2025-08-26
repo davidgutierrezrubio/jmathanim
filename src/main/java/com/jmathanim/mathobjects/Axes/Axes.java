@@ -26,8 +26,8 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.AbstractMultiShapeObject;
 import com.jmathanim.mathobjects.Line;
+import com.jmathanim.mathobjects.MathObjectGroup;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -38,7 +38,7 @@ import java.util.Locale;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Axes extends AbstractMultiShapeObject<Axes> {
+public class Axes extends MathObjectGroup {
 
     public static final double LEGEND_TICKS_GAP = .5;
     DecimalFormat format;

@@ -298,7 +298,7 @@ public class ParametricCurve extends Shape implements hasScalarParameter {
             Vec v = getFunctionValue(t);
             Point p = new Point(v.x, v.y);
             final JMPathPoint jmp = JMPathPoint.curveTo(p);
-            this.getPath().jmPathPoints.add(n, jmp);
+            this.getPath().getJmPathPoints().add(n, jmp);
             return jmp;
         }
     }

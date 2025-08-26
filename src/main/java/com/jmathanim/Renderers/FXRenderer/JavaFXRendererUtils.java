@@ -109,15 +109,15 @@ public class JavaFXRendererUtils {
             }
         }
         // //Be sure the last point is connected with the first (if closed)
-        if (!resul.jmPathPoints.isEmpty()) {
-            if (resul.jmPathPoints.get(0).getV().isEquivalentTo(resul.jmPathPoints.get(-1).getV(), 1.0E-6)) {
-                JMPathPoint fp = resul.jmPathPoints.get(0);
-                JMPathPoint lp = resul.jmPathPoints.get(-1);
+        if (!resul.getJmPathPoints().isEmpty()) {
+            if (resul.getJmPathPoints().get(0).getV().isEquivalentTo(resul.getJmPathPoints().get(-1).getV(), 1.0E-6)) {
+                JMPathPoint fp = resul.getJmPathPoints().get(0);
+                JMPathPoint lp = resul.getJmPathPoints().get(-1);
                 fp.getvEnter().x = lp.getvEnter().x;
                 fp.getvEnter().y = lp.getvEnter().y;
                 fp.setThisSegmentVisible(true);
                 // Delete last point
-                resul.jmPathPoints.remove(lp);
+                resul.getJmPathPoints().remove(lp);
             }
             // Finally, distille the path, removing unnecessary points
             resul.distille();
@@ -135,13 +135,13 @@ public class JavaFXRendererUtils {
      */
     public static Path createFXPathFromJMPath(JMPath jmpath, Vec shiftVector, Camera camera) {
         Path path = new Path();
-        Vec p = jmpath.jmPathPoints.get(0).getV();
+        Vec p = jmpath.getJmPathPoints().get(0).getV();
         double[] prev = camera.mathToScreen(p.x+shiftVector.x, p.y+shiftVector.y);
         path.getElements().add(new MoveTo(prev[0], prev[1]));
         for (int n = 1; n < jmpath.size() + 1; n++) {
-            Vec point = jmpath.jmPathPoints.get(n).getV();
-            Vec cpoint1 = jmpath.jmPathPoints.get(n - 1).getvExit();
-            Vec cpoint2 = jmpath.jmPathPoints.get(n).getvEnter();
+            Vec point = jmpath.getJmPathPoints().get(n).getV();
+            Vec cpoint1 = jmpath.getJmPathPoints().get(n - 1).getvExit();
+            Vec cpoint2 = jmpath.getJmPathPoints().get(n).getvEnter();
 
             double[] xy, cxy1, cxy2;
 
@@ -149,8 +149,8 @@ public class JavaFXRendererUtils {
             cxy1 = camera.mathToScreen(cpoint1.x+shiftVector.x,cpoint1.y+shiftVector.y);
             cxy2 = camera.mathToScreen(cpoint2.x+shiftVector.x,cpoint2.y+shiftVector.y);
 
-            if (jmpath.jmPathPoints.get(n).isThisSegmentVisible()) {
-                JMPathPoint jp = jmpath.jmPathPoints.get(n);
+            if (jmpath.getJmPathPoints().get(n).isThisSegmentVisible()) {
+                JMPathPoint jp = jmpath.getJmPathPoints().get(n);
                 //JavaFX has problems drawin CubicCurves when control points are equal than points
                 if ((!jp.isCurved()) || ((isAbsEquiv(prev, cxy1, .1)) && (isAbsEquiv(xy, cxy2, .1)))) {
                     final LineTo el = new LineTo(xy[0], xy[1]);

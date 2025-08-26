@@ -19,7 +19,7 @@ package com.jmathanim.Utils;
 import com.jmathanim.Enum.LatexTokenType;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.PaintStyle;
-import com.jmathanim.mathobjects.Text.AbstractLaTeXMathObject;
+import com.jmathanim.mathobjects.Text.AbstractLatexMathObject;
 
 import java.util.ArrayList;
 
@@ -85,7 +85,7 @@ public class LatexStyle {
      *
      * @param latex LaTeX expression to parse and colouring
      */
-    public void apply(AbstractLaTeXMathObject latex) {
+    public void apply(AbstractLatexMathObject latex) {
         for (LatexStyleItem colorizerItem : latexStyleItems) {
             colorizerItem.apply(latex);
 

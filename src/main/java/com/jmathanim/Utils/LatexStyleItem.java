@@ -21,8 +21,8 @@ import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Shape;
-import com.jmathanim.mathobjects.Text.AbstractLaTeXMathObject;
+import com.jmathanim.mathobjects.Text.AbstractLatexMathObject;
+import com.jmathanim.mathobjects.Text.LatexShape;
 
 import java.util.ArrayList;
 
@@ -168,7 +168,7 @@ public class LatexStyleItem {
      *
      * @param latex An AbstractLaTeXMathObject representing a formula
      */
-    public void apply(AbstractLaTeXMathObject latex) {
+    public void apply(AbstractLatexMathObject<?> latex) {
         LatexParser latexParser = latex.getLatexParser();
         if (latexParser == null) {
             JMathAnimScene.logger.warn("This LaTeXMathObject has no parser. It cannot be coloured, sorry!");
@@ -185,7 +185,7 @@ public class LatexStyleItem {
         }
 
         for (int i = 0; i < latex.size(); i++) {
-            Shape latexShape = latex.get(i);
+            LatexShape latexShape = latex.get(i);
             LatexToken tokPrev = (i > 0 ? tokens.get(i - 1) : LatexToken.make(LatexTokenType.NONE, LatexToken.SEC_NONE, ""));
             LatexToken token = tokens.get(i);
             LatexToken tokAfter = (i < tokens.size() - 1 ? tokens.get(i + 1) : LatexToken.make(LatexTokenType.NONE, LatexToken.SEC_NONE, ""));

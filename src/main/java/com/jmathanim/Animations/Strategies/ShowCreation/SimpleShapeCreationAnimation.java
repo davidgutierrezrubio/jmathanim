@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
+import com.jmathanim.mathobjects.AbstractShape;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
 
@@ -27,11 +28,11 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class SimpleShapeCreationAnimation extends AbstractCreationStrategy {
 
-    private final Shape originShape;
-    private final Shape originShapeBase;
-    private final Shape intermediateShape;
+    private final AbstractShape<?> originShape;
+    private final AbstractShape<?> originShapeBase;
+    private final AbstractShape<?> intermediateShape;
 
-    public SimpleShapeCreationAnimation(double runtime, Shape originShape) {
+    public SimpleShapeCreationAnimation(double runtime, AbstractShape<?> originShape) {
         super(runtime);
         this.originShape =originShape;
         this.originShapeBase =originShape.copy();

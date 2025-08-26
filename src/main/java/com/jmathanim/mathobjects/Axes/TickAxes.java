@@ -27,7 +27,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.Stateable;
-import com.jmathanim.mathobjects.Text.LaTeXMathObject;
+import com.jmathanim.mathobjects.Text.LatexMathObject;
 
 /**
  *
@@ -65,7 +65,7 @@ public class TickAxes extends MathObject {
         final Shape xtick = Shape
                 .segment(Vec.to(x, -INITIAL_MARK_SCALE * markScale), Vec.to(x, INITIAL_MARK_SCALE * markScale))
                 .style(getStyleNameFortype(tt));
-        final LaTeXMathObject xtickLegend = LaTeXMathObject.make(latex).style("axislegenddefault");
+        final LatexMathObject xtickLegend = LatexMathObject.make(latex).style("axislegenddefault");
         xtickLegend.scale(INITIAL_LEGEND_SCALE);
         return new TickAxes(x, xtickLegend, xtick, TickOrientation.XAXIS, maxShowScale);
     }
@@ -76,12 +76,12 @@ public class TickAxes extends MathObject {
                 .segment(Vec.to(-INITIAL_MARK_SCALE * markScale, y), Vec.to(INITIAL_MARK_SCALE * markScale, y))
                 .style(getStyleNameFortype(tt));
 
-        final LaTeXMathObject ytickLegend = LaTeXMathObject.make(latex).style("axislegenddefault");
+        final LatexMathObject ytickLegend = LatexMathObject.make(latex).style("axislegenddefault");
         ytickLegend.scale(INITIAL_LEGEND_SCALE);
         return new TickAxes(y, ytickLegend, ytick, TickOrientation.YAXIS, maxShowScale);
     }
 
-    LaTeXMathObject legend;
+    LatexMathObject legend;
     double location;
     double maximumScaleToShow;
     MODrawPropertiesArray mpArray;
@@ -90,8 +90,8 @@ public class TickAxes extends MathObject {
     Shape tick;
     TickType tickType;
 
-    public TickAxes(double location, LaTeXMathObject legend, Shape mark, TickOrientation type,
-            double maximumScaleToShow) {
+    public TickAxes(double location, LatexMathObject legend, Shape mark, TickOrientation type,
+                    double maximumScaleToShow) {
         super();
         mpArray = new MODrawPropertiesArray();
         this.location = location;
@@ -137,7 +137,7 @@ public class TickAxes extends MathObject {
         return Rect.union(tick.getBoundingBox(), legend.getBoundingBox());
     }
 
-    public LaTeXMathObject getLegend() {
+    public LatexMathObject getLegend() {
         return legend;
     }
 

@@ -18,7 +18,7 @@ package com.jmathanim.Utils;
 
 import com.jmathanim.Enum.LatexTokenType;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Text.AbstractLaTeXMathObject;
+import com.jmathanim.mathobjects.Text.AbstractLatexMathObject;
 import org.scilab.forge.jlatexmath.*;
 
 import java.lang.reflect.Field;
@@ -38,7 +38,7 @@ public class LatexParser implements Iterable<LatexToken> {
 
     public final ArrayList<Box> boxes;
     private final ArrayList<LatexToken> assignedTokens;
-    private final AbstractLaTeXMathObject latex;
+    private final AbstractLatexMathObject latex;
     private final ArrayList<LatexToken> tokens;
     public TeXIcon icon;
     public List<MiddleAtom> list;
@@ -66,7 +66,7 @@ public class LatexParser implements Iterable<LatexToken> {
     private boolean configDistilleDotSign = true;
 
 
-    public LatexParser(AbstractLaTeXMathObject latex) {
+    public LatexParser(AbstractLatexMathObject latex) {
         this.latex = latex;
         this.list = new ArrayList<>();
         this.boxes = new ArrayList<>();

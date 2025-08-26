@@ -28,12 +28,13 @@ import java.util.Map;
 /**
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class LaTeXMathObject extends AbstractLaTeXMathObject<LaTeXMathObject> implements hasArguments {
+public class LatexMathObject extends AbstractLatexMathObject<LatexMathObject> implements hasArguments {
+
 
     /**
      * Creates a new LaTeX generated text
      */
-    protected LaTeXMathObject(AnchorType anchor) {
+    protected LatexMathObject(AnchorType anchor) {
         super(anchor);
     }
 
@@ -46,8 +47,16 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject<LaTeXMathObject> im
      *               reference point
      * @return The LaTexMathObject
      */
-    public static LaTeXMathObject make(String text, AnchorType anchor) {
+    public static LatexMathObject make(String text, AnchorType anchor) {
         return make(text, CompileMode.JLaTexMath, anchor);
+    }
+
+    public static LatexMathObject make(LatexShape... latexShapes) {
+        LatexMathObject resul = new LatexMathObject(AnchorType.CENTER);
+        for (LatexShape laTeXShape: latexShapes) {
+            resul.add(laTeXShape);
+        }
+        return resul;
     }
 
     /**
@@ -56,13 +65,13 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject<LaTeXMathObject> im
      * @param text LaTex text to compile. By default this text is compiled using the compile mode JLaTexMath.
      * @return The LaTexMathObject
      */
-    public static LaTeXMathObject make(String text) {
+    public static LatexMathObject make(String text) {
         return make(text, CompileMode.JLaTexMath, AnchorType.CENTER);
     }
 
-    public static LaTeXMathObject make(String text, CompileMode compileMode, AnchorType anchor) {
+    public static LatexMathObject make(String text, CompileMode compileMode, AnchorType anchor) {
 
-        LaTeXMathObject resul = new LaTeXMathObject(anchor);
+        LatexMathObject resul = new LatexMathObject(anchor);
         resul.getMp().loadFromStyle("latexdefault");
         resul.getMp().setAbsoluteThickness(true);
 //        resul.getMp().setFillColor(resul.getMp().getDrawColor());
@@ -77,16 +86,17 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject<LaTeXMathObject> im
 
 
     @Override
-    public LaTeXMathObject copy() {
-        LaTeXMathObject resul = new LaTeXMathObject(this.anchor);
+    public LatexMathObject copy() {
+        LatexMathObject resul = new LatexMathObject(this.anchor);
         resul.copyStateFrom(this);
         return resul;
     }
 
+
     @Override
     public void copyStateFrom(Stateable obj) {
-        if (!(obj instanceof LaTeXMathObject)) return;
-        LaTeXMathObject copy = (LaTeXMathObject) obj;
+        if (!(obj instanceof LatexMathObject)) return;
+        LatexMathObject copy = (LatexMathObject) obj;
         super.copyStateFrom(obj);
         this.origText = copy.origText;
         this.anchor = copy.anchor;
@@ -121,6 +131,11 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject<LaTeXMathObject> im
 
     @Override
     public String toString() {
-        return "LaTeXMathObject{" + "origText=" + origText + '}';
+        return "LaTeXMathObject[" +  origText + ']';
+    }
+
+    @Override
+    protected LatexMathObject makeNewEmptyInstance() {
+            return new LatexMathObject(AnchorType.CENTER);
     }
 }

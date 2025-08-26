@@ -162,10 +162,10 @@ public class CanonicalJMPath {
                 k--;
             }
             for (int n = 0; n < k + 1; n++) {
-                subList.add(resul.jmPathPoints.get(n));
+                subList.add(resul.getJmPathPoints().get(n));
             }
-            resul.jmPathPoints.clear();
-            resul.jmPathPoints.addAll(subList);
+            resul.getJmPathPoints().clear();
+            resul.getJmPathPoints().addAll(subList);
         }
         return resul;
 

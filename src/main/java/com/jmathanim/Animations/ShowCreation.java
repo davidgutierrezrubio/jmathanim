@@ -25,7 +25,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
 import com.jmathanim.mathobjects.Axes.Axes;
 import com.jmathanim.mathobjects.Delimiters.Delimiter;
-import com.jmathanim.mathobjects.Text.LaTeXMathObject;
+import com.jmathanim.mathobjects.Text.LatexMathObject;
 
 import java.util.function.DoubleUnaryOperator;
 
@@ -178,7 +178,7 @@ public class ShowCreation extends Animation {
             this.strategyType = ShowCreationStrategy.GROUP_CREATION;
             return;
         }
-        if (mobj instanceof LaTeXMathObject) {
+        if (mobj instanceof LatexMathObject) {
             this.strategyType = ShowCreationStrategy.LATEX_CREATION;
             return;
         }
@@ -304,11 +304,11 @@ public class ShowCreation extends Animation {
                 JMathAnimScene.logger.debug("ShowCreation method: MultiShapeCreationStrategy");
                 break;
             case FIRST_DRAW_AND_THEN_FILL:
-                creationStrategy = new FirstDrawThenFillAnimation(runTime, mobj);
+                creationStrategy = new FirstDrawThenFillAnimation(runTime, (AbstractMultiShapeObject<?, ?>) mobj);
                 JMathAnimScene.logger.debug("ShowCreation method: FirstDrawThenFillStrategy");
                 break;
             case LATEX_CREATION:
-                LaTeXMathObject lat = (LaTeXMathObject) mobj;
+                LatexMathObject lat = (LatexMathObject) mobj;
                 removeThisAtTheEnd.addAll(lat.getShapes());
                 addThisAtTheEnd.add(mobj);
                 creationStrategy = new FirstDrawThenFillAnimation(runTime, lat);

@@ -41,8 +41,7 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
 
     public static final double DELTA_DERIVATIVE = .0001;
     // this way
-    public final CircularArrayList<JMPathPoint> jmPathPoints; // points from the curve
-    public final CircularArrayList<Boolean> visiblePoints;// Whether this point is visible or not
+    private final CircularArrayList<JMPathPoint> jmPathPoints; // points from the curve
     private final ArrayList<Vec> rectifiedVecPoints;
     private final ArrayList<Double> rectifiedPointDistances;
     private final ArrayList<ArrayList<float[]>> rectifiedPath;
@@ -67,9 +66,8 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
     public JMPath(ArrayList<JMPathPoint> points) {
         this.jmPathPoints = new CircularArrayList<>();
         for (JMPathPoint p : points) {
-            this.jmPathPoints.add(p);
+            this.getJmPathPoints().add(p);
         }
-        this.visiblePoints = new CircularArrayList<>();
         rectifiedPath = new ArrayList<>();
         rectifiedVecPoints = new ArrayList<>();
         rectifiedPointDistances = new ArrayList<>();
@@ -116,21 +114,21 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
     }
 
     public int size() {
-        return jmPathPoints.size();
+        return getJmPathPoints().size();
     }
 
     public void addPoint(Coordinates<?>... points) {
         for (Coordinates<?> p : points) {
-            jmPathPoints.add(new JMPathPoint(p, true));
+            getJmPathPoints().add(new JMPathPoint(p, true));
         }
     }
 
     public void addJMPoint(JMPathPoint... points) {
-        jmPathPoints.addAll(Arrays.asList(points));
+        getJmPathPoints().addAll(Arrays.asList(points));
     }
 
     public void clear() {
-        jmPathPoints.clear();
+        getJmPathPoints().clear();
     }
 
     private void computeRectifiedPoints() {
@@ -261,9 +259,9 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
     @Override
     public String toString() {
         if (size() < 5) {
-            String resul = "#" + jmPathPoints.size() + ":  ";
+            String resul = "#" + getJmPathPoints().size() + ":  ";
             int counter = 0;
-            for (JMPathPoint p : jmPathPoints) {
+            for (JMPathPoint p : getJmPathPoints()) {
                 resul += "< " + counter + " " + p.toString() + "> ";
                 counter++;
 
@@ -280,7 +278,7 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
      * @param jmpathTemp
      */
     public void addJMPointsFrom(JMPath jmpathTemp) {
-        jmPathPoints.addAll(jmpathTemp.jmPathPoints);
+        getJmPathPoints().addAll(jmpathTemp.getJmPathPoints());
     }
 
     /**
@@ -297,14 +295,14 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
         ArrayList<JMPathPoint> pointsToInterpolate = new ArrayList<>();
         // Loop is from 1 because I want to add extra point to the first segment (point
         // 1) and not the last (point 0)
-        for (int n = 1; n < 1 + jmPathPoints.size(); n++) {
-            JMPathPoint p = jmPathPoints.get(n);
+        for (int n = 1; n < 1 + getJmPathPoints().size(); n++) {
+            JMPathPoint p = getJmPathPoints().get(n);
             if (p.isThisSegmentVisible()) {
                 pointsToInterpolate.add(p);
             }
         }
         int numVisibleSegments = pointsToInterpolate.size();
-        int numPoints = jmPathPoints.size();
+        int numPoints = getJmPathPoints().size();
         int toCreate = newNumPoints - numPoints;// Number of points to create, to put in the numVisibleSegments segments
 
         int numDivs = (toCreate / numVisibleSegments); // Euclidean quotient
@@ -320,7 +318,7 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
         // segments
 
         for (JMPathPoint p : pointsToInterpolate) {
-            int k = jmPathPoints.indexOf(p);// Position of this point in the path
+            int k = getJmPathPoints().indexOf(p);// Position of this point in the path
             dividePathSegment(k, p.numDivisions);
         }
 
@@ -376,8 +374,8 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
      * @return The new JMPathPoint generated, and added to the Path
      */
     public JMPathPoint interpolateBetweenTwoPoints(int k, double alpha) {
-        JMPathPoint jmp1 = jmPathPoints.get(k - 1);
-        JMPathPoint jmp2 = jmPathPoints.get(k);
+        JMPathPoint jmp1 = getJmPathPoints().get(k - 1);
+        JMPathPoint jmp2 = getJmPathPoints().get(k);
         JMPathPoint interpolate;
         if (jmp2.isCurved()) {//TODO: Replace this with interpolation method from JMPathPoint
             // De Casteljau's Algorithm:
@@ -404,7 +402,7 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
             interpolate = new JMPathPoint(interP, jmp2.isThisSegmentVisible());
         }
         interpolate.setCurved(jmp2.isCurved()); // The new point is curved iff v2 is
-        jmPathPoints.add(k, interpolate); // Now v2 is in position k+1!
+        getJmPathPoints().add(k, interpolate); // Now v2 is in position k+1!
         return interpolate;
     }
 
@@ -423,11 +421,11 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
             t += 1;
         }
         JMPathPoint resul;
-        final double size = (jmPathPoints.get(0).isThisSegmentVisible() ? t * size() : t * (size() - 1));
+        final double size = (getJmPathPoints().get(0).isThisSegmentVisible() ? t * size() : t * (size() - 1));
         int k = (int) Math.floor(size);
         double t0 = size - k;
-        JMPathPoint v1 = jmPathPoints.get(k);
-        JMPathPoint v2 = jmPathPoints.get(k + 1);
+        JMPathPoint v1 = getJmPathPoints().get(k);
+        JMPathPoint v2 = getJmPathPoints().get(k + 1);
         resul = getJMPointBetween(v1, v2, t0);
         return resul;
     }
@@ -440,8 +438,8 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
     public JMPath copy() {
         JMPath resul = new JMPath();
 
-        for (int n = 0; n < jmPathPoints.size(); n++) {
-            resul.addJMPoint(jmPathPoints.get(n).copy());
+        for (int n = 0; n < getJmPathPoints().size(); n++) {
+            resul.addJMPoint(getJmPathPoints().get(n).copy());
         }
         resul.pathType = pathType;
         return resul;
@@ -454,7 +452,7 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
      */
     public JMPath referencedCopy() {
         JMPath resul = new JMPath();
-        resul.jmPathPoints.addAll(jmPathPoints);
+        resul.getJmPathPoints().addAll(getJmPathPoints());
 
         // Copy attributes
         resul.pathType = pathType;
@@ -473,20 +471,20 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
     public JMPath cyclePoints(int step, boolean reverse) {
         distille();
         JMPath tempPath = this.referencedCopy();
-        jmPathPoints.clear();
+        getJmPathPoints().clear();
         int direction = (reverse ? -1 : 1);
         final int size = tempPath.size();
 
         boolean[] curveds = new boolean[size];
         boolean[] visibles = new boolean[size];
         for (int n = 0; n < size; n++) {
-            curveds[n] = tempPath.jmPathPoints.get(n).isCurved();
-            visibles[n] = tempPath.jmPathPoints.get(n).isThisSegmentVisible();
+            curveds[n] = tempPath.getJmPathPoints().get(n).isCurved();
+            visibles[n] = tempPath.getJmPathPoints().get(n).isThisSegmentVisible();
         }
 
         for (int n = 0; n < size; n++) {
             final int k = direction * n + step;
-            JMPathPoint point = tempPath.jmPathPoints.get(k);
+            JMPathPoint point = tempPath.getJmPathPoints().get(k);
             if (reverse) // If the path is reversed, we must swap control points
             {
                 double cpTempX = point.getvExit().x;
@@ -499,7 +497,7 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
                 point.setCurved(curveds[(k + 1 + size) % size]);
                 point.setThisSegmentVisible(visibles[(k + 1 + size) % size]);
             }
-            jmPathPoints.add(point);
+            getJmPathPoints().add(point);
         }
         return this;
     }
@@ -550,11 +548,11 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
      */
     public ArrayList<Vec> getCriticalPoints() {
         ArrayList<Vec> criticalPoints = new ArrayList<>();
-        for (int n = 0; n < jmPathPoints.size(); n++) {
-            JMPathPoint jmp = jmPathPoints.get(n);
+        for (int n = 0; n < getJmPathPoints().size(); n++) {
+            JMPathPoint jmp = getJmPathPoints().get(n);
             if (jmp.isThisSegmentVisible()) {
                 if (jmp.isCurved()) {
-                    criticalPoints.addAll(getCriticalPoints(jmPathPoints.get(n - 1), jmp));
+                    criticalPoints.addAll(getCriticalPoints(getJmPathPoints().get(n - 1), jmp));
                 }
                 criticalPoints.add(Vec.to(jmp.getV().x, jmp.getV().y));
 
@@ -565,7 +563,7 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
 
     @Override
     public Rect getBoundingBox() {
-        if (jmPathPoints.isEmpty()) {
+        if (getJmPathPoints().isEmpty()) {
             return new EmptyRect();
         }
         double xmin = Double.MAX_VALUE;
@@ -576,12 +574,12 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
         ArrayList<Vec> criticalPoints = getCriticalPoints();
 
 
-        int size = jmPathPoints.size();
+        int size = getJmPathPoints().size();
         int sizeCrit = criticalPoints.size();
         Vec[] vectors = new Vec[size + sizeCrit];
 
         for (int i = 0; i < size; i++) {
-            Vec vi = jmPathPoints.get(i).getV();
+            Vec vi = getJmPathPoints().get(i).getV();
             xmin = Math.min(xmin, vi.x);
             xmax = Math.max(xmax, vi.x);
             ymin = Math.min(ymin, vi.y);
@@ -600,7 +598,7 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
 
     @Override
     public boolean isEmpty() {
-        return jmPathPoints.isEmpty();
+        return getJmPathPoints().isEmpty();
     }
 
     /**
@@ -613,11 +611,11 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
 
         // get the point with lowest y and, in case of tie, max x
         int nmax = 0;
-        double ymin = jmPathPoints.get(0).getV().y;
-        double xmax = jmPathPoints.get(0).getV().x;
-        for (int n = 0; n < jmPathPoints.size(); n++) {
-            double y0 = jmPathPoints.get(n).getV().y;
-            double x0 = jmPathPoints.get(n).getV().x;
+        double ymin = getJmPathPoints().get(0).getV().y;
+        double xmax = getJmPathPoints().get(0).getV().x;
+        for (int n = 0; n < getJmPathPoints().size(); n++) {
+            double y0 = getJmPathPoints().get(n).getV().y;
+            double x0 = getJmPathPoints().get(n).getV().x;
 
             if ((y0 < ymin) || ((ymin == y0) && (x0 > xmax))) {
                 ymin = y0;
@@ -625,9 +623,9 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
                 nmax = n;
             }
         }
-        Vec A = jmPathPoints.get(nmax).getV();
-        Vec B = jmPathPoints.get(nmax - 1).getV();
-        Vec C = jmPathPoints.get(nmax + 1).getV();
+        Vec A = getJmPathPoints().get(nmax).getV();
+        Vec B = getJmPathPoints().get(nmax - 1).getV();
+        Vec C = getJmPathPoints().get(nmax + 1).getV();
 
         Vec AB = B.minus(A);
         Vec AC = C.minus(A);
@@ -646,9 +644,6 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
         this.clear();
         this.addJMPointsFrom(path.copy());
         this.pathType = path.pathType;
-        this.visiblePoints.clear();
-        this.visiblePoints.addAll(path.visiblePoints);
-
     }
 
     /**
@@ -667,8 +662,8 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
         Integer offset = null;
         // Find backwards first invisible segment, if there is not, we have a closed
         // path, so open it
-        for (int n = 0; n < jmPathPoints.size(); n++) {
-            JMPathPoint p = jmPathPoints.get(-n);
+        for (int n = 0; n < getJmPathPoints().size(); n++) {
+            JMPathPoint p = getJmPathPoints().get(-n);
             if (!p.isThisSegmentVisible()) {
                 offset = n;
                 break;
@@ -685,7 +680,7 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
         // and ends with the previous to an invisible point
         JMPath connectedComponent = new JMPath();
         for (int n = 0; n < workPath.size(); n++) {
-            JMPathPoint p = workPath.jmPathPoints.get(n - offset);
+            JMPathPoint p = workPath.getJmPathPoints().get(n - offset);
             if (!p.isThisSegmentVisible() && connectedComponent.size() > 0) {
                 resul.add(connectedComponent);
                 connectedComponent = new JMPath();
@@ -704,12 +699,12 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
      * @param k Where to separate path
      */
     public void separate(int k) {
-        JMPathPoint p = jmPathPoints.get(k);
+        JMPathPoint p = getJmPathPoints().get(k);
         JMPathPoint pnew = p.copy();
 
         pnew.setThisSegmentVisible(false);
 
-        jmPathPoints.add(k + 1, pnew);
+        getJmPathPoints().add(k + 1, pnew);
     }
 
     /**
@@ -726,7 +721,7 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
 //            }
 //        }
 //        return resul;
-        return (int) jmPathPoints.stream().filter((x) -> !x.isThisSegmentVisible()).count();
+        return (int) getJmPathPoints().stream().filter((x) -> !x.isThisSegmentVisible()).count();
     }
 
     /**
@@ -735,14 +730,14 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
      */
     private void removeConsecutiveHiddenVertices() {
         ArrayList<JMPathPoint> toRemove = new ArrayList<>();
-        for (int n = 0; n < jmPathPoints.size(); n++) {
-            JMPathPoint p1 = jmPathPoints.get(n);
-            JMPathPoint p2 = jmPathPoints.get(n + 1);
+        for (int n = 0; n < getJmPathPoints().size(); n++) {
+            JMPathPoint p1 = getJmPathPoints().get(n);
+            JMPathPoint p2 = getJmPathPoints().get(n + 1);
             if (!p1.isThisSegmentVisible() & !p2.isThisSegmentVisible()) {
                 toRemove.add(p1);
             }
         }
-        jmPathPoints.removeAll(toRemove);
+        getJmPathPoints().removeAll(toRemove);
     }
 
     /**
@@ -752,7 +747,7 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
      */
     public JMPath allVisible() {
         JMPath resul = new JMPath();
-        for (JMPathPoint p : jmPathPoints) {
+        for (JMPathPoint p : getJmPathPoints()) {
             JMPathPoint pNew = p.copy();
             pNew.setThisSegmentVisible(true);
             resul.addJMPoint(pNew);
@@ -826,21 +821,21 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
         double epsilon = .000001;
         int n = 0;
         while (n < this.size() - 1) {
-            JMPathPoint p1 = this.jmPathPoints.get(n);
-            JMPathPoint p2 = this.jmPathPoints.get(n + 1);
+            JMPathPoint p1 = this.getJmPathPoints().get(n);
+            JMPathPoint p2 = this.getJmPathPoints().get(n + 1);
             if (p1.getV().isEquivalentTo(p2.getV(), epsilon)) {
                 p2.getvEnter().copyCoordinatesFrom(p1.getvEnter());
                 p2.setThisSegmentVisible(p1.isThisSegmentVisible());
                 p2.setCurved(p1.isCurved());
-                this.jmPathPoints.remove(p1);
+                this.getJmPathPoints().remove(p1);
                 n = 0;
             } else {
                 n++;
             }
         }
-        for (int i = 0; i < jmPathPoints.size(); i++) {
-            JMPathPoint p = jmPathPoints.get(i);
-            JMPathPoint q = jmPathPoints.get(i - 1);
+        for (int i = 0; i < getJmPathPoints().size(); i++) {
+            JMPathPoint p = getJmPathPoints().get(i);
+            JMPathPoint q = getJmPathPoints().get(i - 1);
             if (!p.isCurved()) {
                 p.getvEnter().copyCoordinatesFrom(p.getV());
                 q.getvExit().copyCoordinatesFrom(q.getV());
@@ -862,8 +857,8 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
             return false;
         }
         for (int n = 0; n < size(); n++) {
-            JMPathPoint pa1 = jmPathPoints.get(n);
-            JMPathPoint pa2 = obj.jmPathPoints.get(n);
+            JMPathPoint pa1 = getJmPathPoints().get(n);
+            JMPathPoint pa2 = obj.getJmPathPoints().get(n);
             if (!pa1.isEquivalentTo(pa2, epsilon)) {
                 return false;
             }
@@ -992,12 +987,12 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
      * @return A JMPathPoint with the nth-element of the path
      */
     public JMPathPoint get(int index) {
-        return jmPathPoints.get(index);
+        return getJmPathPoints().get(index);
     }
 
     @Override
     public Iterator<JMPathPoint> iterator() {
-        return jmPathPoints.iterator();
+        return getJmPathPoints().iterator();
     }
 
     /**
@@ -1071,11 +1066,11 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
         size = tempPath.size();//Size adjusted
 
         if (tt0 < tt1) {
-            nBeginning = tempPath.jmPathPoints.indexOf(beginning);
-            nEnding = tempPath.jmPathPoints.indexOf(ending);
+            nBeginning = tempPath.getJmPathPoints().indexOf(beginning);
+            nEnding = tempPath.getJmPathPoints().indexOf(ending);
         } else {
-            nBeginning = tempPath.jmPathPoints.indexOf(ending);
-            nEnding = tempPath.jmPathPoints.indexOf(beginning);
+            nBeginning = tempPath.getJmPathPoints().indexOf(ending);
+            nEnding = tempPath.getJmPathPoints().indexOf(beginning);
         }
 
         double a0 = a;
@@ -1122,7 +1117,7 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
         if (isEmpty()) {
             return;//Nothing to open
         }
-        final JMPathPoint firstP = jmPathPoints.get(0);
+        final JMPathPoint firstP = getJmPathPoints().get(0);
         if (firstP.isThisSegmentVisible()) {
             addJMPoint(firstP.copy());
             firstP.setThisSegmentVisible(false);
@@ -1136,10 +1131,10 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
         if (isEmpty()) {
             return;//Nothing to close
         }
-        final JMPathPoint jmp = jmPathPoints.get(0);
+        final JMPathPoint jmp = getJmPathPoints().get(0);
         jmp.setThisSegmentVisible(true);
         jmp.getvEnter().copyCoordinatesFrom(jmp.getV());
-        jmPathPoints.get(-1).getvExit().copyCoordinatesFrom(jmPathPoints.get(-1).getV());
+        getJmPathPoints().get(-1).getvExit().copyCoordinatesFrom(getJmPathPoints().get(-1).getV());
         distille();
     }
 
@@ -1151,10 +1146,10 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
      * @return The new point created
      */
     public JMPathPoint insertJMPointAt(int k, double alpha) {
-        JMPathPoint v1 = jmPathPoints.get(k);
-        JMPathPoint v2 = jmPathPoints.get(k + 1);
+        JMPathPoint v1 = getJmPathPoints().get(k);
+        JMPathPoint v2 = getJmPathPoints().get(k + 1);
         JMPathPoint newPoint = getJMPointBetween(v1, v2, alpha);
-        jmPathPoints.add(k + 1, newPoint);
+        getJmPathPoints().add(k + 1, newPoint);
         newPoint.setThisSegmentVisible(v2.isThisSegmentVisible());
         //Adjust the control points of v1 and v2
         Vec vE = v1.getV().interpolate(v1.getvExit(), alpha); // New cpExit of v1
@@ -1176,22 +1171,22 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
         JMPath pa = secondPath.copy();
         //Special case: if this path is empty
         if (isEmpty()) {
-            jmPathPoints.addAll(pa.jmPathPoints);
+            getJmPathPoints().addAll(pa.getJmPathPoints());
             return this;
         }
 
         // If the first path is already a closed one, open it
         // with 2 identical points (old-fashioned style of closing shapes)
-        final JMPathPoint jmPoint = jmPathPoints.get(0);
+        final JMPathPoint jmPoint = getJmPathPoints().get(0);
         if (jmPoint.isThisSegmentVisible()) {
-            jmPathPoints.add(jmPoint.copy());
+            getJmPathPoints().add(jmPoint.copy());
             jmPoint.setThisSegmentVisible(false);
         }
 
         // Do the same with the second path
-        final JMPathPoint jmPoint2 = pa.jmPathPoints.get(0);
+        final JMPathPoint jmPoint2 = pa.getJmPathPoints().get(0);
         if (jmPoint2.isThisSegmentVisible()) {
-            pa.jmPathPoints.add(jmPoint2.copy());
+            pa.getJmPathPoints().add(jmPoint2.copy());
         }
 
         //If connectAtoB, make last
@@ -1205,21 +1200,21 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
         }
 
         // Now you can add the points
-        jmPathPoints.addAll(pa.jmPathPoints);
+        getJmPathPoints().addAll(pa.getJmPathPoints());
         return this;
     }
 
     public void copyStateFrom(JMPath path) {
-        long count = path.jmPathPoints.size();
-        if (count == jmPathPoints.size()) {
+        long count = path.getJmPathPoints().size();
+        if (count == getJmPathPoints().size()) {
             //Equal number of vertices 
             for (int i = 0; i < size(); i++) {
                 get(i).copyStateFrom(path.get(i));
             }
         } else { //If there are too many discrepances, better clear it and copy
-            jmPathPoints.clear();
+            getJmPathPoints().clear();
             for (JMPathPoint jp : path) {
-                jmPathPoints.add(jp.copy());
+                getJmPathPoints().add(jp.copy());
             }
         }
     }
@@ -1257,8 +1252,8 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
         rectifiedPath.clear();
         ArrayList<float[]> connectedSegments = new ArrayList<>();
         for (int n = 0; n < size(); n++) {
-            JMPathPoint p = jmPathPoints.get(n);
-            JMPathPoint q = jmPathPoints.get(n + 1);
+            JMPathPoint p = getJmPathPoints().get(n);
+            JMPathPoint q = getJmPathPoints().get(n + 1);
 
             if (q.isThisSegmentVisible()) {
                 computeStraightenedPoints(connectedSegments, p, q, cam);
@@ -1328,4 +1323,7 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
         return 5;
     }
 
+    public CircularArrayList<JMPathPoint> getJmPathPoints() {
+        return jmPathPoints;
+    }
 }

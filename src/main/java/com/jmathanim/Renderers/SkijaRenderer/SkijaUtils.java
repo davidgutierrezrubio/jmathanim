@@ -67,15 +67,15 @@ class SkijaUtils {
 //        }
 
         Path path = new Path();
-        Vec prev = jmpath.jmPathPoints.get(0).getV().copy();
+        Vec prev = jmpath.getJmPathPoints().get(0).getV().copy();
         path.moveTo((float) prev.x, (float) prev.y);
         for (int n = 1; n < jmpath.size() + 1; n++) {
-            Vec point = jmpath.jmPathPoints.get(n).getV();
-            Vec cpoint1 = jmpath.jmPathPoints.get(n - 1).getvExit();
-            Vec cpoint2 = jmpath.jmPathPoints.get(n).getvEnter();
+            Vec point = jmpath.getJmPathPoints().get(n).getV();
+            Vec cpoint1 = jmpath.getJmPathPoints().get(n - 1).getvExit();
+            Vec cpoint2 = jmpath.getJmPathPoints().get(n).getvEnter();
 
-            if (jmpath.jmPathPoints.get(n).isThisSegmentVisible()) {
-                JMPathPoint jp = jmpath.jmPathPoints.get(n);
+            if (jmpath.getJmPathPoints().get(n).isThisSegmentVisible()) {
+                JMPathPoint jp = jmpath.getJmPathPoints().get(n);
                 //Should remove this in Skija?
                 if ((!jp.isCurved()) || ((isAbsEquiv(prev, cpoint1, .1)) && (isAbsEquiv(point, cpoint2, .0001)))) {
                     path.lineTo((float) point.x, (float) point.y);

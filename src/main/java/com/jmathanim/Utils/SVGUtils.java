@@ -49,29 +49,43 @@ import static com.jmathanim.jmathanim.JMathAnimScene.logger;
 public class SVGUtils {
 
     private static final double CONTROL_POINT_RATIO = 2d / 3;
-    private double height;
-    private final JMathAnimScene scene;
-    private double currentX;
-    private double currentY;
-    private double closeX;
-    private double closeY;
-    private double previousX;
-    private double previousY;
-    private AffineJTransform currentTransform;
-    private double width;
+    private static double height;
+    private static JMathAnimScene scene;
+    private static double currentX;
+    private static double currentY;
+    private static double closeX;
+    private static double closeY;
+    private static double previousX;
+    private static double previousY;
+    private static AffineJTransform currentTransform;
+    private static double width;
+//
+//    public SVGUtils(JMathAnimScene scene) {
+////        this.scene = scene;
+//        this.currentX = 0;
+//        this.currentY = 0;
+//        this.closeX = 0;
+//        this.closeY = 0;
+//        this.previousX = 0;
+//        this.previousY = 0;
+//        this.currentTransform = new AffineJTransform();
+//        this.width = 0;
+//        this.height = 0;
+//    }
 
-    public SVGUtils(JMathAnimScene scene) {
-        this.scene = scene;
-        this.currentX = 0;
-        this.currentY = 0;
-        this.closeX = 0;
-        this.closeY = 0;
-        this.previousX = 0;
-        this.previousY = 0;
-        this.currentTransform = new AffineJTransform();
-        this.width = 0;
-        this.height = 0;
+    private static void resetParameters() {
+        currentX = 0;
+        currentY = 0;
+        closeX = 0;
+        closeY = 0;
+        previousX = 0;
+        previousY = 0;
+        currentTransform = new AffineJTransform();
+        width = 0;
+        height = 0;
+        scene=JMathAnimConfig.getConfig().getScene();
     }
+
 
     private static String sanitizeTokens(String tok) {
         StringBuilder st = new StringBuilder(tok);
@@ -116,11 +130,38 @@ public class SVGUtils {
                 .replaceAll("^ +| +$|( )+", "$1");
     }
 
-    public void importSVG(URL urlSvg, MultiShapeObject msh) throws Exception {
-        importSVG(urlSvg, msh, MODrawProperties.makeNullValues());
+    /**
+     * Imports a SVG object and converts it into a MultiShapeObject
+     * @param fileName Filename of the SVG file, with modifier tags
+     * @return The MultiShapeObject created
+     * @throws Exception
+     */
+    public static MultiShapeObject importSVG(String fileName)  {
+        ResourceLoader rl=new ResourceLoader();
+        URL url = rl.getResource(fileName, "images");
+        try {
+            return importSVG(url, MODrawProperties.makeNullValues());
+        } catch (Exception e) {
+            logger.error("An exception ocurred loading SVG file "+fileName+". Returning empty MultiShapeObject instead");
+            logger.error(e.getMessage());
+            return MultiShapeObject.make();
+        }
     }
 
-    public void importSVG(URL urlSvg, MultiShapeObject msh, MODrawProperties base) throws Exception {
+
+    public static MultiShapeObject importSVG(URL urlSvg) {
+        try {
+            return importSVG(urlSvg, MODrawProperties.makeNullValues());
+        } catch (Exception e) {
+            logger.error("An exception ocurred loading SVG file from url "+urlSvg.getPath()+". Returning empty MultiShapeObject instead");
+            logger.error(e.getMessage());
+            return MultiShapeObject.make();
+        }
+    }
+
+    public static MultiShapeObject importSVG(URL urlSvg, MODrawProperties base) throws Exception {
+        resetParameters();
+        MultiShapeObject msh = MultiShapeObject.make();
         JMathAnimScene.logger.debug("Importing SVG file {}", urlSvg.toString());
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         // Disabling these features will speed up the load of the svg
@@ -139,14 +180,18 @@ public class SVGUtils {
         MODrawProperties mpCopy = base.copy();
         processStyleAttributeCommands(root, mpCopy);
         processChildNodes(root, mpCopy, currentTransform, msh);
+        msh.getMp().setAbsoluteThickness(false);//Ensure this
+        return msh;
     }
 
-    public void importSVGFromDOM(Element root, AbstractMultiShapeObject<?> msh) {
+    public static MultiShapeObject importSVGFromDOM(Element root) {
         currentTransform = new AffineJTransform();
+        MultiShapeObject msh = MultiShapeObject.make();
         processChildNodes(root, msh.getMp().getFirstMP(), currentTransform, msh);
+        return msh;
     }
 
-    private void processSVGAttributes(Element el) {
+    private static void processSVGAttributes(Element el) {
         if (!el.getAttribute("width").isEmpty()) {
             width = Double.parseDouble(extractNumbers(el.getAttribute("width")));
         }
@@ -161,7 +206,7 @@ public class SVGUtils {
         }
     }
 
-    private void processChildNodes(Element gNode, MODrawProperties localMP, AffineJTransform transform, AbstractMultiShapeObject<?> msh) throws NumberFormatException {
+    private static void processChildNodes(Element gNode, MODrawProperties localMP, AffineJTransform transform, MultiShapeObject msh) throws NumberFormatException {
         Shape shape;
         NodeList nList = gNode.getChildNodes();
         // localMP holds the base MODrawProperties to apply to all childs
@@ -185,7 +230,7 @@ public class SVGUtils {
                             path.distille();
                             PathUtils pathUtils = new PathUtils();
                             pathUtils.determineStraightSegments(path);
-                            if (!path.jmPathPoints.isEmpty()) {
+                            if (!path.getJmPathPoints().isEmpty()) {
                                 shape = new Shape(path);
                                 shape.getMp().copyFrom(mpCopy);
                                 transfCopy.applyTransform(shape);
@@ -256,7 +301,7 @@ public class SVGUtils {
         }
     }
 
-    private Shape processPolygonPoints(String s, boolean polygon) {
+    private static Shape processPolygonPoints(String s, boolean polygon) {
         ArrayList<Vec> points = new ArrayList<>();
         ArrayList<String> tokens = getPointTokens(s);
         Shape resul;
@@ -280,7 +325,7 @@ public class SVGUtils {
      * @param s The string of commands
      * @return The JMPathObject
      */
-    private JMPath processPathCommands(String s) throws Exception {
+    private static JMPath processPathCommands(String s) throws Exception {
         JMPath resul = new JMPath();
         double qx0,//Quadratic Bezier coefficients
                 qy0,
@@ -586,7 +631,7 @@ public class SVGUtils {
         return resul;
     }
 
-    private JMPathPoint processArcCommand(JMPath resul, Iterator<String> it) {
+    private static JMPathPoint processArcCommand(JMPath resul, Iterator<String> it) {
 
         double rx = Double.parseDouble(it.next());
         double ry = Double.parseDouble(it.next());
@@ -612,7 +657,7 @@ public class SVGUtils {
         if (large != sweep) arc.reverse();
 
         arc.scale(Point.origin(), 1, -1);
-        resul.jmPathPoints.addAll(arc.getPath().jmPathPoints);
+        resul.getJmPathPoints().addAll(arc.getPath().getJmPathPoints());
         return arc.get(-1);
     }
 //    private static @NotNull String sanitizeString(String s) {
@@ -643,7 +688,7 @@ public class SVGUtils {
 //        return t;
 //    }
 
-    private ArrayList<String> getPointTokens(String s) {
+    private static ArrayList<String> getPointTokens(String s) {
         String t = sanitizeString(s);
         String[] tokens_1 = t.split(" ");
         ArrayList<String> tokens = new ArrayList<>();
@@ -669,7 +714,7 @@ public class SVGUtils {
      * @param endY          The y-coordinate of the ending point of the quadratic Bézier segment.
      * @return The last JMPathPoint created for this segment, representing its endpoint.
      */
-    private JMPathPoint pathQuadraticBezier(JMPath pathResult, JMPathPoint previousPoint, double startX, double startY, double controlX, double controlY, double endX, double endY) {
+    private static JMPathPoint pathQuadraticBezier(JMPath pathResult, JMPathPoint previousPoint, double startX, double startY, double controlX, double controlY, double endX, double endY) {
         double[] firstControlPoint = calculateControlPoint(startX, startY, controlX, controlY);
         double[] secondControlPoint = calculateControlPoint(endX, endY, controlX, controlY);
 
@@ -680,23 +725,23 @@ public class SVGUtils {
         return previous;
     }
 
-    private double[] calculateControlPoint(double pointX, double pointY, double controlX, double controlY) {
+    private static double[] calculateControlPoint(double pointX, double pointY, double controlX, double controlY) {
         double derivedX = pointX + CONTROL_POINT_RATIO * (controlX - pointX);
         double derivedY = pointY + CONTROL_POINT_RATIO * (controlY - pointY);
         return new double[]{derivedX, derivedY};
     }
 
-    private void getPoint(String x, String y) throws NumberFormatException {
+    private static void getPoint(String x, String y) throws NumberFormatException {
         getPointX(x);
         getPointY(y);
     }
 
-    private void getPointX(String x) throws NumberFormatException {
+    private static void getPointX(String x) throws NumberFormatException {
         previousX = currentX;
         currentX = Double.parseDouble(x);
     }
 
-    private void getPointY(String y) throws NumberFormatException {
+    private static void getPointY(String y) throws NumberFormatException {
         previousY = currentY;
         currentY = -Double.parseDouble(y);
     }
@@ -716,7 +761,7 @@ public class SVGUtils {
      * @param y             The y-coordinate of the ending point of the cubic Bézier segment.
      * @return The last JMPathPoint created for this segment, representing its endpoint.
      */
-    private JMPathPoint pathCubicBezier(JMPath path, JMPathPoint previousPoint, double cx1, double cy1, double cx2,
+    private static JMPathPoint pathCubicBezier(JMPath path, JMPathPoint previousPoint, double cx1, double cy1, double cx2,
                                         double cy2, double x, double y) {
         JMPathPoint point = new JMPathPoint(Vec.to(currentX, currentY), true);
         point.setCurved(true);
@@ -729,7 +774,7 @@ public class SVGUtils {
     }
 
     // Adds a simple point to the path, with control points equal to the point
-    private JMPathPoint pathLineTo(JMPath path, double currentX, double currentY, boolean isVisible) {
+    private static JMPathPoint pathLineTo(JMPath path, double currentX, double currentY, boolean isVisible) {
         JMPathPoint point = new JMPathPoint(Vec.to(currentX, currentY), isVisible);
         point.setCurved(false);
         point.getvExit().x = currentX;
@@ -740,7 +785,7 @@ public class SVGUtils {
         return point;
     }
 
-    private void processStyleAttributeCommands(Element el, MODrawProperties ShMp) {
+    private static void processStyleAttributeCommands(Element el, MODrawProperties ShMp) {
         if (!"".equals(el.getAttribute("style"))) {
             parseStyleAttribute(el.getAttribute("style"), ShMp);
         }
@@ -762,7 +807,7 @@ public class SVGUtils {
 
     }
 
-    private double computeWidth(double th) {
+    private static double computeWidth(double th) {
         if ((width == 0) || (height == 0)) {
             //Default values if no width/height are defined in SVG file
             width = 300;
@@ -773,13 +818,13 @@ public class SVGUtils {
 
     }
 
-    private void processTransformAttributeCommands(Element el, AffineJTransform currentTransform) {
+    private static void processTransformAttributeCommands(Element el, AffineJTransform currentTransform) {
         if (!"".equals(el.getAttribute("transform"))) {
             parseTransformAttribute(el.getAttribute("transform"), currentTransform);
         }
     }
 
-    private void parseStyleAttribute(String str, MODrawProperties ShMp) {
+    private static void parseStyleAttribute(String str, MODrawProperties ShMp) {
         str = str.replaceAll("(?<=[;:])\\s*", "");
         String[] decls = str.split(";");
         for (String pairs : decls) {
@@ -804,7 +849,7 @@ public class SVGUtils {
         }
     }
 
-    private AffineJTransform parseTransformAttribute(String trans, AffineJTransform currentTransform) {
+    private static AffineJTransform parseTransformAttribute(String trans, AffineJTransform currentTransform) {
         ArrayList<AffineJTransform> transforms = new ArrayList<>();
         //First level: commands+arguments
         String delims = "[()]+";
@@ -828,7 +873,7 @@ public class SVGUtils {
         return resul;
     }
 
-    private AffineJTransform parseTransformCommand(String command, String arguments) {
+    private static AffineJTransform parseTransformCommand(String command, String arguments) {
         AffineJTransform resul = new AffineJTransform();//An identity transform
         String argDelims = "[ ,]+";
         String[] args = arguments.split(argDelims);
@@ -924,7 +969,7 @@ public class SVGUtils {
      * @param fileName    File name
      * @throws Exception
      */
-    public void writeElementToXMLFile(Element rootElement, String fileName) throws Exception {
+    private static void writeElementToXMLFile(Element rootElement, String fileName) throws Exception {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
         Document document = docBuilder.newDocument();
@@ -959,7 +1004,7 @@ public class SVGUtils {
      * @param destinyPoint Destiny Point
      * @return The created curve
      */
-    public Shape computeSVGArc(Coordinates<?> originPoint, double rx, double ry, double axisRotation, int large, int sweep, Coordinates<?> destinyPoint) {
+    private static Shape computeSVGArc(Coordinates<?> originPoint, double rx, double ry, double axisRotation, int large, int sweep, Coordinates<?> destinyPoint) {
         Vec O1 = (large == sweep ? originPoint.getVec().copy() : destinyPoint.getVec().copy());
         Vec O2 = (large == sweep ? destinyPoint.getVec().copy() : originPoint.getVec().copy());
         AffineJTransform tr = AffineJTransform.create2DRotationTransform(O1, axisRotation);
@@ -982,7 +1027,7 @@ public class SVGUtils {
         resul.applyAffineTransform(tr.getInverse());
         return resul;
     }
-    private String extractNumbers(String input) {
+    private static String extractNumbers(String input) {
              return input.replaceAll("[^0-9.]", "");
     }
 

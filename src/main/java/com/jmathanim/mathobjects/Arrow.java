@@ -30,7 +30,7 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Text.AbstractLaTeXMathObject;
+import com.jmathanim.mathobjects.Text.AbstractLatexMathObject;
 import com.jmathanim.mathobjects.Tippable.LabelTip;
 import com.jmathanim.mathobjects.updaters.Updater;
 
@@ -95,7 +95,14 @@ public class Arrow extends Constructible<Arrow> {
      * @return A Shape with the arrow head generated
      */
     public static Shape buildArrowHead(ArrowType type) {
-        Shape resul = loadHeadShape(type);
+        Shape resul = new Shape();
+        try {
+            resul = loadHeadShape(type);
+        } catch (Exception e) {
+            JMathAnimScene.logger.error("An exception occurred loading arrow models, returning empty Shape");
+            JMathAnimScene.logger.error(e.getMessage());
+           resul=new Shape();
+        }
         resul.style("default");
         resul.getPath().closePath();
         return resul;
@@ -113,7 +120,7 @@ public class Arrow extends Constructible<Arrow> {
         Arrow resul = new Arrow(A, B);
         resul.typeA = ArrowType.NONE_BUTT;
         resul.typeB = type;
-        resul.loadModels();
+        resul.safeLoadModels();
         resul.rebuildShape();
         resul.scene = JMathAnimConfig.getConfig().getScene();
         return resul;
@@ -124,13 +131,13 @@ public class Arrow extends Constructible<Arrow> {
         resul.typeA = typeA;
         resul.typeB = typeB;
         resul.angle = 0;
-        resul.loadModels();
+        resul.safeLoadModels();
         resul.rebuildShape();
         resul.scene = JMathAnimConfig.getConfig().getScene();
         return resul;
     }
 
-    private static Shape loadHeadShape(ArrowType type) {
+    private static Shape loadHeadShape(ArrowType type) throws Exception {
         ResourceLoader rl = new ResourceLoader();
         URL arrowUrl;
         Shape resul;
@@ -147,16 +154,16 @@ public class Arrow extends Constructible<Arrow> {
                 return Shape.segment(Vec.to(1, 0), Vec.to(0, 0));
             case ARROW1:
                 arrowUrl = rl.getResource("#arrow1.svg", "shapeResources/arrows");
-                return SVGMathObject.make(arrowUrl).get(0);
+                return SVGUtils.importSVG(arrowUrl).get(0);
             case ARROW2:
                 arrowUrl = rl.getResource("#arrow2.svg", "shapeResources/arrows");
-                return SVGMathObject.make(arrowUrl).get(0);
+                return SVGUtils.importSVG(arrowUrl).get(0);
             case ARROW3:
                 arrowUrl = rl.getResource("#arrow3.svg", "shapeResources/arrows");
-                return SVGMathObject.make(arrowUrl).get(0);
+                return SVGUtils.importSVG(arrowUrl).get(0);
             case SQUARE:
                 arrowUrl = rl.getResource("#ArrowSquare.svg", "shapeResources/arrows");
-                resul = SVGMathObject.make(arrowUrl).get(0);
+                resul = SVGUtils.importSVG(arrowUrl).get(0);
                 resul.setProperty("gap", -resul.getHeight() * .5);
                 return resul;
             case BULLET:
@@ -174,6 +181,22 @@ public class Arrow extends Constructible<Arrow> {
         }
     }
 
+    public void safeLoadModels() {
+        try {
+            loadModels();
+        } catch (Exception e) {
+            JMathAnimScene.logger.error("An exception occurred loading arrow models, switch to NONE_BUTT");
+            JMathAnimScene.logger.error(e.getMessage());
+            typeA = ArrowType.NONE_BUTT;
+            typeB = ArrowType.NONE_BUTT;
+            try {
+                loadModels();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
+
     @Override
     public MODrawPropertiesArray getMp() {
         return mpArrow;
@@ -184,7 +207,7 @@ public class Arrow extends Constructible<Arrow> {
         return groupElementsToBeDrawn;
     }
 
-    private void loadModels() {
+    private void loadModels() throws Exception {
         Shape h1 = loadHeadShape(typeA);
         Shape h2 = loadHeadShape(typeB);
         h2.scale(-1, -1);
@@ -492,7 +515,11 @@ public class Arrow extends Constructible<Arrow> {
     public void setTypeA(ArrowType typeA) {
         if (typeA != this.typeA) {
             this.typeA = typeA;
-            loadModels();
+            try {
+                loadModels();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             rebuildShape();
         }
     }
@@ -514,7 +541,11 @@ public class Arrow extends Constructible<Arrow> {
     public void setTypeB(ArrowType typeB) {
         if (typeB != this.typeB) {
             this.typeB = typeB;
-            loadModels();
+            try {
+                loadModels();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             rebuildShape();
         }
     }
@@ -663,7 +694,7 @@ public class Arrow extends Constructible<Arrow> {
         labelType = labelTypeEnum.DISTANCE;
         this.stringFormat = format;
 
-        AbstractLaTeXMathObject<?> t = arrowLabel.getLaTeXObject();
+        AbstractLatexMathObject<?> t = arrowLabel.getLaTeXObject();
         t.setArgumentsFormat(format);
         groupElementsToBeDrawn.clear();
         groupElementsToBeDrawn.add(shapeToDraw, arrowLabel);
@@ -698,7 +729,7 @@ public class Arrow extends Constructible<Arrow> {
         label.setAnchor(AnchorType.LOWER);
         setLabel(label);
         labelType = labelTypeEnum.COORDS;
-        AbstractLaTeXMathObject<?> t = arrowLabel.getLaTeXObject();
+        AbstractLatexMathObject<?> t = arrowLabel.getLaTeXObject();
         t.setArgumentsFormat(format);
         this.stringFormat = format;
         arrowLabel.registerUpdater(new Updater() {

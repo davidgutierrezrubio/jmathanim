@@ -32,7 +32,8 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.*;
 import com.jmathanim.mathobjects.*;
-import com.jmathanim.mathobjects.Text.LaTeXMathObject;
+import com.jmathanim.mathobjects.Text.LatexMathObject;
+import com.jmathanim.mathobjects.Text.LatexShape;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import org.slf4j.LoggerFactory;
 
@@ -662,21 +663,21 @@ public abstract class JMathAnimScene {
     }
 
     public void formulaHelper(String... formulas) {
-        LaTeXMathObject[] texes = new LaTeXMathObject[formulas.length];
+        LatexMathObject[] texes = new LatexMathObject[formulas.length];
         int n = 0;
         for (String t : formulas) {
-            LaTeXMathObject lat = LaTeXMathObject.make(t);
+            LatexMathObject lat = LatexMathObject.make(t);
             texes[n] = lat;
             n++;
         }
         formulaHelper(texes);
     }
 
-    public void formulaHelper(LaTeXMathObject... texes) {
+    public void formulaHelper(LatexMathObject... texes) {
         MathObjectGroup group = new MathObjectGroup();
-        for (LaTeXMathObject lat : texes) {
+        for (LatexMathObject lat : texes) {
             int k = 0;
-            for (Shape sh : lat) {
+            for (LatexShape sh : lat) {
                 MediatorMathObject.setDebugText(sh, "" + k);
                 k++;
             }

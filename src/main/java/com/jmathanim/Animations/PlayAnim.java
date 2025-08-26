@@ -26,7 +26,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
-import com.jmathanim.mathobjects.Text.LaTeXMathObject;
+import com.jmathanim.mathobjects.Text.LatexMathObject;
 
 import java.util.ArrayList;
 
@@ -616,7 +616,7 @@ public class PlayAnim {
      * Plays an animation drawing a MathObject.The object drawn is added to the current scene. Several strategies to
      * create the object are automatically chosen: For a simple shape, draws the shape. For a {@link MultiShapeObject}
      * performs a simple shape creation for each shape, with a time gap between one and the next. For a
-     * {@link SVGMathObject} (which includes {@link LaTeXMathObject}) a "first draw, then fill" strategy is chosen.
+     * {@link SVGMathObject} (which includes {@link LatexMathObject}) a "first draw, then fill" strategy is chosen.
      *
      * @param runtime  Run time (in seconds)
      * @param mobjects Objects to highlight (varargs)

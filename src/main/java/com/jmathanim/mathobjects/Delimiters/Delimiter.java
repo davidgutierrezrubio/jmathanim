@@ -10,7 +10,7 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
-import com.jmathanim.mathobjects.Text.LaTeXMathObject;
+import com.jmathanim.mathobjects.Text.LatexMathObject;
 import com.jmathanim.mathobjects.Text.TextUpdaters.CountUpdaterFactory;
 import com.jmathanim.mathobjects.Text.TextUpdaters.LengthUpdaterFactory;
 import com.jmathanim.mathobjects.Text.TextUpdaters.TextUpdaterFactory;
@@ -313,7 +313,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
 
 
     public Delimiter setLabel(String text, double labelGap) {
-        return setLabel(LaTeXMathObject.make(text), labelGap);
+        return setLabel(LatexMathObject.make(text), labelGap);
     }
 
     public <T extends Delimiter> T setLabel(MathObject label, double labelGap) {
@@ -334,10 +334,10 @@ public abstract class Delimiter extends Constructible<Delimiter> {
      * @param format Format to print the length, for example "0.00"
      * @return The Label, a LatexMathObject
      */
-    public LaTeXMathObject addLengthLabel(double gap,
+    public LatexMathObject addLengthLabel(double gap,
                                           String format) {
         setLabel("${#0}$", gap);
-        LaTeXMathObject t = (LaTeXMathObject) getLabel();
+        LatexMathObject t = (LatexMathObject) getLabel();
         t.setArgumentsFormat(format);
 
         textUpdaterFactory = new LengthUpdaterFactory(scene, t, A, B, format);
@@ -346,7 +346,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
         t.update(scene);
         rebuildShape();
 
-        return (LaTeXMathObject) getLabel();
+        return (LatexMathObject) getLabel();
     }
 
     /**
@@ -360,14 +360,14 @@ public abstract class Delimiter extends Constructible<Delimiter> {
      * @param objectToCount  The MathObjectGroup whose size will be counted and displayed in the label.
      * @return The label as a LaTeXMathObject that shows the count of objects in the group.
      */
-    public LaTeXMathObject addCountLabel(double gap, Object objectToCount) {
+    public LatexMathObject addCountLabel(double gap, Object objectToCount) {
         setLabel("${#0}$", .1);
-        LaTeXMathObject t = (LaTeXMathObject) getLabel();
+        LatexMathObject t = (LatexMathObject) getLabel();
         t.setArgumentsFormat("#");
         textUpdaterFactory=new CountUpdaterFactory(scene,t,objectToCount,"#");
         t.registerUpdater(textUpdaterFactory.getUpdater());
         t.update(JMathAnimConfig.getConfig().getScene());
-        return (LaTeXMathObject) getLabel();
+        return (LatexMathObject) getLabel();
     }
 
 

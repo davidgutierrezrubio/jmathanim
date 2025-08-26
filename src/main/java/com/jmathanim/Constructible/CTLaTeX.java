@@ -20,7 +20,7 @@ package com.jmathanim.Constructible;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Text.LaTeXMathObject;
+import com.jmathanim.mathobjects.Text.LatexMathObject;
 
 /**
  * A constructible LaTeX expression, anchored to a CTPoint
@@ -29,7 +29,7 @@ import com.jmathanim.mathobjects.Text.LaTeXMathObject;
  */
 public class CTLaTeX extends Constructible<CTLaTeX> {
 
-    private final LaTeXMathObject tex;
+    private final LatexMathObject tex;
     private final AnchorType anchorType;
     private final double gap;
 
@@ -51,7 +51,7 @@ public class CTLaTeX extends Constructible<CTLaTeX> {
     private boolean visible;
 
     private CTLaTeX(String text, CTPoint anchor, AnchorType anchorType, double gap) {
-        tex = LaTeXMathObject.make(text);
+        tex = LatexMathObject.make(text);
         this.gap = gap;
         this.anchorType = anchorType;
         this.anchor = anchor;
@@ -59,7 +59,7 @@ public class CTLaTeX extends Constructible<CTLaTeX> {
     }
 
     @Override
-    public LaTeXMathObject getMathObject() {
+    public LatexMathObject getMathObject() {
         return tex;
     }
 

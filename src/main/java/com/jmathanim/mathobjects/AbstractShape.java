@@ -146,7 +146,7 @@ public abstract class
      * @return The JMPathPoint
      */
     public JMPathPoint get(int n) {
-        return jmpath.jmPathPoints.get(n);
+        return jmpath.getJmPathPoints().get(n);
     }
 
     /**
@@ -180,7 +180,7 @@ public abstract class
         subShape.getMp().copyFrom(this.getMp());
         if (!jmpath.isEmpty()) {
             final JMPath subPath = jmpath.getSubPath(a, b);
-            subShape.getPath().jmPathPoints.addAll(subPath.jmPathPoints);
+            subShape.getPath().getJmPathPoints().addAll(subPath.getJmPathPoints());
         }
         return subShape;
     }
@@ -246,7 +246,7 @@ public abstract class
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        OptionalInt m = getPath().jmPathPoints.stream().mapToInt(t -> t.getUpdateLevel()).max();
+        OptionalInt m = getPath().getJmPathPoints().stream().mapToInt(t -> t.getUpdateLevel()).max();
         if (m.isPresent()) {
             setUpdateLevel(m.getAsInt() + 1);
         } else {

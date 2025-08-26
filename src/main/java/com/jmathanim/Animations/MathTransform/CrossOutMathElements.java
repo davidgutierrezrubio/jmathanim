@@ -28,6 +28,7 @@ import com.jmathanim.mathobjects.AbstractMultiShapeObject;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.Text.AbstractLatexMathObject;
 
 import java.util.ArrayList;
 
@@ -55,18 +56,18 @@ public class CrossOutMathElements extends AnimationGroup {
      * per index)
      * @return The created animation.
      */
-    public static CrossOutMathElements make(double runTime, AbstractMultiShapeObject<?> formula, int... indices) {
+    public static CrossOutMathElements make(double runTime, AbstractLatexMathObject<?> formula, int... indices) {
         CrossOutMathElements resul = new CrossOutMathElements(runTime, formula);
         resul.shouldAddObjectsToScene = true;
         resul.addSmallCrosses(indices);
         resul.setLambda(t -> t);
         return resul;
     }
-    private final AbstractMultiShapeObject<?>  formula;
+    private final AbstractLatexMathObject<?> formula;
     private final MultiShapeObject generatedCrosses;
     private int[] createdCrossedIndices;
 
-    private CrossOutMathElements(double runTime, AbstractMultiShapeObject<?>  formula) {
+    private CrossOutMathElements(double runTime, AbstractLatexMathObject<?> formula) {
         super();
         this.runTime = runTime;
         this.formula = formula;
@@ -148,7 +149,7 @@ public class CrossOutMathElements extends AnimationGroup {
             generatedCrosses.add(cross);
             if (shoulAddCrossesToFormulaAtEnd) {
                 scene.remove(cross);
-                formula.add(cross);
+                formula.add(formula.shapeToLatexShape(cross));
                 createdCrossedIndices[k] = k + offset;
                 k++;
             }
@@ -198,7 +199,7 @@ public class CrossOutMathElements extends AnimationGroup {
 
     private void generateCrosses() {
         for (int[] indices : crossIndices) {
-            AbstractMultiShapeObject<?> slice = formula.slice(false, indices);
+            AbstractMultiShapeObject<?,?> slice = formula.slice(false, indices);
             Rect formulaRect = slice.getBoundingBox();
             Shape cross = buildCrossFromRect(formulaRect);
             cross.getMp().copyFrom(crossDrawProperties);

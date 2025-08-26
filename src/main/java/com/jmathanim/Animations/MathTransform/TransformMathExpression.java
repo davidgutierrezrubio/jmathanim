@@ -21,10 +21,7 @@ import com.jmathanim.Animations.*;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Utils.OrientationType;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.AbstractMultiShapeObject;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MultiShapeObject;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,8 +38,8 @@ public class TransformMathExpression extends Animation {
 
     private RemoveType defaultRemovingStyle;
     private AddType defaultAddingStyle;
-    private final AbstractMultiShapeObject<?> latexTransformedOrig;
-    private final AbstractMultiShapeObject<?> latexDestiny;
+    private final AbstractMultiShapeObject<?,?> latexTransformedOrig;
+    private final AbstractMultiShapeObject<?,?> latexDestiny;
     private final MultiShapeObject latexTransformedBase;
     private final AnimationGroup animations;
     private boolean isOriginalAddedToScene;
@@ -99,7 +96,7 @@ public class TransformMathExpression extends Animation {
      * @param latexDestiny Destiny math expression
      * @return The created object
      */
-    public static TransformMathExpression make(double runTime, AbstractMultiShapeObject<?> latexTransformed, AbstractMultiShapeObject<?> latexDestiny) {
+    public static TransformMathExpression make(double runTime, AbstractMultiShapeObject<?,?> latexTransformed, AbstractMultiShapeObject<?,?> latexDestiny) {
         return new TransformMathExpression(runTime, latexTransformed, latexDestiny);
     }
 
@@ -112,7 +109,7 @@ public class TransformMathExpression extends Animation {
      * @param latexTransformedOrig Original math expression
      * @param latexDestiny Destiny math expression
      */
-    public TransformMathExpression(double runTime, AbstractMultiShapeObject<?> latexTransformedOrig, AbstractMultiShapeObject<?> latexDestiny) {
+    public TransformMathExpression(double runTime, AbstractMultiShapeObject<?,?> latexTransformedOrig, AbstractMultiShapeObject<?,?> latexDestiny) {
         super(runTime);
         this.latexTransformedBase = MultiShapeObject.make();
         this.latexTransformedOrig = latexTransformedOrig;
@@ -163,13 +160,21 @@ public class TransformMathExpression extends Animation {
 //            } else {
             // For each of the shapes of a origin group, makes a transform animation
             // The destiny will be one merged shape of all shapes of destiny group
-            ArrayList<Shape> listDst = getShapeListForGroup(dst, name2, latexDestiny, addInDstParameters);
-            ArrayList<Shape> listOrig = getShapeListForGroup(or, name1, latexTransformedBase, removeInOrigParameters);
+            ArrayList<AbstractShape<?>> listDst = getShapeListForGroup(dst, name2, latexDestiny, addInDstParameters);
+            ArrayList<AbstractShape<?>> listOrig = getShapeListForGroup(or, name1, latexTransformedBase, removeInOrigParameters);
 
-            MultiShapeObject mshDst = MultiShapeObject.make();
-            mshDst.getShapes().addAll(listDst);
-            MultiShapeObject mshOrig = MultiShapeObject.make();
-            mshOrig.getShapes().addAll(listOrig);
+//            MultiShapeObject mshDst = MultiShapeObject.make();
+//
+//            mshDst.getShapes().addAll(listDst);
+//            MultiShapeObject mshOrig = MultiShapeObject.make();
+//            mshOrig.getShapes().addAll(listOrig);
+
+
+            MathObjectGroup mshDst = MathObjectGroup.make();
+
+            mshDst.addAll(listDst);
+            MathObjectGroup mshOrig = MathObjectGroup.make();
+            mshOrig.addAll(listOrig);
 
               createTransformSubAnimation(mshOrig, mshDst, trParTransformParameters.get(name1));
             
@@ -178,7 +183,7 @@ public class TransformMathExpression extends Animation {
             createRemovingSubAnimation(n, removeInOrigParameters.get(n));
         }
         for (int n : addInDstParameters.keySet()) {
-            Shape sh = latexDestiny.get(n);
+            AbstractShape<?> sh = latexDestiny.get(n);
             createAddingSubAnimation(sh, addInDstParameters.get(n));
         }
 
@@ -220,28 +225,28 @@ public class TransformMathExpression extends Animation {
 //            } else {
             // For each of the shapes of a origin group, makes a transform animation
             // The destiny will be one merged shape of all shapes of destiny group
-            ArrayList<Shape> listDst = getShapeListForGroup(dst, name2, latexDestiny, addInDstParameters);
-            ArrayList<Shape> listOrig = getShapeListForGroup(or, name1, latexTransformedBase, removeInOrigParameters);
+            ArrayList<AbstractShape<?>> listDst = getShapeListForGroup(dst, name2, latexDestiny, addInDstParameters);
+            ArrayList<AbstractShape<?>> listOrig = getShapeListForGroup(or, name1, latexTransformedBase, removeInOrigParameters);
 
             int nDst = listDst.size();
             int nOrig = listOrig.size();
             if (nDst * nOrig != 0) {//both nDst and nOrig must be >0
                 if (nDst < nOrig) {
-                    for (Shape sh : listOrig) {
-                        Shape sh2 = getShapeForGroup(dst, name2, latexDestiny, addInDstParameters);
+                    for (AbstractShape<?> sh : listOrig) {
+                        AbstractShape<?> sh2 = getShapeForGroup(dst, name2, latexDestiny, addInDstParameters);
                         createTransformSubAnimation(sh, sh2, trParTransformParameters.get(name1));
                     }
                 } else {
                     for (int k = 0; k < nOrig; k++) {
-                        Shape sh1 = listOrig.get(k);
-                        Shape sh2 = listDst.get(k);
+                        AbstractShape<?> sh1 = listOrig.get(k);
+                        AbstractShape<?> sh2 = listDst.get(k);
                         createTransformSubAnimation(sh1, sh2, trParTransformParameters.get(name1));
                     }
                     //If destiny has more shapes than origin, make copies of the last one of orig and map
 
                     for (int k = 0; k < nDst - nOrig; k++) {
-                        Shape sh1 = listOrig.get(nOrig - 1);
-                        Shape sh2 = listDst.get(nOrig + k);
+                        AbstractShape<?> sh1 = listOrig.get(nOrig - 1);
+                        AbstractShape<?> sh2 = listDst.get(nOrig + k);
                         createTransformSubAnimation(sh1, sh2, trParTransformParameters.get(name1));
                     }
                 }
@@ -252,7 +257,7 @@ public class TransformMathExpression extends Animation {
             createRemovingSubAnimation(n, removeInOrigParameters.get(n));
         }
         for (int n : addInDstParameters.keySet()) {
-            Shape sh = latexDestiny.get(n);
+            AbstractShape<?> sh = latexDestiny.get(n);
             createAddingSubAnimation(sh, addInDstParameters.get(n));
         }
 
@@ -302,7 +307,7 @@ public class TransformMathExpression extends Animation {
         animations.add(group);
     }
 
-    private void createAddingSubAnimation(Shape sh, TransformMathExpressionParameters par) {
+    private void createAddingSubAnimation(AbstractShape<?> sh, TransformMathExpressionParameters par) {
         AnimationGroup group = new AnimationGroup();
 
         if (par.getAddingStyle() == null) {
@@ -345,7 +350,7 @@ public class TransformMathExpression extends Animation {
         toDelete.add(sh);
     }
 
-    private void createTransformSubAnimation(MathObject sh, MathObject sh2, TransformMathExpressionParameters par) {
+    private void createTransformSubAnimation(MathObject<?> sh, MathObject sh2, TransformMathExpressionParameters par) {
         AnimationWithEffects transform = null;
         switch (par.getTransformStyle()) {
             case INTERPOLATION:
@@ -391,9 +396,9 @@ public class TransformMathExpression extends Animation {
         toDelete.add(sh2);
     }
 
-    private ArrayList<Shape> getShapeListForGroup(HashMap<String, int[]> or, String names, AbstractMultiShapeObject<?> lat,
+    private ArrayList<AbstractShape<?>> getShapeListForGroup(HashMap<String, int[]> or, String names, AbstractMultiShapeObject<?,?> lat,
             HashMap<Integer, TransformMathExpressionParameters> listRemainders) {
-        ArrayList<Shape> resul = new ArrayList<>();
+        ArrayList<AbstractShape<?>> resul = new ArrayList<>();
         int[] gr = or.get(names);
         if (gr != null) {
             for (int n = 0; n < gr.length; n++) {
@@ -405,11 +410,11 @@ public class TransformMathExpression extends Animation {
         return resul;
     }
 
-    private Shape getShapeForGroup(HashMap<String, int[]> or, String names, AbstractMultiShapeObject<?> lat,
+    private AbstractShape<?> getShapeForGroup(HashMap<String, int[]> or, String names, AbstractMultiShapeObject<?,?> lat,
             HashMap<Integer, TransformMathExpressionParameters> listRemainders) {
         int[] gr = or.get(names);
-        Shape sh = lat.get(gr[0]);
-//        Shape sh = lat.get(gr[0]).copy();
+        AbstractShape<?> sh = lat.get(gr[0]);
+//        AbstractShape<?> sh = lat.get(gr[0]).copy();
         listRemainders.remove(gr[0]);
         for (int n = 1; n < gr.length; n++) {
             sh.merge(lat.get(gr[n]), false, false);

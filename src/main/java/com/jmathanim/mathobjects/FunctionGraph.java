@@ -267,7 +267,7 @@ public class FunctionGraph extends AbstractShape<FunctionGraph> implements hasSc
      * recalculated.
      */
     public void updatePoints() {
-        for (JMPathPoint jmp : getPath().jmPathPoints) {
+        for (JMPathPoint jmp : getPath().getJmPathPoints()) {
             jmp.getV().y = getFunctionValue(jmp.getV().x, this.w);
         }
         generateControlPoints();
@@ -328,7 +328,7 @@ public class FunctionGraph extends AbstractShape<FunctionGraph> implements hasSc
         xPoints.add(n, x);
         double y = getFunctionValue(x, this.w);
         final JMPathPoint jmp = JMPathPoint.curveTo(Vec.to(x,y));
-        getPath().jmPathPoints.add(n, jmp);
+        getPath().getJmPathPoints().add(n, jmp);
         return jmp;
     }
 
@@ -369,7 +369,7 @@ public class FunctionGraph extends AbstractShape<FunctionGraph> implements hasSc
         funcAux.generateControlPoints();
         JMPath areaPath = funcAux.getPath();
         areaPath.addPoint(Vec.to(mb, 0), Vec.to(ma, 0));
-        areaPath.jmPathPoints.get(0).setThisSegmentVisible(true);
+        areaPath.getJmPathPoints().get(0).setThisSegmentVisible(true);
         return new Shape(areaPath);
     }
 

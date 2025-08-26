@@ -22,26 +22,22 @@ import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.Commands;
 import com.jmathanim.Animations.JoinAnimation;
 import com.jmathanim.Styling.MODrawProperties;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.MultiShapeObject;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.*;
 
 /**
- * Animation that draws and object and then changes its alpha fill from 0 to
- * current. If used in a multishape, a delayTime can be specified between
- * animating one shape and next one
+ * Animation that draws and object and then changes its alpha fill from 0 to current. If used in a multishape, a
+ * delayTime can be specified between animating one shape and next one
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
 
-    private Shape[] originShapes;
-    private final MathObject originObject;
-    private Shape[] intermediateShapes;
     public final AnimationGroup anim;
+    private final AbstractMultiShapeObject<?,?> originObject;
+    private AbstractShape<?>[] originShapes;
+    private AbstractShape<?>[] intermediateShapes;
 
-    public FirstDrawThenFillAnimation(double runtime, MathObject origin) {
+    public FirstDrawThenFillAnimation(double runtime, AbstractMultiShapeObject<?,?> origin) {
         super(runtime);
         this.originObject = origin;
 
@@ -73,7 +69,7 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
         return anim.initialize(scene);
     }
 
-    public Animation createSingleAnimation(boolean shouldAnimateFill, Shape sh, MODrawProperties mp) {
+    public Animation createSingleAnimation(boolean shouldAnimateFill, AbstractShape<?> sh, MODrawProperties mp) {
         Animation singleAnim;
         if (shouldAnimateFill) {
             sh.fillAlpha(0);
@@ -100,11 +96,8 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
         super.finishAnimation();
     }
 
-    private Shape[] converToShapeArray(MathObject obj) {
-        if (obj instanceof Shape) {
-            Shape shape = (Shape) obj;
-            return new Shape[]{shape};
-        }
+    private AbstractShape<?>[] converToShapeArray(MathObject obj) {
+
         if (obj instanceof MultiShapeObject) {
             MultiShapeObject multiShapeObject = (MultiShapeObject) obj;
             return multiShapeObject.toArray();
@@ -117,6 +110,10 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
                 shapes[i] = (Shape) mg.get(i);
             }
             return shapes;
+        }
+        if (obj instanceof AbstractShape<?>) {
+            Shape shape = (Shape) obj;
+            return new Shape[]{shape};
         }
         return null;
     }

@@ -27,7 +27,7 @@ import java.text.DecimalFormat;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class JMNumber extends AbstractLaTeXMathObject<JMNumber> implements hasScalarParameter {
+public class JMNumber extends AbstractLatexMathObject<JMNumber> implements hasScalarParameter {
 
     private final DecimalFormat formatter;
     private double value;
@@ -67,6 +67,11 @@ public class JMNumber extends AbstractLaTeXMathObject<JMNumber> implements hasSc
     }
 
     @Override
+    protected LatexShape createEmptyShapeAt(int index) {
+        return null;
+    }
+
+    @Override
     public void copyStateFrom(Stateable obj) {
         if (!(obj instanceof JMNumber)) return;
         super.copyStateFrom(obj);
@@ -75,6 +80,11 @@ public class JMNumber extends AbstractLaTeXMathObject<JMNumber> implements hasSc
         this.format = copy.format;
         this.formatter.applyPattern(format);
         super.copyStateFrom(obj);
+    }
+
+    @Override
+    protected JMNumber makeNewEmptyInstance() {
+        return null;
     }
 
     /**

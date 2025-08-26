@@ -17,21 +17,13 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.ResourceLoader;
-import com.jmathanim.Utils.SVGUtils;
-
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * This class manages import from SVG files and converting them into multipath
  * objects
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class SVGMathObject extends AbstractMultiShapeObject<SVGMathObject> {
+public class SVGMathObject extends AbstractMultiShapeObject<SVGMathObject,Shape> {
 
     protected String filename;
 
@@ -42,41 +34,53 @@ public class SVGMathObject extends AbstractMultiShapeObject<SVGMathObject> {
 //    private JMColor currentFillColor;
 //    private JMColor currentDrawColor;
 //    private double currentStrokeSize = .5d;
-
-  public static SVGMathObject make(String filename) {
-      ResourceLoader rl=new ResourceLoader();
-        URL url = rl.getResource(filename, "images");
-        return make(url);
-  }
+//
+//  public static SVGMathObject make(String filename) {
+//      ResourceLoader rl=new ResourceLoader();
+//        URL url = rl.getResource(filename, "images");
+//        return make(url);
+//  }
   public static SVGMathObject make() {
       return new SVGMathObject();
   }
 
 
     protected SVGMathObject() {
-        super();
+        super(Shape.class);
     }
-
-    /**
-     * Creates a new SVGMathObject from the specified URL
-     * @param url A URL object pointing to a SVG file.
-     */
-    public static SVGMathObject make(URL url) {
-        SVGMathObject resul = new SVGMathObject();
-        try {
-            SVGUtils svgu = new SVGUtils(JMathAnimConfig.getConfig().getScene());
-            svgu.importSVG(url, resul);
-            resul.getMp().setAbsoluteThickness(false);
-        } catch (Exception ex) {
-            Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return resul;
-    }
+//
+//    /**
+//     * Creates a new SVGMathObject from the specified URL
+//     * @param url A URL object pointing to a SVG file.
+//     */
+//    public static SVGMathObject make(URL url) {
+//        SVGMathObject resul = new SVGMathObject();
+//        try {
+//            SVGUtils svgu = new SVGUtils(JMathAnimConfig.getConfig().getScene());
+//            svgu.importSVG(url, resul);
+//            resul.getMp().setAbsoluteThickness(false);
+//        } catch (Exception ex) {
+//            Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return resul;
+//    }
 
     @Override
     public SVGMathObject copy() {
         SVGMathObject copy = SVGMathObject.make();
         copy.copyStateFrom(this);
         return copy;
+    }
+
+    @Override
+    protected Shape createEmptyShapeAt(int index) {
+        Shape sh = new Shape();
+        shapes.add(index, sh);
+        return sh;
+    }
+
+    @Override
+    protected SVGMathObject makeNewEmptyInstance() {
+        return SVGMathObject.make();
     }
 }

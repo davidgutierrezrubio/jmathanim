@@ -175,7 +175,7 @@ public abstract class AbstractMultiShapeObject<
      * @return This object
      */
     @SuppressWarnings("unchecked")
-    public S alignCenter(int index, T otherObject, int indexOtherObject) {
+    public S alignCenter(int index, AbstractMultiShapeObject<?,?> otherObject, int indexOtherObject) {
         shift(this.get(index).getCenter().to(otherObject.get(indexOtherObject).getCenter()));
         return (S) this;
     }
@@ -262,7 +262,7 @@ public abstract class AbstractMultiShapeObject<
      * @return A new MultiShapeObject with the specified shapes
      */
     @SuppressWarnings("unchecked")
-    public S getSubMultiShape(int... indices) {
+    public S getSelectedIndices(int... indices) {
         S resul = makeNewEmptyInstance();
         resul.getMp().copyFrom(this.getMp());
         for (int n : indices) {

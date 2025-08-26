@@ -63,7 +63,7 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
         alignNumberOfElements(shIntermediate.getPath(), shDestiny.getPath());
         optimizeStrategy.optimizePaths(shIntermediate, shDestiny);
         // Mark all points as curved during transformation
-        for (JMPathPoint jmp : shIntermediate.getPath().jmPathPoints) {
+        for (JMPathPoint jmp : shIntermediate.getPath().getJmPathPoints()) {
             jmp.setCurved(true);
         }
         originBase = getIntermediateObject().copy();

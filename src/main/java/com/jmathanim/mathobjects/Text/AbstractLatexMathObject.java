@@ -47,8 +47,8 @@ import java.util.logging.Logger;
 /**
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class AbstractLaTeXMathObject<T extends AbstractLaTeXMathObject<T>>
-        extends AbstractMultiShapeObject<T> {
+public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<T>>
+        extends AbstractMultiShapeObject<T, LatexShape> {
 
     // Default scale for latex objects (relative to screen height)
     // This factor represents % of height relative to the screen that a "X"
@@ -69,8 +69,8 @@ public abstract class AbstractLaTeXMathObject<T extends AbstractLaTeXMathObject<
     private Point anchor3DC;
     private Point anchor3DD;
 
-    protected AbstractLaTeXMathObject(AnchorType anchor) {
-        super();
+    protected AbstractLatexMathObject(AnchorType anchor) {
+        super(LatexShape.class);
         this.anchor = anchor;
         modelMatrix = new AffineJTransform();
         this.latexParser = new LatexParser(this);
@@ -113,7 +113,7 @@ public abstract class AbstractLaTeXMathObject<T extends AbstractLaTeXMathObject<
 //            this.text = text;
 //        }
         this.text = text;
-        for (Shape sh : this) {
+        for (LatexShape sh : this) {
             scene.remove(sh);
         }
         clearShapes();
@@ -121,8 +121,8 @@ public abstract class AbstractLaTeXMathObject<T extends AbstractLaTeXMathObject<
             try {
                 generateLaTeXDocument();
                 File f = new File(compileLaTeXFile());
-                SVGUtils svgu = new SVGUtils(scene);
-                svgu.importSVG(f.toURI().toURL(), this, MODrawProperties.createFromStyle("latexdefault"));
+                clearShapes();
+                addShapesFrom(SVGUtils.importSVG(f.toURI().toURL(),  MODrawProperties.createFromStyle("latexdefault")));
             } catch (IOException ex) {
                 if (ex.getLocalizedMessage().toUpperCase().startsWith("CANNOT RUN PROGRAM")) {
                     JMathAnimScene.logger.error("Oops, it seems JMathAnim cannot find your LaTeX executable." + " Make sure you have LaTeX installed on your system and the latex program" + " is accesible from your path");
@@ -136,19 +136,13 @@ public abstract class AbstractLaTeXMathObject<T extends AbstractLaTeXMathObject<
             }
         } else {
             Element root = generateDOMTreeFromLaTeX(this.text);
-            SVGUtils svgUtils = new SVGUtils(scene);
-//            try {
-//                svgUtils.writeElementToXMLFile(root, "PRUEBA.xml");
-//            } catch (Exception ex) {
-//                Logger.getLogger(AbstractLaTeXMathObject.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-            svgUtils.importSVGFromDOM(root, this);
+            addShapesFrom(SVGUtils.importSVGFromDOM(root));
             latexParser.parse();
         }
 
         int n = 0;
         mpMultiShape.getObjects().clear();
-        for (Shape sh : this) {
+        for (LatexShape sh : this) {
             mpMultiShape.add(sh);
             sh.getMp().copyFrom(mpMultiShape);
             // Workaround: Draw color should be the same as fill color
@@ -220,10 +214,22 @@ public abstract class AbstractLaTeXMathObject<T extends AbstractLaTeXMathObject<
         shift(v);
 
         modelMatrix.copyFrom(modelMatrixBackup);
-        for (Shape sh : this) {
+        for (LatexShape sh : this) {
 //            sh.getMp().copyFrom(mpMultiShape);
             sh.applyAffineTransform(modelMatrix);
         }
+    }
+
+    private void addShapesFrom(MultiShapeObject latexdefault) {
+        for (Shape sh:latexdefault) {
+            add(shapeToLatexShape(sh));
+        }
+    }
+    public LatexShape shapeToLatexShape(Shape sh) {
+        LatexShape resul=new LatexShape();
+        resul.getPath().getJmPathPoints().addAll(sh.getPath().getJmPathPoints());
+        resul.getMp().copyFrom(sh.getMp());
+        return resul;
     }
 
     public LatexParser getLatexParser() {
@@ -233,7 +239,7 @@ public abstract class AbstractLaTeXMathObject<T extends AbstractLaTeXMathObject<
     @Override
     protected Rect computeBoundingBox() {
         Rect resul = null;
-        for (Shape jmp : this) {
+        for (LatexShape jmp : this) {
             if (!jmp.isEmpty()) {
                 resul = Rect.union(resul, jmp.getBoundingBox());
             }
@@ -296,7 +302,7 @@ public abstract class AbstractLaTeXMathObject<T extends AbstractLaTeXMathObject<
             pw.print(fullDocument);
             pw.close();
         } catch (IOException ex) {
-            Logger.getLogger(LaTeXMathObject.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LatexMathObject.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -394,8 +400,8 @@ public abstract class AbstractLaTeXMathObject<T extends AbstractLaTeXMathObject<
 
     @Override
     public void copyStateFrom(Stateable obj) {
-        if (!(obj instanceof AbstractLaTeXMathObject)) return;
-        AbstractLaTeXMathObject<?> laTeXMathObject = (AbstractLaTeXMathObject<?>) obj;
+        if (!(obj instanceof AbstractLatexMathObject)) return;
+        AbstractLatexMathObject<?> laTeXMathObject = (AbstractLatexMathObject<?>) obj;
         super.copyStateFrom(obj);
 
             this.text = laTeXMathObject.getText();
@@ -446,6 +452,16 @@ public abstract class AbstractLaTeXMathObject<T extends AbstractLaTeXMathObject<
         return (T) this;
     }
 
+
+    @Override
+    protected LatexShape createEmptyShapeAt(int index) {
+        LatexShape laTeXShape=new LatexShape();
+        shapes.add(index, laTeXShape);
+        return laTeXShape;
+    }
+
+
+
     /**
      * Returns a MultiShapeObject with all shapes with match given token LaTex code must be compiled with the JLaTeXMath
      * option to use this method.
@@ -453,8 +469,8 @@ public abstract class AbstractLaTeXMathObject<T extends AbstractLaTeXMathObject<
      * @param token Token to match
      * @return A MultiShapeObject with all matching shapes
      */
-    public MultiShapeObject getShapesWith(LatexToken token) {
-        MultiShapeObject resul = MultiShapeObject.make();
+    public T getShapesWith(LatexToken token) {
+        T resul = makeNewEmptyInstance();
         if (latexParser == null) {
             return resul;
         }

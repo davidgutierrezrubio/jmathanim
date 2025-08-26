@@ -19,15 +19,13 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Enum.JumpType;
 import com.jmathanim.Styling.Stylable;
-import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.ResourceLoader;
-import com.jmathanim.Utils.UsefulLambdas;
-import com.jmathanim.Utils.Vec;
+import com.jmathanim.Utils.*;
 import com.jmathanim.mathobjects.*;
 
 import java.util.HashMap;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
+import static com.jmathanim.jmathanim.JMathAnimScene.logger;
 
 /**
  * This class holds and manages information about animation effects
@@ -153,7 +151,7 @@ public class AnimationEffect {
             return;
         }
         double dist = A.to(B).norm();
-        Shape jumpPath = null;
+        AbstractShape<?> jumpPath = null;
         switch (jumpType) {
             case SEMICIRCLE:
                 jumpPath = Shape.arc(PI).scale(1, Math.signum(jumpHeight));
@@ -169,27 +167,34 @@ public class AnimationEffect {
                 break;
             case FOLIUM:
                 ResourceLoader rl = new ResourceLoader();
-                jumpPath = SVGMathObject.make("#foliumJumpPath.svg").get(0).scale(1, -1);
+                MultiShapeObject folium = null;
+                try {
+                    folium = SVGUtils.importSVG(rl.getResource("foliumJumpPath.svg", "shapeResources/jumpPaths"));
+                    jumpPath = folium.get(0).scale(1, -1);
+                } catch (Exception e) {
+                    logger.error("An exception occurred loading the foliumJumpPath, a null jump path will be used");
+                    logger.error(e.getMessage());
+                }
                 break;
             case PARABOLICAL:
-                jumpPath = new Shape(FunctionGraph.make(t -> 4 * t * (1 - t), 0, 1, 2).getPath());
+                jumpPath = FunctionGraph.make(t -> 4 * t * (1 - t), 0, 1, 2);
                 break;
             case SINUSOIDAL:
-                jumpPath = new Shape(FunctionGraph.make(t -> Math.sin(PI * t), 0, 1, 2).getPath());
+                jumpPath = FunctionGraph.make(t -> Math.sin(PI * t), 0, 1, 2);
                 break;
             case SINUSOIDAL2:
 //                jumpPath = new Shape(FunctionGraph.make(t -> 10.39230484541326*t*(1-t)*(1-2*t), 0, 1).getPath());
-                jumpPath = new Shape(FunctionGraph.make(t -> Math.sin(2 * PI * t), 0, 1, 3).getPath());
+                jumpPath = FunctionGraph.make(t -> Math.sin(2 * PI * t), 0, 1, 3);
                 break;
             case CRANE:
                 jumpPath = Shape.polyLine(Point.origin(), Vec.to(0, .7), Vec.to(0, 1), Vec.to(.3, 1), Vec.to(.7, 1),
                         Vec.to(1, 1), Vec.to(1, .7), Vec.to(1, 0));
                 break;
             case BOUNCE1:
-                jumpPath = new Shape(FunctionGraph.make(UsefulLambdas.backAndForthBounce1(), 0, 1).getPath());
+                jumpPath = FunctionGraph.make(UsefulLambdas.backAndForthBounce1(), 0, 1);
                 break;
             case BOUNCE2:
-                jumpPath = new Shape(FunctionGraph.make(UsefulLambdas.backAndForthBounce2(), 0, 1).getPath());
+                jumpPath = FunctionGraph.make(UsefulLambdas.backAndForthBounce2(), 0, 1);
                 break;
         }
 

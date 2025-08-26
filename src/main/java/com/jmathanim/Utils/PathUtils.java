@@ -65,16 +65,16 @@ public class PathUtils {
             jMPathPoint.setCurved(true);
         }
 
-        int numPoints = path.jmPathPoints.size();
+        int numPoints = path.getJmPathPoints().size();
 
         for (int n = 0; n < numPoints + 1; n++) {
             int i = n - 1;
             int k = n + 1;
             int L = n + 2;
-            JMPathPoint p1 = path.jmPathPoints.get(i);
-            JMPathPoint p2 = path.jmPathPoints.get(n);// Compute cp1 for this
-            JMPathPoint p3 = path.jmPathPoints.get(k);// Compute cp2 for this
-            JMPathPoint p4 = path.jmPathPoints.get(L);
+            JMPathPoint p1 = path.getJmPathPoints().get(i);
+            JMPathPoint p2 = path.getJmPathPoints().get(n);// Compute cp1 for this
+            JMPathPoint p3 = path.getJmPathPoints().get(k);// Compute cp2 for this
+            JMPathPoint p4 = path.getJmPathPoints().get(L);
 
             double x1 = p1.getV().x;
             double y1 = p1.getV().y;
@@ -120,14 +120,14 @@ public class PathUtils {
         JMPathPoint jp0, jp1;
         Vec v;
         // Compute cp1 and cp2 from first and last points
-        jp0 = path.jmPathPoints.get(0);
+        jp0 = path.getJmPathPoints().get(0);
         if (!jp0.isThisSegmentVisible()) {
-            jp1 = path.jmPathPoints.get(1);
+            jp1 = path.getJmPathPoints().get(1);
             v = jp1.getvEnter().minus(jp0.getV()).multInSite(PathUtils.DEFAULT_TENSION);
             jp0.getvExit().copyCoordinatesFrom(jp0.getV().add(v));
 
-            jp1 = path.jmPathPoints.get(numPoints - 2);
-            jp0 = path.jmPathPoints.get(numPoints - 1);
+            jp1 = path.getJmPathPoints().get(numPoints - 2);
+            jp0 = path.getJmPathPoints().get(numPoints - 1);
 //            if (jp0.isCurved) {
             v = jp1.getvExit().minus(jp0.getV()).multInSite(PathUtils.DEFAULT_TENSION);
             jp0.getvEnter().copyCoordinatesFrom(jp0.getV().add(v));
@@ -232,7 +232,7 @@ public class PathUtils {
 //    }
 
     public void determineStraightSegments(JMPath path) {
-        CircularArrayList<JMPathPoint> jmPathPoints = path.jmPathPoints;
+        CircularArrayList<JMPathPoint> jmPathPoints = path.getJmPathPoints();
         for (int n = 0; n < path.size(); n++) {
             JMPathPoint p1 = jmPathPoints.get(n);
             JMPathPoint p2 = jmPathPoints.get(n + 1);
@@ -257,7 +257,7 @@ public class PathUtils {
     }
 
     public ArrayList<ArrayList<Vec>> computePolygonalPieces(Camera cam, JMPath path) {
-        CircularArrayList<JMPathPoint> jmPathPoints = path.jmPathPoints;
+        CircularArrayList<JMPathPoint> jmPathPoints = path.getJmPathPoints();
         ArrayList<ArrayList<Vec>> resul = new ArrayList<>();
         ArrayList<Vec> connectedSegments = new ArrayList<>();
         for (int n = 0; n < path.size(); n++) {
