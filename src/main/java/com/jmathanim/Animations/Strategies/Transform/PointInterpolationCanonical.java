@@ -30,7 +30,7 @@ import java.util.Comparator;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class PointInterpolationCanonical extends TransformStrategy {
+public class PointInterpolationCanonical extends TransformStrategy<AbstractShape<?>> {
 
     private final AbstractShape<?> destinyCopy;
     private final AbstractShape<?> shOrigin;

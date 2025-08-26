@@ -19,7 +19,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
  * The transformation can be controlled separately for the parts of the shape before and after the pivotal segment using
  * custom timing functions (lambdaForward and lambdaBackward). This animation doesn't work properly with curved shapes.
  */
-public class TwistTransform extends TransformShape2ShapeStrategy {
+public class TwistTransform extends TransformShape2ShapeStrategy<Shape> {
 
     /**
      * The index of the point that starts the pivotal segment.
@@ -87,7 +87,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
      * @param destiny           The target shape.
      * @param numPivotalSegment The index of the point that starts the pivotal segment.
      */
-    protected TwistTransform(double runTime, AbstractShape<?> origin, AbstractShape<?> destiny, int numPivotalSegment) {
+    protected TwistTransform(double runTime, Shape origin, Shape destiny, int numPivotalSegment) {
         super(runTime);
         setOrigin(origin);
         setDestiny(destiny);
@@ -132,7 +132,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
      * @param destiny The target shape. It should have the same number of points as the origin shape.
      * @return A new TwistTransform instance.
      */
-    public static TwistTransform make(double runTime, AbstractShape<?> origin, AbstractShape<?> destiny) {
+    public static TwistTransform make(double runTime, Shape origin, Shape destiny) {
         return new TwistTransform(runTime, origin, destiny, origin.size() / 2);
     }
 

@@ -21,7 +21,6 @@ import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Commands;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Arrow;
-import com.jmathanim.mathobjects.MathObject;
 
 /**
  * Transfom stratregy from one arrow to another. Currently only changes
@@ -29,7 +28,7 @@ import com.jmathanim.mathobjects.MathObject;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ArrowTransform extends TransformStrategy {
+public class ArrowTransform extends TransformStrategy<Arrow> {
 
     AnimationWithEffects anim;
 
@@ -69,7 +68,7 @@ public class ArrowTransform extends TransformStrategy {
     }
 
     @Override
-    public MathObject getIntermediateObject() {
+    public Arrow getIntermediateObject() {
         return anim.getIntermediateObject();
     }
 

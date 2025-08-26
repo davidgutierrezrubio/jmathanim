@@ -35,7 +35,7 @@ import java.util.ArrayList;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class MultiShapeTransform extends TransformStrategy {
+public class MultiShapeTransform extends TransformStrategy<AbstractMultiShapeObject<?,?>> {
 
 //    private AbstractMultiShapeObject<?,?>  dst;
 //    private AbstractMultiShapeObject<?,?>  tr;

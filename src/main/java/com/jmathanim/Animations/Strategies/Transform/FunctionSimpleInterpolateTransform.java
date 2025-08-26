@@ -18,7 +18,6 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.mathobjects.FunctionGraph;
-import com.jmathanim.mathobjects.MathObject;
 
 import java.util.function.DoubleBinaryOperator;
 
@@ -27,7 +26,7 @@ import java.util.function.DoubleBinaryOperator;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class FunctionSimpleInterpolateTransform extends TransformStrategy {
+public class FunctionSimpleInterpolateTransform extends TransformStrategy<FunctionGraph> {
 
     public final FunctionGraph origin, destiny;
     private final FunctionGraph intermediate;
@@ -57,12 +56,12 @@ public class FunctionSimpleInterpolateTransform extends TransformStrategy {
     }
 
     @Override
-    public MathObject getOriginObject() {
+    public FunctionGraph getOriginObject() {
         return origin;
     }
 
     @Override
-    public MathObject getDestinyObject() {
+    public FunctionGraph getDestinyObject() {
         return destiny;
     }
 
@@ -91,7 +90,7 @@ public class FunctionSimpleInterpolateTransform extends TransformStrategy {
     }
 
     @Override
-    public MathObject getIntermediateObject() {
+    public FunctionGraph getIntermediateObject() {
         return intermediate;
     }
 }

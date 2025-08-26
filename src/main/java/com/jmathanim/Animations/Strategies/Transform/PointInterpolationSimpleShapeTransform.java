@@ -29,7 +29,7 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
+public class PointInterpolationSimpleShapeTransform extends TransformStrategy<AbstractShape<?>> {
 
     private AbstractShape<?> originBase;
     Vec origCenter, dstCenter;

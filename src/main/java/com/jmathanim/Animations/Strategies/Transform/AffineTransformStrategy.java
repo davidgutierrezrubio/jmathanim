@@ -26,7 +26,7 @@ import com.jmathanim.mathobjects.AbstractShape;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class AffineTransformStrategy extends TransformStrategy {
+public abstract class AffineTransformStrategy extends TransformStrategy<AbstractShape<?>> {
 
     protected final AbstractShape<?> shDestiny;
     protected final AbstractShape<?> shOrigin;

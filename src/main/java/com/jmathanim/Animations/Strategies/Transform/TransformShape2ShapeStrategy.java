@@ -2,43 +2,43 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.mathobjects.AbstractShape;
 
-public class TransformShape2ShapeStrategy extends TransformStrategy<AbstractShape<?>> {
-    private AbstractShape<?> originShape;
-    private AbstractShape<?> destinyShape;
-    private AbstractShape<?> intermediateShape;
+public class TransformShape2ShapeStrategy<T extends AbstractShape<?>> extends TransformStrategy<T> {
+    private T originShape;
+    private T destinyShape;
+    private T intermediateShape;
 
     public TransformShape2ShapeStrategy(double runTime) {
         super(runTime);
     }
 
     @Override
-    public void setIntermediate(AbstractShape<?> intermediate) {
+    public void setIntermediate(T intermediate) {
         intermediateShape =  intermediate;
     }
 
 
     @Override
-    public void setDestiny(AbstractShape<?> destiny) {
+    public void setDestiny(T destiny) {
         this.destinyShape =  destiny;
     }
 
     @Override
-    public void setOrigin(AbstractShape<?> origin) {
+    public void setOrigin(T origin) {
         this.originShape =  origin;
     }
 
     @Override
-    public AbstractShape<?> getDestinyObject() {
+    public T getDestinyObject() {
         return destinyShape;
     }
 
     @Override
-    public AbstractShape<?> getOriginObject() {
+    public T getOriginObject() {
         return originShape;
     }
 
     @Override
-    public AbstractShape<?> getIntermediateObject() {
+    public T getIntermediateObject() {
         return intermediateShape;
     }
 }
