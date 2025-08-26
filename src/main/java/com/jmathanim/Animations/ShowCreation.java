@@ -25,7 +25,9 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
 import com.jmathanim.mathobjects.Axes.Axes;
 import com.jmathanim.mathobjects.Delimiters.Delimiter;
+import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
 import com.jmathanim.mathobjects.Text.LatexMathObject;
+import com.jmathanim.mathobjects.Text.LatexShape;
 
 import java.util.function.DoubleUnaryOperator;
 
@@ -64,14 +66,14 @@ public class ShowCreation extends Animation {
      * @param mobj    Mathobject to animate
      * @return The animation ready to play with playAnim method
      */
-    public static ShowCreation make(double runtime, MathObject mobj) {
+    public static ShowCreation make(double runtime, MathObject<?> mobj) {
         if (mobj == null) {
             return null;
         }
         return new ShowCreation(runtime, mobj);
     }
 
-    private boolean extractMathObjectToCreate(MathObject mobj) {
+    private boolean extractMathObjectToCreate(MathObject<?> mobj) {
         if (mobj instanceof Delimiter) {
             this.mobj = mobj;
             addThisAtTheEnd.add(origObj);
@@ -83,7 +85,7 @@ public class ShowCreation extends Animation {
             return true;
         }
         if (mobj instanceof Constructible) {
-            this.mobj = ((Constructible) mobj).getMathObject();
+            this.mobj = ((Constructible<?>) mobj).getMathObject();
             removeThisAtTheEnd.add(this.mobj);
             addThisAtTheEnd.add(origObj);
             return false;//Needs further inspecting
@@ -99,8 +101,20 @@ public class ShowCreation extends Animation {
         this.mobj = mobj;
         addThisAtTheEnd.add(origObj);
         return true;
-
     }
+
+    private AbstractMultiShapeObject<?,?> convertToMultiShapeObject(MathObject<?> mobj){
+        if (mobj instanceof Shape) {
+            Shape shape = (Shape) mobj;
+            return MultiShapeObject.make(shape);
+        }
+        if (mobj instanceof LatexShape) {
+            LatexShape shape = (LatexShape) mobj;
+            return LatexMathObject.make(shape);
+        }
+        return null;
+    }
+
 
     @Override
     public boolean doInitialization() {
@@ -206,9 +220,14 @@ public class ShowCreation extends Animation {
             this.strategyType = ShowCreationStrategy.RAY_CREATION;
             return;
         }
+        if (mobj instanceof FunctionGraph) {
+            this.strategyType = ShowCreationStrategy.SIMPLE_SHAPE_CREATION;
+            return;
+        }
         if (mobj instanceof AbstractShape<?>) {
 //            this.strategyType = ShowCreationStrategy.SIMPLE_SHAPE_CREATION;
             this.strategyType = ShowCreationStrategy.FIRST_DRAW_AND_THEN_FILL;
+            return;
         }
 
     }
@@ -293,7 +312,7 @@ public class ShowCreation extends Animation {
                 break;
 
             case SIMPLE_SHAPE_CREATION:
-                creationStrategy = new SimpleShapeCreationAnimation(runTime, (Shape) mobj);
+                creationStrategy = new SimpleShapeCreationAnimation(runTime, (AbstractShape<?>) mobj);
                 JMathAnimScene.logger.debug("ShowCreation method: SimpleShapeCreationStrategy");
                 break;
             case MULTISHAPE_CREATION:
@@ -304,7 +323,7 @@ public class ShowCreation extends Animation {
                 JMathAnimScene.logger.debug("ShowCreation method: MultiShapeCreationStrategy");
                 break;
             case FIRST_DRAW_AND_THEN_FILL:
-                creationStrategy = new FirstDrawThenFillAnimation(runTime, (AbstractMultiShapeObject<?, ?>) mobj);
+                creationStrategy = new FirstDrawThenFillAnimation(runTime, convertToMultiShapeObject(mobj));
                 JMathAnimScene.logger.debug("ShowCreation method: FirstDrawThenFillStrategy");
                 break;
             case LATEX_CREATION:

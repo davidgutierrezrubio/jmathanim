@@ -22,6 +22,7 @@ import com.jmathanim.Animations.Strategies.Transform.Optimizers.NullOptimization
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
 
 /**
  *

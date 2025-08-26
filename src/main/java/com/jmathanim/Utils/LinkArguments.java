@@ -23,6 +23,7 @@ import com.jmathanim.Constructible.Others.CTAngleMark;
 import com.jmathanim.Enum.LinkType;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
 
 import java.util.AbstractCollection;
 import java.util.function.DoubleUnaryOperator;

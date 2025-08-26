@@ -17,9 +17,9 @@
  */
 package com.jmathanim.mathobjects.surface;
 
-import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
 
 /**
  *

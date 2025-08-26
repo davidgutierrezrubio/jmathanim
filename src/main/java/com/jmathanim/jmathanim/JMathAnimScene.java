@@ -32,6 +32,7 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.*;
 import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
 import com.jmathanim.mathobjects.Text.LatexMathObject;
 import com.jmathanim.mathobjects.Text.LatexShape;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;

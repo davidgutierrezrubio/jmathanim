@@ -5,8 +5,8 @@ import com.jmathanim.Enum.DelimiterType;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Coordinates;
-import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.NullMathObject;
+import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 

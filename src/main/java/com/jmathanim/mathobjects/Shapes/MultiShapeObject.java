@@ -15,7 +15,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.jmathanim.mathobjects;
+package com.jmathanim.mathobjects.Shapes;
+
+import com.jmathanim.mathobjects.AbstractMultiShapeObject;
+import com.jmathanim.mathobjects.Shape;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +28,7 @@ import java.util.List;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class MultiShapeObject extends AbstractMultiShapeObject<MultiShapeObject,Shape> {
+public class MultiShapeObject extends AbstractMultiShapeObject<MultiShapeObject, Shape> {
 
     public MultiShapeObject() {
         super(Shape.class);

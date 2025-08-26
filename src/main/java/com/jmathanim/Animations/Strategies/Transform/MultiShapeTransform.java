@@ -19,7 +19,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.Transform;
-import com.jmathanim.mathobjects.MultiShapeObject;
+import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
 
 /**
  * Animation strategy between 2 multishapes A and B. If size(A) equals size(B)

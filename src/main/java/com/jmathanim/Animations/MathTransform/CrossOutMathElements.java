@@ -26,8 +26,8 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.AbstractMultiShapeObject;
 import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
 import com.jmathanim.mathobjects.Text.AbstractLatexMathObject;
 
 import java.util.ArrayList;

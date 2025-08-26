@@ -22,6 +22,7 @@ import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Utils.OrientationType;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
 
 import java.util.ArrayList;
 import java.util.Collections;

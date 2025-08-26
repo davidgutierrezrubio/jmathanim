@@ -26,6 +26,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
 import com.jmathanim.mathobjects.Text.LatexMathObject;
 
 import java.util.ArrayList;

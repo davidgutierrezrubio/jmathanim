@@ -23,6 +23,7 @@ import com.jmathanim.Animations.Commands;
 import com.jmathanim.Animations.JoinAnimation;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
 
 /**
  * Animation that draws and object and then changes its alpha fill from 0 to current. If used in a multishape, a

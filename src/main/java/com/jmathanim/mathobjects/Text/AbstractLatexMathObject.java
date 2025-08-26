@@ -24,6 +24,7 @@ import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.svggen.DOMTreeManager;
 import org.apache.batik.svggen.SVGGeneratorContext;
