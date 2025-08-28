@@ -49,8 +49,15 @@ public class PathLayout extends GroupLayout {
 
         for (int i = 0; i < size; i++) {
             double t = i * 1d / (size - (isOpen ? 0 : 1));
-            Vec locationToAnchor = shape.getParametrizedVecAt(t);
-            double rotationAngle = shape.getPath().getParametrizedSlopeAt(t, true).getAngle()-PI/2;
+            Vec locationToAnchor;
+            double rotationAngle;
+            if (parametric) {
+                locationToAnchor = shape.getParametrizedVecAt(t);
+                rotationAngle = shape.getPath().getParametrizedSlopeAt(t, true).getAngle() - PI / 2;
+            } else {
+                locationToAnchor = shape.getVecAt(t);
+                rotationAngle = shape.getPath().getSlopeAt(t, true).getAngle() - PI / 2;
+            }
             group.get(i).moveTo(locationToAnchor);
             switch (rotationType) {
                 case ROTATE:
@@ -58,8 +65,6 @@ public class PathLayout extends GroupLayout {
                     break;
                 case SMART:
                     double angle = rotationAngle;
-//                    while (angle>PI2) angle-=PI2;
-//                    while (angle<0) angle+=PI2;
                     while (angle > PI / 2) angle -= PI;
                     while (angle < -PI / 2) angle += PI;
                     group.get(i).rotate(angle);
