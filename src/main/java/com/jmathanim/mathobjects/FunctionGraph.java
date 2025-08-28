@@ -190,6 +190,7 @@ public class FunctionGraph extends AbstractShape<FunctionGraph> implements hasSc
         }
 
         generateControlPoints();
+        getPath().distille();
     }
 
     private void adaptativeAddPoints() {

@@ -107,7 +107,7 @@ public class MoveAlongPath extends Animation {
         super.doAnim(t);
         double lt = getLT(t);
         restoreStates(mobjTransformed);
-        Vec destinyPoint = (parametrized ? path.getParametrizedPointAt(lt) : path.getJMPointAt(lt).getV());
+        Vec destinyPoint = (parametrized ? path.getParametrizedVecAt(lt) : path.getJMPointAt(lt).getV());
         Vec anchPoint = Anchor.getAnchorPoint(mobjTransformed, anchorType);
         mobjTransformed.shift(destinyPoint.minus(anchPoint));
 

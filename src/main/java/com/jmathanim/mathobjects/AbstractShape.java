@@ -52,7 +52,7 @@ public abstract class
      * @return a new Point object at the specified position of the shape.
      */
     public Vec getParametrizedVecAt(double t) {
-        return getPath().getParametrizedPointAt(t);
+        return getPath().getParametrizedVecAt(t);
     }
 
     @Override
@@ -303,4 +303,10 @@ public abstract class
     public ArrayList<ArrayList<float[]>> computePolygonalPieces() {
         return jmpath.computePolygonalPieces(scene.getCamera());
     }
+    public boolean isOpen()
+    {
+        return getPath().isOpen();
+    }
+
+
 }

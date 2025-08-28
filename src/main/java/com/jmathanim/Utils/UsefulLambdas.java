@@ -115,7 +115,7 @@ public class UsefulLambdas {
         return backAndForthBounce1(.7, 1d);
     }
 
-    private static DoubleUnaryOperator backAndForthBounce1(double a, double b) {
+    public static DoubleUnaryOperator backAndForthBounce1(double a, double b) {
         final double aa = a;
         final double bb = b * 4 / (a * a);
         return (double t) -> {

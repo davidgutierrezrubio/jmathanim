@@ -217,7 +217,7 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
      * @param t A value from 0 to 1. 0 means starting point and 1 ending point
      * @return A new Point object with the computed location
      */
-    public Vec getParametrizedPointAt(double t) {
+    public Vec getParametrizedVecAt(double t) {
         if (rectifiedVecPoints.isEmpty()) {
             computeRectifiedPoints();
         }
@@ -1226,8 +1226,8 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
     }
 
     public Vec getParametrizedSlopeAt(double t, boolean positiveDirection) {
-        Vec p1 = getParametrizedPointAt(t);
-        Vec p2 = getParametrizedPointAt(positiveDirection ? t + DELTA_DERIVATIVE : t - DELTA_DERIVATIVE);
+        Vec p1 = getParametrizedVecAt(t);
+        Vec p2 = getParametrizedVecAt(positiveDirection ? t + DELTA_DERIVATIVE : t - DELTA_DERIVATIVE);
         return p1.to(p2);
     }
 
@@ -1326,5 +1326,9 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
 
     public CircularArrayList<JMPathPoint> getJmPathPoints() {
         return jmPathPoints;
+    }
+
+    public boolean isOpen() {
+        return get(0).isThisSegmentVisible();
     }
 }

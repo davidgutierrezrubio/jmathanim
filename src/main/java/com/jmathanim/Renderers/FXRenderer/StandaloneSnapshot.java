@@ -31,13 +31,14 @@ public class StandaloneSnapshot {
 
         @Override
         public void init() {
-            latch.countDown();
+
         }
 
         @Override
         public void start(Stage primaryStage) {
             stage = primaryStage;
             stage.setTitle("JMathAnim preview window");
+            latch.countDown();
         }
     }
 }

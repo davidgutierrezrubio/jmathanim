@@ -188,8 +188,10 @@ public class AnimationEffect {
                 jumpPath = FunctionGraph.make(t -> Math.sin(2 * PI * t), 0, 1, 3);
                 break;
             case CRANE:
-                jumpPath = Shape.polyLine(Point.origin(), Vec.to(0, .7), Vec.to(0, 1), Vec.to(.3, 1), Vec.to(.7, 1),
-                        Vec.to(1, 1), Vec.to(1, .7), Vec.to(1, 0));
+                jumpPath = Shape.polyLine(
+                        Vec.to(0,0), Vec.to(0, .7), Vec.to(0, 1),
+                        Vec.to(.3, 1), Vec.to(.7, 1), Vec.to(1, 1),
+                        Vec.to(1, .7), Vec.to(1, 0));
                 break;
             case BOUNCE1:
                 jumpPath = FunctionGraph.make(UsefulLambdas.backAndForthBounce1(), 0, 1);
@@ -214,7 +216,7 @@ public class AnimationEffect {
 
     protected void applyJumpEffect(double t, AffineTransformable<?> obj) {
         if (jumpPaths.containsKey(obj)) {
-            obj.moveTo(jumpPaths.get(obj).getParametrizedPointAt(t));
+            obj.moveTo(jumpPaths.get(obj).getParametrizedVecAt(t));
 //            obj.moveTo(jumpPaths.get(obj).getJMPointAt(t).p);
         }
 
