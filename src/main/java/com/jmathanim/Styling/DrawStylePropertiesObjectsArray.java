@@ -48,7 +48,7 @@ import java.util.Arrays;
  * can be initialized with default properties or copied from existing objects, with
  * modifications propagating across associated entities.
  */
-public class MODrawPropertiesArray implements DrawStyleProperties, Stylable {
+public class DrawStylePropertiesObjectsArray implements DrawStyleProperties, Stylable {
 
     private final MODrawPropertiesLaTeX mpRef;
     private ArrayList<MathObject<?>> objects;
@@ -60,7 +60,7 @@ public class MODrawPropertiesArray implements DrawStyleProperties, Stylable {
      *
      * @param mp The MODrawProperties object from which the properties are copied to initialize the new instance.
      */
-    public MODrawPropertiesArray(MODrawProperties mp) {
+    public DrawStylePropertiesObjectsArray(MODrawProperties mp) {
         mpRef = new MODrawPropertiesLaTeX();
         mpRef.copyFrom(mp);
         objects = new ArrayList<>();
@@ -74,10 +74,14 @@ public class MODrawPropertiesArray implements DrawStyleProperties, Stylable {
      * - Copies the default MODrawProperties settings from JMathAnimConfig's configuration into mpRef.
      * - Initializes the objects field as an empty ArrayList of MathObject.
      */
-    public MODrawPropertiesArray() {
+    public DrawStylePropertiesObjectsArray() {
         mpRef = new MODrawPropertiesLaTeX();
         mpRef.copyFrom(JMathAnimConfig.getConfig().getDefaultMP());
         objects = new ArrayList<>();
+    }
+
+    public void clear() {
+        objects.clear();
     }
 
     /**
@@ -85,13 +89,13 @@ public class MODrawPropertiesArray implements DrawStyleProperties, Stylable {
      *
      * @param objects The list of MathObject instances to initialize the MODrawPropertiesArray.
      */
-    public MODrawPropertiesArray(ArrayList<MathObject<?>> objects) {
+    public DrawStylePropertiesObjectsArray(ArrayList<MathObject<?>> objects) {
         this.objects = objects;
         mpRef = new MODrawPropertiesLaTeX();
     }
 
     @Override
-    public MODrawPropertiesArray getMp() {
+    public DrawStylePropertiesObjectsArray getMp() {
         return this;
     }
     /**
@@ -194,9 +198,9 @@ public class MODrawPropertiesArray implements DrawStyleProperties, Stylable {
      */
     @Override
     public void copyFrom(DrawStyleProperties prop) {
-        if (prop instanceof MODrawPropertiesArray) {
-            MODrawPropertiesArray moDrawPropertiesArray = (MODrawPropertiesArray) prop;
-            copyFrom(moDrawPropertiesArray);
+        if (prop instanceof DrawStylePropertiesObjectsArray) {
+            DrawStylePropertiesObjectsArray drawStylePropertiesObjectsArray = (DrawStylePropertiesObjectsArray) prop;
+            copyFrom(drawStylePropertiesObjectsArray);
             return;
         }
         for (MathObject obj : objects) {
@@ -211,7 +215,7 @@ public class MODrawPropertiesArray implements DrawStyleProperties, Stylable {
         }
     }
 
-    public void copyFrom(MODrawPropertiesArray prop) {
+    public void copyFrom(DrawStylePropertiesObjectsArray prop) {
         if (prop.objects.size() == objects.size()) {//Copy all styles separately
             for (int i = 0; i < prop.objects.size(); i++) {
                 objects.get(i).getMp().copyFrom(prop.objects.get(i).getMp());

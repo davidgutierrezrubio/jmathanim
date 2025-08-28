@@ -34,9 +34,9 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  */
 public class Line extends MathObject<Line> implements HasDirection, shouldUdpateWithCamera {
 
-    private final JMPathPoint bp1, bp2;
-    private final Vec p1;
-    private final Vec p2;
+    private final JMPathPoint borderPoint1, borderPoint2;
+    protected final Vec p1;
+    protected final Vec p2;
     private final Shape visiblePiece;
     private Point pointP1;//Visible points to be created on the fly if the user asks for them
     private Point pointP2;
@@ -51,14 +51,13 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
         super();
         this.p1 = p1.getVec();
         this.p2 = p2.getVec();
-        bp1 = new JMPathPoint(Vec.to(0, 0), true);// trivial boundary points, just to
+        borderPoint1 = new JMPathPoint(Vec.to(0, 0), true);// trivial boundary points, just to
         // initialize objects
-        bp2 = new JMPathPoint(Vec.to(0, 0), true);// trivial boundary points, just to
+        borderPoint2 = new JMPathPoint(Vec.to(0, 0), true);// trivial boundary points, just to
         // initialize objects
         visiblePiece = new Shape();
-        visiblePiece.getPath().addJMPoint(bp1, bp2);
+        visiblePiece.getPath().addJMPoint(borderPoint1, borderPoint2);
         visiblePiece.get(0).setThisSegmentVisible(false);
-        setCamera(JMathAnimConfig.getConfig().getCamera());//First default camera
         computeBoundPoints(getCamera());
     }
 
@@ -110,21 +109,21 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
 
         if (intersectLine == null) {
             // If there are no getIntersectionPath points, take p1 and p2 (workaround)
-            bp1.getV().x = p1.x;
-            bp1.getV().y = p1.y;
-            bp2.getV().x = p2.x;
-            bp2.getV().y = p2.y;
+            borderPoint1.getV().x = p1.x;
+            borderPoint1.getV().y = p1.y;
+            borderPoint2.getV().x = p2.x;
+            borderPoint2.getV().y = p2.y;
         } else {
-            bp1.getV().x = intersectLine[0];
-            bp1.getV().y = intersectLine[1];
-            bp2.getV().x = intersectLine[2];
-            bp2.getV().y = intersectLine[3];
+            borderPoint1.getV().x = intersectLine[0];
+            borderPoint1.getV().y = intersectLine[1];
+            borderPoint2.getV().x = intersectLine[2];
+            borderPoint2.getV().y = intersectLine[3];
         }
-        bp1.getvExit().copyCoordinatesFrom(bp1.getV());
-        bp1.getvEnter().copyCoordinatesFrom(bp1.getV());
-        bp2.getvExit().copyCoordinatesFrom(bp2.getV());
-        bp2.getvEnter().copyCoordinatesFrom(bp2.getV());
-        bp1.setThisSegmentVisible(false);
+        borderPoint1.getvExit().copyCoordinatesFrom(borderPoint1.getV());
+        borderPoint1.getvEnter().copyCoordinatesFrom(borderPoint1.getV());
+        borderPoint2.getvExit().copyCoordinatesFrom(borderPoint2.getV());
+        borderPoint2.getvEnter().copyCoordinatesFrom(borderPoint2.getV());
+        borderPoint1.setThisSegmentVisible(false);
     }
 
     @Override
@@ -159,7 +158,7 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
      */
     public Vec getBorderPoint1() {
         update(scene);
-        return bp1.getVec();
+        return borderPoint1.getVec();
     }
 
     /**
@@ -170,7 +169,7 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
      */
     public Vec getBorderPoint2() {
         update(scene);
-        return bp2.getVec();
+        return borderPoint2.getVec();
     }
 
     /**
@@ -223,8 +222,8 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
      */
     public Shape toSegment(Camera cam, double scale) {
         computeBoundPoints(cam);
-        JMPathPoint a = bp1.copy().scale(getCenter(), scale, scale);
-        JMPathPoint b = bp2.copy().scale(getCenter(), scale, scale);
+        JMPathPoint a = borderPoint1.copy().scale(getCenter(), scale, scale);
+        JMPathPoint b = borderPoint2.copy().scale(getCenter(), scale, scale);
         Shape segment = Shape.segment(a, b);
         segment.getMp().copyFrom(this.getMp());
         return segment;

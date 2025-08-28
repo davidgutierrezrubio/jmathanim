@@ -20,7 +20,7 @@ package com.jmathanim.mathobjects.Axes;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.DrawStyleProperties;
-import com.jmathanim.Styling.MODrawPropertiesArray;
+import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -84,7 +84,7 @@ public class TickAxes extends MathObject {
     LatexMathObject legend;
     double location;
     double maximumScaleToShow;
-    MODrawPropertiesArray mpArray;
+    DrawStylePropertiesObjectsArray mpArray;
     TickOrientation orientation;
 
     Shape tick;
@@ -93,7 +93,7 @@ public class TickAxes extends MathObject {
     public TickAxes(double location, LatexMathObject legend, Shape mark, TickOrientation type,
                     double maximumScaleToShow) {
         super();
-        mpArray = new MODrawPropertiesArray();
+        mpArray = new DrawStylePropertiesObjectsArray();
         this.location = location;
         this.legend = legend;
         this.tick = mark;

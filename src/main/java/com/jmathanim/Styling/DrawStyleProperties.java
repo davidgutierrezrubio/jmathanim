@@ -24,10 +24,9 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 
 /**
- * The {@code Stylable} interface provides a contract for objects that
- * possess styling properties such as colors, transparency, thickness,
- * and other graphical attributes. It also supports state management,
- * interpolation, and hierarchical styling through child sub-properties.
+ * The {@code Stylable} interface provides a contract for objects that possess styling properties such as colors,
+ * transparency, thickness, and other graphical attributes. It also supports state management, interpolation, and
+ * hierarchical styling through child sub-properties.
  */
 public interface DrawStyleProperties extends Stylable {
 
@@ -46,35 +45,33 @@ public interface DrawStyleProperties extends Stylable {
     void copyFrom(DrawStyleProperties prop);
 
     /**
-     * Copy the interpolated values from two MathObjecDrawingProperties. Only
-     * drawColor, fillColor and thickness are actually interpolated
+     * Copy the interpolated values from two MathObjecDrawingProperties. Only drawColor, fillColor and thickness are
+     * actually interpolated
      *
-     * @param a base drawing parameters
-     * @param b Destination drawing parameters
+     * @param a     base drawing parameters
+     * @param b     Destination drawing parameters
      * @param alpha Interpolation parameter
      */
     void interpolateFrom(DrawStyleProperties a, DrawStyleProperties b, double alpha);
 
     /**
-     * Interpolate values with another MathObjecDrawingProperties. Only
-     * drawColor, fillColor and thickness are actually interpolated
+     * Interpolate values with another MathObjecDrawingProperties. Only drawColor, fillColor and thickness are actually
+     * interpolated
      *
-     * @param dst Destination drawing parameters
+     * @param dst   Destination drawing parameters
      * @param alpha Interpolation parameter
      */
     void interpolateFrom(DrawStyleProperties dst, double alpha);
 
     /**
-     * Load attributes from given style. If such style doesn't exist, no changes
-     * are done, and a warning log is showed.
+     * Load attributes from given style. If such style doesn't exist, no changes are done, and a warning log is showed.
      *
      * @param name The name of the style
      */
     void loadFromStyle(String name);
 
     /**
-     * Copy attributes from the given {@link MODrawProperties} object Null
-     * values are copied also
+     * Copy attributes from the given {@link MODrawProperties} object Null values are copied also
      *
      * @param mp The object to copy attributes from.
      */
@@ -82,39 +79,39 @@ public interface DrawStyleProperties extends Stylable {
 
     void setDrawAlpha(double alpha);
 
-    void setDrawColor(PaintStyle drawColor);
-
     void setFillAlpha(double alpha);
-
-    void setFillColor(PaintStyle fillColor);
-
-    void setLayer(int layer);
 
     Integer getLayer();
 
+    void setLayer(int layer);
+
     PaintStyle getDrawColor();
+
+    void setDrawColor(PaintStyle drawColor);
 
     PaintStyle getFillColor();
 
+    void setFillColor(PaintStyle fillColor);
+
     StrokeLineCap getLineCap();
-    
+
     StrokeLineJoin getLineJoin();
 
-    void setLinecap(StrokeLineCap linecap);
-    
     void setLineJoin(StrokeLineJoin linejoin);
+
+    void setLinecap(StrokeLineCap linecap);
 
     Double getThickness();
 
     void setThickness(Double thickness);
 
-    void setDotStyle(DotStyle dotStyle);
-
     DotStyle getDotStyle();
 
-    void setDashStyle(DashStyle dashStyle);
+    void setDotStyle(DotStyle dotStyle);
 
     DashStyle getDashStyle();
+
+    void setDashStyle(DashStyle dashStyle);
 
     Boolean isAbsoluteThickness();
 
@@ -128,9 +125,9 @@ public interface DrawStyleProperties extends Stylable {
 
     Vec getFaceToCameraPivot();
 
-    void setFaceToCamera(Boolean faceToCamera);
-
     void setFaceToCameraPivot(Vec pivot);
+
+    void setFaceToCamera(Boolean faceToCamera);
 
 //    T getSubMP(int n);
 

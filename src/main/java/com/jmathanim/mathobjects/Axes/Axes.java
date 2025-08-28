@@ -21,9 +21,8 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.DrawStyleProperties;
-import com.jmathanim.Styling.MODrawPropertiesArray;
+import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -44,7 +43,7 @@ public class Axes extends MathObject<Axes> {
     public static final double LEGEND_TICKS_GAP = .5;
     DecimalFormat format;
 
-    MODrawPropertiesArray mpArray;
+    DrawStylePropertiesObjectsArray mpArray;
     private final Line xAxis;
     private final ArrayList<TickAxes> xticks;
     private final ArrayList<TickAxes> xticksBase;
@@ -72,7 +71,7 @@ public class Axes extends MathObject<Axes> {
     }
 
     public Axes() {
-        mpArray = new MODrawPropertiesArray();
+        mpArray = new DrawStylePropertiesObjectsArray();
         getMp().loadFromStyle("axisdefault");
         xticksBase = new ArrayList<>();
         xticks = new ArrayList<>();
@@ -302,7 +301,7 @@ public class Axes extends MathObject<Axes> {
 
     @Override
     protected Rect computeBoundingBox() {
-        return JMathAnimConfig.getConfig().getCamera().getMathView();
+        return camera.getMathView();
     }
 
     @Override

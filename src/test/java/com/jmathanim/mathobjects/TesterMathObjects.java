@@ -4,11 +4,11 @@ import com.jmathanim.Utils.AffineJTransformTest;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Tippable.AbstractTippableObject;
 
+import static com.jmathanim.mathobjects.TesterStyles.assertsMODrawPropertiesEquals;
 import static com.jmathanim.mathobjects.Tippable.AbstractTippableObjectTest.assertTippableObjects;
-import static com.jmathanim.mathobjects.testerStyles.assertsMODrawPropertiesEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class testerMathObjects {
+public class TesterMathObjects {
 
 
     public static void assertVecEquals(Vec v1, Vec v2, String errorMessage) {
@@ -60,7 +60,14 @@ public class testerMathObjects {
             Point p1 = (Point) ob1;
             Point p2 = (Point) ob2;
             assertPointEquals(p1, p2, "points different->"+errorMessage);
-
+            return;
+        }
+        if (ob1 instanceof Line) {
+            Line l1 = (Line) ob1;
+            Line l2 = (Line) ob2;
+            assertVecEquals(l1.p1,l2.p1,"points different->"+errorMessage);
+            assertVecEquals(l1.p2,l2.p2,"points different->"+errorMessage);
+            assertsMODrawPropertiesEquals(l1.getMp(),l2.getMp(),"styles different->"+errorMessage);
         }
         
         //Shape
@@ -68,6 +75,7 @@ public class testerMathObjects {
             Shape sh1 = (Shape) ob1;
             Shape sh2 = (Shape) ob2;
             assertShapeEquals(sh1,sh2,"shapes different->"+errorMessage);
+            return;
         }
         
         
@@ -80,20 +88,23 @@ public class testerMathObjects {
             for (int i = 0; i < msh1.size(); i++) {
                 assertShapeEquals(msh1.get(i),msh2.get(i),"shapes different at index "+i+" ->"+errorMessage);
             }
+            return;
         }
 
         if (ob1 instanceof RigidBox) {
             RigidBox rb1 = (RigidBox) ob1;
             RigidBox rb2 = (RigidBox) ob2;
             assertRigidBoxEquals(rb1,rb2,"rigid boxes different->"+errorMessage);
+            return;
         }
         
         
 
         if (ob1 instanceof AbstractTippableObject) {
-            AbstractTippableObject abstractTippableObject = (AbstractTippableObject) ob1;
-            AbstractTippableObject abstractTippableObject2 = (AbstractTippableObject) ob2;
+            AbstractTippableObject<?> abstractTippableObject = (AbstractTippableObject<?>) ob1;
+            AbstractTippableObject<?> abstractTippableObject2 = (AbstractTippableObject<?>) ob2;
             assertTippableObjects(abstractTippableObject,abstractTippableObject2,"tippable objects different->"+errorMessage);
+            return;
         }
 
 

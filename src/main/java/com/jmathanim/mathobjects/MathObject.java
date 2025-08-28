@@ -18,6 +18,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Cameras.DummyCamera;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Enum.ScreenAnchor;
@@ -58,7 +59,7 @@ public abstract class MathObject<T extends MathObject<T>> implements
     protected JMathAnimScene scene;
     protected boolean isRigid = false;
     private boolean hasBeenUpdated = false;
-    private Camera camera;
+    protected Camera camera;
     private int updateLevel;
     private String debugText = "";
     private AnchorType absoluteAnchorAnchorType = AnchorType.CENTER;
@@ -75,6 +76,8 @@ public abstract class MathObject<T extends MathObject<T>> implements
         scene = config.getScene();
         if (scene != null) {
             camera = scene.getCamera();//Default camera
+        }else {
+            camera = new DummyCamera();
         }
         //Default values for an object that always updates
         dependents = new HashSet<>();

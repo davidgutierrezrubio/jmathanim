@@ -20,7 +20,7 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.RotationType;
 import com.jmathanim.Enum.SlopeDirectionType;
-import com.jmathanim.Styling.MODrawPropertiesArray;
+import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Vec;
@@ -39,7 +39,7 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
     public final Vec markPoint;
     public final Vec pivotPointRefShape;
     public final RigidBox tipObjectRigidBox;
-    private final MODrawPropertiesArray mpArray;
+    private final DrawStylePropertiesObjectsArray mpArray;
     public AbstractShape<?> shape;
     public double locationParameterOnShape;
     public Double distanceToShape;
@@ -75,7 +75,7 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
         //Reference point where the MathObject will be anchored, calculated at a certain distance from the markPoint
         pivotPointRefShape = Vec.to(0,0);
         isParametrized = false;
-        mpArray = new MODrawPropertiesArray();
+        mpArray = new DrawStylePropertiesObjectsArray();
         mpArray.copyFrom(tipObject.getMp());
         mpArray.add(tipObjectRigidBox);
     }
@@ -165,7 +165,7 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
     }
 
     @Override
-    public MODrawPropertiesArray getMp() {
+    public DrawStylePropertiesObjectsArray getMp() {
         return mpArray;
     }
 

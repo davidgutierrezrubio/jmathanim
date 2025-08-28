@@ -21,7 +21,7 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Constructible.Lines.HasDirection;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.DrawStyleProperties;
-import com.jmathanim.Styling.MODrawPropertiesArray;
+import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
@@ -39,7 +39,7 @@ public class Ray extends MathObject<Ray> implements HasDirection {
     private final Coordinates p1;
     private final Coordinates p2;
     private final Shape visiblePiece;
-    MODrawPropertiesArray mpArray;
+    DrawStylePropertiesObjectsArray mpArray;
 
     /**
      * Creates a ray that passes through p with direction v
@@ -59,7 +59,7 @@ public class Ray extends MathObject<Ray> implements HasDirection {
      */
     public Ray(Coordinates p1, Coordinates p2) {
         super();
-        mpArray = new MODrawPropertiesArray();
+        mpArray = new DrawStylePropertiesObjectsArray();
         mpArray.copyFrom(JMathAnimConfig.getConfig().getDefaultMP());// Default MP values);
         this.p1 = p1;
         this.p2 = p2;

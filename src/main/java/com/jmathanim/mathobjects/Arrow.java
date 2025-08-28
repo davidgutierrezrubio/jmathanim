@@ -27,7 +27,7 @@ import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.ArrowType;
 import com.jmathanim.Enum.SlopeDirectionType;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Styling.MODrawPropertiesArray;
+import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Text.AbstractLatexMathObject;
@@ -45,7 +45,7 @@ public class Arrow extends Constructible<Arrow> {
 
     public final Shape labelArcUpside;
     public final Shape labelArcDownside;
-    protected final MODrawPropertiesArray mpArrow;
+    protected final DrawStylePropertiesObjectsArray mpArrow;
     protected final MathObjectGroup groupElementsToBeDrawn;
     private final Vec Acopy, Bcopy;
     private final Shape shapeToDraw;
@@ -82,7 +82,7 @@ public class Arrow extends Constructible<Arrow> {
         shapeToDraw = new Shape();
         Acopy = this.A.copy();
         Bcopy = this.B.copy();
-        mpArrow = new MODrawPropertiesArray();
+        mpArrow = new DrawStylePropertiesObjectsArray();
         mpArrow.add(shapeToDraw);
         groupElementsToBeDrawn = MathObjectGroup.make(shapeToDraw);
         getMp().loadFromStyle("ARROWDEFAULT");
@@ -198,7 +198,7 @@ public class Arrow extends Constructible<Arrow> {
     }
 
     @Override
-    public MODrawPropertiesArray getMp() {
+    public DrawStylePropertiesObjectsArray getMp() {
         return mpArrow;
     }
 

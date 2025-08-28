@@ -3,7 +3,7 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Styling.MODrawPropertiesArray;
+import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -22,7 +22,7 @@ public abstract class AbstractMultiShapeObject<
         extends MathObject<S> implements Iterable<T> {
 
 
-    protected final MODrawPropertiesArray mpMultiShape;
+    protected final DrawStylePropertiesObjectsArray mpMultiShape;
     protected final ArrayList<T> shapes;
     private final Class<T> clazz;
     public boolean isAddedToScene;
@@ -39,7 +39,7 @@ public abstract class AbstractMultiShapeObject<
         isAddedToScene = false;
         this.shapes = new ArrayList<>();
         this.shapes.addAll(shapes);
-        mpMultiShape = new MODrawPropertiesArray();
+        mpMultiShape = new DrawStylePropertiesObjectsArray();
         for (MathObject<?> sh : shapes) {
             mpMultiShape.add(sh);
         }
@@ -285,7 +285,7 @@ public abstract class AbstractMultiShapeObject<
     }
 
     @Override
-    public MODrawPropertiesArray getMp() {
+    public DrawStylePropertiesObjectsArray getMp() {
         return mpMultiShape;
     }
 

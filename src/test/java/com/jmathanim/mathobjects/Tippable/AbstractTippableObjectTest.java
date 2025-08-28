@@ -3,8 +3,8 @@ package com.jmathanim.mathobjects.Tippable;
 import com.jmathanim.mathobjects.Shape;
 import org.junit.jupiter.api.Test;
 
-import static com.jmathanim.mathobjects.testerMathObjects.*;
-import static com.jmathanim.mathobjects.testerStyles.assertsMODrawPropertiesEquals;
+import static com.jmathanim.mathobjects.TesterMathObjects.*;
+import static com.jmathanim.mathobjects.TesterStyles.assertsMODrawPropertiesEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AbstractTippableObjectTest {

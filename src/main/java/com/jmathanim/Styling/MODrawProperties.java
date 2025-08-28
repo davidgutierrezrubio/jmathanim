@@ -44,7 +44,7 @@ public class MODrawProperties implements DrawStyleProperties, Stylable {
     private Vec faceToCameraPivot = Vec.to(0, 0);
     // If false, thickness is computed to be a percentage of the width
     // to ensure zoom or resolution doesn't affect the result
-    private Boolean absoluteThickness = true;
+    private Boolean absoluteThickness = false;
     private StrokeLineJoin linejoin;
     private MathObject<?> parent;
     private Boolean visible = true;

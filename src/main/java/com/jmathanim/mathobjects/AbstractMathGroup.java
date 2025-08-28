@@ -5,7 +5,7 @@ import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.InnerAnchorType;
 import com.jmathanim.Enum.LayoutType;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Styling.MODrawPropertiesArray;
+import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.EmptyRect;
 import com.jmathanim.Utils.Layouts.GroupLayout;
@@ -21,18 +21,18 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
         implements Iterable<MathObject<?>> {
     protected final ArrayList<MathObject<?>> objects;
     protected final HashMap<String, MathObject<?>> dict;
-    MODrawPropertiesArray mpArray;
+    DrawStylePropertiesObjectsArray mpArray;
 
     protected AbstractMathGroup() {
         this.objects = new ArrayList<>();
         this.dict = new HashMap<>();
-        mpArray = new MODrawPropertiesArray();
+        mpArray = new DrawStylePropertiesObjectsArray();
     }
 
     protected AbstractMathGroup(ArrayList<MathObject<?>> objects) {
         this.objects = objects;
         this.dict = new HashMap<>();
-        mpArray = new MODrawPropertiesArray();
+        mpArray = new DrawStylePropertiesObjectsArray();
         for (MathObject<?> o : objects) {
             mpArray.add(o);
         }
@@ -42,7 +42,7 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
     protected AbstractMathGroup(HashMap<String, MathObject<?>> dict) {
         this.dict = dict;
         this.objects = new ArrayList<>(dict.values());
-        this.mpArray = new MODrawPropertiesArray();
+        this.mpArray = new DrawStylePropertiesObjectsArray();
         for (MathObject<?> o : objects) {
             mpArray.add(o);
         }
@@ -461,7 +461,7 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
     }
 
     @Override
-    public MODrawPropertiesArray getMp() {
+    public DrawStylePropertiesObjectsArray getMp() {
         return mpArray;
     }
 

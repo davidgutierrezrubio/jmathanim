@@ -4,7 +4,7 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.DelimiterType;
 import com.jmathanim.Enum.RotationType;
-import com.jmathanim.Styling.MODrawPropertiesArray;
+import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
@@ -22,7 +22,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
     protected final Vec B;
     protected final Shape delimiterShapeToDraw;
 //    protected final MODrawProperties mpDelimiterShape;
-    protected final MODrawPropertiesArray mpDelimiter;
+    protected final DrawStylePropertiesObjectsArray mpDelimiter;
     /**
      * Elements created to be sent to the renderer.
      * Usually one Shape (delimiter) and optionally a MathObject as Label
@@ -58,7 +58,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
 //        this.mpDelimiterShape = (MODrawProperties) this.delimiterShapeToDraw.getMp();
 
 
-        this.mpDelimiter = new MODrawPropertiesArray();
+        this.mpDelimiter = new DrawStylePropertiesObjectsArray();
         this.mpDelimiter.add(delimiterShapeToDraw);
         this.mpDelimiter.loadFromStyle("DEFAULT");
 
@@ -179,7 +179,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
     }
 
     @Override
-    public MODrawPropertiesArray getMp() {
+    public DrawStylePropertiesObjectsArray getMp() {
         return mpDelimiter;
     }
 
