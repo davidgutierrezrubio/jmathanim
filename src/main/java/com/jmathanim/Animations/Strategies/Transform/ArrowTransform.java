@@ -23,8 +23,8 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Arrow;
 
 /**
- * Transfom stratregy from one arrow to another. Currently only changes
- * starting/ending points, not head transform is done
+ * Transfom stratregy from one arrow to another. Currently only changes starting/ending points, not head transform is
+ * done
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -42,10 +42,10 @@ public class ArrowTransform extends TransformStrategy<Arrow> {
     @Override
     public boolean doInitialization() {
         super.doInitialization();
-        Vec a = ((Arrow) getOriginObject()).getStart().copy();
-        Vec b = ((Arrow) getOriginObject()).getEnd().copy();
-        Vec c = ((Arrow) getOriginObject()).getStart().copy();
-        Vec d = ((Arrow) getDestinyObject()).getEnd().copy();
+        Vec a = getOriginObject().getStart().copy();
+        Vec b = getOriginObject().getEnd().copy();
+        Vec c = getDestinyObject().getStart().copy();
+        Vec d = getDestinyObject().getEnd().copy();
         getIntermediateObject().copyStateFrom(this.getOriginObject());
         anim = Commands.isomorphism(runTime, a, b, c, d, getIntermediateObject());
         this.copyEffectParametersTo(anim);
@@ -58,7 +58,12 @@ public class ArrowTransform extends TransformStrategy<Arrow> {
     @Override
     public void doAnim(double t) {
         super.doAnim(t);
-        anim.doAnim(t);
+        double lt = getLT(t);
+        anim.doAnim(lt);
+        if (isShouldInterpolateStyles()) {
+            getIntermediateObject().getMp().interpolateFrom(getOriginObject().getMp(), getDestinyObject().getMp(), lt);
+        }
+        getIntermediateObject().update(scene);
     }
 
     @Override
@@ -67,14 +72,10 @@ public class ArrowTransform extends TransformStrategy<Arrow> {
         anim.finishAnimation();
     }
 
-    @Override
-    public Arrow getIntermediateObject() {
-        return anim.getIntermediateObject();
-    }
-
-    @Override
-    public void reset() {
-        super.reset();
-        anim.reset();
-    }
+//
+//    @Override
+//    public void reset() {
+//        super.reset();
+//        anim.reset();
+//    }
 }

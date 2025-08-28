@@ -126,12 +126,13 @@ public class ShapeDelimiter extends Delimiter {
                         delimiterLabelRigidBox.rotate(PI);
                     }
             }
-            delimiterLabelRigidBox.stackTo(AnchorType.LOWER, labelMarkPoint, AnchorType.UPPER, 0);
+//            delimiterLabelRigidBox.stackTo(AnchorType.LOWER, labelMarkPoint, AnchorType.UPPER, 0);
+            delimiterShapeToDraw.stack().withDestinyAnchor(AnchorType.UPPER).toObject(labelMarkPoint);
 //            groupElementsToBeDrawn.add(getLabel());
 //            if (amplitudeScale != 1)
 //                delimiterLabelToDraw.scale(this.amplitudeScale);
         }
-        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(bb.getDL(), bb.getDR(), AA, BB, 1);
+        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(bb.getLowerLeft(), bb.getLowerRight(), AA, BB, 1);
 
         if (this.type== DelimiterType.INVISIBLE) {
             delimiterShapeToDraw.visible(false);

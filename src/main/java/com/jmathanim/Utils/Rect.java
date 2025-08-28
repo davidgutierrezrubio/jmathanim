@@ -388,19 +388,19 @@ public class Rect implements Boxable {// TODO: Adjust this to 3D coordinates
         return Vec.to(.5 * (xmin + xmax), ymin, .5 * (zmin + zmax));
     }
 
-    public Vec getUL() {
+    public Vec getUpperLeft() {
         return Vec.to(xmin, ymax, .5 * (zmin + zmax));
     }
 
-    public Vec getUR() {
+    public Vec getUpperRight() {
         return Vec.to(xmax, ymax, .5 * (zmin + zmax));
     }
 
-    public Vec getDL() {
+    public Vec getLowerLeft() {
         return Vec.to(xmin, ymin, .5 * (zmin + zmax));
     }
 
-    public Vec getDR() {
+    public Vec getLowerRight() {
         return Vec.to(xmax, ymin, .5 * (zmin + zmax));
     }
 
@@ -547,10 +547,10 @@ public class Rect implements Boxable {// TODO: Adjust this to 3D coordinates
      */
     public Rect getRotatedRect(double rotateAngle) {//TODO: Adapt this properly to 3D
         Vec vCenter = this.getCenter();
-        Vec A = this.getUL().rotate(vCenter, rotateAngle);
-        Vec B = this.getUR().rotate(vCenter, rotateAngle);
-        Vec C = this.getDR().rotate(vCenter, rotateAngle);
-        Vec D = this.getDL().rotate(vCenter, rotateAngle);
+        Vec A = this.getUpperLeft().rotate(vCenter, rotateAngle);
+        Vec B = this.getUpperRight().rotate(vCenter, rotateAngle);
+        Vec C = this.getLowerRight().rotate(vCenter, rotateAngle);
+        Vec D = this.getLowerLeft().rotate(vCenter, rotateAngle);
         return Rect.make(A, B, C, D);
     }
 
@@ -636,14 +636,14 @@ public class Rect implements Boxable {// TODO: Adjust this to 3D coordinates
                 return getLeft();
             case RIGHT:
                 return getRight();
-            case ULEFT:
-                return getUL();
-            case URIGHT:
-                return getUR();
-            case DLEFT:
-                return getDL();
-            case DRIGHT:
-                return getDR();
+            case LEFT_AND_ALIGNED_UPPER:
+                return getUpperLeft();
+            case RIGHT_AND_ALIGNED_UPPER:
+                return getUpperRight();
+            case LEFT_AND_ALIGNED_LOWER:
+                return getLowerLeft();
+            case RIGHT_AND_ALIGNED_LOWER:
+                return getLowerRight();
             case CENTER:
                 return getCenter();
         }
@@ -658,10 +658,10 @@ public class Rect implements Boxable {// TODO: Adjust this to 3D coordinates
      * @return A new Rect representing the transformed Rect.
      */
     public Rect getTransformedRect(AffineJTransform tr) {
-        Vec a = getUL();
-        Vec b = getDL();
-        Vec c = getUR();
-        Vec d = getDR();
+        Vec a = getUpperLeft();
+        Vec b = getLowerLeft();
+        Vec c = getUpperRight();
+        Vec d = getLowerRight();
         return make(
                 a.applyAffineTransform(tr),
                 b.applyAffineTransform(tr),

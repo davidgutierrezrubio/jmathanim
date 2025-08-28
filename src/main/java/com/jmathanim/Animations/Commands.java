@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.Animations.Strategies.Transform.FlipTransform;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Constructible.Constructible;
@@ -522,7 +523,7 @@ public class Commands {
 
 
     public static AnimationWithEffects isomorphism(double runtime, Rect rOrig, Rect rDst, MathObject<?>... objects) {
-        return isomorphism(runtime, rOrig.getUL(), rOrig.getDR(), rDst.getUL(), rDst.getDR(), objects);
+        return isomorphism(runtime, rOrig.getUpperLeft(), rOrig.getLowerRight(), rDst.getUpperLeft(), rDst.getLowerRight(), objects);
     }
 
     /**
@@ -537,10 +538,10 @@ public class Commands {
      * @param objects Objects to animate (varargs)
      * @return Animation to run playAnimation method method
      */
-    public static AnimationWithEffects isomorphism(double runtime, Coordinates a, Coordinates b, Coordinates c, Coordinates d,
+    public static AnimationWithEffects isomorphism(double runtime, Coordinates<?> a, Coordinates<?> b, Coordinates<?> c, Coordinates<?> d,
                                                    MathObject<?>... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
-            final MathObject[] mathObjects = objects;
+            final MathObject<?>[] mathObjects = objects;
             AffineJTransform tr;
             Vec A, B, C, D;
 
@@ -1788,9 +1789,9 @@ public class Commands {
      */
     public static Animation crossOut(double runtime, MathObject<?> obj) {
         Rect bbox = obj.getBoundingBox();
-        Shape s1 = Shape.segment(bbox.getUL(), bbox.getDR()).scale(.75).linecap(StrokeLineCap.BUTT)
+        Shape s1 = Shape.segment(bbox.getUpperLeft(), bbox.getLowerRight()).scale(.75).linecap(StrokeLineCap.BUTT)
                 .drawColor(JMColor.RED).layer(Integer.MAX_VALUE);
-        Shape s2 = Shape.segment(bbox.getUR(), bbox.getDL()).scale(.75).linecap(StrokeLineCap.BUTT)
+        Shape s2 = Shape.segment(bbox.getUpperRight(), bbox.getLowerLeft()).scale(.75).linecap(StrokeLineCap.BUTT)
                 .drawColor(JMColor.RED).layer(Integer.MAX_VALUE);
         double longi = .25 * s1.getPoint(0).to(s1.getPoint(1)).norm();
         double width = JMathAnimConfig.getConfig().getRenderer().MathWidthToThickness(longi);
@@ -1807,8 +1808,8 @@ public class Commands {
     public static JoinAnimation crossAndFadeOut(double runtime, MathObject obj) {
         JoinAnimation resul = JoinAnimation.make(runtime);
         Rect bb = obj.getBoundingBox();
-        final Vec a = bb.getUR();
-        final Vec b = bb.getDL();
+        final Vec a = bb.getUpperRight();
+        final Vec b = bb.getLowerLeft();
         double width = JMathAnimConfig.getConfig().getRenderer().MathWidthToThickness(a.to(b).norm());
         Shape cross = Shape.segment(a, b).thickness(width * .25).drawColor("red");
         cross.getMp().setLinecap(StrokeLineCap.SQUARE);
@@ -1821,8 +1822,8 @@ public class Commands {
     public static JoinAnimation crossAndShrink(double runtime, MathObject obj) {
         JoinAnimation resul = JoinAnimation.make(runtime);
         Rect bb = obj.getBoundingBox();
-        final Vec a = bb.getUR();
-        final Vec b = bb.getDL();
+        final Vec a = bb.getUpperRight();
+        final Vec b = bb.getLowerLeft();
         double width = JMathAnimConfig.getConfig().getRenderer().MathWidthToThickness(a.to(b).norm());
         Shape cross = Shape.segment(a, b).thickness(width * .25).drawColor("red");
         cross.getMp().setLinecap(StrokeLineCap.SQUARE);

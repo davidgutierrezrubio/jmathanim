@@ -734,12 +734,12 @@ public class AffineJTransform  {
      * @return The transform
      */
     public static AffineJTransform createAffineTransformation(Rect r1, Rect r2, double lambda) {
-        Vec A1 = r1.getDL();
-        Vec A2 = r2.getDL();
-        Vec B1 = r1.getDR();
-        Vec B2 = r2.getDR();
-        Vec C1 = r1.getUL();
-        Vec C2 = r2.getUL();
+        Vec A1 = r1.getLowerLeft();
+        Vec A2 = r2.getLowerLeft();
+        Vec B1 = r1.getLowerRight();
+        Vec B2 = r2.getLowerRight();
+        Vec C1 = r1.getUpperLeft();
+        Vec C2 = r2.getUpperLeft();
         return createAffineTransformation(A1, B1, C1, A2, B2, C2, lambda);
     }
 

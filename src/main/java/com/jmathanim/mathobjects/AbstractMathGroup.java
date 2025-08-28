@@ -374,28 +374,28 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
                 anchor = AnchorType.LOWER;
                 break;
             case URIGHT:
-                anchor = AnchorType.URIGHT;
+                anchor = AnchorType.RIGHT_AND_ALIGNED_UPPER;
                 break;
             case ULEFT:
-                anchor = AnchorType.ULEFT;
+                anchor = AnchorType.LEFT_AND_ALIGNED_UPPER;
                 break;
             case DRIGHT:
-                anchor = AnchorType.DRIGHT;
+                anchor = AnchorType.RIGHT_AND_ALIGNED_LOWER;
                 break;
             case DLEFT:
-                anchor = AnchorType.DLEFT;
+                anchor = AnchorType.LEFT_AND_ALIGNED_LOWER;
                 break;
             case RUPPER:
-                anchor = AnchorType.RUPPER;
+                anchor = AnchorType.UPPER_AND_ALIGNED_RIGHT;
                 break;
             case LUPPER:
-                anchor = AnchorType.LUPPER;
+                anchor = AnchorType.UPPER_AND_ALIGNED_LEFT;
                 break;
             case RLOWER:
-                anchor = AnchorType.RLOWER;
+                anchor = AnchorType.LOWER_AND_ALIGNED_RIGHT;
                 break;
             case LLOWER:
-                anchor = AnchorType.LLOWER;
+                anchor = AnchorType.LOWER_AND_ALIGNED_LEFT;
                 break;
             case DIAG1:
                 anchor = AnchorType.DIAG1;
@@ -414,10 +414,18 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
                 break;
         }
         if (corner != null) {
-            objects.get(0).stackTo(corner, anchor, gap);
+//            objects.get(0).stackTo(corner, anchor, gap);
+            objects.get(0).stack()
+                    .withDestinyAnchor(anchor)
+                    .withGaps(gap,gap)
+                    .toObject(corner);
         }
         for (int n = 1; n < objects.size(); n++) {
-            objects.get(n).stackTo(objects.get(n - 1), anchor, gap);
+//            objects.get(n).stackTo(objects.get(n - 1), anchor, gap);
+            objects.get(n).stack()
+                    .withDestinyAnchor(anchor)
+                    .withGaps(gap,gap)
+                    .toObject(objects.get(n - 1));
         }
         return (T) this;
 

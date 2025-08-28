@@ -111,18 +111,31 @@ public class BoxLayout extends AbstractBoxLayout {
         MathObject firstOfTheRow = group.get(0);
         // Stacks the first object to the corner point, if it exists
         if (this.corner != null) {
-            group.get(0).stackTo(firstElementStack, this.corner, AnchorType.CENTER, 0);
+//            group.get(0).stackTo(firstElementStack, this.corner, AnchorType.CENTER, 0);
+            group.get(0).stack()
+                    .withOriginAnchor(firstElementStack)
+                    .withDestinyAnchor(AnchorType.CENTER)
+                    .toObject(this.corner);
+
         }
 
         for (int n = 1; n < group.size(); n++) {// n=0 gets unaltered
             rowCounter++;
             if (rowCounter < this.rowSize) {
-                group.get(n).stackTo(group.get(n - 1), inRowStack, this.inRowGap);
+//                group.get(n).stackTo(group.get(n - 1), inRowStack, this.inRowGap);
+                group.get(n).stack()
+                        .withDestinyAnchor(inRowStack)
+                        .withGaps(this.inRowGap, this.inRowGap)
+                        .toObject(group.get(n - 1));
             }
 
             if (rowCounter == this.rowSize) {
                 rowCounter = 0;
-                group.get(n).stackTo(firstOfTheRow, inColStack, this.inColGap);
+//                group.get(n).stackTo(firstOfTheRow, inColStack, this.inColGap);
+                group.get(n).stack()
+                        .withDestinyAnchor(inColStack)
+                        .withGaps(this.inColGap, this.inColGap)
+                        .toObject(firstOfTheRow);
                 firstOfTheRow = group.get(n);
             }
         }

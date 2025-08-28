@@ -100,66 +100,66 @@ public class SimpleLayout extends GroupLayout {
 			vgap = this.verticalGap;
 			break;
 		case URIGHT:
-			anchor1 = AnchorType.ULEFT;
-			anchor2 = AnchorType.URIGHT;
+			anchor1 = AnchorType.LEFT_AND_ALIGNED_UPPER;
+			anchor2 = AnchorType.RIGHT_AND_ALIGNED_UPPER;
 			hgap = this.horizontalGap;
 			break;
 		case ULEFT:
-			anchor1 = AnchorType.URIGHT;
-			anchor2 = AnchorType.ULEFT;
+			anchor1 = AnchorType.RIGHT_AND_ALIGNED_UPPER;
+			anchor2 = AnchorType.LEFT_AND_ALIGNED_UPPER;
 			hgap = this.horizontalGap;
 			break;
 		case DRIGHT:
-			anchor1 = AnchorType.DLEFT;
-			anchor2 = AnchorType.DRIGHT;
+			anchor1 = AnchorType.LEFT_AND_ALIGNED_LOWER;
+			anchor2 = AnchorType.RIGHT_AND_ALIGNED_LOWER;
 			hgap = this.horizontalGap;
 			break;
 		case DLEFT:
-			anchor1 = AnchorType.DRIGHT;
-			anchor2 = AnchorType.DLEFT;
+			anchor1 = AnchorType.RIGHT_AND_ALIGNED_LOWER;
+			anchor2 = AnchorType.LEFT_AND_ALIGNED_LOWER;
 			hgap = this.horizontalGap;
 			break;
 		case RUPPER:
-			anchor1 = AnchorType.DRIGHT;
-			anchor2 = AnchorType.URIGHT;
+			anchor1 = AnchorType.RIGHT_AND_ALIGNED_LOWER;
+			anchor2 = AnchorType.RIGHT_AND_ALIGNED_UPPER;
 			vgap = this.verticalGap;
 			break;
 		case LUPPER:
-			anchor1 = AnchorType.DLEFT;
-			anchor2 = AnchorType.ULEFT;
+			anchor1 = AnchorType.LEFT_AND_ALIGNED_LOWER;
+			anchor2 = AnchorType.LEFT_AND_ALIGNED_UPPER;
 			vgap = this.verticalGap;
 			break;
 		case RLOWER:
-			anchor1 = AnchorType.URIGHT;
-			anchor2 = AnchorType.DRIGHT;
+			anchor1 = AnchorType.RIGHT_AND_ALIGNED_UPPER;
+			anchor2 = AnchorType.RIGHT_AND_ALIGNED_LOWER;
 			vgap = this.verticalGap;
 			break;
 		case LLOWER:
-			anchor1 = AnchorType.ULEFT;
-			anchor2 = AnchorType.DLEFT;
+			anchor1 = AnchorType.LEFT_AND_ALIGNED_UPPER;
+			anchor2 = AnchorType.LEFT_AND_ALIGNED_LOWER;
 			vgap = this.verticalGap;
 			break;
 		case DIAG1:
-			anchor1 = AnchorType.DLEFT;
-			anchor2 = AnchorType.URIGHT;
+			anchor1 = AnchorType.LEFT_AND_ALIGNED_LOWER;
+			anchor2 = AnchorType.RIGHT_AND_ALIGNED_UPPER;
 			vgap = this.verticalGap;
 			hgap = this.horizontalGap;
 			break;
 		case DIAG2:
-			anchor1 = AnchorType.DRIGHT;
-			anchor2 = AnchorType.ULEFT;
+			anchor1 = AnchorType.RIGHT_AND_ALIGNED_LOWER;
+			anchor2 = AnchorType.LEFT_AND_ALIGNED_UPPER;
 			vgap = this.verticalGap;
 			hgap = this.horizontalGap;
 			break;
 		case DIAG3:
-			anchor1 = AnchorType.URIGHT;
-			anchor2 = AnchorType.DLEFT;
+			anchor1 = AnchorType.RIGHT_AND_ALIGNED_UPPER;
+			anchor2 = AnchorType.LEFT_AND_ALIGNED_LOWER;
 			vgap = this.verticalGap;
 			hgap = this.horizontalGap;
 			break;
 		case DIAG4:
-			anchor1 = AnchorType.ULEFT;
-			anchor2 = AnchorType.DRIGHT;
+			anchor1 = AnchorType.LEFT_AND_ALIGNED_UPPER;
+			anchor2 = AnchorType.RIGHT_AND_ALIGNED_LOWER;
 			vgap = this.verticalGap;
 			hgap = this.horizontalGap;
 			break;
@@ -168,10 +168,20 @@ public class SimpleLayout extends GroupLayout {
 			break;
 		}
 		if (this.refPoint != null) {
-			group.get(0).stackTo(anchor1, this.refPoint, AnchorType.CENTER, hgap, vgap);
+//			group.get(0).stackTo(anchor1, this.refPoint, AnchorType.CENTER, hgap, vgap);
+			group.get(0).stack()
+					.withGaps(hgap,vgap)
+					.withOriginAnchor(anchor1)
+					.withDestinyAnchor(AnchorType.CENTER)
+					.toObject(this.refPoint);
 		}
 		for (int n = 1; n < group.size(); n++) {
-			group.get(n).stackTo(anchor1, group.get(n - 1), anchor2, hgap, vgap);
+//			group.get(n).stackTo(anchor1, group.get(n - 1), anchor2, hgap, vgap);
+			group.get(n).stack()
+					.withGaps(hgap,vgap)
+					.withOriginAnchor(anchor1)
+					.withDestinyAnchor(anchor2)
+					.toObject(group.get(n - 1));
 		}
 	}
 

@@ -19,7 +19,8 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.AbstractShape;
+import com.jmathanim.mathobjects.JMPath;
 import org.apache.commons.math3.linear.SingularMatrixException;
 
 /**
@@ -28,9 +29,9 @@ import org.apache.commons.math3.linear.SingularMatrixException;
  */
 public class TransformStrategyChecker {
 
-    private static boolean testTransform(Shape shORig, Shape shDest, AffineJTransform tr, double epsilon) {
-        Shape sh = tr.getTransformedObject(shORig);
-        return sh.getPath().isEquivalentTo(shDest.getPath(), epsilon);
+    private static boolean testTransform(AbstractShape<?> shORig, AbstractShape<?> shDest, AffineJTransform tr, double epsilon) {
+        JMPath pathOrigTransformed = shORig.getPath().copy().applyAffineTransform(tr);
+        return shDest.getPath().isEquivalentTo(pathOrigTransformed, epsilon);
     }
 
     /**
@@ -41,7 +42,7 @@ public class TransformStrategyChecker {
      * @param epsilon Max error
      * @return True if an isomorphism is supported. False otherwise
      */
-    public static boolean testDirectIsomorphismTransform(Shape shORig, Shape shDest, double epsilon) {
+    public static boolean testDirectIsomorphismTransform(AbstractShape<?> shORig, AbstractShape<?> shDest, double epsilon) {
         if (!checkMinimalPathRequirements(shORig, 2, shDest, 2)) {
             return false;
         }
@@ -54,7 +55,7 @@ public class TransformStrategyChecker {
         }
     }
 
-    private static boolean checkMinimalPathRequirements(Shape shORig, int n1, Shape shDest, int n2) {
+    private static boolean checkMinimalPathRequirements(AbstractShape<?> shORig, int n1, AbstractShape<?> shDest, int n2) {
         boolean mininumPoints = ((shORig.getPath().size() >= n1) && (shDest.getPath().size() >= n2));
         boolean sameSize = (shORig.getPath().size() == shDest.getPath().size());
         return mininumPoints & sameSize;
@@ -69,7 +70,7 @@ public class TransformStrategyChecker {
      * @param epsilon Max error
      * @return True if a general affine transform is supported. False otherwise
      */
-    public static boolean testGeneralAffineTransform(Shape shORig, Shape shDest, double epsilon) {
+    public static boolean testGeneralAffineTransform(AbstractShape<?> shORig, AbstractShape<?> shDest, double epsilon) {
         if (!checkMinimalPathRequirements(shORig, 3, shDest, 3)) {
             return false;
         }
@@ -91,7 +92,7 @@ public class TransformStrategyChecker {
      * @param epsilon Max error
      * @return True if a general affine transform is supported. False otherwise
      */
-    public static boolean testRotateScaleXYTransform(Shape shORig, Shape shDest, double epsilon) {
+    public static boolean testRotateScaleXYTransform(AbstractShape<?> shORig, AbstractShape<?> shDest, double epsilon) {
         if (!checkMinimalPathRequirements(shORig, 3, shDest, 3)) {
             return false;
         }
@@ -104,7 +105,7 @@ public class TransformStrategyChecker {
         }
     }
 
-    private static Vec[] getIdealPoints(int numPoints, Shape shORig, Shape shDest) {
+    private static Vec[] getIdealPoints(int numPoints, AbstractShape<?> shORig, AbstractShape<?> shDest) {
         Vec[] points = null;
         if (numPoints == 4) {
             Vec A = shORig.get(0).getV();// TODO: Take better points (as far as possible)

@@ -22,32 +22,31 @@ import com.jmathanim.Animations.Strategies.Transform.Optimizers.OptimizePathsStr
 import com.jmathanim.mathobjects.MathObject;
 
 /**
- *
  * @author David
  */
 public abstract class TransformStrategy<T extends MathObject<?>> extends AnimationWithEffects {
 
+    protected boolean destinyWasAddedAtFirst, originWasAddedAtFirst;
     OptimizePathsStrategy optimizeStrategy = null;
     private T origin;
     private T destiny;
     private T intermediate;
-    protected boolean destinyWasAddedAtFirst, originWasAddedAtFirst;
 
     public TransformStrategy(double runTime) {
         super(runTime);
     }
 
     @Override
-    public  T getIntermediateObject() {
-        return  intermediate;
+    public T getIntermediateObject() {
+        return intermediate;
     }
 
-    public  T  getOriginObject() {
-        return  origin;
+    public T getOriginObject() {
+        return origin;
     }
 
-    public  T  getDestinyObject() {
-        return  destiny;
+    public T getDestinyObject() {
+        return destiny;
     }
 
     public void setOrigin(T origin) {
@@ -63,8 +62,7 @@ public abstract class TransformStrategy<T extends MathObject<?>> extends Animati
     }
 
     /**
-     * Sets the optimization strategy.If null, the animation will try to find
-     * the most suitable optimization.
+     * Sets the optimization strategy.If null, the animation will try to find the most suitable optimization.
      *
      * @param strategy Optimization strategy
      * @return This object

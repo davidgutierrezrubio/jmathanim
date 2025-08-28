@@ -29,26 +29,42 @@ public enum AnchorType {
     /**
      * Down-Right anchor point
      */
-    DRIGHT,
+    RIGHT_AND_ALIGNED_LOWER,
+
     /**
      * Up-Right anchor point
      */
-    URIGHT,
+    RIGHT_AND_ALIGNED_UPPER,
     /**
      * Up-Left anchor point
      */
-    ULEFT,
+    LEFT_AND_ALIGNED_UPPER,
     /**
      * Down-Left anchor point
      */
-    DLEFT,
-    RLOWER,
-    RUPPER,
-    LLOWER,
-    LUPPER,
+    LEFT_AND_ALIGNED_LOWER,
+    LOWER_AND_ALIGNED_RIGHT,
+    UPPER_AND_ALIGNED_RIGHT,
+    LOWER_AND_ALIGNED_LEFT,
+    UPPER_AND_ALIGNED_LEFT,
+
+    /**
+     * Diagonal first quadrant (45 degrees)
+     */
     DIAG1,
+    /**
+     * Diagonal second quadrant (135 degrees)
+     */
     DIAG2,
+
+    /**
+     * Diagonal third quadrant (225 degrees)
+     */
     DIAG3,
+
+    /**
+     * Diagonal third quadrant (315 degrees)
+     */
     DIAG4,
     ZTOP,
     ZBOTTOM

@@ -20,6 +20,7 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.DashStyle;
+import com.jmathanim.Enum.ScreenAnchor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Styling.RendererEffects;
@@ -126,7 +127,7 @@ public abstract class MathObject<T extends MathObject<T>> implements
      * @return The same object
      */
     public final T center() {
-        this.stackToScreen(AnchorType.CENTER);
+        this.stack().toScreen(ScreenAnchor.CENTER);
         return (T) this;
     }
 
@@ -265,150 +266,160 @@ public abstract class MathObject<T extends MathObject<T>> implements
         return (T) this;
     }
 
-    /**
-     * Stack the object to another using a specified anchor. The anchor for the stacked object is automatically selected
-     * as the reverse of the destiny anchor. For example stackTo(obj, RIGHT) will move this object so that its LEFT
-     * anchor matchs the RIGHT anchor of the destiny. This method is equivalent to stackTo(obj,type,0)
-     *
-     * @param obj        The destiny object. Anyting that implements the Boxable interface, like MathObject or Rect
-     * @param anchorType {@link Anchor} type
-     * @return The current object
-     */
-    public final T stackTo(Boxable obj, AnchorType anchorType) {
-        return stackTo(obj, anchorType, 0);
-    }
+//    /**
+//     * Stack the object to another using a specified anchor. The anchor for the stacked object is automatically selected
+//     * as the reverse of the destiny anchor. For example stackTo(obj, RIGHT) will move this object so that its LEFT
+//     * anchor matchs the RIGHT anchor of the destiny. This method is equivalent to stackTo(obj,type,0)
+//     *
+//     * @param obj        The destiny object. Anyting that implements the Boxable interface, like MathObject or Rect
+//     * @param anchorType {@link Anchor} type
+//     * @return The current object
+//     */
+//    @Override
+//    public final T stackTo(Boxable obj, AnchorType anchorType) {
+//        return stackTo(obj, anchorType, 0);
+//    }
+//
+//    /**
+//     * Stack the object to another using a specified anchor. For example stackTo(UPPER, obj, RIGHT) will move this
+//     * object so that its UPPER anchor matchs the RIGHT anchor of the destiny.
+//     *
+//     * @param originAnchor  Anchor of this object to use
+//     * @param destinyObject Destiny object to stack with
+//     * @param destinyAnchor Anchor of destiny object to use
+//     * @param originGap     Amount of gap to leave between the anchors, in math units. The direction of the gap will be
+//     *                      computed using origin anchor as reference.
+//     * @return This object
+//     */
+//    public T stackTo(AnchorType originAnchor, Boxable destinyObject, AnchorType destinyAnchor, double originGap) {
+//        return stackTo(originAnchor, destinyObject, destinyAnchor, originGap, 0);
+//    }
+
+//    /**
+//     * Stack the object to another using a specified anchor.For example stackTo(UPPER, obj, RIGHT) will move this object
+//     * so that its UPPER anchor matchs the RIGHT anchor of the destiny.
+//     *
+//     * @param originAnchor  Anchor of this object to use
+//     * @param destinyObject Destiny object to stack with
+//     * @param destinyAnchor Anchor of destiny object to use
+//     * @param originGap     Amount of gap to leave in origin anchor, in math units
+//     * @param destinyGap    Amount of gap to leave in destiny anchor, in math units
+//     * @return This object
+//     */
+//    public T stackTo(AnchorType originAnchor, Boxable destinyObject, AnchorType destinyAnchor, double originGap, double destinyGap) {
+//        if (!destinyObject.isEmpty()) {
+//            Vec B = Anchor.getAnchorPoint(destinyObject, destinyAnchor, destinyGap);
+//            Vec A = Anchor.getAnchorPoint(this, originAnchor, originGap);
+//            this.shift(A.to(B));
+//        }
+//        return (T) this;
+//    }
 
     /**
-     * Stack the object to another using a specified anchor. For example stackTo(UPPER, obj, RIGHT) will move this
-     * object so that its UPPER anchor matchs the RIGHT anchor of the destiny.
-     *
-     * @param originAnchor  Anchor of this object to use
-     * @param destinyObject Destiny object to stack with
-     * @param destinyAnchor Anchor of destiny object to use
-     * @param originGap     Amount of gap to leave between the anchors, in math units. The direction of the gap will be
-     *                      computed using origin anchor as reference.
-     * @return This object
+     * Convenience class to apply stack methods
+     * @return
      */
-    public T stackTo(AnchorType originAnchor, Boxable destinyObject, AnchorType destinyAnchor, double originGap) {
-        return stackTo(originAnchor, destinyObject, destinyAnchor, originGap, 0);
+    public StackUtils<T> stack() {
+        return new StackUtils<>((T) this);
     }
 
-    /**
-     * Stack the object to another using a specified anchor.For example stackTo(UPPER, obj, RIGHT) will move this object
-     * so that its UPPER anchor matchs the RIGHT anchor of the destiny.
-     *
-     * @param originAnchor  Anchor of this object to use
-     * @param destinyObject Destiny object to stack with
-     * @param destinyAnchor Anchor of destiny object to use
-     * @param originGap     Amount of gap to leave in origin anchor, in math units
-     * @param destinyGap    Amount of gap to leave in destiny anchor, in math units
-     * @return This object
-     */
-    public T stackTo(AnchorType originAnchor, Boxable destinyObject, AnchorType destinyAnchor, double originGap, double destinyGap) {
-        if (!destinyObject.isEmpty()) {
-            Vec B = Anchor.getAnchorPoint(destinyObject, destinyAnchor, destinyGap);
-            Vec A = Anchor.getAnchorPoint(this, originAnchor, originGap);
-            this.shift(A.to(B));
-        }
-        return (T) this;
-    }
-
-    /**
-     * Stack the object to another using a specified anchor. For example stackTo(UPPER, obj, RIGHT) will move this
-     * object so that its UPPER anchor matchs the RIGHT anchor of the destiny. The difference with similar methods is
-     * that the gap is given relative to this object width.
-     *
-     * @param anchorObj  Anchor of this object to use
-     * @param dstObj     Destiny object to stack with
-     * @param anchorType Anchor of destiny object to use
-     * @param gap        Amount of gap, relative to this object width, to leave between the anchors, in math units.
-     * @return This object
-     */
-    public T stackToRW(AnchorType anchorObj, Boxable dstObj, AnchorType anchorType, double gap) {
-        return stackTo(anchorObj, dstObj, anchorType, gap * this.getWidth());
-    }
-
-    /**
-     * Stack the object to another using a specified anchor. For example stackTo(UPPER, obj, RIGHT) will move this
-     * object so that its UPPER anchor matchs the RIGHT anchor of the destiny. The difference with similar methods is
-     * that the gap is given relative to this object height.
-     *
-     * @param anchorObj  Anchor of this object to use
-     * @param dstObj     Destiny object to stack with
-     * @param anchorType Anchor of destiny object to use
-     * @param gap        Amount of gap, relative to this object height, to leave between the anchors, in math units.
-     * @return This object
-     */
-    public T stackToRH(AnchorType anchorObj, Boxable dstObj, AnchorType anchorType, double gap) {
-        return stackTo(anchorObj, dstObj, anchorType, gap * this.getHeight());
-    }
-
-    /**
-     * Stack the object to another using a specified anchor. For example stackTo(obj, RIGHT) will move this object so
-     * that its LEFT anchor matchs the RIGHT anchor of the destiny. The difference with similar methods is that the gap
-     * is given relative to this object height.
-     *
-     * @param dstObj     Destiny object to stack with
-     * @param anchorType Anchor of destiny object to use
-     * @param gap        Amount of gap, relative to this object height, to leave between the anchors, in math units.
-     * @return This object
-     */
-    public T stackToRH(Boxable dstObj, AnchorType anchorType, double gap) {
-        return stackToRH(Anchor.reverseAnchorPoint(anchorType), dstObj, anchorType, gap);
-    }
-
-    /**
-     * Stack the object to another using a specified anchor. For example stackTo(obj, RIGHT) will move this object so
-     * that its LEFT anchor matchs the RIGHT anchor of the destiny. The difference with similar methods is that the gap
-     * is given relative to this object width.
-     *
-     * @param dstObj     Destiny object to stack with
-     * @param anchorType Anchor of destiny object to use
-     * @param gap        Amount of gap, relative to this object width, to leave between the anchors, in math units.
-     * @return This object
-     */
-    public T stackToRW(Boxable dstObj, AnchorType anchorType, double gap) {
-        return stackToRW(Anchor.reverseAnchorPoint(anchorType), dstObj, anchorType, gap);
-    }
-
-    /**
-     * Stack the object to another using a specified anchor.The anchor for the stacked object is automatically selected
-     * as the reverse of the destiny anchor. For example stackTo(obj, RIGHT) will move this object so that its LEFT
-     * anchor matchs the RIGHT anchor of the destiny.
-     *
-     * @param obj        The destiny object. Anyting that implements the Boxable interface, like MathObject or Rect
-     * @param anchorType {@link Anchor} type
-     * @param gap        Amount of gap to leave between the anchors, in math units
-     * @return The current object
-     */
-    public T stackTo(Boxable obj, AnchorType anchorType, double gap) {
-        return stackTo(Anchor.reverseAnchorPoint(anchorType), obj, anchorType, gap);
-    }
-
-    /**
-     * Stack the object to the given anchor, relative to the current camera view
-     *
-     * @param anchorType {@link Anchor} type
-     * @return The current object
-     */
-    public final T stackToScreen(AnchorType anchorType) {
-        return stackToScreen(anchorType, 0, 0);
-    }
-
-    /**
-     * Stack the object to the given anchor, relative to the current camera view, applying the specified margins.
-     *
-     * @param anchorType {@link Anchor} type
-     * @param xMargin    x margin
-     * @param yMargin    y margin
-     * @return The current object
-     */
-    public T stackToScreen(AnchorType anchorType, double xMargin, double yMargin) {
-        Vec B = Anchor.getScreenAnchorPoint(getCamera(), anchorType, xMargin, yMargin);
-        Vec A = Anchor.getAnchorPoint(this, anchorType);
-        return this.shift(A.to(B));
-    }
-
+//
+//    /**
+//     * Stack the object to another using a specified anchor. For example stackTo(UPPER, obj, RIGHT) will move this
+//     * object so that its UPPER anchor matchs the RIGHT anchor of the destiny. The difference with similar methods is
+//     * that the gap is given relative to this object width.
+//     *
+//     * @param anchorObj  Anchor of this object to use
+//     * @param dstObj     Destiny object to stack with
+//     * @param anchorType Anchor of destiny object to use
+//     * @param gap        Amount of gap, relative to this object width, to leave between the anchors, in math units.
+//     * @return This object
+//     */
+//    public T stackToRW(AnchorType anchorObj, Boxable dstObj, AnchorType anchorType, double gap) {
+//        return stackTo(anchorObj, dstObj, anchorType, gap * this.getWidth());
+//    }
+//
+//    /**
+//     * Stack the object to another using a specified anchor. For example stackTo(UPPER, obj, RIGHT) will move this
+//     * object so that its UPPER anchor matchs the RIGHT anchor of the destiny. The difference with similar methods is
+//     * that the gap is given relative to this object height.
+//     *
+//     * @param anchorObj  Anchor of this object to use
+//     * @param dstObj     Destiny object to stack with
+//     * @param anchorType Anchor of destiny object to use
+//     * @param gap        Amount of gap, relative to this object height, to leave between the anchors, in math units.
+//     * @return This object
+//     */
+//    public T stackToRH(AnchorType anchorObj, Boxable dstObj, AnchorType anchorType, double gap) {
+//        return stackTo(anchorObj, dstObj, anchorType, gap * this.getHeight());
+//    }
+//
+//    /**
+//     * Stack the object to another using a specified anchor. For example stackTo(obj, RIGHT) will move this object so
+//     * that its LEFT anchor matchs the RIGHT anchor of the destiny. The difference with similar methods is that the gap
+//     * is given relative to this object height.
+//     *
+//     * @param dstObj     Destiny object to stack with
+//     * @param anchorType Anchor of destiny object to use
+//     * @param gap        Amount of gap, relative to this object height, to leave between the anchors, in math units.
+//     * @return This object
+//     */
+//    public T stackToRH(Boxable dstObj, AnchorType anchorType, double gap) {
+//        return stackToRH(Anchor.reverseAnchorPoint(anchorType), dstObj, anchorType, gap);
+//    }
+//
+//    /**
+//     * Stack the object to another using a specified anchor. For example stackTo(obj, RIGHT) will move this object so
+//     * that its LEFT anchor matchs the RIGHT anchor of the destiny. The difference with similar methods is that the gap
+//     * is given relative to this object width.
+//     *
+//     * @param dstObj     Destiny object to stack with
+//     * @param anchorType Anchor of destiny object to use
+//     * @param gap        Amount of gap, relative to this object width, to leave between the anchors, in math units.
+//     * @return This object
+//     */
+//    public T stackToRW(Boxable dstObj, AnchorType anchorType, double gap) {
+//        return stackToRW(Anchor.reverseAnchorPoint(anchorType), dstObj, anchorType, gap);
+//    }
+//
+//    /**
+//     * Stack the object to another using a specified anchor.The anchor for the stacked object is automatically selected
+//     * as the reverse of the destiny anchor. For example stackTo(obj, RIGHT) will move this object so that its LEFT
+//     * anchor matchs the RIGHT anchor of the destiny.
+//     *
+//     * @param obj        The destiny object. Anyting that implements the Boxable interface, like MathObject or Rect
+//     * @param anchorType {@link Anchor} type
+//     * @param gap        Amount of gap to leave between the anchors, in math units
+//     * @return The current object
+//     */
+//    public T stackTo(Boxable obj, AnchorType anchorType, double gap) {
+//        return stackTo(Anchor.reverseAnchorPoint(anchorType), obj, anchorType, gap);
+//    }
+//
+//    /**
+//     * Stack the object to the given anchor, relative to the current camera view
+//     *
+//     * @param anchorType {@link Anchor} type
+//     * @return The current object
+//     */
+//    public final T stackToScreen(AnchorType anchorType) {
+//        return stackToScreen(anchorType, 0, 0);
+//    }
+//
+//    /**
+//     * Stack the object to the given anchor, relative to the current camera view, applying the specified margins.
+//     *
+//     * @param anchorType {@link Anchor} type
+//     * @param xMargin    x margin
+//     * @param yMargin    y margin
+//     * @return The current object
+//     */
+//    public T stackToScreen(AnchorType anchorType, double xMargin, double yMargin) {
+//        Vec B = Anchor.getScreenAnchorPoint(getCamera(), anchorType, xMargin, yMargin);
+//        Vec A = Anchor.getAnchorPoint(this, anchorType);
+//        return this.shift(A.to(B));
+//    }
+//
 
 
     /**

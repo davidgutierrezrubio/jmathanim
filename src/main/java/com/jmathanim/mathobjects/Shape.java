@@ -65,7 +65,7 @@ public class Shape extends AbstractShape<Shape> {
      * @return The created rectangle
      */
     public static Shape rectangle(Rect r) {
-        return Shape.rectangle(r.getDL(), r.getUR());
+        return Shape.rectangle(r.getLowerLeft(), r.getUpperRight());
     }
 
     /**
@@ -76,7 +76,7 @@ public class Shape extends AbstractShape<Shape> {
      * @param B Second point
      * @return The created segment.
      */
-    public static Shape segment(Coordinates A, Coordinates B) {
+    public static Shape segment(Coordinates<?> A, Coordinates<?> B) {
         return segment(A, B, 2);
     }
 
@@ -90,16 +90,17 @@ public class Shape extends AbstractShape<Shape> {
      * @param numPoints Number of points, including start an ending point. A number greater or equal than 2.
      * @return The created segment.
      */
-    public static Shape segment(Coordinates A, Coordinates B, int numPoints) {
+    public static Shape segment(Coordinates<?> A, Coordinates<?> B, int numPoints) {
         if (numPoints < 2) {
             numPoints = 2;
         }
-        Coordinates[] points = new Coordinates[numPoints];
+        Coordinates<?>[] points = new Coordinates[numPoints];
         points[0] = A;
-        points[numPoints - 1] = B;
-        for (int i = 1; i < numPoints - 1; i++) {
+
+        for (int i = 1; i < numPoints - 2; i++) {
             points[i] = A.getVec().interpolate(B, 1d * i / (numPoints - 1));
         }
+        points[numPoints - 1] = B;
         return polyLine(points);
     }
 

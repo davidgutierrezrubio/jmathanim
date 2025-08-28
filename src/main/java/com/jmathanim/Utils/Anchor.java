@@ -35,7 +35,7 @@ public class Anchor {
 
 
     /**
-     * Return a {@link Point} object that represents the given anchor. For
+     * Return a {@link Vec} object that represents the given anchor. For
      * example getAnchorPoint(obj, LEFT) returns the upper point of the
      * object (determined by its bounding box)
      *
@@ -81,8 +81,8 @@ public class Anchor {
         final Rect bb = obj.getBoundingBox();
         switch (anchor) {
             case BY_POINT:
-                if (obj instanceof Coordinates) {
-                    Vec v = ((Coordinates) obj).getVec();
+                if (obj instanceof Coordinates<?>) {
+                    Vec v = ((Coordinates<?>) obj).getVec();
                     resul = v.copy();
                 } else {
                     if (obj instanceof MathObject) {
@@ -108,41 +108,41 @@ public class Anchor {
                 resul = bb.addGap(0, ygap).getUpper();
                 break;
 
-            case ULEFT:
-                resul = bb.addGap(xgap, 0).getUL();
+            case LEFT_AND_ALIGNED_UPPER:
+                resul = bb.addGap(xgap, 0).getUpperLeft();
                 break;
-            case URIGHT:
-                resul = bb.addGap(xgap, 0).getUR();
+            case RIGHT_AND_ALIGNED_UPPER:
+                resul = bb.addGap(xgap, 0).getUpperRight();
                 break;
-            case DLEFT:
-                resul = bb.addGap(xgap, 0).getDL();
+            case LEFT_AND_ALIGNED_LOWER:
+                resul = bb.addGap(xgap, 0).getLowerLeft();
                 break;
-            case DRIGHT:
-                resul = bb.addGap(xgap, 0).getDR();
+            case RIGHT_AND_ALIGNED_LOWER:
+                resul = bb.addGap(xgap, 0).getLowerRight();
                 break;
-            case RLOWER:
-                resul = bb.addGap(0, ygap).getDR();
+            case LOWER_AND_ALIGNED_RIGHT:
+                resul = bb.addGap(0, ygap).getLowerRight();
                 break;
-            case RUPPER:
-                resul = bb.addGap(0, ygap).getUR();
+            case UPPER_AND_ALIGNED_RIGHT:
+                resul = bb.addGap(0, ygap).getUpperRight();
                 break;
-            case LLOWER:
-                resul = bb.addGap(0, ygap).getDL();
+            case LOWER_AND_ALIGNED_LEFT:
+                resul = bb.addGap(0, ygap).getLowerLeft();
                 break;
-            case LUPPER:
-                resul = bb.addGap(0, ygap).getUL();
+            case UPPER_AND_ALIGNED_LEFT:
+                resul = bb.addGap(0, ygap).getUpperLeft();
                 break;
             case DIAG1:
-                resul = bb.addGap(xgap, ygap).getUR();
+                resul = bb.addGap(xgap, ygap).getUpperRight();
                 break;
             case DIAG2:
-                resul = bb.addGap(xgap, ygap).getUL();
+                resul = bb.addGap(xgap, ygap).getUpperLeft();
                 break;
             case DIAG3:
-                resul = bb.addGap(xgap, ygap).getDL();
+                resul = bb.addGap(xgap, ygap).getLowerLeft();
                 break;
             case DIAG4:
-                resul = bb.addGap(xgap, ygap).getDR();
+                resul = bb.addGap(xgap, ygap).getLowerRight();
                 break;
             case ZTOP:
                 resul = bb.addGap(0, 0, zgap).getZTOP();
@@ -186,29 +186,29 @@ public class Anchor {
                 resul = AnchorType.LOWER;
                 break;
 
-            case ULEFT:
-                resul = AnchorType.URIGHT;
+            case LEFT_AND_ALIGNED_UPPER:
+                resul = AnchorType.RIGHT_AND_ALIGNED_UPPER;
                 break;
-            case URIGHT:
-                resul = AnchorType.ULEFT;
+            case RIGHT_AND_ALIGNED_UPPER:
+                resul = AnchorType.LEFT_AND_ALIGNED_UPPER;
                 break;
-            case DLEFT:
-                resul = AnchorType.DRIGHT;
+            case LEFT_AND_ALIGNED_LOWER:
+                resul = AnchorType.RIGHT_AND_ALIGNED_LOWER;
                 break;
-            case DRIGHT:
-                resul = AnchorType.DLEFT;
+            case RIGHT_AND_ALIGNED_LOWER:
+                resul = AnchorType.LEFT_AND_ALIGNED_LOWER;
                 break;
-            case RLOWER:
-                resul = AnchorType.RUPPER;
+            case LOWER_AND_ALIGNED_RIGHT:
+                resul = AnchorType.UPPER_AND_ALIGNED_RIGHT;
                 break;
-            case RUPPER:
-                resul = AnchorType.RLOWER;
+            case UPPER_AND_ALIGNED_RIGHT:
+                resul = AnchorType.LOWER_AND_ALIGNED_RIGHT;
                 break;
-            case LLOWER:
-                resul = AnchorType.LUPPER;
+            case LOWER_AND_ALIGNED_LEFT:
+                resul = AnchorType.UPPER_AND_ALIGNED_LEFT;
                 break;
-            case LUPPER:
-                resul = AnchorType.LLOWER;
+            case UPPER_AND_ALIGNED_LEFT:
+                resul = AnchorType.LOWER_AND_ALIGNED_LEFT;
                 break;
             case DIAG1:
                 resul = AnchorType.DIAG3;
@@ -267,29 +267,29 @@ public class Anchor {
                 resul = mathViewWithGap.getUpper();
                 break;
 
-            case ULEFT:
-                resul = mathViewWithGap.getUL();
+            case LEFT_AND_ALIGNED_UPPER:
+                resul = mathViewWithGap.getUpperLeft();
                 break;
-            case LUPPER:
-                resul = mathViewWithGap.getUL();
+            case UPPER_AND_ALIGNED_LEFT:
+                resul = mathViewWithGap.getUpperLeft();
                 break;
-            case RUPPER:
-                resul = mathViewWithGap.getUR();
+            case UPPER_AND_ALIGNED_RIGHT:
+                resul = mathViewWithGap.getUpperRight();
                 break;
-            case URIGHT:
-                resul = mathViewWithGap.getUR();
+            case RIGHT_AND_ALIGNED_UPPER:
+                resul = mathViewWithGap.getUpperRight();
                 break;
-            case DLEFT:
-                resul = mathViewWithGap.getDL();
+            case LEFT_AND_ALIGNED_LOWER:
+                resul = mathViewWithGap.getLowerLeft();
                 break;
-            case LLOWER:
-                resul = mathViewWithGap.getDL();
+            case LOWER_AND_ALIGNED_LEFT:
+                resul = mathViewWithGap.getLowerLeft();
                 break;
-            case DRIGHT:
-                resul = mathViewWithGap.getDR();
+            case RIGHT_AND_ALIGNED_LOWER:
+                resul = mathViewWithGap.getLowerRight();
                 break;
-            case RLOWER:
-                resul = mathViewWithGap.getDR();
+            case LOWER_AND_ALIGNED_RIGHT:
+                resul = mathViewWithGap.getLowerRight();
                 break;
         }
         return resul;

@@ -556,10 +556,10 @@ public class Arrow extends Constructible<Arrow> {
             super.applyAffineTransform(tr);
 //        Acopy.applyAffineTransform(tr);
 //        Bcopy.applyAffineTransform(tr);
-//        if (!isFreeMathObject()) {
-//            A.applyAffineTransform(tr);
-//            B.applyAffineTransform(tr);
-//        }
+        if (!isFreeMathObject()) {
+            A.applyAffineTransform(tr);
+            B.applyAffineTransform(tr);
+        }
 //        rebuildShape();
         return this;
     }

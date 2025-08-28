@@ -82,15 +82,33 @@ public class FlowLayout extends AbstractBoxLayout {
 	public void executeLayout(AbstractMathGroup<?> group) {
 		ArrayList<MathObjectGroup> rowGroups = getRowGroups(group);
 
-		rowGroups.get(0).get(0).stackTo(firstElementStack, this.corner, AnchorType.CENTER, 0);
+//		rowGroups.get(0).get(0).stackTo(firstElementStack, this.corner, AnchorType.CENTER, 0);
+		rowGroups.get(0).get(0).stack()
+				.withOriginAnchor(firstElementStack)
+				.withDestinyAnchor(AnchorType.CENTER)
+				.toObject(this.corner);
+
 		for (int n = 1; n < rowGroups.get(0).size(); n++) {
-			rowGroups.get(0).get(n).stackTo(rowGroups.get(0).get(n - 1), inRowStack, inRowGap);
+//			rowGroups.get(0).get(n).stackTo(rowGroups.get(0).get(n - 1), inRowStack, inRowGap);
+			rowGroups.get(0).get(n).stack()
+					.withDestinyAnchor(inRowStack)
+					.withGaps(this.inRowGap,this.inRowGap)
+					.toObject(rowGroups.get(0).get(n - 1));
 		}
 
 		for (int k = 1; k < rowGroups.size(); k++) {
-			rowGroups.get(k).get(0).stackTo(rowGroups.get(k - 1).get(0), inColStack, inColGap);
+//			rowGroups.get(k).get(0).stackTo(rowGroups.get(k - 1).get(0), inColStack, inColGap);
+			rowGroups.get(k).get(0).stack()
+					.withGaps(this.inColGap,this.inColGap)
+					.withDestinyAnchor(inColStack)
+					.toObject(rowGroups.get(k - 1).get(0));
+
 			for (int n = 1; n < rowGroups.get(k).size(); n++) {
-				rowGroups.get(k).get(n).stackTo(rowGroups.get(k).get(n - 1), inRowStack, inRowGap);
+//				rowGroups.get(k).get(n).stackTo(rowGroups.get(k).get(n - 1), inRowStack, inRowGap);
+				rowGroups.get(k).get(n).stack()
+						.withGaps(this.inRowGap,this.inRowGap)
+						.withDestinyAnchor(inRowStack)
+						.toObject(rowGroups.get(k).get(n - 1));
 			}
 			MathObject.Align align = null;
 			switch (boxDirection) {
@@ -124,7 +142,10 @@ public class FlowLayout extends AbstractBoxLayout {
 		double totalWidth = getAppropiateSize(firstOfTheRow);// when this variable is greater than size, go to a new
 																// line
 		// Puts the first element in the corner point
-		firstOfTheRow.stackTo(corner, firstElementStack);
+//		firstOfTheRow.stackTo(corner, firstElementStack);
+		firstOfTheRow.stack()
+				.withDestinyAnchor(firstElementStack)
+				.toObject(corner);
 		// Now the rest
 		for (int n = 1; n < group.size(); n++) {
 			totalWidth += getAppropiateSize(group.get(n)) + inRowGap;

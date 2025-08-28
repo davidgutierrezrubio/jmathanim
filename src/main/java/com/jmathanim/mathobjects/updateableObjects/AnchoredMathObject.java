@@ -62,7 +62,12 @@ public class AnchoredMathObject implements Updateable {
     @Override
     public void update(JMathAnimScene scene) {
         
-        mobj.stackTo(origAnchorType, dstObject, dstAnchorType, gap);
+//        mobj.stackTo(origAnchorType, dstObject, dstAnchorType, gap);
+        mobj.stack()
+                .withOriginAnchor(origAnchorType)
+                .withDestinyAnchor(dstAnchorType)
+                .withGaps(gap,gap)
+                .toObject(dstObject);
     }
 
     public AnchorType getAnchorType() {

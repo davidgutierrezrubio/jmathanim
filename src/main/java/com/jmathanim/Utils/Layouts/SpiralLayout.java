@@ -152,7 +152,11 @@ public class SpiralLayout extends GroupLayout {
         int[] turns = new int[]{0, 0};//Experimental, to control horizontal/vertical ratio
         int ii = 0;
         if (this.center != null) {// Stack first element to the center
-            group.get(0).stackTo(this.center, AnchorType.CENTER);
+//            group.get(0).stackTo(this.center, AnchorType.CENTER);
+            group.get(0).stack()
+                    .withOriginAnchor(AnchorType.CENTER)
+                    .withDestinyAnchor(AnchorType.CENTER)
+                    .toObject(this.center);
         }
         int stackType = 0;// Index to the array of used stacks
         int numberOfStacks = Math.max(1, spiralGap);// This variable holds how many objects should I stack before doing
@@ -160,8 +164,14 @@ public class SpiralLayout extends GroupLayout {
         int turnNumber = 1;
         for (int n = 1; n < group.size(); n++) {
             AnchorType stack = stacks[stackType];
-            group.get(n).stackTo(Anchor.reverseAnchorPoint(stack), group.get(n - 1), stack, this.horizontalGap,
-                    this.verticalGap);
+//            group.get(n).stackTo(Anchor.reverseAnchorPoint(stack), group.get(n - 1), stack, this.horizontalGap,
+//                    this.verticalGap);
+            group.get(n).stack()
+                    .withOriginAnchor(Anchor.reverseAnchorPoint(stack))
+                    .withDestinyAnchor(stack)
+                    .withGaps(this.horizontalGap, this.verticalGap)
+                    .toObject(group.get(n - 1));
+
             numberOfStacks--;
             if (numberOfStacks == 0) {// Ok, time to turn...
                 turnNumber++;

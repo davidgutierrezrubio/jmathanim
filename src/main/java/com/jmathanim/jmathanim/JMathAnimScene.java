@@ -32,7 +32,6 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.*;
 import com.jmathanim.mathobjects.*;
-import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
 import com.jmathanim.mathobjects.Text.LatexMathObject;
 import com.jmathanim.mathobjects.Text.LatexShape;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
@@ -244,7 +243,7 @@ public abstract class JMathAnimScene {
     /**
      * Returns the list of sceneObjects to be drawn
      *
-     * @return An ArrayList of MathObject
+     * @return An ArrayList of MathObject<?>
      */
     public ArrayList<MathObject<?>> getMathObjects() {
         return sceneObjects;
@@ -253,7 +252,7 @@ public abstract class JMathAnimScene {
     /**
      * Returns the list of objects to be updated. Note that this doesn't necessarily matchs with objects drawn
      *
-     * @return An ArrayList of MathObject
+     * @return An ArrayList of MathObject<?>
      */
     public ArrayList<Updateable> getObjectsToBeUpdated() {
         return objectsToBeUpdated;
@@ -303,7 +302,7 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Overloaded method to add every MathObject from a Geogebra file
+     * Overloaded method to add every MathObject<?> from a Geogebra file
      *
      * @param gls GeogebraLoder with objects to add to scene
      */
@@ -319,14 +318,14 @@ public abstract class JMathAnimScene {
      * @param objs Mathobjects (varargs)
      */
     public synchronized final void add(MathObject<?>... objs) {
-        for (MathObject obj : objs) {
+        for (MathObject<?> obj : objs) {
             if (obj != null) {
                 if (!sceneObjects.contains(obj)) {
                     if (obj instanceof MathObjectGroup) {
-                        for (MathObject subobj : ((MathObjectGroup) obj).getObjects()) {
+                        for (MathObject<?> subobj : ((MathObjectGroup) obj).getObjects()) {
                             add(subobj);
                         }
-                    } else if (obj instanceof MultiShapeObject) {
+                    } else if (obj instanceof AbstractMultiShapeObject<?,?>) {
 //                        MultiShapeObject msh = (MultiShapeObject) obj;
 //                        msh.isAddedToScene = true;
 //                        for (Shape sh : msh) {
@@ -356,7 +355,7 @@ public abstract class JMathAnimScene {
      * @param objs ArrayList of Mathobjects
      */
     public synchronized final void remove(ArrayList<MathObject<?>> objs) {
-        remove((MathObject[]) objs.toArray());
+        remove((MathObject<?>[]) objs.toArray());
 //        remove((MathObject[]) objs.toArray(value -> new MathObject[value]));
 
     }
@@ -367,21 +366,21 @@ public abstract class JMathAnimScene {
      * @param objs Mathobjects (varargs)
      */
     public synchronized final void remove(MathObject<?>... objs) {
-        for (MathObject obj : objs) {
+        for (MathObject<?> obj : objs) {
             if (obj != null) {
-                if (obj instanceof MultiShapeObject) {
+                if (obj instanceof AbstractMultiShapeObject<?,?>) {
                     sceneObjects.remove(obj);
                     unregisterUpdateable(obj);
-                    MultiShapeObject msh = (MultiShapeObject) obj;
+                    AbstractMultiShapeObject<?,?> msh = (AbstractMultiShapeObject<?,?>) obj;
                     msh.isAddedToScene = false;
-                    for (Shape o : msh) {
+                    for (AbstractShape<?> o : msh) {
                         this.remove(o);
                     }
                 }
 
                 if (obj instanceof MathObjectGroup) {
                     MathObjectGroup msh = (MathObjectGroup) obj;
-                    for (MathObject o : msh) {
+                    for (MathObject<?> o : msh) {
                         this.remove(o);
                     }
                 }
@@ -408,8 +407,8 @@ public abstract class JMathAnimScene {
 
         if (!animationIsDisabled) {
             // Objects to be drawn on screen. Sort them by layer
-            sceneObjects.sort((MathObject o1, MathObject o2) -> o1.getLayer().compareTo(o2.getLayer()));
-            for (MathObject obj : sceneObjects) {
+            sceneObjects.sort((MathObject<?> o1, MathObject<?> o2) -> o1.getLayer().compareTo(o2.getLayer()));
+            for (MathObject<?> obj : sceneObjects) {
                 if (obj.isVisible()) {
                     if (!isAlreadydrawn(obj)) {
                         obj.draw(this, renderer, obj.getCamera());
@@ -421,8 +420,8 @@ public abstract class JMathAnimScene {
 
         // Now remove all marked sceneObjects from the scene
         if (!objectsToBeRemoved.isEmpty())
-            remove((MathObject[]) objectsToBeRemoved.toArray());
-//        remove((MathObject[]) objectsToBeRemoved.toArray(value -> new MathObject[value]));
+            remove((MathObject<?>[]) objectsToBeRemoved.toArray());
+//        remove((MathObject<?>[]) objectsToBeRemoved.toArray(value -> new MathObject<?>[value]));
         objectsToBeRemoved.clear();
     }
 
@@ -671,13 +670,9 @@ public abstract class JMathAnimScene {
     }
 
     public void formulaHelper(String... formulas) {
-        LatexMathObject[] texes = new LatexMathObject[formulas.length];
-        int n = 0;
-        for (String t : formulas) {
-            LatexMathObject lat = LatexMathObject.make(t);
-            texes[n] = lat;
-            n++;
-        }
+        LatexMathObject[] texes = Arrays.stream(formulas)
+                .map(LatexMathObject::make)
+                .toArray(LatexMathObject[]::new);
         formulaHelper(texes);
     }
 
@@ -743,38 +738,38 @@ public abstract class JMathAnimScene {
      * Returns an Array with all objects added to the scene that are in the specified layers
      *
      * @param layers Layers to retrieve objects from (varargs)
-     * @return A MathObject[] array containing the objects
+     * @return A MathObject<?>[] array containing the objects
      */
-    public MathObject[] getObjectsFromLayers(int... layers) {
+    public MathObject<?>[] getObjectsFromLayers(int... layers) {
         ArrayList<Integer> arLayers = new ArrayList<>();
         for (int k : layers) {
             arLayers.add(k);
         }
         ArrayList<MathObject<?>> resul = new ArrayList<>();
-        for (MathObject mathObject : getMathObjects()) {
+        for (MathObject<?> mathObject : getMathObjects()) {
             if (arLayers.contains(mathObject.getLayer())) {
                 resul.add(mathObject);
             }
         }
-        return (MathObject[]) resul.toArray();
+        return (MathObject<?>[]) resul.toArray();
     }
 
     /**
-     * Check if a MathObject is already drawn in the current frame
+     * Check if a MathObject<?> is already drawn in the current frame
      *
-     * @param obj MathObject to check
+     * @param obj MathObject<?> to check
      * @return True if is already drawn, false otherwise
      */
-    public boolean isAlreadydrawn(MathObject obj) {
+    public boolean isAlreadydrawn(MathObject<?> obj) {
         return objectsAlreadydrawn.contains(obj);
     }
 
     /**
-     * Mark a MathObject as drawn in the current frame
+     * Mark a MathObject<?> as drawn in the current frame
      *
-     * @param obj MathObject to mark
+     * @param obj MathObject<?> to mark
      */
-    public void markAsAlreadydrawn(MathObject obj) {
+    public void markAsAlreadydrawn(MathObject<?> obj) {
         objectsAlreadydrawn.add(obj);
     }
 
@@ -784,7 +779,7 @@ public abstract class JMathAnimScene {
     public void reset() {
         logger.info("Resetting scene");
         ArrayList<MathObject<?>> objects = new ArrayList<>(getMathObjects());
-        for (MathObject obj : objects) {
+        for (MathObject<?> obj : objects) {
             remove(obj);
         }
         ArrayList<Updateable> updateables = new ArrayList<>(getObjectsToBeUpdated());
@@ -827,17 +822,17 @@ public abstract class JMathAnimScene {
      * Check if an object is in the scene. MathObjectGroup objects are considered to be in the scene if all their
      * elements are.
      *
-     * @param mathobject Object to check
+     * @param MathObject<?> Object to check
      * @return True if object is in the scene. False otherwise.
      */
-    public boolean isInScene(MathObject mathobject) {
+    public boolean isInScene(MathObject<?> mathObject) {
 
         //If a MathObjectGroup, it is considered to be in the scene if all its elements are
         //An empty one returns true.
-        if (mathobject instanceof MathObjectGroup) {
-            MathObjectGroup mg = (MathObjectGroup) mathobject;
+        if (mathObject instanceof MathObjectGroup) {
+            MathObjectGroup mg = (MathObjectGroup) mathObject;
             boolean resul = true;
-            for (MathObject subObj : mg) {
+            for (MathObject<?> subObj : mg) {
                 resul = resul & isInScene(subObj);
                 if (!resul) {
                     return false;
@@ -846,7 +841,7 @@ public abstract class JMathAnimScene {
             return resul;
         }
         //Other case
-        return getMathObjects().contains(mathobject);
+        return getMathObjects().contains(mathObject);
     }
 
     public Link registerLink(Link link) {

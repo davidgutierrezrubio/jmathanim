@@ -172,12 +172,8 @@ public interface AffineTransformable <T extends AffineTransformable<T>>  extends
      * @return The current object
      */
     default  T moveTo(Coordinates<?> p) {
-        return stackTo(p, AnchorType.CENTER);
-    }
-
-    default T stackTo(Boxable obj, AnchorType anchorType) {
         Vec c=getCenter();
-        Vec anchor=Anchor.getAnchorPoint(obj, anchorType);
+        Vec anchor=Anchor.getAnchorPoint(p, AnchorType.CENTER);
         return shift(c.to(anchor));
     }
 

@@ -108,7 +108,10 @@ public class PascalLayout extends GroupLayout {
         // Now that the rectangles are properly located, move the original objects so
         // that their centers match those of the workgroup
         for (int n = 0; n < group.size(); n++) {
-            group.get(n).stackTo(workGroup.get(n), AnchorType.CENTER);
+//            group.get(n).stackTo(workGroup.get(n), AnchorType.CENTER);
+            group.get(n).stack()
+                    .withDestinyAnchor(AnchorType.CENTER)
+                    .toObject(workGroup.get(n));
         }
         // Move now so that the top center point of first element match the Point top.
         Vec A = Anchor.getAnchorPoint(group.get(0), AnchorType.UPPER);

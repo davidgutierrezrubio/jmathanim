@@ -91,10 +91,19 @@ public class LengthMeasure extends Delimiter {
                     }
             }
 
-            delimiterLabelRigidBox.stackTo(segment, AnchorType.RIGHT, gapToUse);
+//            delimiterLabelRigidBox.stackTo(segment, AnchorType.RIGHT, gapToUse);
+            delimiterLabelRigidBox.stack()
+                    .withDestinyAnchor(AnchorType.RIGHT)
+                    .withGaps(gapToUse)
+                    .toObject(segment);
+
 
             labelMarkPoint.copyCoordinatesFrom(delimiterLabelRigidBox.getCenter());
-            Shape segCopy = segment.copy().stackTo(BB, AnchorType.LEFT);
+//            Shape segCopy = segment.copy().stackTo(BB, AnchorType.LEFT);
+            Shape segCopy = segment.copy().stack()
+                    .withDestinyAnchor(AnchorType.LEFT)
+                    .toObject(BB);
+
             delimiterShapeToDraw.getPath().addJMPointsFrom(segCopy.getPath());
             delimiterLabelRigidBox.shift(0, +gap * amplitudeScale);
 

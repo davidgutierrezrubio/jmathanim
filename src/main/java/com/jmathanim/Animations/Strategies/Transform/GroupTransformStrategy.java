@@ -16,47 +16,49 @@
  */
 package com.jmathanim.Animations.Strategies.Transform;
 
-import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.Animations.AnimationGroup;
+import com.jmathanim.Animations.Transform;
+import com.jmathanim.mathobjects.MathObjectGroup;
 
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class GroupTransformStrategy extends TransformStrategy {
-
-    public GroupTransformStrategy(double runTime) {
+public class GroupTransformStrategy extends TransformStrategy<MathObjectGroup> {
+    private final AnimationGroup ag;
+    public GroupTransformStrategy(double runTime, MathObjectGroup groupOrigin, MathObjectGroup groupDestiny) {
         super(runTime);
+        setOrigin(groupOrigin);
+        setDestiny(groupDestiny);
+        ag = AnimationGroup.make();
+    }
+
+    @Override
+    public boolean doInitialization() {
+        super.doInitialization();
+        for (int i = 0; i < getOriginObject().size(); i++) {
+                ag.add(Transform.make(runTime, getOriginObject().get(i), getDestinyObject().get(i)));
+        }
+        return ag.initialize(scene);
     }
 
     @Override
     public void cleanAnimationAt(double t) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        super.cleanAnimationAt(t);
+        ag.cleanAnimationAt(t);
     }
 
     @Override
     public void doAnim(double t) {
          super.doAnim(t);
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+         ag.doAnim(t);
     }
 
-    @Override
-    public MathObject getDestinyObject() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-
-    @Override
-    public MathObject getOriginObject() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 
     @Override
     public void prepareForAnim(double t) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        super.prepareForAnim(t);
+        ag.prepareForAnim(t);
     }
-    @Override
-    public MathObject getIntermediateObject() {
-        return null;
-    }
-    
+
 }

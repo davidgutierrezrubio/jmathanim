@@ -45,7 +45,7 @@ public abstract class AbstractBoxLayout extends GroupLayout {
     public AbstractBoxLayout(Coordinates<?> corner, double inRowGap, double inColGap) {
         this.inRowGap = inRowGap;
         this.inColGap = inColGap;
-        this.corner = corner.getVec();
+        this.corner = (corner !=null ? corner.getVec(): null);
     }
 
     public <T extends AbstractBoxLayout> T setDirection(BoxDirection dir) {
@@ -58,48 +58,48 @@ public abstract class AbstractBoxLayout extends GroupLayout {
             case RIGHT_UP:
                 inRowStack = AnchorType.RIGHT;
                 inColStack = AnchorType.UPPER;
-                firstElementStack = AnchorType.DLEFT;
+                firstElementStack = AnchorType.LEFT_AND_ALIGNED_LOWER;
                 break;
             case RIGHT_DOWN:
                 inRowStack = AnchorType.RIGHT;
                 inColStack = AnchorType.LOWER;
-                firstElementStack = AnchorType.ULEFT;
+                firstElementStack = AnchorType.LEFT_AND_ALIGNED_UPPER;
                 break;
             case LEFT_UP:
                 inRowStack = AnchorType.LEFT;
                 inColStack = AnchorType.UPPER;
-                firstElementStack = AnchorType.DRIGHT;
+                firstElementStack = AnchorType.RIGHT_AND_ALIGNED_LOWER;
                 break;
             case LEFT_DOWN:
                 inRowStack = AnchorType.LEFT;
                 inColStack = AnchorType.LOWER;
-                firstElementStack = AnchorType.URIGHT;
+                firstElementStack = AnchorType.RIGHT_AND_ALIGNED_UPPER;
                 break;
             case UP_RIGHT:
                 inRowStack = AnchorType.UPPER;
                 inColStack = AnchorType.RIGHT;
-                firstElementStack = AnchorType.DLEFT;
+                firstElementStack = AnchorType.LEFT_AND_ALIGNED_LOWER;
                 break;
             case UP_LEFT:
                 inRowStack = AnchorType.UPPER;
                 inColStack = AnchorType.LEFT;
-                firstElementStack = AnchorType.DRIGHT;
+                firstElementStack = AnchorType.RIGHT_AND_ALIGNED_LOWER;
                 break;
             case DOWN_RIGHT:
                 inRowStack = AnchorType.LOWER;
                 inColStack = AnchorType.RIGHT;
-                firstElementStack = AnchorType.ULEFT;
+                firstElementStack = AnchorType.LEFT_AND_ALIGNED_UPPER;
                 break;
             case DOWN_LEFT:
                 inRowStack = AnchorType.LOWER;
                 inColStack = AnchorType.LEFT;
-                firstElementStack = AnchorType.URIGHT;
+                firstElementStack = AnchorType.RIGHT_AND_ALIGNED_UPPER;
                 break;
             default:
                 // Default case, rowSize goes to right, columns to the heaven
                 inRowStack = AnchorType.RIGHT;
                 inColStack = AnchorType.UPPER;
-                firstElementStack = AnchorType.DLEFT;
+                firstElementStack = AnchorType.LEFT_AND_ALIGNED_LOWER;
                 break;
         }
     }
@@ -108,16 +108,16 @@ public abstract class AbstractBoxLayout extends GroupLayout {
         switch (type) {
             case UPPER:
                 if (inRowStack == AnchorType.LEFT) {
-                    inRowStack = AnchorType.ULEFT;
+                    inRowStack = AnchorType.LEFT_AND_ALIGNED_UPPER;
                 }
                 if (inRowStack == AnchorType.RIGHT) {
-                    inRowStack = AnchorType.URIGHT;
+                    inRowStack = AnchorType.RIGHT_AND_ALIGNED_UPPER;
                 }
                 if (inRowStack == AnchorType.UPPER) {
-                    inRowStack = AnchorType.ULEFT;
+                    inRowStack = AnchorType.LEFT_AND_ALIGNED_UPPER;
                 }
                 if (inRowStack == AnchorType.LOWER) {
-                    inRowStack = AnchorType.DLEFT;
+                    inRowStack = AnchorType.LEFT_AND_ALIGNED_LOWER;
                 }
 
                 break;
@@ -125,16 +125,16 @@ public abstract class AbstractBoxLayout extends GroupLayout {
                 break;
             case LOWER:
                 if (inRowStack == AnchorType.LEFT) {
-                    inRowStack = AnchorType.DLEFT;
+                    inRowStack = AnchorType.LEFT_AND_ALIGNED_LOWER;
                 }
                 if (inRowStack == AnchorType.RIGHT) {
-                    inRowStack = AnchorType.DRIGHT;
+                    inRowStack = AnchorType.RIGHT_AND_ALIGNED_LOWER;
                 }
                 if (inRowStack == AnchorType.UPPER) {
-                    inRowStack = AnchorType.URIGHT;
+                    inRowStack = AnchorType.RIGHT_AND_ALIGNED_UPPER;
                 }
                 if (inRowStack == AnchorType.LOWER) {
-                    inRowStack = AnchorType.DRIGHT;
+                    inRowStack = AnchorType.RIGHT_AND_ALIGNED_LOWER;
                 }
                 break;
         }

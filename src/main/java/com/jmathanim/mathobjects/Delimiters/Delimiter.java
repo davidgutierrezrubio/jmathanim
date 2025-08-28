@@ -126,20 +126,20 @@ public abstract class Delimiter extends Constructible<Delimiter> {
         AnchorType anchorA, anchorB;
         switch (anchorType) {
             case UPPER:
-                anchorA = AnchorType.ULEFT;
-                anchorB = AnchorType.URIGHT;
+                anchorA = AnchorType.LEFT_AND_ALIGNED_UPPER;
+                anchorB = AnchorType.RIGHT_AND_ALIGNED_UPPER;
                 break;
             case LOWER:
-                anchorA = AnchorType.DRIGHT;
-                anchorB = AnchorType.DLEFT;
+                anchorA = AnchorType.RIGHT_AND_ALIGNED_LOWER;
+                anchorB = AnchorType.LEFT_AND_ALIGNED_LOWER;
                 break;
             case RIGHT:
-                anchorA = AnchorType.URIGHT;
-                anchorB = AnchorType.DRIGHT;
+                anchorA = AnchorType.RIGHT_AND_ALIGNED_UPPER;
+                anchorB = AnchorType.RIGHT_AND_ALIGNED_LOWER;
                 break;
             case LEFT:
-                anchorA = AnchorType.DLEFT;
-                anchorB = AnchorType.ULEFT;
+                anchorA = AnchorType.LEFT_AND_ALIGNED_LOWER;
+                anchorB = AnchorType.LEFT_AND_ALIGNED_UPPER;
                 break;
             default:
                 JMathAnimScene.logger.error("Invalid anchor for delimiter object " + anchorType.name());

@@ -21,7 +21,10 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Constructible.Lines.HasDirection;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.DrawStyleProperties;
-import com.jmathanim.Utils.*;
+import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.Rect;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
@@ -133,8 +136,9 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
 
     @Override
     protected Rect computeBoundingBox() {
-        JMathAnimScene.logger.warn("Trying to compute bounding box of an infinite line, returning EmptyRect");
-        return new EmptyRect();
+//        JMathAnimScene.logger.warn("Trying to compute bounding box of an infinite line, returning EmptyRect");
+
+        return getCamera().getBoundingBox();
     }
 
 

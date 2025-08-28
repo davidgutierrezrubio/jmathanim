@@ -181,31 +181,31 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
             case LEFT:
                 v = Anchor.getAnchorPoint(this.get(0), anchor).mult(-1);
                 break;
-            case ULEFT:
+            case LEFT_AND_ALIGNED_UPPER:
                 v = Anchor.getAnchorPoint(this.get(0), anchor).mult(-1);
                 break;
-            case DLEFT:
+            case LEFT_AND_ALIGNED_LOWER:
                 v = Anchor.getAnchorPoint(this.get(0), anchor).mult(-1);
                 break;
-            case LLOWER:
+            case LOWER_AND_ALIGNED_LEFT:
                 v = Anchor.getAnchorPoint(this.get(0), anchor).mult(-1);
                 break;
-            case LUPPER:
+            case UPPER_AND_ALIGNED_LEFT:
                 v = Anchor.getAnchorPoint(this.get(0), anchor).mult(-1);
                 break;
             case RIGHT:
                 v = Anchor.getAnchorPoint(this.get(-1), anchor).mult(-1);
                 break;
-            case URIGHT:
+            case RIGHT_AND_ALIGNED_UPPER:
                 v = Anchor.getAnchorPoint(this.get(-1), anchor).mult(-1);
                 break;
-            case DRIGHT:
+            case RIGHT_AND_ALIGNED_LOWER:
                 v = Anchor.getAnchorPoint(this.get(-1), anchor).mult(-1);
                 break;
-            case RLOWER:
+            case LOWER_AND_ALIGNED_RIGHT:
                 v = Anchor.getAnchorPoint(this.get(-1), anchor).mult(-1);
                 break;
-            case RUPPER:
+            case UPPER_AND_ALIGNED_RIGHT:
                 v = Anchor.getAnchorPoint(this.get(-1), anchor).mult(-1);
                 break;
 

@@ -89,8 +89,8 @@ public class JMImage extends AbstractJMImage<JMImage> {
      */
     public JMImage adjustTo(Coordinates A, Coordinates B) {
 
-        Vec origA = bbox.getDL();
-        Vec origB = bbox.getDR();
+        Vec origA = bbox.getLowerLeft();
+        Vec origB = bbox.getLowerRight();
         currentViewTransform = AffineJTransform.createDirect2DIsomorphic(origA, origB, A, B, 1);
         return this;
     }

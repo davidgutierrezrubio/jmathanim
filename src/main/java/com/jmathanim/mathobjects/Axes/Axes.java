@@ -375,7 +375,13 @@ public class Axes extends MathObject<Axes> {
                 TickAxes copy = xticksBase.get(n).copy();//TODO: Optimize this
                 copy.tick.scale(scale);
                 copy.legend.scale(scale);
-                copy.legend.stackTo(copy.tick, AnchorType.LOWER, LEGEND_TICKS_GAP * copy.legend.getHeight());
+//                copy.legend.stackTo(copy.tick, AnchorType.LOWER, LEGEND_TICKS_GAP * copy.legend.getHeight());
+                copy.legend.stack()
+                        .withDestinyAnchor(AnchorType.LOWER)
+                        .withGaps(LEGEND_TICKS_GAP* copy.legend.getHeight())
+                        .toObject(copy.tick);
+
+
                 xticks.add(copy);
             }
         }
@@ -386,7 +392,11 @@ public class Axes extends MathObject<Axes> {
                 TickAxes copy = yticksBase.get(n).copy();
                 copy.tick.scale(scale);
                 copy.legend.scale(scale);
-                copy.legend.stackTo(copy.tick, AnchorType.LEFT, LEGEND_TICKS_GAP * copy.legend.getHeight());
+//                copy.legend.stackTo(copy.tick, AnchorType.LEFT, LEGEND_TICKS_GAP * copy.legend.getHeight());
+                copy.legend.stack()
+                        .withDestinyAnchor(AnchorType.LEFT)
+                        .withGaps(LEGEND_TICKS_GAP* copy.legend.getHeight())
+                        .toObject(copy.tick);
                 yticks.add(copy);
             }
         }

@@ -73,7 +73,13 @@ public class CTLaTeX extends Constructible<CTLaTeX> {
                 tex.visible(false);
             } else {
                 tex.visible(true);
-                tex.stackTo(anchorType, anchor, AnchorType.CENTER, this.gap);
+//                tex.stackTo(anchorType, anchor, AnchorType.CENTER, this.gap);
+                tex.stack()
+                        .withOriginAnchor(anchorType)
+                        .withDestinyAnchor(AnchorType.CENTER)
+                        .withGaps(this.gap, this.gap)
+                        .toObject(anchor);
+
             }
         }
     }

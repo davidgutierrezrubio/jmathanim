@@ -1231,11 +1231,12 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
         return p1.to(p2);
     }
 
-    void applyAffineTransform(AffineJTransform tr) {
+    public JMPath applyAffineTransform(AffineJTransform tr) {
         int size = size();
         for (int n = 0; n < size; n++) {
             get(n).applyAffineTransform(tr);
         }
+        return this;
 
 //        //If this path has the rectified points computed, recompute it
 //        if (!rectifiedPoints.isEmpty()) {

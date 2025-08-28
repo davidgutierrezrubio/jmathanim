@@ -18,10 +18,14 @@
 package com.jmathanim.Animations.MathTransform;
 
 import com.jmathanim.Animations.*;
+import com.jmathanim.Animations.Strategies.Transform.FlipTransform;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Utils.OrientationType;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.AbstractMultiShapeObject;
+import com.jmathanim.mathobjects.AbstractShape;
+import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
 
 import java.util.ArrayList;
@@ -266,7 +270,7 @@ public class TransformMathExpression extends Animation {
     }
 
     private void createRemovingSubAnimation(int n, TransformMathExpressionParameters par) {
-        Shape sh = latexTransformedBase.get(n);
+        AbstractShape<?> sh = latexTransformedBase.get(n);
         addObjectsToscene(sh);
         AnimationGroup group = new AnimationGroup();
         if (par.getRemovingStyle() == null) {
