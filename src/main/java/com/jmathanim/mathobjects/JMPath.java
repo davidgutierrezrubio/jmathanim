@@ -1189,7 +1189,7 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
             pa.getJmPathPoints().add(jmPoint2.copy());
         }
 
-        //If connectAtoB, make last
+        //If connectAtoB, makeLengthMeasure last
         jmPoint2.setThisSegmentVisible(connectAtoB);
         if (connectAtoB) {
             jmPoint2.setCurved(false);//Connect by a straight line

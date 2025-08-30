@@ -32,7 +32,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Line extends MathObject<Line> implements HasDirection, shouldUdpateWithCamera {
+public class Line extends MathObject<Line> implements HasDirection, shouldUdpateWithCamera,hasTrivialBoundingBox {
 
     private final JMPathPoint borderPoint1, borderPoint2;
     protected final Vec p1;

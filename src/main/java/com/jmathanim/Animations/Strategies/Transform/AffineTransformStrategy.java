@@ -58,7 +58,9 @@ public abstract class AffineTransformStrategy extends TransformStrategy<Abstract
         saveStates(getIntermediateObject());
         AffineJTransform tr = createIntermediateTransform(1);
         Vec center = getIntermediateObject().getCenter();
-        prepareJumpPath(center, center.applyAffineTransform(tr), getIntermediateObject());
+        AbstractShape<?> intermediateObject = getIntermediateObject();
+        prepareJumpPath(center, center.copy().applyAffineTransform(tr), intermediateObject);
+
         return true;
     }
 

@@ -208,7 +208,7 @@ public class JavaFXRendererUtils {
 
         // If the second element doesn't move from the first, is redundant
         if (sameXY(el1, el2)) {
-            // Buuuuuuut...if they are both CubicCurve elements, make sure the first one
+            // Buuuuuuut...if they are both CubicCurve elements, makeLengthMeasure sure the first one
             // copies relevant data from the second...
             // copy control1 from second element to the first one
             if ((el1 instanceof CubicCurveTo) && (el2 instanceof CubicCurveTo)) {

@@ -154,7 +154,7 @@ public abstract class MathObject<T extends MathObject<T>> implements
     public final T hCenter() {
         Vec vCenter = getCenter();
         center();
-        shift(0, vCenter.y - vCenter.y);
+        shift(0, vCenter.y - getCenter().y);
         return (T) this;
     }
 
@@ -499,7 +499,7 @@ public abstract class MathObject<T extends MathObject<T>> implements
     public final int getUpdateLevel() {
         if (updateLevel == -1) {//-1 means no update level has been defined yet
             registerUpdateableHook(scene);
-            if (updateLevel == -1) {//If it is still undefined, make it 0, to avoid infinite recursion
+            if (updateLevel == -1) {//If it is still undefined, makeLengthMeasure it 0, to avoid infinite recursion
                 updateLevel = 0;
             }
         }

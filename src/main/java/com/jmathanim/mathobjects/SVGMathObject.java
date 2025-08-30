@@ -35,10 +35,10 @@ public class SVGMathObject extends AbstractMultiShapeObject<SVGMathObject,Shape>
 //    private JMColor currentDrawColor;
 //    private double currentStrokeSize = .5d;
 //
-//  public static SVGMathObject make(String filename) {
+//  public static SVGMathObject makeLengthMeasure(String filename) {
 //      ResourceLoader rl=new ResourceLoader();
 //        URL url = rl.getResource(filename, "images");
-//        return make(url);
+//        return makeLengthMeasure(url);
 //  }
   public static SVGMathObject make() {
       return new SVGMathObject();
@@ -53,7 +53,7 @@ public class SVGMathObject extends AbstractMultiShapeObject<SVGMathObject,Shape>
 //     * Creates a new SVGMathObject from the specified URL
 //     * @param url A URL object pointing to a SVG file.
 //     */
-//    public static SVGMathObject make(URL url) {
+//    public static SVGMathObject makeLengthMeasure(URL url) {
 //        SVGMathObject resul = new SVGMathObject();
 //        try {
 //            SVGUtils svgu = new SVGUtils(JMathAnimConfig.getConfig().getScene());

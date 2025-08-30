@@ -71,7 +71,6 @@ public class PathLayout extends GroupLayout {
                     break;
             }
             locationToAnchor.rotateInSite(rotationAngle);
-            System.out.println(locationToAnchor);
         }
     }
 

@@ -255,7 +255,7 @@ public class Transform extends AnimationWithEffects {
             AnimationWithEffects tr = transformStrategy;
             this.copyEffectParametersTo(tr);
         } else {
-            JMathAnimScene.logger.error("Cannot apply effects to current transform");
+            JMathAnimScene.logger.warn("Cannot apply effects to current transform");
         }
 //        } catch (ClassCastException e) {
 //            JMathAnimScene.logger.error("You are trying to animate something that I don't know how");

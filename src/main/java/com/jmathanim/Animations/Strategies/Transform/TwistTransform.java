@@ -80,7 +80,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy<Shape> {
     private boolean isStepByStep;
 
     /**
-     * Protected constructor. Use the static `make` methods for instantiation.
+     * Protected constructor. Use the static `makeLengthMeasure` methods for instantiation.
      *
      * @param runTime           The total duration of the animation.
      * @param origin            The starting shape.

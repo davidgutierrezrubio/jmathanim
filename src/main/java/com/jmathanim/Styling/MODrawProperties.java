@@ -280,12 +280,14 @@ public class MODrawProperties implements DrawStyleProperties, Stylable {
 
     @Override
     public void multDrawAlpha(double mult) {
-        setDrawAlpha(getDrawColor().getAlpha() * mult);
+        if (getDrawColor() != null)
+            setDrawAlpha(getDrawColor().getAlpha() * mult);
     }
 
     @Override
     public void multFillAlpha(double mult) {
-        setFillAlpha(getFillColor().getAlpha() * mult);
+        if (getFillColor() != null)
+            setFillAlpha(getFillColor().getAlpha() * mult);
     }
 
     @Override
@@ -453,7 +455,8 @@ public class MODrawProperties implements DrawStyleProperties, Stylable {
 
     @Override
     public void multThickness(double multT) {
-        setThickness(getThickness() * multT);
+        if (getThickness() != null)
+            setThickness(getThickness() * multT);
     }
 
 

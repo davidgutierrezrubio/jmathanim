@@ -307,7 +307,7 @@ public class Arrow extends Constructible<Arrow> {
             h1B.rotate(endPoint, -angle);
 
             //Rectas
-//        CTLine ct1 = CTLine.make(h1A.get(0).p, h1A.get(-1).p);
+//        CTLine ct1 = CTLine.makeLengthMeasure(h1A.get(0).p, h1A.get(-1).p);
             CTPerpBisector ct1 = CTPerpBisector.make(h1A.get(0), h1B.get(-1));
             CTLine ct2 = CTLine.make(h1B.get(0), h1B.get(-1));
             CTIntersectionPoint inter = CTIntersectionPoint.make(ct1, ct2);

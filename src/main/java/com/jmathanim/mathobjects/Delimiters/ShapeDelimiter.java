@@ -15,12 +15,12 @@ public class ShapeDelimiter extends Delimiter {
     private MultiShapeObject body;
 
 
-    protected ShapeDelimiter(Coordinates A, Coordinates B, DelimiterType type, double gap) {
+    protected ShapeDelimiter(Coordinates<?>  A, Coordinates<?>  B, DelimiterType type, double gap) {
         super(A, B, type, gap);
         minimumWidthToShrink = .5;
     }
 
-    public static ShapeDelimiter make(Coordinates A, Coordinates B, DelimiterType type, double gap) {
+    protected static ShapeDelimiter makeShapeDelimiter(Coordinates<?> A, Coordinates<?>  B, DelimiterType type, double gap) {
         ShapeDelimiter resul = new ShapeDelimiter(A, B, type, gap);
         ResourceLoader rl = new ResourceLoader();
         String name;
@@ -32,7 +32,7 @@ public class ShapeDelimiter extends Delimiter {
                 name = "#bracket.svg";
                 break;
             case INVISIBLE:
-                name = "#braces.svg";//Use this, make it invisible
+                name = "#braces.svg";//Use this, makeLengthMeasure it invisible
             default:
                 name = "#braces.svg";
                 break;
@@ -91,8 +91,7 @@ public class ShapeDelimiter extends Delimiter {
             minimumWidthToShrink = .5;
             double wr = 0.48 * delimiterScale * UsefulLambdas.allocateTo(0, minimumWidthToShrink).applyAsDouble(width);
             bodyCopy.setWidth(wr);
-            double hasToGrow = Math.max(0, width - wr);
-            double wSpace = hasToGrow;
+            double wSpace = Math.max(0, width - wr);
             delimiterShapeToDraw.merge(bodyCopy.get(0), false, false);
             delimiterShapeToDraw.merge(bodyCopy.get(1).shift(wSpace, 0), true, true);
         }
@@ -127,7 +126,7 @@ public class ShapeDelimiter extends Delimiter {
                     }
             }
 //            delimiterLabelRigidBox.stackTo(AnchorType.LOWER, labelMarkPoint, AnchorType.UPPER, 0);
-            delimiterShapeToDraw.stack().withDestinyAnchor(AnchorType.UPPER).toObject(labelMarkPoint);
+            delimiterLabelRigidBox.stack().withDestinyAnchor(AnchorType.UPPER).toObject(labelMarkPoint);
 //            groupElementsToBeDrawn.add(getLabel());
 //            if (amplitudeScale != 1)
 //                delimiterLabelToDraw.scale(this.amplitudeScale);

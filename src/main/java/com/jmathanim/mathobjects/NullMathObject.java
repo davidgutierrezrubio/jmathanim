@@ -38,6 +38,8 @@ public class NullMathObject extends Constructible<NullMathObject> {
     public NullMathObject() {
     }
 
+
+
     @Override
     public NullMathObject applyAffineTransform(AffineJTransform transform) {
         return this;

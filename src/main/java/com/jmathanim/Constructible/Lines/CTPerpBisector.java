@@ -36,7 +36,7 @@ public class CTPerpBisector extends CTAbstractLine<CTPerpBisector> {
     protected final Line lineToDraw;
 
     public static CTPerpBisector make(Coordinates A, Coordinates B) {
-//        CTPerpBisector resul = CTPerpBisector.make(CTPoint.make(A), CTPoint.make(B));
+//        CTPerpBisector resul = CTPerpBisector.makeLengthMeasure(CTPoint.makeLengthMeasure(A), CTPoint.makeLengthMeasure(B));
         CTPerpBisector resul = new CTPerpBisector(A, B);
         resul.rebuildShape();
         return resul;

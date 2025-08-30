@@ -99,7 +99,7 @@ public class JMImage extends AbstractJMImage<JMImage> {
 //    @Override
 //    public <T extends MathObject> T scale(Point scaleCenter, double sx, double sy, double sz) {
 //        bbox.copyFrom(
-//                Rect.make(bbox.getUL().scale(scaleCenter, sx, sy, sz), bbox.getDR().scale(scaleCenter, sx, sy, sz)));
+//                Rect.makeLengthMeasure(bbox.getUL().scale(scaleCenter, sx, sy, sz), bbox.getDR().scale(scaleCenter, sx, sy, sz)));
 //        return (T) this;
 //    }
 

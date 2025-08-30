@@ -992,7 +992,7 @@ public class Commands {
         } else {
             resul = new Animation(runtime) {
                 final Camera cam = camera;
-                final Rect rDst = cam.getRectThatContains(rectToZoom);
+                final Rect rDst = cam.getMathViewThatContains(rectToZoom);
                 Rect rSource;
 
                 @Override

@@ -8,7 +8,7 @@ void setupSketch() {
 
 void runSketch() {
     Shape sh = Shape.square()
-//    LaTeXMathObject t = LaTeXMathObject.make('$e^{i\\pi}+1=0,\\ (x+y)=3$')
+//    LaTeXMathObject t = LaTeXMathObject.makeLengthMeasure('$e^{i\\pi}+1=0,\\ (x+y)=3$')
 //    t.setLatexStyle("colorful")
     scene.add(sh)
     scene.play.rotate(3, 2 * PI, t)

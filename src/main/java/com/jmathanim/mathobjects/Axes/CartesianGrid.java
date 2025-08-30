@@ -34,7 +34,7 @@ import java.util.ArrayList;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CartesianGrid extends MathObject<CartesianGrid> implements shouldUdpateWithCamera {
+public class CartesianGrid extends MathObject<CartesianGrid> implements shouldUdpateWithCamera,hasTrivialBoundingBox {
 
     private final Rect currentView;
     protected final ArrayList<Line> horizontalPrimaryLines;
@@ -75,8 +75,8 @@ public class CartesianGrid extends MathObject<CartesianGrid> implements shouldUd
      *
      * @param centerX            x coordinate of reference point
      * @param centerY            y coordinate of reference point
-     * @param secondaryXDivision number of horizontal divisions to make for secondary lines
-     * @param secondaryYDivision number of vertical divisions to make for secondary lines
+     * @param secondaryXDivision number of horizontal divisions to makeLengthMeasure for secondary lines
+     * @param secondaryYDivision number of vertical divisions to makeLengthMeasure for secondary lines
      * @return The created grid
      */
     public static CartesianGrid make(double centerX, double centerY, int secondaryXDivision, int secondaryYDivision) {
@@ -100,8 +100,8 @@ public class CartesianGrid extends MathObject<CartesianGrid> implements shouldUd
      * @param centerY            y coordinate of reference point
      * @param xStep              x step between vertical lines
      * @param yStep              y step between horizontal lines
-     * @param secondaryXDivision number of horizontal divisions to make for secondary lines
-     * @param secondaryYDivision number of vertical divisions to make for secondary lines
+     * @param secondaryXDivision number of horizontal divisions to makeLengthMeasure for secondary lines
+     * @param secondaryYDivision number of vertical divisions to makeLengthMeasure for secondary lines
      * @return The created grid
      */
     public static CartesianGrid make(double centerX, double centerY, double xStep, double yStep, int secondaryXDivision, int secondaryYDivision) {

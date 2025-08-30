@@ -168,10 +168,10 @@ public class TransformMathExpression extends Animation {
             ArrayList<AbstractShape<?>> listDst = getShapeListForGroup(dst, name2, latexDestiny, addInDstParameters);
             ArrayList<AbstractShape<?>> listOrig = getShapeListForGroup(or, name1, latexTransformedBase, removeInOrigParameters);
 
-//            MultiShapeObject mshDst = MultiShapeObject.make();
+//            MultiShapeObject mshDst = MultiShapeObject.makeLengthMeasure();
 //
 //            mshDst.getShapes().addAll(listDst);
-//            MultiShapeObject mshOrig = MultiShapeObject.make();
+//            MultiShapeObject mshOrig = MultiShapeObject.makeLengthMeasure();
 //            mshOrig.getShapes().addAll(listOrig);
 
 
@@ -247,7 +247,7 @@ public class TransformMathExpression extends Animation {
                         AbstractShape<?> sh2 = listDst.get(k);
                         createTransformSubAnimation(sh1, sh2, trParTransformParameters.get(name1));
                     }
-                    //If destiny has more shapes than origin, make copies of the last one of orig and map
+                    //If destiny has more shapes than origin, makeLengthMeasure copies of the last one of orig and map
 
                     for (int k = 0; k < nDst - nOrig; k++) {
                         AbstractShape<?> sh1 = listOrig.get(nOrig - 1);

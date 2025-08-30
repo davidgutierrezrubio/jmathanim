@@ -16,14 +16,14 @@ public class LengthMeasure extends Delimiter {
     private final double hgap;
     private Double thicknessShape;
 
-    public LengthMeasure(Coordinates A, Coordinates B, DelimiterType type, double gap) {
+    protected LengthMeasure(Coordinates<?> A, Coordinates<?> B, DelimiterType type, double gap) {
         super(A, B, type, gap);
         this.gap = gap;
         hgap = .05;
         minimumWidthToShrink = .75;
     }
 
-    public static LengthMeasure make(Coordinates A, Coordinates B, DelimiterType type, double gap) {
+    protected static LengthMeasure makeLengthMeasure(Coordinates<?> A, Coordinates<?> B, DelimiterType type, double gap) {
         LengthMeasure resul = new LengthMeasure(A, B, type, gap);
         resul.buildDelimiterShape();
         return resul;
@@ -125,7 +125,7 @@ public class LengthMeasure extends Delimiter {
         }
         delimiterShapeToDraw.fillAlpha(0);
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(AA, BB, A, B, 1);
-        tr.applyTransform(groupElementsToBeDrawn);
+//        tr.applyTransform(groupElementsToBeDrawn);
     }
 
     public enum TYPE {

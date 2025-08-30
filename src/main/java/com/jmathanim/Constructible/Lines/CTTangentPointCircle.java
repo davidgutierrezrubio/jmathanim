@@ -79,7 +79,7 @@ public final class CTTangentPointCircle extends CTAbstractLine<CTTangentPointCir
         //y coordinate is +/- sqrt(1-x*x)
         //Where p is x-coordinate of A, h is distance from A to tangent point
         //h=sqrt(p*p-1), (r=1=radius)
-        //So, compute this, make the inverse transform and...voilá!
+        //So, compute this, makeLengthMeasure the inverse transform and...voilá!
 
         //Distance from A to center of circle
         double r = C.getCircleRadius().getValue();

@@ -28,6 +28,7 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.hasTrivialBoundingBox;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -35,20 +36,34 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 /**
- *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Axes extends MathObject<Axes> {
+public class Axes extends MathObject<Axes> implements hasTrivialBoundingBox {
 
     public static final double LEGEND_TICKS_GAP = .5;
-    DecimalFormat format;
-
-    DrawStylePropertiesObjectsArray mpArray;
     private final Line xAxis;
     private final ArrayList<TickAxes> xticks;
     private final ArrayList<TickAxes> xticksBase;
     private final Line yAxis;
     private final ArrayList<TickAxes> yticks, yticksBase;
+    DecimalFormat format;
+    DrawStylePropertiesObjectsArray mpArray;
+
+    public Axes() {
+        mpArray = new DrawStylePropertiesObjectsArray();
+        getMp().loadFromStyle("axisdefault");
+        xticksBase = new ArrayList<>();
+        xticks = new ArrayList<>();
+        yticksBase = new ArrayList<>();
+        yticks = new ArrayList<>();
+        xAxis = Line.make(Vec.to(0, 0), Vec.to(1, 0)).style("axisdefault");
+        yAxis = Line.make(Vec.to(0, 0), Vec.to(0, 1)).style("axisdefault");
+        mpArray.add(xAxis, yAxis);
+        Locale locale = new Locale("en", "UK");
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
+        String pattern = "#.####";
+        format = new DecimalFormat(pattern, symbols);
+    }
 
     public static Axes makeBasicAxes() {
         return makeBasicAxes(0, -1);
@@ -70,30 +85,13 @@ public class Axes extends MathObject<Axes> {
         return resul;
     }
 
-    public Axes() {
-        mpArray = new DrawStylePropertiesObjectsArray();
-        getMp().loadFromStyle("axisdefault");
-        xticksBase = new ArrayList<>();
-        xticks = new ArrayList<>();
-        yticksBase = new ArrayList<>();
-        yticks = new ArrayList<>();
-        xAxis = Line.make(Vec.to(0, 0), Vec.to(1, 0)).style("axisdefault");
-        yAxis = Line.make(Vec.to(0, 0), Vec.to(0, 1)).style("axisdefault");
-        mpArray.add(xAxis, yAxis);
-        Locale locale = new Locale("en", "UK");
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
-        String pattern = "#.####";
-        format = new DecimalFormat(pattern, symbols);
-    }
-
     /**
-     * Adds a pair (tick, legend text) at the given value in the x-axis.The text
-     * is automatically generated from the value of x.The maxWidthToShow
-     * parameter is the maximum width of the math view to show this tick. A
-     * value of 0 means always show this tick
+     * Adds a pair (tick, legend text) at the given value in the x-axis.The text is automatically generated from the
+     * value of x.The maxWidthToShow parameter is the maximum width of the math view to show this tick. A value of 0
+     * means always show this tick
      *
-     * @param x The x coordinate where to put the tick
-     * @param tickType Tick orientation (primary or secondary)
+     * @param x              The x coordinate where to put the tick
+     * @param tickType       Tick orientation (primary or secondary)
      * @param maxWidthToShow max scale to show the tick
      */
     public void addXTicksLegend(double x, TickAxes.TickType tickType, double maxWidthToShow) {
@@ -105,14 +103,13 @@ public class Axes extends MathObject<Axes> {
     }
 
     /**
-     * Adds a pair (tick, legend text) at the given value in the y-axis, with
-     * the specified latex string.The maxWidthToShow parameter is the maximum
-     * width of the math view to show this tick. A value of 0 means always show
+     * Adds a pair (tick, legend text) at the given value in the y-axis, with the specified latex string.The
+     * maxWidthToShow parameter is the maximum width of the math view to show this tick. A value of 0 means always show
      * this tick
      *
-     * @param latex The text with the legend
-     * @param x The x coordinate where to put the tick
-     * @param tickType Tick orientation (primary or secondary)
+     * @param latex          The text with the legend
+     * @param x              The x coordinate where to put the tick
+     * @param tickType       Tick orientation (primary or secondary)
      * @param maxWidthToShow max scale to show the tick
      */
     public void addXTicksLegend(String latex, double x, TickAxes.TickType tickType, double maxWidthToShow) {
@@ -147,13 +144,13 @@ public class Axes extends MathObject<Axes> {
 //            }
 //        }
 //    }
+
     /**
-     * Adds a pair (tick, legend text) at the given value in the y-axis.The text
-     * is automatically generated from the value of y. The maxWidthToShow
-     * parameter is the maximum width of the math view to show this tick. A
-     * value of 0 means always show this tick
+     * Adds a pair (tick, legend text) at the given value in the y-axis.The text is automatically generated from the
+     * value of y. The maxWidthToShow parameter is the maximum width of the math view to show this tick. A value of 0
+     * means always show this tick
      *
-     * @param y The y coordinate where to put the tick
+     * @param y              The y coordinate where to put the tick
      * @param maxWidthToShow max scale to show the tick
      */
     public void addYTicksLegend(double y, TickAxes.TickType tickType, double maxWidthToShow) {
@@ -165,14 +162,13 @@ public class Axes extends MathObject<Axes> {
     }
 
     /**
-     * Adds a pair (tick, legend text) at the given value in the y-axis, with
-     * the specified latex string.The maxWidthToShow parameter is the maximum
-     * width of the math view to show this tick. A value of 0 means always show
+     * Adds a pair (tick, legend text) at the given value in the y-axis, with the specified latex string.The
+     * maxWidthToShow parameter is the maximum width of the math view to show this tick. A value of 0 means always show
      * this tick
      *
-     * @param latex The text with the legend
-     * @param y The y coordinate where to put the tick
-     * @param tickType Tick orientation (primary or secondary)
+     * @param latex          The text with the legend
+     * @param y              The y coordinate where to put the tick
+     * @param tickType       Tick orientation (primary or secondary)
      * @param maxWidthToShow max scale to show the tick
      */
     public void addYTicksLegend(String latex, double y, TickAxes.TickType tickType, double maxWidthToShow) {
@@ -199,7 +195,7 @@ public class Axes extends MathObject<Axes> {
 
     @Override
     public Axes copy() {
-        return null;// For now, it doesn't make senses to make a copy of the axes
+        return null;// For now, it doesn't makeLengthMeasure senses to makeLengthMeasure a copy of the axes
     }
 
     @Override
@@ -220,13 +216,12 @@ public class Axes extends MathObject<Axes> {
 
 
     /**
-     * Generates a set of pairs (ticks-legends) from start to finish (including)
-     * with given step, in the x-axis. The primary ticks are slightly bigger
-     * than the secondary, and they are always shown on the screen
+     * Generates a set of pairs (ticks-legends) from start to finish (including) with given step, in the x-axis. The
+     * primary ticks are slightly bigger than the secondary, and they are always shown on the screen
      *
-     * @param start Starting number
+     * @param start  Starting number
      * @param finish Ending number
-     * @param step Step
+     * @param step   Step
      * @return This object
      */
     public Axes generatePrimaryXTicks(double start, double finish, double step) {
@@ -239,13 +234,12 @@ public class Axes extends MathObject<Axes> {
     }
 
     /**
-     * Generates a set of pairs (ticks-legends) from start to finish (including)
-     * with given step, in the y-axis. The primary ticks are slightly bigger
-     * than the secondary, and they are always shown on the screen
+     * Generates a set of pairs (ticks-legends) from start to finish (including) with given step, in the y-axis. The
+     * primary ticks are slightly bigger than the secondary, and they are always shown on the screen
      *
-     * @param start Starting number
+     * @param start  Starting number
      * @param finish Ending number
-     * @param step Step
+     * @param step   Step
      * @return This object
      */
     public Axes generatePrimaryYTicks(double start, double finish, double step) {
@@ -258,14 +252,13 @@ public class Axes extends MathObject<Axes> {
     }
 
     /**
-     * Generates a set of pairs (ticks-legends) from start to finish (including)
-     * with given step, in the x-axis.The maxWidthToShow parameter is the
-     * maximum width of the math view to show this tick.A value of 0 means
-     * always show this tick.
+     * Generates a set of pairs (ticks-legends) from start to finish (including) with given step, in the x-axis.The
+     * maxWidthToShow parameter is the maximum width of the math view to show this tick.A value of 0 means always show
+     * this tick.
      *
-     * @param start Starting number
-     * @param finish Ending number
-     * @param step Step
+     * @param start          Starting number
+     * @param finish         Ending number
+     * @param step           Step
      * @param maxWidthToShow max width of the current camera to show these ticks
      * @return This object
      */
@@ -279,14 +272,13 @@ public class Axes extends MathObject<Axes> {
     }
 
     /**
-     * Generates a set of pairs (ticks-legends) from start to finish (including)
-     * with given step, in the y-axis.The maxWidthToShow parameter is the
-     * maximum width of the math view to show this tick.A value of 0 means
-     * always show this tick.
+     * Generates a set of pairs (ticks-legends) from start to finish (including) with given step, in the y-axis.The
+     * maxWidthToShow parameter is the maximum width of the math view to show this tick.A value of 0 means always show
+     * this tick.
      *
-     * @param start Starting number
-     * @param finish Ending number
-     * @param step Step
+     * @param start          Starting number
+     * @param finish         Ending number
+     * @param step           Step
      * @param maxWidthToShow max scale to show these ticks
      * @return This object
      */
@@ -377,7 +369,7 @@ public class Axes extends MathObject<Axes> {
 //                copy.legend.stackTo(copy.tick, AnchorType.LOWER, LEGEND_TICKS_GAP * copy.legend.getHeight());
                 copy.legend.stack()
                         .withDestinyAnchor(AnchorType.LOWER)
-                        .withGaps(LEGEND_TICKS_GAP* copy.legend.getHeight())
+                        .withGaps(LEGEND_TICKS_GAP * copy.legend.getHeight())
                         .toObject(copy.tick);
 
 
@@ -394,7 +386,7 @@ public class Axes extends MathObject<Axes> {
 //                copy.legend.stackTo(copy.tick, AnchorType.LEFT, LEGEND_TICKS_GAP * copy.legend.getHeight());
                 copy.legend.stack()
                         .withDestinyAnchor(AnchorType.LEFT)
-                        .withGaps(LEGEND_TICKS_GAP* copy.legend.getHeight())
+                        .withGaps(LEGEND_TICKS_GAP * copy.legend.getHeight())
                         .toObject(copy.tick);
                 yticks.add(copy);
             }

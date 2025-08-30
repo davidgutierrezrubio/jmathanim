@@ -37,8 +37,12 @@ public class GroupTransformStrategy extends TransformStrategy<MathObjectGroup> {
     public boolean doInitialization() {
         super.doInitialization();
         for (int i = 0; i < getOriginObject().size(); i++) {
-                ag.add(Transform.make(runTime, getOriginObject().get(i), getDestinyObject().get(i)));
+            Transform transformAnim = Transform.make(runTime, getOriginObject().get(i), getDestinyObject().get(i));
+            this.copyEffectParametersTo(transformAnim);
+            ag.add(transformAnim);
+
         }
+        this.copyEffectParametersTo(ag);
         return ag.initialize(scene);
     }
 

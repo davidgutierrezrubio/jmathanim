@@ -89,18 +89,18 @@ public abstract class Delimiter extends Constructible<Delimiter> {
      * @param gap  Gap between control points and delimiter
      * @return The delimiter
      */
-    public static Delimiter make(Coordinates A, Coordinates B, DelimiterType type, double gap) {
+    public static Delimiter make(Coordinates<?> A, Coordinates<?> B, DelimiterType type, double gap) {
         Delimiter resul = null;
         switch (type) {
             case BRACE:
             case PARENTHESIS:
             case BRACKET:
             case INVISIBLE:
-                resul = ShapeDelimiter.make(A, B, type, gap);
+                resul = ShapeDelimiter.makeShapeDelimiter(A, B, type, gap);
                 break;
             case LENGTH_ARROW:
             case LENGTH_BRACKET:
-                resul = LengthMeasure.make(A, B, type, gap);
+                resul = LengthMeasure.makeLengthMeasure(A, B, type, gap);
                 break;
         }
         resul.amplitudeScale = 1;

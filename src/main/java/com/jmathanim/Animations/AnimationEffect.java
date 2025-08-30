@@ -184,7 +184,7 @@ public class AnimationEffect {
                 jumpPath = FunctionGraph.make(t -> Math.sin(PI * t), 0, 1, 2);
                 break;
             case SINUSOIDAL2:
-//                jumpPath = new Shape(FunctionGraph.make(t -> 10.39230484541326*t*(1-t)*(1-2*t), 0, 1).getPath());
+//                jumpPath = new Shape(FunctionGraph.makeLengthMeasure(t -> 10.39230484541326*t*(1-t)*(1-2*t), 0, 1).getPath());
                 jumpPath = FunctionGraph.make(t -> Math.sin(2 * PI * t), 0, 1, 3);
                 break;
             case CRANE:

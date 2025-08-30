@@ -137,6 +137,20 @@ public class Rect implements Boxable {// TODO: Adjust this to 3D coordinates
 
     }
 
+    /**
+     * Checks whether the given rectangle {@code rectangle} is fully contained within this rectangle.
+     *
+     * @param rectangle the rectangle to test
+     * @return {@code true} if {@code rectangle} is entirely contained within this rectangle, including the case where its edges
+     * touch this rectangle's edges; {@code false} otherwise
+     */
+    public boolean contains(Rect rectangle) {
+        return rectangle.xmin >= this.xmin &&
+                rectangle.xmax <= this.xmax &&
+                rectangle.ymin >= this.ymin &&
+                rectangle.ymax <= this.ymax;
+    }
+
 //    public Rect union(Rect b) {
 //       return Rect.union(this, b);
 //    }

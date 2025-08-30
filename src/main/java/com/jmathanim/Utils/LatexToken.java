@@ -136,7 +136,7 @@ public class LatexToken {
      */
     public LatexToken setString(String string) {
         if (string != null) {
-            switch (string) {//Some special cases to make it easier
+            switch (string) {//Some special cases to makeLengthMeasure it easier
                 case ",":
                     string = "comma";
                     break;
