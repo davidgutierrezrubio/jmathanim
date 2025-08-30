@@ -349,17 +349,23 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
         return (T) this;
     }
 
+    public T setLayout(LayoutType layoutType, double hGap, double vGap) {
+        return setLayout(null, layoutType, hGap, vGap);
+    }
     public T setLayout(LayoutType layoutType, double gap) {
-        return setLayout(null, layoutType, gap);
+        return setLayout(null, layoutType, gap, gap);
     }
 
     public T setLayout(Coordinates<?> corner, LayoutType layoutType, double gap) {
+        return setLayout(corner, layoutType, gap,gap);
+    }
+
+    public T setLayout(Coordinates<?> corner, LayoutType layoutType, double hGap, double vGap) {
         AnchorType anchor = AnchorType.CENTER;
 
         switch (layoutType) {
             case CENTER:
                 anchor = AnchorType.CENTER;
-                gap = 0;
                 break;
             case RIGHT:
                 anchor = AnchorType.RIGHT;
@@ -417,14 +423,14 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
 //            objects.get(0).stackTo(corner, anchor, gap);
             objects.get(0).stack()
                     .withDestinyAnchor(anchor)
-                    .withGaps(gap,gap)
+                    .withGaps(hGap,vGap)
                     .toObject(corner);
         }
         for (int n = 1; n < objects.size(); n++) {
 //            objects.get(n).stackTo(objects.get(n - 1), anchor, gap);
             objects.get(n).stack()
                     .withDestinyAnchor(anchor)
-                    .withGaps(gap,gap)
+                    .withGaps(hGap,vGap)
                     .toObject(objects.get(n - 1));
         }
         return (T) this;

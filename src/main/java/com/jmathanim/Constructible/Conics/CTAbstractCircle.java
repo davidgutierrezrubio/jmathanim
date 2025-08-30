@@ -36,7 +36,7 @@ public abstract class CTAbstractCircle<T extends CTAbstractCircle<T>> extends Co
     public CTAbstractCircle() {
         circleToDraw = new Shape();
         abstractCircleRadius = Scalar.make(0);
-        originalUnitCirclePath = Shape.circle().getPath();
+        originalUnitCirclePath = Shape.circle(4).getPath();
     }
 
     public CTAbstractCircle(Coordinates<?> abstractCircleCenter, Scalar abstractCircleRadius) {

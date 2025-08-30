@@ -18,6 +18,7 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.DivideOnSensiblePointsStrategy;
+import com.jmathanim.Animations.Strategies.Transform.Optimizers.SimpleConnectedPathsOptimizationStrategy;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.*;
@@ -33,9 +34,9 @@ import java.util.Comparator;
 public class PointInterpolationCanonical extends TransformStrategy<AbstractShape<?>> {
 
     private final AbstractShape<?> destinyCopy;
-    private final AbstractShape<?> shOrigin;
-    private final AbstractShape<?> shDestiny;
-    private final AbstractShape<?> shIntermediate;
+//    private final AbstractShape<?> shOrigin;
+//    private final AbstractShape<?> shDestiny;
+//    private final AbstractShape<?> shIntermediate;
     public CanonicalJMPath connectedOrigin, connectedDst, connectedOriginaRawCopy;
     private final ArrayList<Shape> addedAuxiliaryObjectsToScene;
 //    private final Shape mobjDestinyOrig;
@@ -57,9 +58,9 @@ public class PointInterpolationCanonical extends TransformStrategy<AbstractShape
         this.setIntermediate(new Shape());
         this.setDestiny(destiny);
         this.destinyCopy = new Shape();
-        this.shOrigin = origin;
-        this.shDestiny = destiny;
-        this.shIntermediate = (Shape) getIntermediateObject();
+//        this.shOrigin = origin;
+//        this.shDestiny = destiny;
+//        this.shIntermediate = (Shape) getIntermediateObject();
         this.addedAuxiliaryObjectsToScene = new ArrayList<>();
     }
 
@@ -74,24 +75,26 @@ public class PointInterpolationCanonical extends TransformStrategy<AbstractShape
         // Prepare paths.
         // First, if any of the shapes is empty, do nothing
 
-        if ((shIntermediate.size() == 0) || (shDestiny.size() == 0)) {
+        if ((getIntermediateObject().isEmpty()) || (destinyCopy.isEmpty())) {
             return false;
         }
 
         // I ensure they have the same number of points
         // and be in connected components form.
         // Remove consecutive hidden vertices, in case.
-        this.shIntermediate.getPath().distille();
+        this.getIntermediateObject().getPath().distille();
         this.destinyCopy.getPath().distille();
+
+
         if (optimizeStrategy == null) {
             optimizeStrategy = new DivideOnSensiblePointsStrategy();
 //            optimizeStrategy = new DivideEquallyStrategy();
         }
-        optimizeStrategy.optimizePaths(shIntermediate, destinyCopy);
-        optimizeStrategy.optimizePaths(destinyCopy, shIntermediate);
+        optimizeStrategy.optimizePaths(getIntermediateObject(), destinyCopy);
+        optimizeStrategy.optimizePaths(destinyCopy, getIntermediateObject());
 
 //        originalShapeBaseCopy = intermediate.copy();
-        preparePaths(shIntermediate.getPath(), destinyCopy.getPath());
+        preparePaths();
         if (DEBUG_COLORS) {
             for (int n = 0; n < connectedOrigin.getNumberOfPaths(); n++) {
                 Shape sh = new Shape(connectedOrigin.get(n));
@@ -101,8 +104,8 @@ public class PointInterpolationCanonical extends TransformStrategy<AbstractShape
             }
 
         }
-        shIntermediate.getPath().clear();
-        shIntermediate.getPath().addJMPointsFrom(connectedOrigin.toJMPath());
+        getIntermediateObject().getPath().clear();
+        getIntermediateObject().getPath().addJMPointsFrom(connectedOrigin.toJMPath());
 
         // Jump paths
         Vec origCenter = this.getOriginObject().getCenter();
@@ -160,10 +163,19 @@ public class PointInterpolationCanonical extends TransformStrategy<AbstractShape
      * Creates connectedOrigin and connectedDst, two paths in their
      * canonicalforms (and array of simple connected open paths)
      *
-     * @param pathTransformed F
-     * @param pathDestiny
      */
-    private void preparePaths(JMPath pathTransformed, JMPath pathDestiny) {
+    private void preparePaths() {
+
+
+        //If shapes are simple (closed, 1 component) we can do a previous extra optimization, cycling points
+        int n1 = getIntermediateObject().getPath().getNumberOfConnectedComponents();
+        int n2 = destinyCopy.getPath().getNumberOfConnectedComponents();
+        if ((n1==0)&&(n2==0)) {
+            SimpleConnectedPathsOptimizationStrategy strategy=new SimpleConnectedPathsOptimizationStrategy(getIntermediateObject(),destinyCopy);
+            strategy.optimizePaths(getIntermediateObject(),destinyCopy);
+        }
+        JMPath pathTransformed=getIntermediateObject().getPath();
+        JMPath pathDestiny=destinyCopy.getPath();
 
         connectedOrigin = pathTransformed.canonicalForm();
         connectedDst = pathDestiny.canonicalForm();
@@ -183,8 +195,14 @@ public class PointInterpolationCanonical extends TransformStrategy<AbstractShape
         if ((connectedOrigin.getNumberOfPaths() == 0) || (connectedDst.getNumberOfPaths() == 0)) {
             return;
         }
+        //Ensure that both paths have the same number of elements, interpolating if necessary
 
         alignNumberOfComponents(connectedOrigin, connectedDst);
+
+
+
+
+
         connectedOriginaRawCopy = new CanonicalJMPath();
         for (JMPath p : connectedOrigin.getPaths()) {
             connectedOriginaRawCopy.add(p.copy());

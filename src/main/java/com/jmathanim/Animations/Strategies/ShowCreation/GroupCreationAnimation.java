@@ -33,7 +33,7 @@ public class GroupCreationAnimation extends AnimationGroup implements CreationSt
 
     public GroupCreationAnimation(double runtime, MathObjectGroup group) {
         super();
-        for (MathObject obj : group.getObjects()) {
+        for (MathObject<?> obj : group.getObjects()) {
            add(new ShowCreation(runtime, obj));
         }
       addDelayEffect(.2);

@@ -93,7 +93,8 @@ public abstract class Constructible<T extends Constructible<T>> extends MathObje
 
     @Override
     public void update(JMathAnimScene scene) {
-        super.update(scene);
+//        super.update(scene);
+        rebuildShape();
         setHasBeenUpdated(true);
     }
 
@@ -128,7 +129,7 @@ public abstract class Constructible<T extends Constructible<T>> extends MathObje
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
-        MathObject obj = getMathObject();
+        MathObject<?> obj = getMathObject();
 
         if (obj != null) {
             //As MathObjectGroup does not have a draw method implemented by design, do a recursive search

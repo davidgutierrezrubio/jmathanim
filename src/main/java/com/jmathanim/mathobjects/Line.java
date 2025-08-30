@@ -19,10 +19,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Constructible.Lines.HasDirection;
-import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -32,12 +29,11 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Line extends MathObject<Line> implements HasDirection, shouldUdpateWithCamera,hasTrivialBoundingBox {
+public class Line extends AbstractShape<Line> implements HasDirection, shouldUdpateWithCamera,hasTrivialBoundingBox {
 
     private final JMPathPoint borderPoint1, borderPoint2;
     protected final Vec p1;
     protected final Vec p2;
-    private final Shape visiblePiece;
     private Point pointP1;//Visible points to be created on the fly if the user asks for them
     private Point pointP2;
 
@@ -55,10 +51,9 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
         // initialize objects
         borderPoint2 = new JMPathPoint(Vec.to(0, 0), true);// trivial boundary points, just to
         // initialize objects
-        visiblePiece = new Shape();
-        visiblePiece.getPath().addJMPoint(borderPoint1, borderPoint2);
-        visiblePiece.get(0).setThisSegmentVisible(false);
-        computeBoundPoints(getCamera());
+        getPath().addJMPoint(borderPoint1, borderPoint2);
+        get(0).setThisSegmentVisible(false);
+        rebuildShape();
     }
 
     public static Line XAxis() {
@@ -85,7 +80,7 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
         return new Line(a, b);
     }
 
-    public static Line make(Point a, Vec b) {
+    public static Line makePointDir(Coordinates<?> a, Coordinates<?> b) {
         return new Line(a, a.add(b));
     }
 
@@ -101,10 +96,9 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
      * Compute border points in the view area of the given renderer.This is need in order to draw an "infinite" line
      * which always extend to the whole visible area. The border points are stored in bp1 and bp2
      *
-     * @param cam Camera with the view to compute bound points
      */
-    private void computeBoundPoints(Camera cam) {
-        Rect rect = cam.getMathView();
+    private void rebuildShape() {
+        Rect rect = camera.getMathView();
         double[] intersectLine = rect.intersectLine(p1.x, p1.y, p2.x, p2.y);
 
         if (intersectLine == null) {
@@ -129,25 +123,25 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
     @Override
     public Line copy() {
         Line resul = new Line(p1.copy(), p2.copy());
-        resul.getMp().copyFrom(getMp());
+        resul.copyStateFrom(this);
         return resul;
     }
 
     @Override
-    protected Rect computeBoundingBox() {
-//        JMathAnimScene.logger.warn("Trying to compute bounding box of an infinite line, returning EmptyRect");
-
-        return getCamera().getBoundingBox();
+    public void copyStateFrom(Stateable obj) {
+        super.copyStateFrom(obj);
+        if (!(obj instanceof Line)) return;
+            Line line= (Line) obj;
+        p1.copyCoordinatesFrom(line.p1);
+        p2.copyCoordinatesFrom(line.p2);
+        rebuildShape();
     }
 
-
     @Override
-    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
-        update(JMathAnimConfig.getConfig().getScene());// TODO: remove coupling
-        if (isVisible()) {
-            visiblePiece.draw(scene, r, cam);
-        }
-        scene.markAsAlreadydrawn(this);
+    protected Rect computeBoundingBox() {
+        //Bounding box of the visible segment
+        rebuildShape();
+        return Rect.make(borderPoint1, borderPoint2);
     }
 
     /**
@@ -188,23 +182,12 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
         return p1.to(p2);
     }
 
-    @Override
-    public DrawStyleProperties getMp() {
-        return visiblePiece.getMp();
+    public Vec getP1() {
+        return p1.getVec();
     }
 
-    public Coordinates<Point> getP1() {
-        if (pointP1 == null) {
-            pointP1 = Point.at(p1);
-        }
-        return pointP1;
-    }
-
-    public Point getP2() {
-        if (pointP2 == null) {
-            pointP2 = Point.at(p2);
-        }
-        return pointP2;
+    public Vec getP2() {
+        return p2.getVec();
     }
 
     @Override
@@ -221,7 +204,7 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
      * @return A segment with the visibleFlag part of the line
      */
     public Shape toSegment(Camera cam, double scale) {
-        computeBoundPoints(cam);
+        rebuildShape();
         JMPathPoint a = borderPoint1.copy().scale(getCenter(), scale, scale);
         JMPathPoint b = borderPoint2.copy().scale(getCenter(), scale, scale);
         Shape segment = Shape.segment(a, b);
@@ -236,12 +219,12 @@ public class Line extends MathObject<Line> implements HasDirection, shouldUdpate
     @Override
     public void update(JMathAnimScene scene) {
         super.update(scene);
-        computeBoundPoints(getCamera());
+        rebuildShape();
     }
 
     @Override
     public void updateWithCamera(Camera camera) {
-        computeBoundPoints(camera);
+        rebuildShape();
     }
 
 }

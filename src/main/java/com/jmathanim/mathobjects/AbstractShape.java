@@ -267,10 +267,11 @@ public abstract class
 
     @Override
     public void copyStateFrom(Stateable obj) {
-        if (!(obj instanceof AbstractShape)) return;
-        AbstractShape<?> msh = (AbstractShape<?>) obj;
         super.copyStateFrom(obj);
+
+        if (!(obj instanceof AbstractShape)) return;
         AbstractShape<?> sh2 = (AbstractShape<?>) obj;
+
         if (!isRigid) {
             getPath().copyStateFrom(sh2.getPath());
         }

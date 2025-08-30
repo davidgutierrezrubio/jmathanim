@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Constructible.Points;
 
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.Point;
 
@@ -45,7 +46,7 @@ public class CTPoint extends CTAbstractPoint<CTPoint> {
     }
     
     public static CTPoint at(double x, double y) {
-        CTPoint resul =  CTPoint.at(x, y);
+        CTPoint resul =  new CTPoint(Vec.to(x, y));
         resul.rebuildShape();
         return resul;
     }

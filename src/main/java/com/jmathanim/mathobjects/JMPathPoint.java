@@ -225,13 +225,13 @@ public class JMPathPoint implements
 
     /**
      * Computes an interpolated JMPathPoint between this and another one. The interpolation is not the usual linear one,
-     * but Bezier interpolation if it is curved.
+     * but Bezier interpolation second point  it segment defined is curved.
      *
      * @param coords2 Second JMPathPoint to interpolate
      * @param alpha   Interpolation parameter. 0 returns a copy of this object. 1 returns a copy of q.
      * @return The interpolated JMPathPoint.
      */
-    public JMPathPoint interpolate(Coordinates coords2, double alpha) {
+    public JMPathPoint interpolate(Coordinates<?> coords2, double alpha) {
         JMPathPoint q;
         if (coords2 instanceof JMPathPoint) {
             q = (JMPathPoint) coords2;
@@ -239,7 +239,11 @@ public class JMPathPoint implements
             q = new JMPathPoint(coords2, true);
         }
         JMPathPoint interpolate;
-        if (q.isCurved()) {
+//        if (q.isCurved())
+
+        boolean qCurvedTo = !q.getV().isEquivalentTo(q.getvEnter().getVec(), 1e-4);
+        boolean thisCurvedFrom = !getV().isEquivalentTo(getvExit().getVec(), 1e-4);
+        if (qCurvedTo || thisCurvedFrom) {
             // De Casteljau's Algorithm:
             // https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
             Vec E = this.getV().interpolate(this.getvExit(), alpha); // New cp1 of v1
@@ -251,7 +255,6 @@ public class JMPathPoint implements
             interpolate = new JMPathPoint(K, q.isThisSegmentVisible());
             interpolate.getvExit().copyCoordinatesFrom(J);
             interpolate.getvEnter().copyCoordinatesFrom(H);
-
         } else {
             // Straight interpolation
             Vec vInterp = this.getV().interpolate(q.getV(), alpha);

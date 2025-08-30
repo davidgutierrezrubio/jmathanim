@@ -36,6 +36,7 @@ public class DivideOnSensiblePointsStrategy implements OptimizePathsStrategy {
 		JMPath pa2 = sh2.getPath();
 		int n1 = pa1.getNumberOfConnectedComponents();
 		int n2 = pa2.getNumberOfConnectedComponents();
+
 		if ((n1 < 2) | (n2 > 1)) {
 			return; // Do nothing
 		}

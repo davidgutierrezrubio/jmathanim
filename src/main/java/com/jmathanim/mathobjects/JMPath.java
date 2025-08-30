@@ -37,7 +37,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.logger;
  *
  * @author David Gutiérrez davidgutierrezrubio@gmail.com
  */
-public class JMPath implements  Boxable, Iterable<JMPathPoint> {
+public class JMPath implements Boxable, Iterable<JMPathPoint>, AffineTransformable<JMPath> {
 
     public static final double DELTA_DERIVATIVE = .0001;
     // this way
@@ -210,9 +210,10 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
 //
 
     /**
-     * Return a Vec with coordinates at a given percentage of total arclenth of path. Note that, as path are composed of cubic Bezier
-     * curves, a rectified path must be computed. This is done automatically only once at first call of this method, so
-     * if you change the path after a a first call, the next calls to this method may give wrong results.
+     * Return a Vec with coordinates at a given percentage of total arclenth of path. Note that, as path are composed of
+     * cubic Bezier curves, a rectified path must be computed. This is done automatically only once at first call of
+     * this method, so if you change the path after a a first call, the next calls to this method may give wrong
+     * results.
      *
      * @param t A value from 0 to 1. 0 means starting point and 1 ending point
      * @return A new Point object with the computed location
@@ -1204,7 +1205,11 @@ public class JMPath implements  Boxable, Iterable<JMPathPoint> {
         return this;
     }
 
-    public void copyStateFrom(JMPath path) {
+    @Override
+    public void copyStateFrom(Stateable stateable) {
+        if (!(stateable instanceof JMPath)) return;
+        JMPath path = (JMPath) stateable;
+
         long count = path.getJmPathPoints().size();
         if (count == getJmPathPoints().size()) {
             //Equal number of vertices 

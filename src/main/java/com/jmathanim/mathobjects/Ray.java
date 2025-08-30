@@ -19,11 +19,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Constructible.Lines.HasDirection;
-import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Styling.DrawStyleProperties;
-import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -33,13 +29,11 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Ray extends MathObject<Ray> implements HasDirection {
+public class Ray extends AbstractShape<Ray> implements HasDirection {
 
-    private final JMPathPoint bp1, bp2;
-    private final Coordinates p1;
-    private final Coordinates p2;
-    private final Shape visiblePiece;
-    DrawStylePropertiesObjectsArray mpArray;
+    private final JMPathPoint boundaryPoint1, boundaryPoint2;
+    private final Vec p1;
+    private final Vec p2;
 
     /**
      * Creates a ray that passes through p with direction v
@@ -57,22 +51,18 @@ public class Ray extends MathObject<Ray> implements HasDirection {
      * @param p1 First point
      * @param p2 Second point
      */
-    public Ray(Coordinates p1, Coordinates p2) {
+    protected Ray(Coordinates<?> p1, Coordinates<?> p2) {
         super();
-        mpArray = new DrawStylePropertiesObjectsArray();
-        mpArray.copyFrom(JMathAnimConfig.getConfig().getDefaultMP());// Default MP values);
-        this.p1 = p1;
-        this.p2 = p2;
-        bp1 = new JMPathPoint(this.p1, true);// trivial boundary points, just to
+        this.p1 = p1.getVec();
+        this.p2 = p2.getVec();
+        boundaryPoint1 = new JMPathPoint(this.p1, true);// trivial boundary points, just to
         // initialize objects
-        bp2 = new JMPathPoint(new Point(0, 0), true);// trivial boundary points, just to
+        boundaryPoint2 = new JMPathPoint(new Point(0, 0), true);// trivial boundary points, just to
         // initialize objects
-        visiblePiece = new Shape();
-        visiblePiece.getPath().addJMPoint(bp1, bp2);
-        visiblePiece.get(0).setThisSegmentVisible(false);
-        mpArray.add(visiblePiece);
+        getPath().addJMPoint(boundaryPoint1, boundaryPoint2);
+        get(0).setThisSegmentVisible(false);
+        rebuildShape();
     }
-
 
 
     public static Ray XAxisPositive() {
@@ -107,18 +97,18 @@ public class Ray extends MathObject<Ray> implements HasDirection {
      * @param b Second point (ray will pass through here)
      * @return The Ray object
      */
-    public static Ray make(Coordinates a, Coordinates b) {
+    public static Ray make(Coordinates<?> a, Coordinates<?> b) {
         return new Ray(a, b);
     }
 
     /**
-     * Overloaded builder. Returns a ray starting from point a with direction given by a vector
+     * Returns a ray starting from point a with direction given by a vector
      *
      * @param start     Starting point
      * @param direction Direction
      * @return The Ray object
      */
-    public static Ray make(Point start, Vec direction) {
+    public static Ray makePointDir(Coordinates<?> start, Vec direction) {
         return new Ray(start, start.add(direction));
     }
 
@@ -126,7 +116,7 @@ public class Ray extends MathObject<Ray> implements HasDirection {
     public Ray applyAffineTransform(AffineJTransform transform) {
         getP1().getVec().applyAffineTransform(transform);
         getP2().getVec().applyAffineTransform(transform);
-            transform.applyTransformsToDrawingProperties(this);
+        transform.applyTransformsToDrawingProperties(this);
         return this;
     }
 
@@ -134,48 +124,52 @@ public class Ray extends MathObject<Ray> implements HasDirection {
      * Compute border points in the view area of the given renderer. This is need in order to draw an "infinite" ray
      * which always extend to the whole visible area. The border points is stored in bp2
      *
-     * @param cam Camera with the view to compute bound points
      */
-    public final void computeBoundPoints(Camera cam) {
-        Rect rect = cam.getMathView();
-        Vec p1v=p1.getVec();
-        Vec p2v=p2.getVec();
+    public final void rebuildShape() {
+        Rect rect = camera.getMathView();
+        Vec p1v = p1.getVec();
+        Vec p2v = p2.getVec();
         double[] intersectLine = rect.intersectLine(p1v.x, p1v.y, p2v.x, p2v.y);
 
         if (intersectLine == null) {
             // If there are no getIntersectionPath points, take p1 and p2 (workaround)
-           bp2.getV().copyCoordinatesFrom(p2v);
+            boundaryPoint2.getV().copyCoordinatesFrom(p2v);
         } else {
-            bp2.getV().x = intersectLine[2];
-            bp2.getV().y = intersectLine[3];
+            boundaryPoint2.getV().x = intersectLine[2];
+            boundaryPoint2.getV().y = intersectLine[3];
         }
-        bp2.getvExit().x = bp2.getV().x;
-        bp2.getvExit().y = bp2.getV().y;
-        bp2.getvEnter().x = bp2.getV().x;
-        bp2.getvEnter().y = bp2.getV().y;
+        boundaryPoint2.getvExit().x = boundaryPoint2.getV().x;
+        boundaryPoint2.getvExit().y = boundaryPoint2.getV().y;
+        boundaryPoint2.getvEnter().x = boundaryPoint2.getV().x;
+        boundaryPoint2.getvEnter().y = boundaryPoint2.getV().y;
 
+    }
+
+
+    @Override
+    public void copyStateFrom(Stateable obj) {
+        super.copyStateFrom(obj);
+        if (!(obj instanceof Ray)) return;
+        Ray ray= (Ray) obj;
+        p1.copyCoordinatesFrom(ray.p1);
+        p2.copyCoordinatesFrom(ray.p2);
+        rebuildShape();
+    }
+
+    @Override
+    protected Rect computeBoundingBox() {
+        //Bounding box of the visible segment
+        rebuildShape();
+        return Rect.make(boundaryPoint1, boundaryPoint2);
     }
 
     @Override
     public Ray copy() {
         Ray resul = new Ray(p1.getVec().copy(), p2.getVec().copy());
-        resul.getMp().copyFrom(getMp());
+        resul.copyStateFrom(this);
         return resul;
     }
 
-    @Override
-    protected Rect computeBoundingBox() {
-        return null;
-    }
-
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
-        update(scene);
-        if (isVisible()) {
-            visiblePiece.draw(scene, r, cam);
-        }
-        scene.markAsAlreadydrawn(this);
-    }
 
     /**
      * Returns the point of the line lying in the boundaries of the math view. From the 2 points of the boundary, this
@@ -186,7 +180,7 @@ public class Ray extends MathObject<Ray> implements HasDirection {
      */
     public Vec getBorderPoint1(JMathAnimScene scene) {
         update(scene);
-        return bp1.getV();
+        return boundaryPoint1.getV();
     }
 
     /**
@@ -198,7 +192,7 @@ public class Ray extends MathObject<Ray> implements HasDirection {
      */
     public Vec getBorderPoint2(JMathAnimScene scene) {
         update(scene);
-        return bp2.getV();
+        return boundaryPoint2.getV();
     }
 
     /**
@@ -217,16 +211,11 @@ public class Ray extends MathObject<Ray> implements HasDirection {
         return p1.to(p2);
     }
 
-    @Override
-    public final DrawStyleProperties getMp() {
-        return visiblePiece.getMp();
-    }
-
-    public Coordinates getP1() {
+    public Vec getP1() {
         return p1;
     }
 
-    public Coordinates getP2() {
+    public Vec getP2() {
         return p2;
     }
 
@@ -245,9 +234,9 @@ public class Ray extends MathObject<Ray> implements HasDirection {
      * @return A segment with the visibleFlag part of the line
      */
     public Shape toSegment(Camera cam, double scale) {
-        computeBoundPoints(cam);
-        JMPathPoint a = bp1.copy().scale(getCenter(), scale, scale);
-        JMPathPoint b = bp2.copy().scale(getCenter(), scale, scale);
+        rebuildShape();
+        JMPathPoint a = boundaryPoint1.copy().scale(getCenter(), scale, scale);
+        JMPathPoint b = boundaryPoint2.copy().scale(getCenter(), scale, scale);
         Shape segment = Shape.segment(a, b);
         segment.getMp().copyFrom(this.getMp());
         return segment;
@@ -260,7 +249,7 @@ public class Ray extends MathObject<Ray> implements HasDirection {
     @Override
     public void update(JMathAnimScene scene) {
         super.update(scene);
-        computeBoundPoints(getCamera());
+        rebuildShape();
     }
 
 }

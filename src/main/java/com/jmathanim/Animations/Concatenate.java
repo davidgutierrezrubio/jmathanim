@@ -40,6 +40,7 @@ public class Concatenate extends JoinAnimation {
 
     protected Concatenate(Animation... anims) {
         super(0d, anims);
+        setLambda(t -> t);
     }
 
     @Override
@@ -50,6 +51,7 @@ public class Concatenate extends JoinAnimation {
             runt += animation.getRunTime();
         }
         setRunTime(runt);
+
         return super.doInitialization();
     }
 }

@@ -260,15 +260,15 @@ public class ShowCreation extends Animation {
                 JMathAnimScene.logger.debug("ShowCreation method: GroupCreationStrategy");
                 break;
             case LINE_CREATION:
-                final Shape lineToCreate = ((Line) mobj).toSegment(mobj.getCamera());
-                removeThisAtTheEnd.add(lineToCreate);
-                creationStrategy = new SimpleShapeCreationAnimation(this.runTime, lineToCreate);
+//                final Shape lineToCreate = ((Line) mobj).toSegment(mobj.getCamera());
+//                removeThisAtTheEnd.add(lineToCreate);
+                creationStrategy = new SimpleShapeCreationAnimation(this.runTime, (Line) mobj);
                 JMathAnimScene.logger.debug("ShowCreation method: LineCreationStrategy");
                 break;
             case RAY_CREATION:
-                final Shape rayToCreate = ((Ray) mobj).toSegment(mobj.getCamera());
-                removeThisAtTheEnd.add(rayToCreate);
-                creationStrategy = new SimpleShapeCreationAnimation(this.runTime, rayToCreate);
+//                final Shape rayToCreate = ((Ray) mobj).toSegment(mobj.getCamera());
+//                removeThisAtTheEnd.add(rayToCreate);
+                creationStrategy = new SimpleShapeCreationAnimation(this.runTime, (Ray) mobj);
                 JMathAnimScene.logger.debug("ShowCreation method: RayCreationStrategy");
                 break;
             case ARROW_CREATION:
@@ -279,7 +279,7 @@ public class ShowCreation extends Animation {
                 Delimiter del = (Delimiter) mobj;
                 creationStrategy = new AbstractCreationStrategy(runTime) {
                     @Override
-                    public MathObject getIntermediateObject() {
+                    public MathObject<?> getIntermediateObject() {
                         return del;
                     }
 

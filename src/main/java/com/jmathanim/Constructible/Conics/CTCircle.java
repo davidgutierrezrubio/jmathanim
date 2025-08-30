@@ -17,11 +17,12 @@
  */
 package com.jmathanim.Constructible.Conics;
 
-import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.Coordinates;
+import com.jmathanim.mathobjects.Scalar;
+import com.jmathanim.mathobjects.Stateable;
 
 /**
  * Represents a Circle imported from Geogebra with 2 points (center and another one in the perimeter)
@@ -49,16 +50,6 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
         super();
     }
 
-    /**
-     * Creates a constructible circle with given center that pass through P
-     *
-     * @param center Center of circle
-     * @param P      Point of circle
-     * @return Created constructible circle
-     */
-    public static CTCircle makeCenterPoint(Point center, Point P) {
-        return makeCenterPoint(CTPoint.make(center), CTPoint.make(P));
-    }
 
     /**
      * Creates a constructible circle with given center that pass through P
@@ -199,12 +190,16 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
 //        circleToDraw.getPath().addJMPointsFrom(originalCircle.copy().getPath());
 
         if (!isFreeMathObject()) {
-            for (int i = 0; i < getMathObject().size(); i++) {
-                JMPathPoint get = getMathObject().get(i);
-                get.copyControlPointsFrom(getOriginalUnitCirclePath().get(i));
-            }
-            getMathObject().scale(this.getCircleRadius().getValue());
-            getMathObject().shift(this.getCircleCenter());
+//            for (int i = 0; i < getMathObject().size(); i++) {
+//                JMPathPoint get = getMathObject().get(i);
+//                get.copyControlPointsFrom(getOriginalUnitCirclePath().get(i));
+//            }
+
+            getMathObject().getPath().copyStateFrom(
+                    getOriginalUnitCirclePath().copy()
+                            .scale(this.getCircleRadius().getValue())
+                            .shift(this.getCircleCenter())
+            );
         }
     }
 
@@ -259,7 +254,7 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
 
         // r is the radius
 //        this.radius = Math.sqrt(sqr_of_r);//this doesn't work
-        getCircleCenter().copyCoordinatesFrom(h, k);
+        setCircleCenter(Vec.to(h, k));
         final Vec radd = A.to(this.getCircleCenter());
         this.setCircleRadius(radd.norm());
         // Center (h,k)
