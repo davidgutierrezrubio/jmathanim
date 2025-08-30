@@ -18,14 +18,12 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Constructible;
-import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * A constructible polygon
@@ -35,25 +33,19 @@ import java.util.Arrays;
 public class CTPolygon extends Constructible<CTPolygon> {
 
     private final Shape shapeToDraw;
-    private final CTPoint[] points;
+    private final Coordinates<?>[] points;
 
-    public static CTPolygon make(Point... points) {
-        CTPoint[] ArrayCtpoints = Arrays.stream(points).map(t -> CTPoint.make(t)).toArray(CTPoint[]::new);
-        return new CTPolygon(ArrayCtpoints);
+    public static CTPolygon make(Coordinates<?>... points) {
+        return new CTPolygon(points);
     }
 
-    public static CTPolygon make(CTPoint... ctPoints) {
-        return new CTPolygon(ctPoints);
+    public static CTPolygon make(ArrayList<Coordinates<?>> ctPoints) {
+        return new CTPolygon(ctPoints.toArray(new Coordinates<?>[0]));
     }
 
-    public static CTPolygon make(ArrayList<CTPoint> ctPoints) {
-        return new CTPolygon(ctPoints.toArray(new CTPoint[0]));
-    }
-
-    private CTPolygon(CTPoint... cpoints) {
+    private CTPolygon(Coordinates<?>... cpoints) {
         super();
-        Point[] arrayPoints = Arrays.stream(cpoints).map(t -> t.getMathObject().copy()).toArray(Point[]::new);
-        shapeToDraw = Shape.polygon(arrayPoints);
+        shapeToDraw = Shape.polygon(cpoints);
         this.points = cpoints;
     }
 
@@ -66,7 +58,7 @@ public class CTPolygon extends Constructible<CTPolygon> {
     public void rebuildShape() {
         if (!isFreeMathObject()) {
             for (int i = 0; i < points.length; i++) {
-                CTPoint point = points[i];
+                Coordinates<?> point = points[i];
                 shapeToDraw.get(i).getV().copyCoordinatesFrom(point.getVec());
             }
         }

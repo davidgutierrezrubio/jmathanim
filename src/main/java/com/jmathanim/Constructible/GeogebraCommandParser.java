@@ -488,7 +488,7 @@ class GeogebraCommandParser {
         final double dSides = ((Scalar) objs[2]).getValue();
         int sides = (int) dSides;
         ArrayList<CTSegment> segments = new ArrayList<>();
-        ArrayList<CTPoint> vertices = new ArrayList<>();
+        ArrayList<Coordinates<?>> vertices = new ArrayList<>();
         //For a regular polygon of n sides, there are 1+n+n-2 (from 0 to 2n-2) outputs:
         //0 output name
         //1...n name of sides (CTSegment)

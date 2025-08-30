@@ -82,7 +82,7 @@ public class AffineJTransform  {
      *
      * @param coords Destiny point of origin (0,0,0), given by a vector
      */
-    public void setOriginImg(Coordinates coords) {
+    public void setOriginImg(Coordinates<?> coords) {
         Vec v=coords.getVec();
         setOriginImg(v.x, v.y, v.z);
     }
@@ -147,7 +147,7 @@ public class AffineJTransform  {
      *
      * @param coords Destiny vector of (0,1,0)
      */
-    public void setV2Img(Coordinates coords) {
+    public void setV2Img(Coordinates<?> coords) {
         Vec v = coords.getVec();
         setV2Img(v.x, v.y, v.z);
     }
@@ -180,7 +180,7 @@ public class AffineJTransform  {
      *
      * @param coords Destiny vector of (0,0,1)
      */
-    public void setV3Img(Coordinates coords) {
+    public void setV3Img(Coordinates<?> coords) {
         Vec v = coords.getVec();
         setV3Img(v.x, v.y, v.z);
     }
@@ -223,11 +223,11 @@ public class AffineJTransform  {
      *
      * @param mObject Object to apply transform
      */
-    public void applyTransform(MathObject mObject) {
+    public void applyTransform(MathObject<?> mObject) {
         mObject.applyAffineTransform(this);
     }
 
-    public void applyTransformsToDrawingProperties(MathObject mObject) {
+    public void applyTransformsToDrawingProperties(MathObject<?> mObject) {
         // Determinant of the A_xy=2D-submatrix, to compute change in thickness
         // As Area changes in det(A_xy), we change thickness in the root square of
         // det(A_xy)
@@ -246,7 +246,7 @@ public class AffineJTransform  {
      * @param obj Mathobject to transform
      * @return The transformed object
      */
-    public <T extends MathObject> T getTransformedObject(MathObject obj) {
+    public <T extends MathObject<?>> T getTransformedObject(MathObject<?> obj) {
 
         T resul = (T)obj.copy();
         applyTransform(resul);
@@ -282,7 +282,7 @@ public class AffineJTransform  {
      * @param b Destiny
      * @return A newAffineTransform with traslation
      */
-    public static AffineJTransform createTranslationTransform(Coordinates a, Coordinates b) {
+    public static AffineJTransform createTranslationTransform(Coordinates<?> a, Coordinates<?> b) {
         return createTranslationTransform(a.to(b));
     }
 
@@ -292,7 +292,7 @@ public class AffineJTransform  {
      * @param v The traslation vector
      * @return A newAffineTransform with traslation
      */
-    public static AffineJTransform createTranslationTransform(Coordinates v) {
+    public static AffineJTransform createTranslationTransform(Coordinates<?> v) {
         AffineJTransform resul = new AffineJTransform();
         resul.setOriginImg(v);
         return resul;
@@ -305,7 +305,7 @@ public class AffineJTransform  {
      * @param angle Angle (in radians)
      * @return A new AffineTransform with the rotation
      */
-    public static AffineJTransform create2DRotationTransform(Coordinates center, double angle) {
+    public static AffineJTransform create2DRotationTransform(Coordinates<?> center, double angle) {
         AffineJTransform resul = new AffineJTransform();
         final double sin = Math.sin(angle);
         final double cos = Math.cos(angle);
@@ -329,7 +329,7 @@ public class AffineJTransform  {
      * 1=full rotation)
      * @return A new AffineTransform with the rotation
      */
-    public static AffineJTransform create3DRotationTransform(Coordinates center, double anglex, double angley, double anglez, double alpha) {
+    public static AffineJTransform create3DRotationTransform(Coordinates<?> center, double anglex, double angley, double anglez, double alpha) {
         AffineJTransform resul = new AffineJTransform();
         final double sinz = Math.sin(alpha * anglez);
         final double cosz = Math.cos(alpha * anglez);
@@ -367,7 +367,7 @@ public class AffineJTransform  {
      * @return A new AffineTransform with the rotation
      */
     public static AffineJTransform create3DRotationTransform(
-            Coordinates A, Coordinates B1, Coordinates B2, Coordinates C, Coordinates D1, Coordinates D2, double alpha) {
+            Coordinates<?> A, Coordinates<?> B1, Coordinates<?> B2, Coordinates<?> C, Coordinates<?> D1, Coordinates<?> D2, double alpha) {
         Vec v1 = A.to(B1).normalize();
         Vec v2 = v1.cross(A.to(B2)).normalize();
         Vec v3 = v1.cross(v2).normalize();
@@ -395,7 +395,7 @@ public class AffineJTransform  {
      * @param scale Factor of scale. A value of 1 means no change.
      * @return The transform
      */
-    public static AffineJTransform createScaleTransform(Coordinates center, double scale) {
+    public static AffineJTransform createScaleTransform(Coordinates<?> center, double scale) {
         return createScaleTransform(center, scale, scale, scale);
     }
 
@@ -408,7 +408,7 @@ public class AffineJTransform  {
      * @param scaley y-scale factor
      * @return The transform
      */
-    public static AffineJTransform createScaleTransform(Coordinates center, double scalex, double scaley) {
+    public static AffineJTransform createScaleTransform(Coordinates<?> center, double scalex, double scaley) {
         return createScaleTransform(center, scalex, scaley, 1);
     }
 
@@ -422,7 +422,7 @@ public class AffineJTransform  {
      * @param scalez z-scale factor
      * @return The transform
      */
-    public static AffineJTransform createScaleTransform(Coordinates center, double scalex, double scaley, double scalez) {
+    public static AffineJTransform createScaleTransform(Coordinates<?> center, double scalex, double scaley, double scalez) {
         AffineJTransform resul = new AffineJTransform();
         resul.setV1Img(scalex, 0, 0);
         resul.setV2Img(0, scaley, 0);
@@ -446,11 +446,16 @@ public class AffineJTransform  {
      * 1=full transform)
      * @return The transform
      */
-    public static AffineJTransform createDirect2DIsomorphic(Coordinates originA, Coordinates originB, Coordinates destinyA, Coordinates destinyB, double alpha) {
+    public static AffineJTransform createDirect2DIsomorphic(Coordinates<?> originA, Coordinates<?> originB, Coordinates<?> destinyA, Coordinates<?> destinyB, double alpha) {
         double angle;// Angle between AB and CD
-        Vec v1 = originA.getVec().to(originB.getVec());// Vector AB
-        Vec v2 = destinyA.getVec().to(destinyB.getVec());// Vector CD
-        Vec v3 = originA.getVec().to(destinyA.getVec());// Vector AC
+        Vec oA = originA.getVec().copy();
+        Vec oB = originB.getVec().copy();
+        Vec dA = destinyA.getVec().copy();
+        Vec dB = destinyB.getVec().copy();
+
+        Vec v1 = oA.to(oB);// Vector AB
+        Vec v2 = dA.to(dB);// Vector CD
+        Vec v3 = oA.to(dA);// Vector AC
         double d1 = v1.norm();
         double d2 = v2.norm();
         double dotProd = v1.dot(v2) / d1 / d2;
@@ -466,10 +471,10 @@ public class AffineJTransform  {
             angle = -angle;
         }
         // The rotation part
-        AffineJTransform rotation = AffineJTransform.create2DRotationTransform(originA.getVec(), angle * alpha);
+        AffineJTransform rotation = AffineJTransform.create2DRotationTransform(oA, angle * alpha);
 
         // The scale part
-        AffineJTransform scale = AffineJTransform.createScaleTransform(originA, (1 - alpha) + d2 / d1 * alpha);
+        AffineJTransform scale = AffineJTransform.createScaleTransform(oA, (1 - alpha) + d2 / d1 * alpha);
 
         // The traslation part
         AffineJTransform traslation = AffineJTransform.createTranslationTransform(v3.mult(alpha));
@@ -491,9 +496,9 @@ public class AffineJTransform  {
      * 1=full transform)
      * @return The created transform
      */
-    public static AffineJTransform createDirect3DIsomorphic(Coordinates A, Coordinates B1,
-                                                            Coordinates B2, Coordinates C,
-                                                            Coordinates D1, Coordinates D2,
+    public static AffineJTransform createDirect3DIsomorphic(Coordinates<?> A, Coordinates<?> B1,
+                                                            Coordinates<?> B2, Coordinates<?> C,
+                                                            Coordinates<?> D1, Coordinates<?> D2,
                                                             double alpha) {
         Vec vShift = A.to(C);
         double d = C.to(D1).norm() / A.to(B1).norm();
