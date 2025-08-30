@@ -23,6 +23,7 @@ import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.LayoutType;
+import com.jmathanim.Enum.ScreenAnchor;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Styling.JMColor;
@@ -218,18 +219,18 @@ public class Commands {
     /**
      * Animates a scale change from centers of objects
      *
-     * @param runtime     Duration in seconds
-     * @param scx         X scale to apply
-     * @param scy         Y scale to apply
+     * @param runtime        Duration in seconds
+     * @param scx            X scale to apply
+     * @param scy            Y scale to apply
      * @param objectsToScale Objects to animate
      * @return The animation, ready to play with the playAnim method
      */
     public static Animation scale(double runtime, double scx, double scy, AffineTransformable<?>... objectsToScale) {
         AnimationGroup ag = new AnimationGroup();
         //Compute combined center
-        Rect r=objectsToScale[0].getBoundingBox();
+        Rect r = objectsToScale[0].getBoundingBox();
         for (AffineTransformable<?> obj : objectsToScale) {
-            r=Rect.union(r,obj.getBoundingBox());
+            r = Rect.union(r, obj.getBoundingBox());
         }
         Vec center = r.getCenter();
         for (AffineTransformable<?> obj : objectsToScale) {
@@ -301,6 +302,7 @@ public class Commands {
     public static AnimationWithEffects rotate(double runtime, double rotationAngle, AffineTransformable<?>... objects) {
         return rotate(runtime, null, rotationAngle, objects);
     }
+
     public static AnimationWithEffects rotate(double runtime, double rotationAngle, List<? extends AffineTransformable<?>> objects) {
         AffineTransformable<?>[] arObjects = objects.toArray(new AffineTransformable[0]);
         return rotate(runtime, null, rotationAngle, arObjects);
@@ -312,7 +314,7 @@ public class Commands {
     }
 
 
-        public static AnimationWithEffects rotate(double runtime, Coordinates<?> rotationCenter, double rotationAngle, AffineTransformable<?>... objects) {
+    public static AnimationWithEffects rotate(double runtime, Coordinates<?> rotationCenter, double rotationAngle, AffineTransformable<?>... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
             final double angle = rotationAngle;
             final AffineTransformable[] objectsToRotate = objects;
@@ -1445,8 +1447,8 @@ public class Commands {
     public static ShiftAnimation setLayout(double runtime, Coordinates<?> corner, LayoutType layoutType, double gap,
                                            MathObjectGroup group) {
         //Create a simple group with rectangles
-        Shape[] shapes = group.getObjects().stream().map(t->Shape.rectangle(t.getBoundingBox())).toArray(Shape[]::new);
-        MathObjectGroup groupCopy=MathObjectGroup.make(shapes);
+        Shape[] shapes = group.getObjects().stream().map(t -> Shape.rectangle(t.getBoundingBox())).toArray(Shape[]::new);
+        MathObjectGroup groupCopy = MathObjectGroup.make(shapes);
         groupCopy.setLayout(corner, layoutType, gap);
         HashMap<MathObject<?>, Vec> centers = new HashMap<>();
         int n = 0;
@@ -1577,34 +1579,60 @@ public class Commands {
      * @param mathObjects Objects to exit (varargs)
      * @return this animation, ready to play with the playAnimation method
      */
-    public static ShiftAnimation moveOut(double runtime, AnchorType exitAnchor, MathObject<?>... mathObjects) {
+    public static ShiftAnimation moveOut(double runtime, ScreenAnchor exitAnchor, MathObject<?>... mathObjects) {
         ShiftAnimation resul = new ShiftAnimation(runtime, mathObjects) {
             @Override
             public boolean doInitialization() {
-                for (MathObject obj : mathObjects) {//Free constructible objects before saving states
+                Camera camera;
+                Renderer rend = JMathAnimConfig.getConfig().getRenderer();
+                JMathAnimScene.logger.debug("Initialized moveOut animation");
+                for (MathObject<?> obj : mathObjects) {//Free constructible objects before saving states
                     if (obj instanceof Constructible) {
-                        Constructible cnstr = (Constructible) obj;
+                        Constructible<?> cnstr = (Constructible<?>) obj;
                         cnstr.setFreeMathObject(true);
                     }
                 }
                 super.doInitialization();
-                JMathAnimScene.logger.debug("Initialized moveOut animation");
                 // Compute appropiate shift vectors
                 Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
                 for (MathObject<?> obj : mathObjects) {
-                    Vec objAnchor = Anchor.getAnchorPoint(obj, Anchor.reverseAnchorPoint(exitAnchor));
-                    Vec screenAnchor = Anchor.getAnchorPoint(Shape.rectangle(r), exitAnchor, 1);
+
+                    if (obj.getCamera() == null)
+                        camera = JMathAnimConfig.getConfig().getCamera();
+                    else
+                        camera = obj.getCamera();
+
+                    double gap = -rend.ThicknessToMathWidth(obj) * 2;
+                    Vec objAnchor;
+                    Vec screenAnchor = Anchor.getScreenAnchorPoint(camera, exitAnchor, -gap,-gap);
                     switch (exitAnchor) {
-                        case LEFT:
-                            screenAnchor.y = objAnchor.y;
                         case RIGHT:
+                            objAnchor = Anchor.getAnchorPoint(obj, AnchorType.LEFT);
                             screenAnchor.y = objAnchor.y;
                             break;
                         case UPPER:
+                            objAnchor = Anchor.getAnchorPoint(obj, AnchorType.LOWER);
+                            screenAnchor.x = objAnchor.x;
                         case LOWER:
+                            objAnchor = Anchor.getAnchorPoint(obj, AnchorType.UPPER);
                             screenAnchor.x = objAnchor.x;
                             break;
+                        case UPPER_LEFT:
+                            objAnchor = Anchor.getAnchorPoint(obj, AnchorType.DIAG4);
+                            break;
+                        case UPPER_RIGHT:
+                            objAnchor = Anchor.getAnchorPoint(obj, AnchorType.DIAG3);
+                            break;
+                        case LOWER_LEFT:
+                            objAnchor = Anchor.getAnchorPoint(obj, AnchorType.DIAG1);
+                            break;
+                        case LOWER_RIGHT:
+                            objAnchor = Anchor.getAnchorPoint(obj, AnchorType.DIAG2);
+                            break;
                         default:
+//                        case LEFT:
+                            objAnchor = Anchor.getAnchorPoint(obj, AnchorType.RIGHT);
+                            screenAnchor.y = objAnchor.y;
                             break;
                     }
                     this.setShiftVector(obj, objAnchor.to(screenAnchor));
@@ -1640,9 +1668,9 @@ public class Commands {
      * @param mathObjects Objects to enter (varargs)
      * @return this animation, ready to play with the playAnimation method
      */
-    public static ShiftAnimation moveIn(double runtime, AnchorType enterAnchor, MathObject<?>... mathObjects) {
+    public static ShiftAnimation moveIn(double runtime, ScreenAnchor enterAnchor, MathObject<?>... mathObjects) {
 
-        Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
+
         Renderer rend = JMathAnimConfig.getConfig().getRenderer();
         ArrayList<MathObject<?>> toRemove = new ArrayList<>();
         ArrayList<MathObject<?>> toAnimateArrayList = new ArrayList<>(Arrays.asList(mathObjects));
@@ -1650,6 +1678,7 @@ public class Commands {
         ShiftAnimation resul = new ShiftAnimation(runtime, toAnimateArray) {
             @Override
             public boolean doInitialization() {
+                Camera camera;
 
                 for (MathObject obj : toAnimateArray) {
                     if (obj instanceof Constructible) {
@@ -1657,26 +1686,52 @@ public class Commands {
                         cnstr.setFreeMathObject(true);
                     }
                 }
+
+
                 super.doInitialization();
                 addThisAtTheEnd.addAll(Arrays.asList(mathObjects));
                 removeThisAtTheEnd.addAll(toRemove);
                 JMathAnimScene.logger.debug("Initialized moveIn animation");
-                for (MathObject obj : toAnimateArray) {
-                    double gap = rend.ThicknessToMathWidth(obj) * 2;
-                    final AnchorType reverseAnchor = Anchor.reverseAnchorPoint(enterAnchor);
-                    Vec p = Anchor.getAnchorPoint(obj, reverseAnchor);
-                    Shape rectMathView = Shape.rectangle(r.copy().addGap(gap, gap));
-                    Vec q = Anchor.getAnchorPoint(rectMathView, enterAnchor);
+                for (MathObject<?> obj : toAnimateArray) {
+                    if (obj.getCamera() == null)
+                        camera = JMathAnimConfig.getConfig().getCamera();
+                    else
+                        camera = obj.getCamera();
+
+
+                    double gap = -rend.ThicknessToMathWidth(obj) * 2;
+
+                    Vec q = Anchor.getScreenAnchorPoint(camera, enterAnchor, 0, 0);
+                    Vec p;
                     switch (enterAnchor) {
-                        case LEFT:
-                            q.y = p.y;
                         case RIGHT:
+                            p = Anchor.getAnchorPoint(obj, AnchorType.LEFT,gap,gap,gap);
                             q.y = p.y;
                             break;
                         case UPPER:
-                        case LOWER:
+                            p = Anchor.getAnchorPoint(obj, AnchorType.LOWER,gap,gap,gap);
                             q.x = p.x;
                             break;
+                        case LOWER:
+                            p = Anchor.getAnchorPoint(obj, AnchorType.UPPER,gap,gap,gap);
+                            q.x = p.x;
+                            break;
+                        case UPPER_LEFT:
+                            p = Anchor.getAnchorPoint(obj, AnchorType.DIAG4,gap,gap,gap);
+                            break;
+                        case UPPER_RIGHT:
+                            p = Anchor.getAnchorPoint(obj, AnchorType.DIAG3,gap,gap,gap);
+                            break;
+                        case LOWER_LEFT:
+                            p = Anchor.getAnchorPoint(obj, AnchorType.DIAG1,gap,gap,gap);
+                            break;
+                        case LOWER_RIGHT:
+                            p = Anchor.getAnchorPoint(obj, AnchorType.DIAG2,gap,gap,gap);
+                            break;
+                        default:
+                            //case LEFT:
+                            p = Anchor.getAnchorPoint(obj, AnchorType.RIGHT,gap,gap,gap);
+                            q.y = p.y;
                     }
                     obj.shift(p.to(q));
                     this.setShiftVector(obj, q.to(p));
@@ -1771,7 +1826,7 @@ public class Commands {
                 for (MathObject<?> obj : mathobjects) {
                     Vec objAnchor = Anchor.getAnchorPoint(obj, reverse);
                     setShiftVector(obj, objAnchor.to(previous));
-                    previous = Anchor.getAnchorPoint(obj,anchorType);
+                    previous = Anchor.getAnchorPoint(obj, anchorType);
                 }
                 return true;
             }

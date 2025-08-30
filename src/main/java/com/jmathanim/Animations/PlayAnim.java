@@ -19,6 +19,7 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Enum.AnchorType;
+import com.jmathanim.Enum.ScreenAnchor;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.OrientationType;
@@ -185,7 +186,7 @@ public class PlayAnim {
      *                    side of the math view.
      * @param mathObjects Mathobjects to animate (varargs)
      */
-    public void moveOut(double runtime, AnchorType exitAnchor, MathObject<?>... mathObjects) {
+    public void moveOut(double runtime, ScreenAnchor exitAnchor, MathObject<?>... mathObjects) {
         scene.playAnimation(Commands.moveOut(runtime, exitAnchor, mathObjects));
     }
 
@@ -197,7 +198,7 @@ public class PlayAnim {
      *                    side of the math view.
      * @param mathObjects Mathobjects to animate (varargs)
      */
-    public void moveOut(AnchorType exitAnchor, MathObject<?>... mathObjects) {
+    public void moveOut(ScreenAnchor exitAnchor, MathObject<?>... mathObjects) {
         scene.playAnimation(Commands.moveOut(defaultRunTimeMoveOut, exitAnchor, mathObjects));
     }
 
@@ -210,7 +211,7 @@ public class PlayAnim {
      *                    the upper side of the math view.
      * @param mathObjects Mathobjects to animate (varargs)
      */
-    public void moveIn(double runtime, AnchorType enterAnchor, MathObject<?>... mathObjects) {
+    public void moveIn(double runtime, ScreenAnchor enterAnchor, MathObject<?>... mathObjects) {
         scene.playAnimation(Commands.moveIn(runtime, enterAnchor, mathObjects));
     }
 
@@ -222,7 +223,7 @@ public class PlayAnim {
      *                    the upper side of the math view.
      * @param mathObjects Mathobjects to animate (varargs)
      */
-    public void moveIn(AnchorType enterAnchor, MathObject<?>... mathObjects) {
+    public void moveIn(ScreenAnchor enterAnchor, MathObject<?>... mathObjects) {
         scene.playAnimation(Commands.moveIn(defaultRunTimeMoveIn, enterAnchor, mathObjects));
     }
 

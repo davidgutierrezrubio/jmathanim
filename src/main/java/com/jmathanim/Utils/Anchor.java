@@ -19,6 +19,7 @@ package com.jmathanim.Utils;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Enum.AnchorType;
+import com.jmathanim.Enum.ScreenAnchor;
 import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
@@ -172,7 +173,6 @@ public class Anchor {
             case CENTER:
                 resul = AnchorType.CENTER;
                 break;
-
             case LEFT:
                 resul = AnchorType.RIGHT;
                 break;
@@ -242,7 +242,7 @@ public class Anchor {
      * @param yMargin y margin to apply to the anchor
      * @return A {@link Point} located at the current anchor
      */
-    public static Vec getScreenAnchorPoint(Camera camera, AnchorType anchor, double xMargin, double yMargin) {
+    public static Vec getScreenAnchorPoint(Camera camera, ScreenAnchor anchor, double xMargin, double yMargin) {
         if (camera == null) {
             //If not set, use default
             camera = JMathAnimConfig.getConfig().getCamera();
@@ -266,29 +266,16 @@ public class Anchor {
             case UPPER:
                 resul = mathViewWithGap.getUpper();
                 break;
-
-            case LEFT_AND_ALIGNED_UPPER:
+            case UPPER_LEFT:
                 resul = mathViewWithGap.getUpperLeft();
                 break;
-            case UPPER_AND_ALIGNED_LEFT:
-                resul = mathViewWithGap.getUpperLeft();
-                break;
-            case UPPER_AND_ALIGNED_RIGHT:
+            case UPPER_RIGHT:
                 resul = mathViewWithGap.getUpperRight();
                 break;
-            case RIGHT_AND_ALIGNED_UPPER:
-                resul = mathViewWithGap.getUpperRight();
-                break;
-            case LEFT_AND_ALIGNED_LOWER:
+            case LOWER_LEFT:
                 resul = mathViewWithGap.getLowerLeft();
                 break;
-            case LOWER_AND_ALIGNED_LEFT:
-                resul = mathViewWithGap.getLowerLeft();
-                break;
-            case RIGHT_AND_ALIGNED_LOWER:
-                resul = mathViewWithGap.getLowerRight();
-                break;
-            case LOWER_AND_ALIGNED_RIGHT:
+            case LOWER_RIGHT:
                 resul = mathViewWithGap.getLowerRight();
                 break;
         }
