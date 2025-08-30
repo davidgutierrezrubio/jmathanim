@@ -27,7 +27,7 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutierrez Rubio
  */
-public class CTMidPoint extends CTPoint {
+public class CTMidPoint extends CTAbstractPoint<CTMidPoint> {
 
     public enum MidPointType {
         TWO_POINTS, SEGMENT
@@ -101,8 +101,8 @@ public class CTMidPoint extends CTPoint {
         Point p = getMathObject();
         switch (midPointType) {
             case SEGMENT:
-                Vec p1 = segment.getP1();
-                Vec p2 = segment.getP2();
+                Vec p1 = segment.getP1().getVec();
+                Vec p2 = segment.getP2().getVec();
                 coordinatesOfPoint.x = .5 * (p1.x + p2.x);
                 coordinatesOfPoint.y = .5 * (p1.y + p2.y);
                 coordinatesOfPoint.z = .5 * (p1.z + p2.z);
@@ -114,7 +114,7 @@ public class CTMidPoint extends CTPoint {
                 break;
         }
         if (!isFreeMathObject()) {
-            p.v.copyCoordinatesFrom(coordinatesOfPoint);
+            copyCoordinatesFrom(coordinatesOfPoint);
         }
     }
 

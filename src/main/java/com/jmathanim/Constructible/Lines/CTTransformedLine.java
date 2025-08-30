@@ -19,6 +19,7 @@ package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.Scalar;
@@ -67,7 +68,7 @@ public class CTTransformedLine extends CTAbstractLine<CTTransformedLine> {
     }
 
     private CTTransformedLine(CTLine lineToTransform, CTLine axis, CTPoint center, CTVector translation, Scalar angle) {
-        super();
+        super(Vec.to(0,0), Vec.to(1,0));//Trivial line
         this.lineToTransform = lineToTransform;
         this.axis = axis;
         this.center = center;
@@ -120,12 +121,13 @@ public class CTTransformedLine extends CTAbstractLine<CTTransformedLine> {
         }
         getP1().copyCoordinatesFrom(lineToTransform.getP1());
         getP2().copyCoordinatesFrom(lineToTransform.getP2());
-        getP1().applyAffineTransform(tr);
-        getP2().applyAffineTransform(tr);
+        getP1().getVec().applyAffineTransform(tr);
+        getP2().getVec().applyAffineTransform(tr);
         if (!isFreeMathObject()) {
             lineToDraw.getP1().copyCoordinatesFrom(getP1());
             lineToDraw.getP2().copyCoordinatesFrom(getP2());
         }
+        lineToDraw.rebuildShape();
     }
 
     @Override

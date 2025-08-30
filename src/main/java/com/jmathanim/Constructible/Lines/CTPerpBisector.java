@@ -18,24 +18,25 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Coordinates;
-import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.MathObject;
 
 /**
- * A perpendicular bisector of a segment (perpendicular line that pass through
- * midpoint)
+ * A perpendicular bisector of a segment (perpendicular line that pass through midpoint)
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class CTPerpBisector extends CTAbstractLine<CTPerpBisector> {
 
-    protected final Coordinates A;
-    protected final Coordinates B;
-    protected final Line lineToDraw;
+    private Vec A, B;
 
-    public static CTPerpBisector make(Coordinates A, Coordinates B) {
+    private CTPerpBisector(Coordinates<?> A, Coordinates<?> B) {
+        super(Vec.to(0,0),Vec.to(1,0));
+        this.A = A.getVec();
+        this.B = B.getVec();
+        rebuildShape();
+    }
+
+    public static CTPerpBisector make(Coordinates<?> A, Coordinates<?> B) {
 //        CTPerpBisector resul = CTPerpBisector.makeLengthMeasure(CTPoint.makeLengthMeasure(A), CTPoint.makeLengthMeasure(B));
         CTPerpBisector resul = new CTPerpBisector(A, B);
         resul.rebuildShape();
@@ -43,47 +44,26 @@ public class CTPerpBisector extends CTAbstractLine<CTPerpBisector> {
     }
 
     public static CTPerpBisector make(CTSegment segment) {
-        return make(segment.A, segment.B);
-    }
-
-    private CTPerpBisector(Coordinates A, Coordinates B) {
-        super();
-        this.A = A;
-        this.B = B;
-        lineToDraw = Line.XAxis();
+        return make(segment.getP1(), segment.getP2());
     }
 
     @Override
     public CTPerpBisector copy() {
-        CTPerpBisector copy = CTPerpBisector.make(A.getVec().copy(), B.getVec().copy());
+        CTPerpBisector copy = CTPerpBisector.make(getP1().getVec().copy(), getP2().getVec().copy());
         copy.copyStateFrom(this);
         return copy;
     }
 
     @Override
     public void rebuildShape() {
-        getP1().copyCoordinatesFrom(A.getVec().interpolate(B, .5));
-        Vec v = A.to(B);
-        getP2().copyCoordinatesFrom(Vec.to(getP1().x - v.y, getP1().y + v.x));
-        if (!isFreeMathObject()) {
-            lineToDraw.getP1().copyCoordinatesFrom(P1);
-            lineToDraw.getP2().copyCoordinatesFrom(P2);
-        }
-    }
 
-    @Override
-    public MathObject getMathObject() {
-        return lineToDraw;
-    }
+            Vec midPoint=A.getVec().interpolate(B, .5);
+            Vec v = A.to(B);
+//        getP2().copyCoordinatesFrom(Vec.to(getP1().x - v.y, getP1().y + v.x));
+            Vec vOrthogonal = Vec.to(midPoint.x - v.y, midPoint.y + v.x);
+            P1.copyCoordinatesFrom(midPoint);
+            P2.copyCoordinatesFrom(vOrthogonal);
+            super.rebuildShape();
 
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, this.A, this.B);
     }
-//      @Override
-//    public Vec getHoldCoordinates(Vec coordinates) {
-//        Vec v1 = getDirection().normalize();
-//        Vec v2 = coordinates.minus(getP1());
-//        return(getP1().add(v1.mult(v1.dot(v2))));
-//    }
 }

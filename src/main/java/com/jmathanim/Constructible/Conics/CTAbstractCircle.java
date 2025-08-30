@@ -19,6 +19,7 @@ package com.jmathanim.Constructible.Conics;
 
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.PointOwner;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.*;
 
 /**
@@ -31,16 +32,11 @@ public abstract class CTAbstractCircle<T extends CTAbstractCircle<T>> extends Co
     private final Shape circleToDraw;
     private final JMPath originalUnitCirclePath;
     protected Scalar abstractCircleRadius;
-    private Coordinates<?> abstractCircleCenter;
+    private final Vec abstractCircleCenter;
 
-    public CTAbstractCircle() {
-        circleToDraw = new Shape();
-        abstractCircleRadius = Scalar.make(0);
-        originalUnitCirclePath = Shape.circle(4).getPath();
-    }
 
-    public CTAbstractCircle(Coordinates<?> abstractCircleCenter, Scalar abstractCircleRadius) {
-        this.abstractCircleCenter = abstractCircleCenter;
+    protected CTAbstractCircle(Coordinates<?> abstractCircleCenter, Scalar abstractCircleRadius) {
+        this.abstractCircleCenter = abstractCircleCenter.getVec();
         this.abstractCircleRadius = abstractCircleRadius;
         circleToDraw = new Shape();
         originalUnitCirclePath = Shape.circle().getPath();
@@ -56,7 +52,7 @@ public abstract class CTAbstractCircle<T extends CTAbstractCircle<T>> extends Co
     }
 
     public final void setCircleCenter(Coordinates<?> center) {
-        abstractCircleCenter = center.getVec();
+        abstractCircleCenter.copyCoordinatesFrom(center.getVec());
     }
 
     /**

@@ -17,13 +17,12 @@
  */
 package com.jmathanim.Constructible.Lines;
 
-import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
+
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
 /**
  * A Constructible Line that pass through A and is orthogonal to a given
@@ -33,9 +32,7 @@ import com.jmathanim.mathobjects.updateableObjects.Updateable;
  */
 public class CTLineOrthogonal extends CTAbstractLine<CTLineOrthogonal> {
 
-    protected final CTPoint A;
     protected final HasDirection dir;
-    protected final Line lineToDraw;
 
     /**
      * A CTLine that pass through A and is perpendicular to the segment AB
@@ -44,20 +41,10 @@ public class CTLineOrthogonal extends CTAbstractLine<CTLineOrthogonal> {
      * @param B Second point
      * @return The created object
      */
-    public static CTLineOrthogonal make(Point A, Point B) {
-        return make(CTPoint.make(A), CTPoint.make(B));
+    public static CTLineOrthogonal make(Coordinates<?> A, Coordinates<?> B) {
+        return makePointDir(A,CTSegment.make(A,B));
     }
 
-    /**
-     * A CTLine that pass through A and is perpendicular to the segment AB
-     *
-     * @param A First point
-     * @param B Second point
-     * @return The created object
-     */
-    public static CTLineOrthogonal make(CTPoint A, CTPoint B) {
-        return make(A, CTSegment.make(A, B));
-    }
 
     /**
      * A CTLine that pass through A and is perpendicular to a object with
@@ -67,7 +54,7 @@ public class CTLineOrthogonal extends CTAbstractLine<CTLineOrthogonal> {
      * @param dir An object that implements the HasDirection interface
      * @return The created object
      */
-    public static CTLineOrthogonal make(CTPoint A, HasDirection dir) {
+    public static CTLineOrthogonal makePointDir(Coordinates<?> A, HasDirection dir) {
         CTLineOrthogonal resul = new CTLineOrthogonal(A, dir);
         resul.rebuildShape();
         return resul;
@@ -79,49 +66,39 @@ public class CTLineOrthogonal extends CTAbstractLine<CTLineOrthogonal> {
      *
      * @param A Point of line
      * @param dir An object that implements the HasDirection interface
-     * @return The created object
      */
-    private CTLineOrthogonal(CTPoint A, HasDirection dir) {
-        super();
-        this.A = A;
+    private CTLineOrthogonal(Coordinates<?> A, HasDirection dir) {
+        super(A, A.add(dir.getDirection().rotate(PI/2)));
         this.lineType = LineType.POINT_DIRECTION;
         this.dir = dir;
-        this.lineToDraw = Line.XAxis();
     }
 
     @Override
     public CTLineOrthogonal copy() {
-        CTLineOrthogonal copy = make(A.copy(), dir);
+        CTLineOrthogonal copy = makePointDir(getP1().copy(), dir);
         copy.copyStateFrom(this);
         return copy;
     }
 
     @Override
     public void rebuildShape() {
-        Vec v = A.getVec();
+        Vec v = getP1().getVec();
         Vec direction = dir.getDirection();
-        P1.copyCoordinatesFrom(v);
-
-        P2.x = v.x - direction.y;
-        P2.y = v.y + direction.x;
+        P2.copyCoordinatesFrom(Vec.to(v.x - direction.y, v.y + direction.x));
         if (!isFreeMathObject()) {
-            lineToDraw.getP1().copyCoordinatesFrom(P1);
-            lineToDraw.getP2().copyCoordinatesFrom(P2);
+            P1draw.copyCoordinatesFrom(P1);
+            P2draw.copyCoordinatesFrom(P2);
         }
-    }
-
-    @Override
-    public MathObject getMathObject() {
-        return lineToDraw;
+        super.rebuildShape();
     }
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        scene.registerUpdateable(this.A);
-        setUpdateLevel(this.A.getUpdateLevel() + 1);
+        scene.registerUpdateable(this.getP1());
+        setUpdateLevel(this.getP1().getUpdateLevel() + 1);
         if (this.dir instanceof Updateable) {
             scene.registerUpdateable((Updateable) this.dir);
-            setUpdateLevel(Math.max(this.A.getUpdateLevel(), ((Updateable) this.dir).getUpdateLevel()) + 1);
+            setUpdateLevel(Math.max(this.getP1().getUpdateLevel(), ((Updateable) this.dir).getUpdateLevel()) + 1);
         }
     }
 }

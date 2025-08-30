@@ -21,10 +21,7 @@ import com.jmathanim.Constructible.Conics.*;
 import com.jmathanim.Constructible.Lines.*;
 import com.jmathanim.Constructible.Others.CTFunctionGraph;
 import com.jmathanim.Constructible.Others.CTImage;
-import com.jmathanim.Constructible.Points.CTIntersectionPoint;
-import com.jmathanim.Constructible.Points.CTMidPoint;
-import com.jmathanim.Constructible.Points.CTPoint;
-import com.jmathanim.Constructible.Points.CTPointOnObject;
+import com.jmathanim.Constructible.Points.*;
 import com.jmathanim.Constructible.Transforms.CTMirrorPoint;
 import com.jmathanim.Constructible.Transforms.CTRotatedPoint;
 import com.jmathanim.Constructible.Transforms.CTTranslatedPoint;
@@ -253,7 +250,7 @@ class GeogebraCommandParser {
         String label = el.getAttribute("label");
         //If this object is already added, do not process it
         //for example if it is the result of an intersection command
-        CTPoint resul;
+        CTAbstractPoint<?> resul;
         // Get the coordinates
         Element elCoords = firstElementWithTag(el, "coords");
         double x = Double.valueOf(elCoords.getAttribute("x"));
@@ -261,7 +258,7 @@ class GeogebraCommandParser {
         if (!geogebraElements.containsKey(label)) {
             resul = CTPoint.make(Vec.to(x, y));
         } else {
-            resul = (CTPoint) geogebraElements.get(label);
+            resul = (CTAbstractPoint<?>) geogebraElements.get(label);
             resul.moveTo(x, y);
         }
         Element pointSize = firstElementWithTag(el, "pointSize");
@@ -361,8 +358,8 @@ class GeogebraCommandParser {
         Element elInput = firstElementWithTag(el, "input");
         String labelPoint1 = elInput.getAttribute("a0");
         String labelPoint2 = elInput.getAttribute("a1");
-        CTPoint p1 = (CTPoint) geogebraElements.get(labelPoint1);
-        CTPoint p2 = (CTPoint) geogebraElements.get(labelPoint2);
+        CTAbstractPoint<?> p1 = (CTAbstractPoint<?>) geogebraElements.get(labelPoint1);
+        CTAbstractPoint<?> p2 = (CTAbstractPoint<?>) geogebraElements.get(labelPoint2);
         CTSegment resul = CTSegment.make(p1, p2);
         String label = firstElementWithTag(el, "output").getAttribute("a0");
         resul.objectLabel = label;
@@ -372,11 +369,11 @@ class GeogebraCommandParser {
 
     protected void processLineCommand(Element el) {
         String label = getOutputArgument(el, 0);
-        MathObject[] params = getArrayOfParameters(el);
-        CTPoint A = (CTPoint) params[0]; // First argument is always a point
-        MathObject B = params[1];
-        if (B instanceof CTPoint) {// A line given by 2 points
-            registerGeogebraElement(label, CTLine.make(A, (CTPoint) B));
+        MathObject<?>[] params = getArrayOfParameters(el);
+        CTAbstractPoint<?> A = (CTAbstractPoint<?>) params[0]; // First argument is always a point
+        MathObject<?> B = params[1];
+        if (B instanceof CTAbstractPoint) {// A line given by 2 points
+            registerGeogebraElement(label, CTLine.make(A, (CTAbstractPoint<?>) B));
             return;
         }
         if (B instanceof HasDirection) {// Line parallel
@@ -386,15 +383,15 @@ class GeogebraCommandParser {
 
     protected void processRayCommand(Element el) {
         String label = getOutputArgument(el, 0);
-        MathObject[] params = getArrayOfParameters(el);
-        CTPoint A = (CTPoint) params[0]; // First argument is always a point
-        MathObject B = params[1];
-        if (B instanceof CTPoint) {// A line given by 2 points
-            registerGeogebraElement(label, CTRay.make(A, (CTPoint) B));
+        MathObject<?>[] params = getArrayOfParameters(el);
+        CTAbstractPoint<?> A = (CTAbstractPoint<?>) params[0]; // First argument is always a point
+        MathObject<?> B = params[1];
+        if (B instanceof CTAbstractPoint) {// A line given by 2 points
+            registerGeogebraElement(label, CTRay.make(A, (CTAbstractPoint<?>) B));
             return;
         }
         if (B instanceof HasDirection) {// Line parallel
-            registerGeogebraElement(label, CTRay.make(A, (HasDirection) B));
+            registerGeogebraElement(label, CTRay.makePointDir(A, (HasDirection) B));
         }
     }
 
@@ -402,14 +399,14 @@ class GeogebraCommandParser {
         String label = getOutputArgument(el, 0);
 
         MathObject[] params = getArrayOfParameters(el);
-        CTPoint A;
-        CTPoint B;
+        CTAbstractPoint<?> A;
+        CTAbstractPoint<?> B;
         if (params.length > 1) {
-            A = (CTPoint) params[0];
-            B = (CTPoint) params[1];
+            A = (CTAbstractPoint<?>) params[0];
+            B = (CTAbstractPoint<?>) params[1];
         } else {
             A = CTPoint.make(Point.origin());
-            B = (CTPoint) params[0];
+            B = (CTAbstractPoint<?>) params[0];
         }
 
         registerGeogebraElement(label, CTVector.makeVector(A, B));
@@ -418,10 +415,10 @@ class GeogebraCommandParser {
     protected void processOrthogonalLine(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] params = getArrayOfParameters(el);
-        CTPoint A = (CTPoint) params[0]; // First argument is always a point
+        CTAbstractPoint<?> A = (CTAbstractPoint<?>) params[0]; // First argument is always a point
         MathObject B = params[1];
         if (B instanceof HasDirection) {
-            registerGeogebraElement(label, CTLineOrthogonal.make(A, (HasDirection) B));
+            registerGeogebraElement(label, CTLineOrthogonal.makePointDir(A, (HasDirection) B));
         }
     }
 
@@ -429,8 +426,8 @@ class GeogebraCommandParser {
         String label = getOutputArgument(el, 0);
         MathObject[] params = getArrayOfParameters(el);
         if (params.length == 2) {// 2 points
-            CTPoint A = (CTPoint) params[0];
-            CTPoint B = (CTPoint) params[1];
+            CTAbstractPoint<?> A = (CTAbstractPoint<?>) params[0];
+            CTAbstractPoint<?> B = (CTAbstractPoint<?>) params[1];
             registerGeogebraElement(label, CTPerpBisector.make(A, B));
         }
         //TODO: Implement this. A perpendicular from a segment
@@ -444,9 +441,9 @@ class GeogebraCommandParser {
         String label = getOutputArgument(el, 0);
         MathObject[] params = getArrayOfParameters(el);
         if (params.length == 3) {// 3 points
-            CTPoint A = (CTPoint) params[0];
-            CTPoint B = (CTPoint) params[1];
-            CTPoint C = (CTPoint) params[2];
+            CTAbstractPoint<?> A = (CTAbstractPoint<?>) params[0];
+            CTAbstractPoint<?> B = (CTAbstractPoint<?>) params[1];
+            CTAbstractPoint<?> C = (CTAbstractPoint<?>) params[2];
             registerGeogebraElement(label, CTAngleBisector.make(A, B, C));
         }
     }
@@ -467,9 +464,9 @@ class GeogebraCommandParser {
         String[] outputs = getArrayOfOutputs(el);
         String label = outputs[0];
         MathObject[] objs = getArrayOfParameters(el);
-        CTPoint[] points = new CTPoint[objs.length];
+        CTAbstractPoint<?>[] points = new CTAbstractPoint<?>[objs.length];
         for (int i = 0; i < objs.length; i++) {
-            points[i] = (CTPoint) objs[i];
+            points[i] = (CTAbstractPoint<?>) objs[i];
         }
         CTPolygon resul = CTPolygon.make(points);
         registerGeogebraElement(label, resul);
@@ -496,10 +493,10 @@ class GeogebraCommandParser {
         String label = outputs[0];
 
         //First, add the 2 defining points
-        vertices.add((CTPoint) objs[0]);
-        vertices.add((CTPoint) objs[1]);
+        vertices.add((CTAbstractPoint<?>) objs[0]);
+        vertices.add((CTAbstractPoint<?>) objs[1]);
         for (int k = sides + 1; k <= 2 * sides - 2; k++) {
-            CTPoint P = CTPoint.make(new Point());//Should be computed in the constructor
+            CTAbstractPoint<?> P = CTPoint.make(new Point());//Should be computed in the constructor
             vertices.add(P);
             registerGeogebraElement(outputs[k], P);
             JMathAnimScene.logger.debug("Generated Point {}", outputs[k]);
@@ -526,9 +523,9 @@ class GeogebraCommandParser {
             String str1 = elInput.getAttribute("a1");
             String str2 = elInput.getAttribute("a2");
 
-            CTPoint arg0 = (CTPoint) parseArgument(str0);
-            CTPoint arg1 = (CTPoint) parseArgument(str1);
-            CTPoint arg2 = (CTPoint) parseArgument(str2);
+            CTAbstractPoint<?> arg0 = (CTAbstractPoint<?>) parseArgument(str0);
+            CTAbstractPoint<?> arg1 = (CTAbstractPoint<?>) parseArgument(str1);
+            CTAbstractPoint<?> arg2 = (CTAbstractPoint<?>) parseArgument(str2);
             Constructible resul = CTCircle.make3Points(arg0, arg1, arg2);
             registerGeogebraElement(label, resul);
             JMathAnimScene.logger.debug("Imported Geogebra Circle " + label + " by 3 points: " + arg0 + ", " + arg1 + ",  " + arg2);
@@ -596,8 +593,8 @@ class GeogebraCommandParser {
 
         long nonNullArgs = Arrays.stream(objs).filter(obj -> obj != null).count();
 
-        Constructible ob1 = (Constructible) objs[0];
-        Constructible ob2 = (Constructible) objs[1];
+        Constructible<?> ob1 = (Constructible<?> ) objs[0];
+        Constructible<?>  ob2 = (Constructible<?> ) objs[1];
         if (nonNullArgs > 2) {//Third parameter, intersection number
             //if a2="n" it computes only the n-th intersection point
             //For line(A,B)-circle, "1" stands for closest point to A, "2" for farthest

@@ -17,7 +17,6 @@
  */
 package com.jmathanim.Constructible.Lines;
 
-import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Coordinates;
@@ -29,22 +28,24 @@ import com.jmathanim.mathobjects.updateableObjects.Updateable;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTRay extends CTAbstractLine {
+public class CTRay extends CTAbstractLine<CTRay> {
 
     private final Ray rayToDraw;
     private HasDirection dir;
-    private final Coordinates A;
-    private final Coordinates B;
+
+    private CTRay(Coordinates<?> A, Coordinates<?> B) {
+        super(A, B);
+        rayToDraw = Ray.make(P1draw, P2draw);
+    }
 
     /**
      * Creates a new Constructible ray with given point and direction
      *
-     * @param A Starting point
-     * @param dir Direction, given by any object that implements the interface
-     * HasDirection
+     * @param A   Starting point
+     * @param dir Direction, given by any object that implements the interface HasDirection
      * @return The created object
      */
-    public static CTRay make(CTPoint A, HasDirection dir) {
+    public static CTRay makePointDir(Coordinates<?> A, HasDirection dir) {
         CTRay resul = new CTRay(A, A.add(dir.getDirection()));
         resul.dir = dir;
         resul.lineType = LineType.POINT_DIRECTION;
@@ -69,24 +70,16 @@ public class CTRay extends CTAbstractLine {
      * @param B Second point
      * @return The created object
      */
-    public static CTRay make(Coordinates A, Coordinates B) {
+    public static CTRay make(Coordinates<?> A, Coordinates<?> B) {
         CTRay resul = new CTRay(A, B);
         resul.lineType = LineType.POINT_POINT;
         resul.rebuildShape();
         return resul;
     }
 
-
-    private CTRay(Coordinates A, Coordinates B) {
-        super();
-        this.A = A;
-        this.B = B;
-        rayToDraw = Ray.make(A.getVec().copy(), B.getVec().copy());
-    }
-
     @Override
     public CTRay copy() {
-        CTRay copy = CTRay.make(A.getVec().copy(), B.getVec().copy());
+        CTRay copy = CTRay.make(getP1().getVec().copy(), getP2().getVec().copy());
         copy.copyStateFrom(this);
         return copy;
     }
@@ -98,18 +91,17 @@ public class CTRay extends CTAbstractLine {
 
     @Override
     public void rebuildShape() {
-        this.P1.copyCoordinatesFrom(A.getVec());
-        switch (lineType) {
-            case POINT_POINT:
-                this.P2.copyCoordinatesFrom(B.getVec());
-                break;
-            case POINT_DIRECTION:
-                this.P2.copyCoordinatesFrom(this.P1.add(dir.getDirection()));
-        }
         if (!isFreeMathObject()) {
-            rayToDraw.getP1().getVec().copyCoordinatesFrom(this.P1);
-            rayToDraw.getP2().getVec().copyCoordinatesFrom(this.P2);
+            this.P1draw.copyCoordinatesFrom(P1.getVec());
+            switch (lineType) {
+                case POINT_POINT:
+                    this.P2draw.copyCoordinatesFrom(P2.getVec());
+                    break;
+                case POINT_DIRECTION:
+                    this.P2draw.copyCoordinatesFrom(this.P1.add(dir.getDirection()));
+            }
         }
+        rayToDraw.rebuildShape();
     }
 
     @Override
@@ -121,23 +113,24 @@ public class CTRay extends CTAbstractLine {
     public void registerUpdateableHook(JMathAnimScene scene) {
         switch (lineType) {
             case POINT_POINT:
-                dependsOn(scene, this.A, this.B);
+                dependsOn(scene, this.getP1(), this.getP2());
                 break;
             case POINT_DIRECTION:
-                scene.registerUpdateable(this.A);
-                setUpdateLevel(this.A.getUpdateLevel() + 1);
+                scene.registerUpdateable(this.getP1());
+                setUpdateLevel(this.getP1().getUpdateLevel() + 1);
                 if (this.dir instanceof Updateable) {
                     scene.registerUpdateable((Updateable) this.dir);
-                    setUpdateLevel(Math.max(this.A.getUpdateLevel(), ((Updateable) this.dir).getUpdateLevel()) + 1);
+                    setUpdateLevel(Math.max(this.getP1().getUpdateLevel(), ((Updateable) this.dir).getUpdateLevel()) + 1);
                 }
         }
     }
-     @Override
+
+    @Override
     public Vec getHoldCoordinates(Vec coordinates) {
         Vec v1 = getDirection().normalize();
         Vec v2 = coordinates.minus(getP1());
         double dotProd = v1.dot(v2);
         dotProd = Math.max(dotProd, 0);
-        return getP1().add(v1.mult(dotProd));
+        return getP1().add(v1.mult(dotProd)).getVec();
     }
 }

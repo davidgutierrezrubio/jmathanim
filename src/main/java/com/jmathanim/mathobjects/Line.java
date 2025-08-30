@@ -97,7 +97,7 @@ public class Line extends AbstractShape<Line> implements HasDirection, shouldUdp
      * which always extend to the whole visible area. The border points are stored in bp1 and bp2
      *
      */
-    private void rebuildShape() {
+    public void rebuildShape() {
         Rect rect = camera.getMathView();
         double[] intersectLine = rect.intersectLine(p1.x, p1.y, p2.x, p2.y);
 

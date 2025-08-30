@@ -102,7 +102,7 @@ public class CTTransformedCircle extends CTAbstractCircle<CTTransformedCircle> {
     }
 
     private CTTransformedCircle(CTCircle circleToTransform, CTLine axis, CTPoint center, CTVector translation, Scalar angle) {
-        super();
+        super(Vec.to(0,0), Scalar.make(0));
         this.circleToTransform = circleToTransform;
         this.axis = axis;
         this.center = center;

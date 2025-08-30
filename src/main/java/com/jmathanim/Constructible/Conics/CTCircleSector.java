@@ -36,7 +36,7 @@ public class CTCircleSector extends CTAbstractCircle<CTCircleSector> {
     private final Vec B;
 
     private CTCircleSector(Coordinates<?> center, Coordinates<?> A, Coordinates<?> B) {
-        super();
+        super(center, Scalar.make(1));
         setCircleCenter(center);
         this.A = A.getVec();
         this.B = B.getVec();

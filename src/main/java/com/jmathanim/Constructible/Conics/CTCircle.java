@@ -46,9 +46,6 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
         super(abstractCircleCenter, abstractCircleRadius);
     }
 
-    protected CTCircle() {
-        super();
-    }
 
 
     /**
@@ -86,10 +83,8 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
      * @return Created constructible circle
      */
     public static CTCircle makeCenterRadius(Coordinates<?> center, Scalar radius) {
-        CTCircle resul = new CTCircle();
+        CTCircle resul = new CTCircle(center, radius);
         resul.circleType = CircleType.CENTER_RADIUS;
-        resul.setCircleCenter(center);
-        resul.setCircleRadius(radius);
         resul.rebuildShape();
         return resul;
     }
@@ -103,7 +98,7 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
      * @return Created constructible circle
      */
     public static CTCircle make3Points(Coordinates<?> A, Coordinates<?> B, Coordinates<?> C) {
-        CTCircle resul = new CTCircle();
+        CTCircle resul = new CTCircle(Vec.to(0,0), Scalar.make(0));
         resul.circleType = CircleType.THREE_POINTS;
         resul.A = A.getVec();
         resul.B = B.getVec();

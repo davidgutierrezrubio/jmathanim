@@ -96,5 +96,9 @@ public abstract class CTAbstractPoint<T extends CTAbstractPoint<T>> extends Cons
         return copy;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName()+"["+coordinatesOfPoint.x+", "+coordinatesOfPoint.y+"]";
 
+    }
 }

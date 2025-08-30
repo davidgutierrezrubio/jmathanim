@@ -20,7 +20,6 @@ package com.jmathanim.Constructible.Lines;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Coordinates;
-import com.jmathanim.mathobjects.Line;
 
 /**
  * A CTLine that is the angle bisector of 2 other lines or 3 points
@@ -36,7 +35,6 @@ public class CTAngleBisector extends CTAbstractLine<CTAngleBisector> {
     Vec A;
     Vec B;
     Vec C;
-    private final Line lineToDraw;
     Vec dirPoint;//The second point of the angle bisector. The first is B
 
     /**
@@ -55,12 +53,11 @@ public class CTAngleBisector extends CTAbstractLine<CTAngleBisector> {
     }
 
     private CTAngleBisector(Coordinates<?> A, Coordinates<?> B, Coordinates<?> C) {
-        super();
+        super(A,B);
         this.A = A.getVec();
         this.B = B.getVec();
         this.C = C.getVec();
         dirPoint = Vec.to(0,0);
-        lineToDraw = Line.make(B, dirPoint);
     }
 
     @Override
@@ -71,24 +68,20 @@ public class CTAngleBisector extends CTAbstractLine<CTAngleBisector> {
     }
 
     @Override
-    public Line getMathObject() {
-        return lineToDraw;
-    }
-
-    @Override
     public void rebuildShape() {
         switch (bisectorType) {
             case PointPointPoint:
                 Vec vdir = B.to(A).normalize().add(B.to(C).normalize());
                 dirPoint.copyCoordinatesFrom(B.add(vdir));
-                P1.copyCoordinatesFrom(B);
-                P2.copyCoordinatesFrom(dirPoint);
+                P1draw.copyCoordinatesFrom(B);
+                P2draw.copyCoordinatesFrom(dirPoint);
                 break;
             case LineLine:
                 //TODO: Implement
                 JMathAnimScene.logger.warn("CTAngleBisector Line-Line not implemente yet. Don't worry we're working at it!");
                 break;
         }
+        lineToDraw.rebuildShape();
     }
 
     @Override

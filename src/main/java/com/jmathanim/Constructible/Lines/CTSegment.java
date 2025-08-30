@@ -29,11 +29,13 @@ import com.jmathanim.mathobjects.hasScalarParameter;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class CTSegment extends CTAbstractLine<CTSegment> implements hasScalarParameter {
-
-    protected final Coordinates B;
-    protected final Coordinates A;
     private final Shape segmentToDraw;
 
+
+    private CTSegment(Coordinates<?> A, Coordinates<?> B) {
+        super(A, B);
+        segmentToDraw = Shape.segment(P1draw, P2draw);
+    }
 
     /**
      * Creates a Constructible segment between 2 points
@@ -48,16 +50,8 @@ public class CTSegment extends CTAbstractLine<CTSegment> implements hasScalarPar
         return resul;
     }
 
-    private CTSegment(Coordinates A, Coordinates B) {
-        super();
-        this.A = A;
-        this.B = B;
-        segmentToDraw = Shape.segment(this.A.getVec().copy(), this.B.getVec().copy());
-    }
-
     /**
-     * Creates a Constructible line from a Shape, considering only first and
-     * last point
+     * Creates a Constructible line from a Shape, considering only first and last point
      *
      * @param shape Shape object
      * @return The created object
@@ -68,7 +62,7 @@ public class CTSegment extends CTAbstractLine<CTSegment> implements hasScalarPar
 
     @Override
     public CTSegment copy() {
-        CTSegment copy = CTSegment.make(this.A.getVec().copy(), this.B.getVec().copy());
+        CTSegment copy = CTSegment.make(getP1().getVec().copy(), getP2().getVec().copy());
         copy.copyStateFrom(this);
         return copy;
     }
@@ -80,7 +74,7 @@ public class CTSegment extends CTAbstractLine<CTSegment> implements hasScalarPar
         double dotProd = v1.dot(v2);
         dotProd = Math.max(dotProd, 0);
         dotProd = Math.min(dotProd, getDirection().norm());
-        return getP1().add(v1.mult(dotProd));
+        return getP1().add(v1.mult(dotProd)).getVec();
     }
 
     @Override
@@ -90,8 +84,8 @@ public class CTSegment extends CTAbstractLine<CTSegment> implements hasScalarPar
 
     @Override
     public void rebuildShape() {
-        this.P1.copyCoordinatesFrom(this.A.getVec());
-        this.P2.copyCoordinatesFrom(this.B.getVec());
+        this.P1.copyCoordinatesFrom(getP1().getVec());
+        this.P2.copyCoordinatesFrom(getP2().getVec());
         if (!isFreeMathObject()) {
             segmentToDraw.get(0).getV().copyCoordinatesFrom(this.P1);
             segmentToDraw.get(1).getV().copyCoordinatesFrom(this.P2);
@@ -100,12 +94,12 @@ public class CTSegment extends CTAbstractLine<CTSegment> implements hasScalarPar
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, this.A, this.B);
+        dependsOn(scene, getP1(), getP2());
     }
 
     @Override
     public String toString() {
-        return String.format("CTSegment[" + this.A.getVec() + ", " + this.B.getVec() + "]");
+        return String.format("CTSegment[" + getP1().getVec() + ", " + getP2().getVec() + "]");
     }
 
     @Override

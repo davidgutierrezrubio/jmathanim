@@ -21,6 +21,7 @@ import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Coordinates;
+import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.Shape;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
@@ -53,6 +54,7 @@ public class CTSemiCircle extends CTAbstractCircle<CTSemiCircle>{
     }
 
     private CTSemiCircle(Coordinates<?> A, Coordinates<?> B) {
+        super(Vec.to(0,0), Scalar.make(0));
         this.A = A.getVec();
         this.B = B.getVec();
         arcTODraw = Shape.arc(PI);

@@ -22,6 +22,7 @@ import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Coordinates;
+import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.Stateable;
 
@@ -35,13 +36,11 @@ import static com.jmathanim.jmathanim.JMathAnimScene.logger;
  */
 public class CTCircleArc extends CTAbstractCircle<CTCircleArc> {
 
-    private final CTPoint center;
     private final CTPoint A;
     private final CTPoint B;
 
-    private CTCircleArc(CTPoint center, CTPoint A, CTPoint B) {
-        super();
-        this.center = center;
+    protected CTCircleArc(CTPoint center, CTPoint A, CTPoint B) {
+        super(center, Scalar.make(0));
         this.A = A;
         this.B = B;
     }
@@ -63,7 +62,7 @@ public class CTCircleArc extends CTAbstractCircle<CTCircleArc> {
 
     @Override
     public CTCircleArc copy() {
-        CTCircleArc copy = CTCircleArc.make(center.copy(), A.copy(), B.copy());
+        CTCircleArc copy = CTCircleArc.make(getCircleCenter().copy(), A.copy(), B.copy());
         copy.copyStateFrom(this);
         return copy;
     }
@@ -73,7 +72,7 @@ public class CTCircleArc extends CTAbstractCircle<CTCircleArc> {
         if (!(obj instanceof CTCircleArc)) return;
         CTCircleArc cnst = (CTCircleArc) obj;
         super.copyStateFrom(cnst);
-        this.center.copyStateFrom(cnst.center);
+        this.getCircleCenter().copyCoordinatesFrom(cnst.getCircleCenter());
         this.A.copyStateFrom(cnst.A);
         this.B.copyStateFrom(cnst.B);
         super.copyStateFrom(obj);
@@ -84,11 +83,11 @@ public class CTCircleArc extends CTAbstractCircle<CTCircleArc> {
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(
                 Vec.to(0, 0),
                 Vec.to(1, 0),
-                center.copy(),
+                getCircleCenter().copy(),
                 A.copy(), 1);
 
-        Vec v1 = center.to(A);
-        Vec v2 = center.to(B);
+        Vec v1 = getCircleCenter().to(A);
+        Vec v2 = getCircleCenter().to(B);
 
         if (!isFreeMathObject()) {
             double angle = v2.getAngle() - v1.getAngle();
@@ -104,7 +103,7 @@ public class CTCircleArc extends CTAbstractCircle<CTCircleArc> {
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, center, A, B);
+        dependsOn(scene, getCircleCenter(), A, B);
     }
 
     @Override

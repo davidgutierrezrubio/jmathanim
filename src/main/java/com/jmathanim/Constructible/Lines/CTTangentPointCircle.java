@@ -20,7 +20,6 @@ import com.jmathanim.Constructible.Conics.CTAbstractCircle;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Coordinates;
-import com.jmathanim.mathobjects.Line;
 
 /**
  *
@@ -28,8 +27,6 @@ import com.jmathanim.mathobjects.Line;
  */
 public final class CTTangentPointCircle extends CTAbstractLine<CTTangentPointCircle> {
 
-    private final Vec A;
-    private final Line lineToDraw;
     private final CTAbstractCircle<?> C;
     int numTangent;
 
@@ -38,9 +35,9 @@ public final class CTTangentPointCircle extends CTAbstractLine<CTTangentPointCir
      *
      * @param A Point to draw tangent
      * @param C Circle that the line should be tangent to
-     * @param numTangent Number of tangent, a number 1 o 2. 1 means to take the
+     * @param numTangent Number of tangent, a number 0 o 1. 0 means to take the
      * tangent to the right side if you locate at A looking at the center of the
-     * circle. 2 means the left one.
+     * circle. 1 means the left one.
      * @return The tangent line
      */
     public static CTTangentPointCircle make(Coordinates<?> A, CTAbstractCircle<?> C, int numTangent) {
@@ -50,23 +47,16 @@ public final class CTTangentPointCircle extends CTAbstractLine<CTTangentPointCir
     }
 
     private CTTangentPointCircle(Coordinates<?> A, CTAbstractCircle<?> C, int numTangent) {
-        super();
+        super(A,Vec.to(1,0));//Trivial line
         this.C = C;
-        this.A = A.getVec();
         this.numTangent = numTangent;
-        this.lineToDraw = Line.XAxis();//Trivial Line to initialize
     }
 
     @Override
     public CTTangentPointCircle copy() {
-        CTTangentPointCircle copy = CTTangentPointCircle.make(A.copy(), C.copy(), numTangent);
+        CTTangentPointCircle copy = CTTangentPointCircle.make(getP1().copy(), C.copy(), numTangent);
         copy.copyStateFrom(this);
         return copy;
-    }
-
-    @Override
-    public Line getMathObject() {
-        return lineToDraw;
     }
 
     @Override
@@ -83,7 +73,7 @@ public final class CTTangentPointCircle extends CTAbstractLine<CTTangentPointCir
 
         //Distance from A to center of circle
         double r = C.getCircleRadius().getValue();
-        double dist = A.to(C.getCircleCenter()).norm();
+        double dist = getP1().to(C.getCircleCenter()).norm();
         double p = dist / r;
         double h = Math.sqrt(p * p - 1);//If p<1 this returns Nan, and so xT and yT
 
@@ -98,15 +88,15 @@ public final class CTTangentPointCircle extends CTAbstractLine<CTTangentPointCir
         //we must use Constructible data, not shown data!
         AffineJTransform transform = AffineJTransform.createDirect2DIsomorphic(
                 Vec.to(0,0), Vec.to(p, 0),
-                C.getCircleCenter(), A,
+                C.getCircleCenter(), getP1(),
                 1);
 
         Vec v = Vec.to(xT, yT);
         v.applyAffineTransform(transform);
-        this.P2.copyCoordinatesFrom(v); //Tangent point
-        this.P1.copyCoordinatesFrom(this.A); //Exterior point
-        lineToDraw.getP1().copyCoordinatesFrom(this.P1);
-        lineToDraw.getP2().copyCoordinatesFrom(this.P2);
+        this.P2draw.copyCoordinatesFrom(v); //Tangent point
+        this.P1draw.copyCoordinatesFrom(this.getP1()); //Exterior point
+        lineToDraw.rebuildShape();
     }
+
 
 }

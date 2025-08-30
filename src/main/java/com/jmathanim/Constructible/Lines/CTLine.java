@@ -17,24 +17,24 @@
  */
 package com.jmathanim.Constructible.Lines;
 
-import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 
 /**
- *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class CTLine extends CTAbstractLine<CTLine> {
 
-    protected Line lineToDraw;
-    protected CTPoint A;
-    protected CTPoint B;
+    protected Vec A;
+    protected Vec B;
     HasDirection dir;
+
+    protected CTLine(Coordinates<?> A, Coordinates<?> B) {
+        super(A, B);
+    }
 
     /**
      * Creates a Constructible line from a Line
@@ -47,27 +47,19 @@ public class CTLine extends CTAbstractLine<CTLine> {
     }
 
     /**
-     * Creates a Constructible line from a point and any object that implements
-     * the HasDirection interface
+     * Creates a Constructible line from a point and any object that implements the HasDirection interface
      *
-     * @param A A point of the line
-     * @param dir A MathObject with a direction (Line, Ray, Arrow2D,
-     * CTSegment,CTLine...)
+     * @param A   A point of the line
+     * @param dir A MathObject with a direction (Line, Ray, Arrow2D, CTSegment,CTLine...)
      * @return The created object
      */
-    public static CTLine makePointDir(Coordinates A, HasDirection dir) {
-        CTLine resul = new CTLine(
-                CTPoint.make(A),
-                CTPoint.make(
-                        A.getVec().add(dir.getDirection())
-                )
-        );
+    public static CTLine makePointDir(Coordinates<?> A, HasDirection dir) {
+        CTLine resul = new CTLine(A, A.add(dir.getDirection()));
         resul.dir = dir;
         resul.lineType = LineType.POINT_DIRECTION;
         resul.rebuildShape();
         return resul;
     }
-
 
     /**
      * Creates a Constructible line given by 2 points
@@ -76,19 +68,11 @@ public class CTLine extends CTAbstractLine<CTLine> {
      * @param B Second point
      * @return The created object
      */
-    public static CTLine make(Coordinates A, Coordinates B) {
-        CTLine resul = new CTLine(CTPoint.make(A), CTPoint.make(B));
+    public static CTLine make(Coordinates<?> A, Coordinates<?> B) {
+        CTLine resul = new CTLine(A, B);
         resul.lineType = LineType.POINT_POINT;
         resul.rebuildShape();
         return resul;
-    }
-
-    protected CTLine(CTPoint A, CTPoint B) {
-        super();
-        this.A = A;
-        this.B = B;
-        lineType = LineType.POINT_POINT;
-        lineToDraw = Line.make(A.getMathObject().copy(), B.getMathObject().copy());
     }
 
     @Override
@@ -122,28 +106,24 @@ public class CTLine extends CTAbstractLine<CTLine> {
     public Vec getHoldCoordinates(Vec coordinates) {
         Vec v1 = getDirection().normalize();
         Vec v2 = coordinates.minus(getP1());
-        return(getP1().add(v1.mult(v1.dot(v2))));
+        return getP1().add(v1.mult(v1.dot(v2))).getVec();
     }
 
-    @Override
-    public MathObject getMathObject() {
-        return lineToDraw;
-    }
 
     @Override
     public void rebuildShape() {
-        switch (lineType) {
-            case POINT_POINT:
-                P1.copyCoordinatesFrom(A.getVec());
-                P2.copyCoordinatesFrom(B.getVec());
-                break;
-            case POINT_DIRECTION:
-                P1.copyCoordinatesFrom(A.getVec());
-                P2.copyCoordinatesFrom(A.getVec().add(dir.getDirection()));
-        }
         if (!isFreeMathObject()) {
-            lineToDraw.getP1().copyCoordinatesFrom(P1);
-            lineToDraw.getP2().copyCoordinatesFrom(P2);
+            switch (lineType) {
+//                case POINT_POINT:
+//                    P1draw.copyCoordinatesFrom(getP1().getVec());
+//                    P2draw.copyCoordinatesFrom(getP2().getVec());
+//                    break;
+                case POINT_DIRECTION:
+                    P2.copyCoordinatesFrom(P1.add(dir.getDirection()));
+//                    P1draw.copyCoordinatesFrom(getP1().getVec());
+//                    P2draw.copyCoordinatesFrom(getP1().getVec().add(dir.getDirection()));
+            }
+           super.rebuildShape();
         }
     }
 
@@ -155,7 +135,7 @@ public class CTLine extends CTAbstractLine<CTLine> {
                 dependsOn(scene, this.A, this.B);
                 break;
             case POINT_DIRECTION:
-                 dependsOn(scene, this.A);
+                dependsOn(scene, this.A);
                 if (this.dir instanceof Updateable) {
                     scene.registerUpdateable((Updateable) this.dir);
                     setUpdateLevel(Math.max(this.A.getUpdateLevel(), ((Updateable) this.dir).getUpdateLevel()) + 1);
