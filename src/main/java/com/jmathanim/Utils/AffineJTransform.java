@@ -17,9 +17,8 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Stateable;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
@@ -36,7 +35,7 @@ import org.apache.commons.math3.linear.RealMatrix;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class AffineJTransform implements Stateable {
+public class AffineJTransform  {
 
     /**
      * Matrix that stores the transform, with the following form: {{1, x, y, z},
@@ -81,20 +80,13 @@ public class AffineJTransform implements Stateable {
      * Sets the imagen of the origin by this transform In practice, it changes
      * the first row of the matrix transform
      *
-     * @param v Destiny point of origin (0,0,0), given by a vector
+     * @param coords Destiny point of origin (0,0,0), given by a vector
      */
-    public void setOriginImg(Vec v) {
+    public void setOriginImg(Coordinates<?> coords) {
+        Vec v=coords.getVec();
         setOriginImg(v.x, v.y, v.z);
     }
 
-    /**
-     * Overloaded method
-     *
-     * @param p Destiny point of origin (0,0,0)
-     */
-    public void setOriginImg(Point p) {
-        setOriginImg(p.v);
-    }
 
     /**
      * Overloaded method for 2D transformations. z coordinate is assumed 0.
@@ -121,19 +113,11 @@ public class AffineJTransform implements Stateable {
      * Sets the imagen of the first canonical vector (1,0,0) by this transform
      * In practice, it changes the second row of the matrix transform
      *
-     * @param v Destiny vector of (1,0,0)
+     * @param coords Destiny vector of (1,0,0)
      */
-    public void setV1Img(Vec v) {
+    public void setV1Img(Coordinates coords) {
+        Vec v=coords.getVec();
         setV1Img(v.x, v.y, v.z);
-    }
-
-    /**
-     * Overloaded method
-     *
-     * @param p Destiny vector of (1,0,0) given by a vector
-     */
-    public void setV1Img(Point p) {
-        setV1Img(p.v);
     }
 
     /**
@@ -161,20 +145,13 @@ public class AffineJTransform implements Stateable {
      * Sets the imagen of the second canonical vector (0,1,0) by this transform
      * In practice, it changes the third row of the matrix transform
      *
-     * @param v Destiny vector of (0,1,0)
+     * @param coords Destiny vector of (0,1,0)
      */
-    public void setV2Img(Vec v) {
+    public void setV2Img(Coordinates<?> coords) {
+        Vec v = coords.getVec();
         setV2Img(v.x, v.y, v.z);
     }
 
-    /**
-     * Overloaded method
-     *
-     * @param p Destiny vector of (0,1,0) given by a point
-     */
-    public void setV2Img(Point p) {
-        setV2Img(p.v);
-    }
 
     /**
      * Overloaded method
@@ -201,19 +178,11 @@ public class AffineJTransform implements Stateable {
      * Sets the imagen of the third canonical vector (0,0,1) by this transform
      * In practice, it changes the fourth row of the matrix transform
      *
-     * @param v Destiny vector of (0,0,1)
+     * @param coords Destiny vector of (0,0,1)
      */
-    public void setV3Img(Vec v) {
+    public void setV3Img(Coordinates<?> coords) {
+        Vec v = coords.getVec();
         setV3Img(v.x, v.y, v.z);
-    }
-
-    /**
-     * Overloaded method
-     *
-     * @param p Destiny vector of (0,0,1) given by a point
-     */
-    public void setV3Img(Point p) {
-        setV3Img(p.v);
     }
 
     /**
@@ -254,16 +223,16 @@ public class AffineJTransform implements Stateable {
      *
      * @param mObject Object to apply transform
      */
-    public void applyTransform(MathObject mObject) {
+    public void applyTransform(MathObject<?> mObject) {
         mObject.applyAffineTransform(this);
     }
 
-    public void applyTransformsToDrawingProperties(MathObject mObject) {
+    public void applyTransformsToDrawingProperties(MathObject<?> mObject) {
         // Determinant of the A_xy=2D-submatrix, to compute change in thickness
         // As Area changes in det(A_xy), we change thickness in the root square of
         // det(A_xy)
-        double det = matrix.getEntry(1, 1) * matrix.getEntry(2, 2) - matrix.getEntry(2, 1) * matrix.getEntry(1, 2);
         if (!mObject.getMp().isAbsoluteThickness()) {
+            double det = matrix.getEntry(1, 1) * matrix.getEntry(2, 2) - matrix.getEntry(2, 1) * matrix.getEntry(1, 2);
             final double sqrtDet = Math.sqrt(Math.abs(det));
             mObject.getMp().multThickness(Math.sqrt(sqrtDet));
         }
@@ -277,9 +246,9 @@ public class AffineJTransform implements Stateable {
      * @param obj Mathobject to transform
      * @return The transformed object
      */
-    public <T extends MathObject> T getTransformedObject(MathObject obj) {
+    public <T extends MathObject<?>> T getTransformedObject(MathObject<?> obj) {
 
-        T resul = obj.copy();
+        T resul = (T)obj.copy();
         applyTransform(resul);
         return resul;
     }
@@ -313,8 +282,8 @@ public class AffineJTransform implements Stateable {
      * @param b Destiny
      * @return A newAffineTransform with traslation
      */
-    public static AffineJTransform createTranslationTransform(Point a, Point b) {
-        return createTranslationTransform(new Vec(b.v.x - a.v.x, b.v.y - a.v.y, b.v.z - a.v.z));
+    public static AffineJTransform createTranslationTransform(Coordinates<?> a, Coordinates<?> b) {
+        return createTranslationTransform(a.to(b));
     }
 
     /**
@@ -323,7 +292,7 @@ public class AffineJTransform implements Stateable {
      * @param v The traslation vector
      * @return A newAffineTransform with traslation
      */
-    public static AffineJTransform createTranslationTransform(Vec v) {
+    public static AffineJTransform createTranslationTransform(Coordinates<?> v) {
         AffineJTransform resul = new AffineJTransform();
         resul.setOriginImg(v);
         return resul;
@@ -336,15 +305,15 @@ public class AffineJTransform implements Stateable {
      * @param angle Angle (in radians)
      * @return A new AffineTransform with the rotation
      */
-    public static AffineJTransform create2DRotationTransform(Point center, double angle) {
+    public static AffineJTransform create2DRotationTransform(Coordinates<?> center, double angle) {
         AffineJTransform resul = new AffineJTransform();
         final double sin = Math.sin(angle);
         final double cos = Math.cos(angle);
         resul.setV1Img(cos, sin);
         resul.setV2Img(-sin, cos);
 
-        AffineJTransform tr1 = AffineJTransform.createTranslationTransform(center.v.mult(-1));
-        AffineJTransform tr2 = AffineJTransform.createTranslationTransform(center.v);
+        AffineJTransform tr1 = AffineJTransform.createTranslationTransform(center.getVec().mult(-1));
+        AffineJTransform tr2 = AffineJTransform.createTranslationTransform(center.getVec());
 
         return tr1.compose(resul.compose(tr2));
     }
@@ -360,7 +329,7 @@ public class AffineJTransform implements Stateable {
      * 1=full rotation)
      * @return A new AffineTransform with the rotation
      */
-    public static AffineJTransform create3DRotationTransform(Point center, double anglex, double angley, double anglez, double alpha) {
+    public static AffineJTransform create3DRotationTransform(Coordinates<?> center, double anglex, double angley, double anglez, double alpha) {
         AffineJTransform resul = new AffineJTransform();
         final double sinz = Math.sin(alpha * anglez);
         final double cosz = Math.cos(alpha * anglez);
@@ -374,8 +343,8 @@ public class AffineJTransform implements Stateable {
         resul.setV2Img(sinz * cosy, sinz * siny * sinx + cosz * cosx, sinz * siny * cosx - cosz * sinx);
         resul.setV3Img(-siny, cosy * sinx, cosy * cosx);
         if (center != null) {
-            AffineJTransform tr1 = AffineJTransform.createTranslationTransform(center.v.mult(-1));
-            AffineJTransform tr2 = AffineJTransform.createTranslationTransform(center.v);
+            AffineJTransform tr1 = AffineJTransform.createTranslationTransform(center.getVec().mult(-1));
+            AffineJTransform tr2 = AffineJTransform.createTranslationTransform(center.getVec());
             return tr1.compose(resul.compose(tr2));
         } else {
             return resul;
@@ -397,7 +366,8 @@ public class AffineJTransform implements Stateable {
      * 1=full rotation)
      * @return A new AffineTransform with the rotation
      */
-    public static AffineJTransform create3DRotationTransform(Point A, Point B1, Point B2, Point C, Point D1, Point D2, double alpha) {
+    public static AffineJTransform create3DRotationTransform(
+            Coordinates<?> A, Coordinates<?> B1, Coordinates<?> B2, Coordinates<?> C, Coordinates<?> D1, Coordinates<?> D2, double alpha) {
         Vec v1 = A.to(B1).normalize();
         Vec v2 = v1.cross(A.to(B2)).normalize();
         Vec v3 = v1.cross(v2).normalize();
@@ -425,7 +395,7 @@ public class AffineJTransform implements Stateable {
      * @param scale Factor of scale. A value of 1 means no change.
      * @return The transform
      */
-    public static AffineJTransform createScaleTransform(Point center, double scale) {
+    public static AffineJTransform createScaleTransform(Coordinates<?> center, double scale) {
         return createScaleTransform(center, scale, scale, scale);
     }
 
@@ -438,7 +408,7 @@ public class AffineJTransform implements Stateable {
      * @param scaley y-scale factor
      * @return The transform
      */
-    public static AffineJTransform createScaleTransform(Point center, double scalex, double scaley) {
+    public static AffineJTransform createScaleTransform(Coordinates<?> center, double scalex, double scaley) {
         return createScaleTransform(center, scalex, scaley, 1);
     }
 
@@ -452,13 +422,13 @@ public class AffineJTransform implements Stateable {
      * @param scalez z-scale factor
      * @return The transform
      */
-    public static AffineJTransform createScaleTransform(Point center, double scalex, double scaley, double scalez) {
+    public static AffineJTransform createScaleTransform(Coordinates<?> center, double scalex, double scaley, double scalez) {
         AffineJTransform resul = new AffineJTransform();
         resul.setV1Img(scalex, 0, 0);
         resul.setV2Img(0, scaley, 0);
         resul.setV3Img(0, 0, scalez);
-        AffineJTransform tr1 = AffineJTransform.createTranslationTransform(center.v.mult(-1));
-        AffineJTransform tr2 = AffineJTransform.createTranslationTransform(center.v);
+        AffineJTransform tr1 = AffineJTransform.createTranslationTransform(center.getVec().mult(-1));
+        AffineJTransform tr2 = AffineJTransform.createTranslationTransform(center.getVec());
         return tr1.compose(resul.compose(tr2));
     }
 
@@ -476,11 +446,16 @@ public class AffineJTransform implements Stateable {
      * 1=full transform)
      * @return The transform
      */
-    public static AffineJTransform createDirect2DIsomorphic(Point originA, Point originB, Point destinyA, Point destinyB, double alpha) {
+    public static AffineJTransform createDirect2DIsomorphic(Coordinates<?> originA, Coordinates<?> originB, Coordinates<?> destinyA, Coordinates<?> destinyB, double alpha) {
         double angle;// Angle between AB and CD
-        Vec v1 = originA.to(originB);// Vector AB
-        Vec v2 = destinyA.to(destinyB);// Vector CD
-        Vec v3 = originA.to(destinyA);// Vector AC
+        Vec oA = originA.getVec().copy();
+        Vec oB = originB.getVec().copy();
+        Vec dA = destinyA.getVec().copy();
+        Vec dB = destinyB.getVec().copy();
+
+        Vec v1 = oA.to(oB);// Vector AB
+        Vec v2 = dA.to(dB);// Vector CD
+        Vec v3 = oA.to(dA);// Vector AC
         double d1 = v1.norm();
         double d2 = v2.norm();
         double dotProd = v1.dot(v2) / d1 / d2;
@@ -496,10 +471,10 @@ public class AffineJTransform implements Stateable {
             angle = -angle;
         }
         // The rotation part
-        AffineJTransform rotation = AffineJTransform.create2DRotationTransform(originA, angle * alpha);
+        AffineJTransform rotation = AffineJTransform.create2DRotationTransform(oA, angle * alpha);
 
         // The scale part
-        AffineJTransform scale = AffineJTransform.createScaleTransform(originA, (1 - alpha) + d2 / d1 * alpha);
+        AffineJTransform scale = AffineJTransform.createScaleTransform(oA, (1 - alpha) + d2 / d1 * alpha);
 
         // The traslation part
         AffineJTransform traslation = AffineJTransform.createTranslationTransform(v3.mult(alpha));
@@ -521,16 +496,19 @@ public class AffineJTransform implements Stateable {
      * 1=full transform)
      * @return The created transform
      */
-    public static AffineJTransform createDirect3DIsomorphic(Point A, Point B1, Point B2, Point C, Point D1, Point D2, double alpha) {
+    public static AffineJTransform createDirect3DIsomorphic(Coordinates<?> A, Coordinates<?> B1,
+                                                            Coordinates<?> B2, Coordinates<?> C,
+                                                            Coordinates<?> D1, Coordinates<?> D2,
+                                                            double alpha) {
         Vec vShift = A.to(C);
         double d = C.to(D1).norm() / A.to(B1).norm();
         // The rotation part
         //Compute the alpha, beta, gamma angles
 
         //Traslation origin axes to (0,0,0)...
-        AffineJTransform shift1=AffineJTransform.createTranslationTransform(A.v.mult(-1));
+        AffineJTransform shift1=AffineJTransform.createTranslationTransform(A.getVec().mult(-1));
         //And the inverse one
-        AffineJTransform shift2=AffineJTransform.createTranslationTransform(A.v);
+        AffineJTransform shift2=AffineJTransform.createTranslationTransform(A);
         AffineJTransform rotation = AffineJTransform.create3DRotationTransform(A, B1, B2, C, D1, D2, alpha);
 
         // The scale part
@@ -556,7 +534,9 @@ public class AffineJTransform implements Stateable {
      * 1 means the full transform done.
      * @return The transform
      */
-    public static AffineJTransform createInverse2DIsomorphic(Point originA, Point originB, Point destinyA, Point destinyB, double alpha) {
+    public static AffineJTransform createInverse2DIsomorphic(Coordinates originA, Coordinates originB,
+                                                             Coordinates destinyA, Coordinates destinyB,
+                                                             double alpha) {
         double angle;// Angle between AB and CD
         Vec v1 = originA.to(originB);// Vector AB
         Vec v2 = destinyB.to(destinyA);// Vector CD
@@ -597,9 +577,9 @@ public class AffineJTransform implements Stateable {
      * @param alpha Alpha parameter. 0 means unaltered, 1 fully reflection done
      * @return The reflection
      */
-    public static AffineJTransform createReflection(Point A, Point B, double alpha) {
-        Point E1 = new Point(1, 0);
-        Point E2 = new Point(-1, 0);
+    public static AffineJTransform createReflection(Coordinates A, Coordinates B, double alpha) {
+        Vec E1 = Vec.to(1, 0);
+        Vec E2 = Vec.to(-1, 0);
         AffineJTransform canonize = AffineJTransform.createDirect2DIsomorphic(A, B, E1, E2, 1);
         AffineJTransform invCanonize = canonize.getInverse();
         // A reflection from (1,0) to (-1,0) has a very simple form
@@ -617,9 +597,9 @@ public class AffineJTransform implements Stateable {
      * @param alpha parameter. 0 means unaltered, 1 fully reflection done
      * @return The reflection
      */
-    public static AffineJTransform createReflectionByAxis(Point E1, Point E2, double alpha) {
-        AffineJTransform canonize = AffineJTransform.createDirect2DIsomorphic(E1, E2, new Point(0, 0),
-                new Point(0, E2.v.norm()), 1);
+    public static AffineJTransform createReflectionByAxis(Coordinates E1, Coordinates E2, double alpha) {
+        AffineJTransform canonize = AffineJTransform.createDirect2DIsomorphic(E1, E2, Vec.to(0, 0),
+                Vec.to(0, E2.getVec().norm()), 1);
         AffineJTransform invCanonize = canonize.getInverse();
         // A reflection from (1,0) to (-1,0) has a very simple form
         AffineJTransform canonizedReflection = new AffineJTransform();
@@ -719,20 +699,28 @@ public class AffineJTransform implements Stateable {
      * @param lambda Lambda parameter. 0 means unaltered, 1 fully transform done
      * @return The transform
      */
-    public static AffineJTransform createAffineTransformation(Point A, Point B, Point C, Point D, Point E, Point F,
+    public static AffineJTransform createAffineTransformation(Coordinates A, Coordinates B, Coordinates C, Coordinates D, Coordinates E, Coordinates F,
             double lambda) {
+
+        Vec a=A.getVec();
+        Vec b=B.getVec();
+        Vec c=C.getVec();
+        Vec d=D.getVec();
+        Vec e=E.getVec();
+        Vec f=F.getVec();
+
         // First I create a transformation that map O,e1,e2 into A,B,C
         AffineJTransform tr1 = new AffineJTransform();
-        tr1.setOriginImg(A.copy());
-        tr1.setV1Img(A.to(B));
-        tr1.setV2Img(A.to(C));
+        tr1.setOriginImg(a);
+        tr1.setV1Img(a.to(b));
+        tr1.setV2Img(a.to(c));
         tr1 = tr1.getInverse();
 
         // Now I create a transformation that map O,e1,e2 into D,E,F
         AffineJTransform tr2 = new AffineJTransform();
-        tr2.setOriginImg(D.copy());
-        tr2.setV1Img(D.to(E));
-        tr2.setV2Img(D.to(F));
+        tr2.setOriginImg(d);
+        tr2.setV1Img(d.to(e));
+        tr2.setV2Img(d.to(f));
 
         // The transformation I am looking for is X-> tr2(tr^-1(X))
         AffineJTransform tr = tr1.compose(tr2);
@@ -751,19 +739,19 @@ public class AffineJTransform implements Stateable {
      * @return The transform
      */
     public static AffineJTransform createAffineTransformation(Rect r1, Rect r2, double lambda) {
-        Point A1 = r1.getDL();
-        Point A2 = r2.getDL();
-        Point B1 = r1.getDR();
-        Point B2 = r2.getDR();
-        Point C1 = r1.getUL();
-        Point C2 = r2.getUL();
+        Vec A1 = r1.getLowerLeft();
+        Vec A2 = r2.getLowerLeft();
+        Vec B1 = r1.getLowerRight();
+        Vec B2 = r2.getLowerRight();
+        Vec C1 = r1.getUpperLeft();
+        Vec C2 = r2.getUpperLeft();
         return createAffineTransformation(A1, B1, C1, A2, B2, C2, lambda);
     }
 
-    public static AffineJTransform createRotateScaleXYTransformation(Point A, Point B, Point C, Point D, Point E,
-            Point F, double lambda) {
+    public static AffineJTransform createRotateScaleXYTransformation(Coordinates A, Coordinates B, Coordinates C, Coordinates D, Coordinates E,
+            Coordinates F, double lambda) {
         // First map A,B into (0,0) and (1,0)
-        AffineJTransform tr1 = AffineJTransform.createDirect2DIsomorphic(A, B, new Point(0, 0), new Point(1, 0), 1);
+        AffineJTransform tr1 = AffineJTransform.createDirect2DIsomorphic(A, B, Vec.to(0, 0), Vec.to(1, 0), 1);
 
         // Now I create a transformation that adjust the y-scale, proportionally
         // This transform will be applied inversely too
@@ -779,17 +767,6 @@ public class AffineJTransform implements Stateable {
 
     public void copyFrom(AffineJTransform resul) {
         this.setMatrix(resul.getMatrix().copy());
-    }
-
-    @Override
-    public void saveState() {
-        matrixBackup = matrix.copy();
-
-    }
-
-    @Override
-    public void restoreState() {
-        matrix = matrixBackup;
     }
 
 }

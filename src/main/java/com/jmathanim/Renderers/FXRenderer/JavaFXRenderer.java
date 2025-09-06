@@ -29,10 +29,7 @@ import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.jmathanim.LogUtils;
-import com.jmathanim.mathobjects.AbstractJMImage;
-import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
@@ -54,7 +51,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Affine;
-import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 
@@ -76,20 +72,19 @@ public class JavaFXRenderer extends Renderer {
 
     private static final double XMIN_DEFAULT = -2;
     private static final double XMAX_DEFAULT = 2;
-
-    private final HashMap<JMPath,Path> storedPaths;
-
     private static final double MIN_THICKNESS = .2d;
-
-    public final FXPathUtils fXPathUtils;
+    private static final double THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH=5000;
+    public final JavaFXRendererUtils fXRendererUtilsJava;
     protected final ArrayList<Node> fxnodes;
     protected final ArrayList<Node> debugFXnodes;
+    protected final ArrayList<Node> javaFXNodes;
+    private final HashMap<JMPath, Path> storedPaths;
     private final HashMap<String, Image> images;
     public Camera camera;
     public Camera fixedCamera;
-    public double FxCamerarotateX = 0;
-    public double FxCamerarotateY = 0;
-    public double FxCamerarotateZ = 0;
+//    public double FxCamerarotateX = 0;
+//    public double FxCamerarotateY = 0;
+//    public double FxCamerarotateZ = 0;
     public double correctionThickness;
     protected PerspectiveCamera fxCamera;
     protected Scene fxScene;
@@ -105,12 +100,13 @@ public class JavaFXRenderer extends Renderer {
         super(parentScene);
         fxnodes = new ArrayList<>();
         debugFXnodes = new ArrayList<>();
+        javaFXNodes = new ArrayList<>();
         images = new HashMap<>();
-        storedPaths=new HashMap<>();
-        fXPathUtils = new FXPathUtils();
+        storedPaths = new HashMap<>();
+        fXRendererUtilsJava = new JavaFXRendererUtils();
         camera = new Camera(scene, config.mediaW, config.mediaH);
         fixedCamera = new Camera(scene, config.mediaW, config.mediaH);
-        correctionThickness = config.mediaW * 1d / 1066;//Correction factor for thickness
+        correctionThickness = config.mediaW * 1d / THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH;//Correction factor for thickness
 
     }
 
@@ -251,8 +247,8 @@ public class JavaFXRenderer extends Renderer {
 
             fxCamera.getTransforms().clear();
             fxCamera.getTransforms().addAll(new Translate(config.mediaW / 2, config.mediaH / 2, 0),
-                    new Rotate(FxCamerarotateX, Rotate.X_AXIS), new Rotate(FxCamerarotateY, Rotate.Y_AXIS),
-                    new Rotate(FxCamerarotateZ, Rotate.Z_AXIS),
+//                    new Rotate(FxCamerarotateX, Rotate.X_AXIS), new Rotate(FxCamerarotateY, Rotate.Y_AXIS),
+//                    new Rotate(FxCamerarotateZ, Rotate.Z_AXIS),
                     new Translate(-config.mediaW / 2, -config.mediaH / 2, 0));
 
             // Add all elements
@@ -261,6 +257,7 @@ public class JavaFXRenderer extends Renderer {
                 showDebugFrame(frameCount, 1d * frameCount / config.fps);
             }
             groupDebug.getChildren().addAll(debugFXnodes);
+            groupDebug.getChildren().addAll(javaFXNodes);
             if (config.drawShadow) {
                 group.setEffect(dropShadow);
             }
@@ -279,6 +276,8 @@ public class JavaFXRenderer extends Renderer {
         } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
+        fxnodes.clear();
+        debugFXnodes.clear();
         return bi;
     }
 
@@ -308,12 +307,13 @@ public class JavaFXRenderer extends Renderer {
 
     @Override
     public void clearAndPrepareCanvasForAnotherFrame() {
-        fxnodes.clear();
-        debugFXnodes.clear();
+        super.clearAndPrepareCanvasForAnotherFrame();
+//        fxnodes.clear();
+//        debugFXnodes.clear();
     }
 
     @Override
-    public void drawPath(Shape mobj) {
+    public void drawPath(AbstractShape<?> mobj) {
         Camera cam = mobj.getCamera();
         if (cam == null) {
             cam = camera;
@@ -322,7 +322,7 @@ public class JavaFXRenderer extends Renderer {
     }
 
     @Override
-    public void drawPath(Shape mobj, Camera cam) {
+    public void drawPath(AbstractShape<?> mobj, Vec shiftVector, Camera cam) {
         if (cam == null) {
             //If the object has not a camera assigned yet, set it to default
             cam = getCamera();
@@ -348,20 +348,21 @@ public class JavaFXRenderer extends Renderer {
 //                path.getTransforms().add(new Scale(1, -1));
 //                path.getTransforms().add(FXPathUtils.screenToCamAffineTransfrom(mobj.getCamera()));
 //            } else {
-                path = FXPathUtils.createFXPathFromJMPath(objectPath, cam);
+            path = JavaFXRendererUtils.createFXPathFromJMPath(objectPath, shiftVector,cam);
 //            }
             applyDrawingStyles(path, mobj);
             applyRendererEffects(path, mobj.getRendererEffects());
             path.setClip(new Rectangle(cam.upperLeftX, cam.upperLeftY, cam.screenWidth, cam.screenHeight));
             fxnodes.add(path);
         }
-        if (!"".equals(mobj.getDebugText())) {
-            debugText(mobj.getDebugText(), mobj.getCenter().v);
+        String debugText = MediatorMathObject.getDebugText(mobj);
+        if (!"".equals(debugText)) {
+            debugText(debugText, mobj.getCenter());
         }
     }
 
 
-    private void applyDrawingStyles(Path path, Shape mobj) {
+    private void applyDrawingStyles(Path path, AbstractShape<?> mobj) {
 
         path.setStrokeLineCap(mobj.getMp().getLineCap());
         path.setStrokeLineJoin(mobj.getMp().getLineJoin());
@@ -418,10 +419,19 @@ public class JavaFXRenderer extends Renderer {
     }
 
     public double computeThickness(MathObject mobj) {
+
         Camera cam = (mobj.getMp().isAbsoluteThickness() ? fixedCamera : camera);
         //We use the correction factor mediaW/1066 in order to obtain the same apparent thickness
         //regardless of the resolution chosen. The reference value 1066 is the width in the preview settings
-        return Math.max(mobj.getMp().getThickness() / cam.getMathView().getWidth() * correctionThickness, MIN_THICKNESS);
+//        double th1 = Math.max(mobj.getMp().getThickness() / cam.getMathView().getWidth() * correctionThickness, MIN_THICKNESS);
+
+        double width = cam.getMathView().getWidth();
+        double th = Math.max(
+                mobj.getMp().getThickness() * correctionThickness / width * 4d
+                , MIN_THICKNESS);
+        return th;
+
+
 //        return Math.max(mobj.getMp().getThickness() / cam.getMathView().getWidth() * 2.5d, MIN_THICKNESS);
     }
 
@@ -429,33 +439,38 @@ public class JavaFXRenderer extends Renderer {
     public double MathWidthToThickness(double w) {
 //        return mathScalar * config.mediaW / (xmax - ymin);
 //        return camera.mathToScreen(w) / 1.25 * camera.getMathView().getWidth() / 2d;
-        return w * 1066;
+//        return w * 1066;
+        return w*THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH/camera.getMathView().getWidth();
     }
 
     @Override
     public double ThicknessToMathWidth(double th) {
-        return th / 1066;
+
+        return th*fixedCamera.getMathView().getWidth()/ THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH;
+
+//        return th / 1066;
+
     }
 
     @Override
-    public double ThicknessToMathWidth(MathObject obj) {
+    public double ThicknessToMathWidth(MathObject<?> obj) {
         Camera cam = (obj.getMp().isAbsoluteThickness() ? fixedCamera : camera);
-        return obj.getMp().getThickness() / 1066 * 4 / cam.getMathView().getWidth();
+
+//        return obj.getMp().getThickness() / 1066 * 4 / cam.getMathView().getWidth();
+        double th= obj.getMp().getThickness();
+        return th*cam.getMathView().getWidth()/ THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH;
     }
 
     @Override
-    public void drawAbsoluteCopy(Shape sh, Vec anchor) {
-        Shape shape = sh.copy();
+    public void drawAbsoluteCopy(AbstractShape<?> sh, Vec anchor) {
         Vec vFixed = defaultToFixedCamera(anchor);
-        shape.shift(vFixed.minus(anchor));
-        drawPath(shape, fixedCamera);
+        drawPath(sh, vFixed.minus(anchor),fixedCamera);
     }
 
     /**
-     * Returns equivalent position from default camera to fixed camera. For
-     * example if you pass the Vec (1,1) to this method, it will return a new
-     * set of coordinates so that, when rendered with the fixed camera, appears
-     * in the same position as (1,1) with default camera.
+     * Returns equivalent position from default camera to fixed camera. For example if you pass the Vec (1,1) to this
+     * method, it will return a new set of coordinates so that, when rendered with the fixed camera, appears in the same
+     * position as (1,1) with default camera.
      *
      * @param v Vector that marks the position
      * @return The coordinates to be used with the fixed camera
@@ -512,12 +527,12 @@ public class JavaFXRenderer extends Renderer {
 
         imageView.setOpacity(obj.getMp().getDrawColor().getAlpha());
 
-        Affine camToScreen = FXPathUtils.camToScreenAffineTransform(cam);
+        Affine camToScreen = JavaFXRendererUtils.camToScreenAffineTransform(cam);
         imageView.getTransforms().add(camToScreen);
 
 //        //Swap y coordinate
         imageView.getTransforms().add(new Scale(1, -1));
-        imageView.getTransforms().add(FXPathUtils.affineJToAffine(obj.getCurrentViewTransform()));
+        imageView.getTransforms().add(JavaFXRendererUtils.affineJToAffine(obj.getCurrentViewTransform()));
         imageView.getTransforms().add(new Scale(1, -1));
         fxnodes.add(imageView);
     }
@@ -541,6 +556,17 @@ public class JavaFXRenderer extends Renderer {
         debugFXnodes.add(rectangle);
         debugFXnodes.add(t);
     }
+
+    public void addJavaFXNode(Node node) {
+        javaFXNodes.add(node);
+
+    }
+
+
+    public void removeJavaFXNode(Node node) {
+        javaFXNodes.remove(node);
+    }
+
 
     protected void showDebugFrame(int numFrame, double time) {
         Text t = new Text("Frame: " + numFrame + " (" + String.format("%.2f", time) + "s)");

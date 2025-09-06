@@ -15,18 +15,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.jmathanim.Animations;
+package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Utils.OrientationType;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 
 /**
  * Transforms one object to another, animating a flip effect
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class FlipTransform extends AnimationWithEffects {
+public class FlipTransform extends TransformStrategy<MathObject<?>> {
 
 //    /**
 //     * Flip type
@@ -46,11 +46,11 @@ public class FlipTransform extends AnimationWithEffects {
 //        BOTH
 //    }
     private final OrientationType flipType;
-    private final MathObject objOrig;
-    private final MathObject objDst;
-    private MathObject intermediateObject;
-    private Point origCenter;
-    private Point dstCenter;
+    private final MathObject<?> objOrig;
+    private final MathObject<?> objDst;
+    private MathObject<?> intermediateObject;
+    private Vec origCenter;
+    private Vec dstCenter;
 
     /**
      * Creates a new FlipTransform animation, that flips the original object
@@ -63,7 +63,7 @@ public class FlipTransform extends AnimationWithEffects {
      * @param objOrig Original object
      * @param objDst Destiny object
      */
-    public FlipTransform(double runTime, OrientationType flipType, MathObject objOrig, MathObject objDst) {
+    public FlipTransform(double runTime, OrientationType flipType, MathObject<?> objOrig, MathObject<?> objDst) {
         super(runTime);
         setDebugName("FlipTransform");
         this.flipType = flipType;
@@ -80,7 +80,7 @@ public class FlipTransform extends AnimationWithEffects {
      * @param objDst Destiny object
      * @return The animation to play with the playAnim method
      */
-    public static FlipTransform HFlip(double runTime, MathObject objOrig, MathObject objDst) {
+    public static FlipTransform HFlip(double runTime, MathObject<?> objOrig, MathObject<?> objDst) {
         return new FlipTransform(runTime, OrientationType.HORIZONTAL, objOrig, objDst);
     }
 
@@ -92,7 +92,7 @@ public class FlipTransform extends AnimationWithEffects {
      * @param objDst Destiny object
      * @return The animation to play with the playAnim method
      */
-    public static FlipTransform VFlip(double runTime, MathObject objOrig, MathObject objDst) {
+    public static FlipTransform VFlip(double runTime, MathObject<?> objOrig, MathObject<?> objDst) {
         return new FlipTransform(runTime, OrientationType.VERTICAL, objOrig, objDst);
     }
 
@@ -104,7 +104,7 @@ public class FlipTransform extends AnimationWithEffects {
      * @param objDst Destiny object
      * @return The animation to play with the playAnim method
      */
-    public static FlipTransform Flip(double runTime, MathObject objOrig, MathObject objDst) {
+    public static FlipTransform Flip(double runTime, MathObject<?> objOrig, MathObject<?> objDst) {
         return new FlipTransform(runTime, OrientationType.BOTH, objOrig, objDst);
     }
 
@@ -174,18 +174,19 @@ public class FlipTransform extends AnimationWithEffects {
 
     private double[] computeScale(double lt) {
         double[] scales = new double[2];
+        double ltScaled = lt < .5 ? 1 - 2 * lt : 2 * lt - 1;
         switch (flipType) {
             case HORIZONTAL:
-                scales[0] = (lt < .5 ? 1 - 2 * lt : 2 * lt - 1);
+                scales[0] = ltScaled;
                 scales[1] = 1;
                 break;
             case VERTICAL:
                 scales[0] = 1;
-                scales[1] = (lt < .5 ? 1 - 2 * lt : 2 * lt - 1);
+                scales[1] = ltScaled;
                 break;
             case BOTH:
-                scales[0] = (lt < .5 ? 1 - 2 * lt : 2 * lt - 1);
-                scales[1] = (lt < .5 ? 1 - 2 * lt : 2 * lt - 1);
+                scales[0] = ltScaled;
+                scales[1] = ltScaled;
 
                 break;
         }

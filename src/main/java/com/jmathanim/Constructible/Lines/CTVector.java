@@ -18,21 +18,19 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Points.CTPoint;
+import com.jmathanim.Enum.ArrowType;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Coordinates;
 
 /**
  * A constructible vector, which is draw as an Arrow2D MathObject
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTVector extends CTAbstractLine {
+public class CTVector extends CTAbstractLine<CTVector> {
 
     protected final Arrow arrowToDraw;
-    protected final CTPoint A;
-    protected final CTPoint B;
 
     /**
      * Creates a new CTVector from a Vec object. The created vector is located
@@ -42,7 +40,7 @@ public class CTVector extends CTAbstractLine {
      * @return The created object
      */
     public static CTVector makeVector(Vec vector) {
-        CTVector resul = new CTVector(CTPoint.make(Point.origin()), CTPoint.make(Point.at(vector.x, vector.y)));
+        CTVector resul = new CTVector(CTPoint.at(0,0), CTPoint.at(vector.x, vector.y));
         resul.rebuildShape();
         return resul;
     }
@@ -54,40 +52,23 @@ public class CTVector extends CTAbstractLine {
      * @param B Destiny
      * @return The created object
      */
-    public static CTVector makeVector(CTPoint A, CTPoint B) {
+    public static CTVector makeVector(Coordinates<?> A, Coordinates<?>  B) {
         CTVector resul = new CTVector(A, B);
         resul.rebuildShape();
         return resul;
     }
 
-    /**
-     * Creates a new CTVector from A to B.
-     *
-     * @param A Origin
-     * @param B Destiny
-     * @return The created object
-     */
-    public static CTVector makeVector(Point A, Point B) {
-        return makeVector(CTPoint.make(A), CTPoint.make(B));
-    }
 
-    private CTVector(CTPoint A, CTPoint B) {
-        super();
-        this.A = A;
-        this.B = B;
-        arrowToDraw = Arrow.make(this.A.getMathObject().copy(), this.B.getMathObject().copy(),Arrow.ArrowType.ARROW1);
+    private CTVector(Coordinates<?>  A, Coordinates<?>  B) {
+        super(A,B);
+        arrowToDraw = Arrow.make(this.P1draw, this.P2draw, ArrowType.ARROW1);
     }
 
     @Override
     public CTVector copy() {
-        CTVector copy = CTVector.makeVector(this.A.copy(), this.B.copy());
+        CTVector copy = CTVector.makeVector(this.getP1().copy(), this.getP2().copy());
         copy.copyStateFrom(this);
         return copy;
-    }
-
-    @Override
-    public Vec getDirection() {
-        return A.to(B);
     }
 
     @Override
@@ -97,12 +78,12 @@ public class CTVector extends CTAbstractLine {
 
     @Override
     public void rebuildShape() {
-        this.P1.v.copyFrom(this.A.v);
-        this.P2.v.copyFrom(this.B.v);
+        super.rebuildShape();
         if (!isFreeMathObject()) {
-            arrowToDraw.getStart().v.copyFrom(this.P1.v);
-            arrowToDraw.getEnd().v.copyFrom(this.P2.v);
+            arrowToDraw.getStart().copyCoordinatesFrom(this.P1);
+            arrowToDraw.getEnd().copyCoordinatesFrom(this.P2);
         }
+        arrowToDraw.rebuildShape();
     }
 
     @Override
@@ -112,17 +93,12 @@ public class CTVector extends CTAbstractLine {
     }
 
     @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, this.A, this.B);
-    }
-
-    @Override
     public Vec getHoldCoordinates(Vec coordinates) {
         Vec v1 = getDirection().normalize();
-        Vec v2 = coordinates.minus(getP1().v);
+        Vec v2 = coordinates.minus(getP1());
         double dotProd = v1.dot(v2);
         dotProd = Math.max(dotProd, 0);
         dotProd = Math.min(dotProd, getDirection().norm());
-        return getP1().v.add(v1.mult(dotProd));
+        return getP1().add(v1.mult(dotProd)).getVec();
     }
 }

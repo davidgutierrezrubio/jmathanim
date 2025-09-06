@@ -20,57 +20,54 @@ package com.jmathanim.Animations.Strategies.Transform;
 import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.OptimizePathsStrategy;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Shape;
 
 /**
- *
  * @author David
  */
-public abstract class TransformStrategy extends AnimationWithEffects {
+public abstract class TransformStrategy<T extends MathObject<?>> extends AnimationWithEffects {
 
+    protected boolean destinyWasAddedAtFirst, originWasAddedAtFirst;
     OptimizePathsStrategy optimizeStrategy = null;
-    private MathObject origin;
-    private MathObject destiny;
-    private MathObject intermediate;
-    private boolean destinyWasAddedAtFirst, originWasAddedAtFirst;
+    private T origin;
+    private T destiny;
+    private T intermediate;
 
     public TransformStrategy(double runTime) {
         super(runTime);
     }
 
     @Override
-    public <T extends MathObject> T getIntermediateObject() {
-        return (T) intermediate;
+    public T getIntermediateObject() {
+        return intermediate;
     }
 
-    public <T extends MathObject> T  getOriginObject() {
-        return (T) origin;
+    public T getOriginObject() {
+        return origin;
     }
 
-    public <T extends MathObject> T  getDestinyObject() {
-        return (T) destiny;
+    public T getDestinyObject() {
+        return destiny;
     }
 
-    public void setOrigin(MathObject origin) {
+    public void setOrigin(T origin) {
         this.origin = origin;
     }
 
-    public void setDestiny(MathObject destiny) {
+    public void setDestiny(T destiny) {
         this.destiny = destiny;
     }
 
-    public void setIntermediate(MathObject intermediate) {
+    public void setIntermediate(T intermediate) {
         this.intermediate = intermediate;
     }
 
     /**
-     * Sets the optimization strategy.If null, the animation will try to find
-     * the most suitable optimization.
+     * Sets the optimization strategy.If null, the animation will try to find the most suitable optimization.
      *
      * @param strategy Optimization strategy
      * @return This object
      */
-    public TransformStrategy setOptimizationStrategy(OptimizePathsStrategy strategy) {
+    public TransformStrategy<T> setOptimizationStrategy(OptimizePathsStrategy strategy) {
         optimizeStrategy = strategy;
         return this;
     }
@@ -87,21 +84,33 @@ public abstract class TransformStrategy extends AnimationWithEffects {
     public void cleanAnimationAt(double t) {
         double lt = getLT(t);
         if (lt == 0) {
-            removeObjectsFromScene(getIntermediateObject(), getDestinyObject());
-            if (originWasAddedAtFirst) {
-                addObjectsToscene(getOriginObject());
-            } else {
-                removeObjectsFromScene(getOriginObject());
-            }
+            cleanAt0();
             return;
         }
         if (lt == 1) {
-            removeObjectsFromScene(getIntermediateObject(), getOriginObject());
-            addObjectsToscene(getDestinyObject());
+            cleanAt1();
             return;
         }
+        cleanAtIntermediate();
+    }
+
+    protected void cleanAtIntermediate() {
         removeObjectsFromScene(getDestinyObject(), getOriginObject());
         addObjectsToscene(getIntermediateObject());
+    }
+
+    protected void cleanAt1() {
+        removeObjectsFromScene(getIntermediateObject(), getOriginObject());
+        addObjectsToscene(getDestinyObject());
+    }
+
+    protected void cleanAt0() {
+        removeObjectsFromScene(getIntermediateObject(), getDestinyObject());
+        if (originWasAddedAtFirst) {
+            addObjectsToscene(getOriginObject());
+        } else {
+            removeObjectsFromScene(getOriginObject());
+        }
     }
 
     @Override

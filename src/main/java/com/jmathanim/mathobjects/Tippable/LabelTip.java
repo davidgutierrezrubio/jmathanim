@@ -16,15 +16,13 @@
  */
 package com.jmathanim.mathobjects.Tippable;
 
-import com.jmathanim.Styling.Stylable;
-import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.LatexStyle;
+import com.jmathanim.Enum.AnchorType;
+import com.jmathanim.Enum.RotationType;
+import com.jmathanim.Enum.SlopeDirectionType;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Scalar;
-import com.jmathanim.mathobjects.Shape;
-import com.jmathanim.mathobjects.Text.LaTeXMathObject;
-import com.jmathanim.mathobjects.hasArguments;
+import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.Text.AbstractLatexMathObject;
+import com.jmathanim.mathobjects.Text.LatexMathObject;
 import com.jmathanim.mathobjects.updaters.Updater;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
@@ -34,21 +32,23 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class LabelTip extends AbstractTippableObject implements hasArguments {
+public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArguments {
 
 
-    private final LaTeXMathObject laTeXMathObject;
+    private final AbstractLatexMathObject<?> laTeXMathObject;
 
-    protected LabelTip(Shape shape, LaTeXMathObject tipLabel, Anchor.Type anchor, double locationParameter) {
-        super(shape, tipLabel, Anchor.getAnchorPoint(tipLabel, anchor), locationParameter);
+    protected LabelTip(AbstractShape<?> shape, AbstractLatexMathObject<?> tipLabel, AnchorType anchor, double locationParameter) {
+        super(shape, tipLabel, locationParameter);
+        setAnchor(anchor);
         laTeXMathObject = tipLabel;
         correctionAngle = 0;
         distanceToShape = .25 * tipLabel.getHeight();
     }
 
 
-    protected LabelTip(Shape shape, LaTeXMathObject tipObject, Point anchorPoint, double locationParameter) {
-        super(shape, tipObject, anchorPoint, locationParameter);
+    protected LabelTip(AbstractShape<?> shape, AbstractLatexMathObject<?> tipObject, Coordinates<?> anchorPoint, double locationParameter) {
+        super(shape, tipObject, locationParameter);
+        setAnchorPoint(anchorPoint);
         laTeXMathObject = tipObject;
         correctionAngle = 0;
         distanceToShape = .25 * tipObject.getHeight();
@@ -56,92 +56,95 @@ public class LabelTip extends AbstractTippableObject implements hasArguments {
 
     /**
      * Overloaded method. Creates a LaTeX label from a String to the given Shape
-     * @param shape Shape to add label
+     *
+     * @param shape             Shape to add label
      * @param locationParameter Location parameter where to put the label, from 0 to 1
-     * @param latexText Text to display. A LaTeX String.
-     * @param upSide If true, label will be located in the upper side of the shape. In this context, upper means
-     *               a 90 degrees counterclockwise deviation from positive tangent. If false, label will be located
-     *               in the opposite side.
+     * @param latexText         Text to display. A LaTeX String.
+     * @param upSide            If true, label will be located in the upper side of the shape. In this context, upper
+     *                          means a 90 degrees counterclockwise deviation from positive tangent. If false, label
+     *                          will be located in the opposite side. You should set this to false if you want labels in
+     *                          the exterior or counterclockwise shapes like Shape.circle() for example.
      * @return The LabelTip object created
      */
-    public static LabelTip makeLabelTip(Shape shape, double locationParameter, String latexText, boolean upSide) {
-        LabelTip resul = makeLabelTip(shape, locationParameter, LaTeXMathObject.make(latexText), upSide);
+    public static LabelTip makeLabelTip(AbstractShape<?> shape, double locationParameter, String latexText, boolean upSide) {
+        LabelTip resul = makeLabelTip(shape, locationParameter, LatexMathObject.make(latexText), upSide);
         if (!upSide) {
-            resul.setSlopeDirection(AbstractTippableObject.SlopeDirectionType.NEGATIVE)
-                    .setRotationAngle(PI)
-                    .setAnchor(Anchor.Type.UPPER);
+            resul.setSlopeDirection(SlopeDirectionType.NEGATIVE)
+                    .setAnchor(AnchorType.LOWER);
         }
-        resul.rebuildShape();
+        resul.correctionAngle=0;
+        resul.setRotationType(RotationType.SMART);
         return resul;
     }
 
     /**
-     /**
-     * Overloaded method. Creates a LaTeX label from a String to the given Shape. Label is located in the upper side
+     * /** Overloaded method. Creates a LaTeX label from a String to the given Shape. Label is located in the upper side
      * of the Shape (90 degrees counterclockwise deviation from positive tangent)
-     * @param shape Shape to add label
+     *
+     * @param shape             Shape to add label
      * @param locationParameter Location parameter where to put the label, from 0 to 1
-     * @param latexText Text to display. A LaTeX String.
+     * @param latexText         Text to display. A LaTeX String.
      * @return The LabelTip object created
      */
-    public static LabelTip makeLabelTip(Shape shape, double locationParameter, String latexText) {
-        return makeLabelTip(shape,locationParameter,latexText,true);
+    public static LabelTip makeLabelTip(AbstractShape<?> shape, double locationParameter, String latexText) {
+        return makeLabelTip(shape, locationParameter, latexText, true);
     }
-
 
 
     /**
      * Creates a label in the middle of segment AB with the distance between the points. Text is automatically updated
      * every frame.
-     * @param A First Point
-     * @param B Second Point
+     *
+     * @param A      First Point
+     * @param B      Second Point
      * @param format Decimal format of length. Use a format string as defined in DecimalFormat class
-     * @param upSide If true, label will be located in the upper side of the shape. In this context, upper means
-     *               a 90 degrees counterclockwise deviation from positive tangent. If false, label will be located
-     *               in the opposite side.
+     * @param upSide If true, label will be located in the upper side of the shape. In this context, upper means a 90
+     *               degrees counterclockwise deviation from positive tangent. If false, label will be located in the
+     *               opposite side.
      * @return The LabelTip object created
      */
     public static LabelTip makeLengthLabel(Point A, Point B, String format, boolean upSide) {
-        LaTeXMathObject t = LaTeXMathObject.make("${#0}$");
-        LabelTip resul = new LabelTip(Shape.segment(A, B), t, Anchor.Type.LOWER, .5);
+        LatexMathObject t = LatexMathObject.make("${#0}$");
+        LabelTip resul = new LabelTip(Shape.segment(A, B), t, AnchorType.LOWER, .5);
         if (!upSide) {
-            resul.setSlopeDirection(AbstractTippableObject.SlopeDirectionType.NEGATIVE)
-                    .setRotationAngle(PI)
-                    .setAnchor(Anchor.Type.UPPER);
+            resul.setSlopeDirection(SlopeDirectionType.NEGATIVE)
+                    .setAnchor(AnchorType.LOWER);
         }
         t.registerUpdater(new Updater() {
             @Override
             public void update(JMathAnimScene scene) {
-                t.getArg(0).setScalar(A.to(B).norm());
+                t.getArg(0).setValue(A.to(B).norm());
             }
         });
+        resul.setRotationType(RotationType.SMART);
+//        resul.correctionAngle=PI;
         resul.rebuildShape();
         return resul;
     }
 
 
     /**
-     * Attach an AbstractLaTeXMathObject instance to a specific point of a Shape. The LaTeX is
-     * attached outside the point to a distance of 1/4 the LaTeX object height.
+     * Attach an AbstractLaTeXMathObject instance to a specific point of a Shape. The LaTeX is attached outside the
+     * point to a distance of 1/4 the LaTeX object height.
      *
-     * @param shape    Shape to attach the tip
-     * @param locationParameter Point of the shape to locate the tip. A parameter between
-     *                 0 and 1. Values outside this range are normalized.
-     * @param tipLabel LaTeX object
-     * @param upSide If true, label will be located in the upper side of the shape. In this context, upper means
-     *               a 90 degrees counterclockwise deviation from positive tangent. If false, label will be located
-     *               in the opposite side.
+     * @param shape             Shape to attach the tip
+     * @param locationParameter Point of the shape to locate the tip. A parameter between 0 and 1. Values outside this
+     *                          range are normalized.
+     * @param tipLabel          LaTeX object
+     * @param upSide            If true, label will be located in the upper side of the shape. In this context, upper
+     *                          means a 90 degrees counterclockwise deviation from positive tangent. If false, label
+     *                          will be located in the opposite side.
      * @return The tippable object
      */
-    public static LabelTip makeLabelTip(Shape shape, double locationParameter, LaTeXMathObject tipLabel, boolean upSide) {
+    public static LabelTip makeLabelTip(AbstractShape<?> shape, double locationParameter, AbstractLatexMathObject<?> tipLabel, boolean upSide) {
 
-        LabelTip resul = new LabelTip(shape, tipLabel, Anchor.Type.LOWER, locationParameter);
-        resul.setDistanceToShape(tipLabel.getHeight()*.25);
+        LabelTip resul = new LabelTip(shape, tipLabel, AnchorType.LOWER, locationParameter);
+        resul.setDistanceToShape(tipLabel.getHeight() * .25);
         if (!upSide) {
-            resul.setSlopeDirection(AbstractTippableObject.SlopeDirectionType.NEGATIVE)
-                    .setRotationAngle(PI)
-                    .setAnchor(Anchor.Type.UPPER);
+            resul.setSlopeDirection(SlopeDirectionType.NEGATIVE)
+                    .setAnchor(AnchorType.UPPER);
         }
+        resul.correctionAngle=PI;
         resul.rebuildShape();
         return resul;
     }
@@ -153,23 +156,27 @@ public class LabelTip extends AbstractTippableObject implements hasArguments {
         return copy;
     }
 
-    public LaTeXMathObject getLaTeXObject() {
+    public AbstractLatexMathObject<?> getLaTeXObject() {
         return laTeXMathObject;
-    }
-
-    public LabelTip setLatexStyle(LatexStyle latexStyle) {
-        laTeXMathObject.setLatexStyle(latexStyle);
-        return this;
     }
 
 
     @Override
-    public Stylable getMp() {
-        return laTeXMathObject.getMp();
-    }
-
     public Scalar getArg(int n) {
         return laTeXMathObject.getArg(n);
     }
+
+    @Override
+    protected boolean isHasBeenUpdated() {
+        return super.isHasBeenUpdated() && MediatorMathObject.isHasBeenUpdated(laTeXMathObject);
+    }
+
+    @Override
+    protected void setHasBeenUpdated(boolean hasBeenUpdated) {
+        super.setHasBeenUpdated(hasBeenUpdated);
+        if (!hasBeenUpdated) MediatorMathObject.setHasBeenUpdated(laTeXMathObject,hasBeenUpdated);
+    }
+
+
 
 }

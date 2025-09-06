@@ -20,11 +20,14 @@ package com.jmathanim.mathobjects.surface;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.JOGLRenderer.JOGLRenderer;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Stateable;
 
 import java.util.ArrayList;
 
@@ -32,16 +35,21 @@ import java.util.ArrayList;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Surface extends MathObject {
+public class Surface extends MathObject<Surface> {
 
     public final MathObjectGroup vertices;
     public final ArrayList<HalfEdge> halfEdges;
     public final ArrayList<Face> faces;
+    private final MODrawProperties mp;
+
 
     public Surface() {
-        vertices = new MathObjectGroup();
-        halfEdges = new ArrayList<>();
-        faces = new ArrayList<>();
+        this(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+    }
+
+    @Override
+    public MODrawProperties getMp() {
+        return mp;
     }
 
     public Surface(ArrayList<Point> vertices, ArrayList<HalfEdge> halfEdges, ArrayList<Face> faces) {
@@ -49,6 +57,7 @@ public class Surface extends MathObject {
         this.vertices.getObjects().addAll(vertices);
         this.halfEdges = halfEdges;
         this.faces = faces;
+        this.mp = JMathAnimConfig.getConfig().getDefaultMP();
     }
 
     @Override
@@ -57,7 +66,7 @@ public class Surface extends MathObject {
     }
 
     @Override
-    public void copyStateFrom(MathObject obj) {
+    public void copyStateFrom(Stateable obj) {
          super.copyStateFrom(obj);
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
@@ -84,7 +93,7 @@ public class Surface extends MathObject {
     }
 
     @Override
-    public <T extends MathObject> T copy() {
+    public Surface copy() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

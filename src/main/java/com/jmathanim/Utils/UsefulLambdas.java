@@ -20,7 +20,6 @@ package com.jmathanim.Utils;
 import java.util.function.DoubleUnaryOperator;
 
 /**
- *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class UsefulLambdas {
@@ -28,8 +27,7 @@ public class UsefulLambdas {
     /**
      * A lambda function simulating a single bounce, with predefinied parameters
      *
-     * @return The lambda function, ready to use in any animation with the
-     * setLambda method
+     * @return The lambda function, ready to use in any animation with the setLambda method
      */
     public static DoubleUnaryOperator bounce1() {
         return bounce1(2.2, 4);
@@ -51,8 +49,7 @@ public class UsefulLambdas {
     /**
      * A lambda function simulating a double bounce, with predefinied parameters
      *
-     * @return The lambda function, ready to use in any animation with the
-     * setLambda method
+     * @return The lambda function, ready to use in any animation with the setLambda method
      */
     public static DoubleUnaryOperator bounce2() {
         return bounce2(2.5, 8);
@@ -86,8 +83,8 @@ public class UsefulLambdas {
     /**
      * Back and forth, in a linear way.
      *
-     * @param percentage Percentage of runtime to divide the go and go back
-     * paths. A value 0f 0.75 gives 75% of time to "go" and 25% to "back".
+     * @param percentage Percentage of runtime to divide the go and go back paths. A value 0f 0.75 gives 75% of time to
+     *                   "go" and 25% to "back".
      * @return The lambda function
      */
     public static DoubleUnaryOperator backAndForthLinear(double percentage) {
@@ -118,7 +115,7 @@ public class UsefulLambdas {
         return backAndForthBounce1(.7, 1d);
     }
 
-    private static DoubleUnaryOperator backAndForthBounce1(double a, double b) {
+    public static DoubleUnaryOperator backAndForthBounce1(double a, double b) {
         final double aa = a;
         final double bb = b * 4 / (a * a);
         return (double t) -> {
@@ -144,12 +141,12 @@ public class UsefulLambdas {
         double c = a + a * (1 - a);
         return (double t) -> {
             if (t < a) {
-                return Math.min(1,norm * t * (a - t));
+                return Math.min(1, norm * t * (a - t));
             }
             if (t < c) {
-                return Math.min(1,(a - t) * (t - c) * norm);
+                return Math.min(1, (a - t) * (t - c) * norm);
             } else {
-                return Math.min(1,(c - t) * (t - 1) * norm);
+                return Math.min(1, (c - t) * (t - 1) * norm);
             }
         };
     }
@@ -166,8 +163,7 @@ public class UsefulLambdas {
     /**
      * Lambda smooth operator. The parameter determines the smoothness.
      *
-     * @param smoothness Smoothness level. 0 means straigt line, 1 fully
-     * smoothed.
+     * @param smoothness Smoothness level. 0 means straight line, 1 fully smoothed.
      * @return The lambda function
      */
     public static DoubleUnaryOperator smooth(double smoothness) {
@@ -175,16 +171,15 @@ public class UsefulLambdas {
             double h = (t == 0 ? 0 : Math.exp(-1 / t));
             double h2 = (t == 1 ? 0 : Math.exp(-1 / (1 - t)));
             return (1 - smoothness) * t + smoothness * h / (h + h2);
-            
+
 //        return t * t * (3 - 2 * t);
 //        return t;
         };
     }
 
     /**
-     * Returns a linear lambda function from a to b. An animation with this
-     * lambda will start at a*runtime and end at b*runtime. Mostly used for
-     * composing with other lambdas.
+     * Returns a linear lambda function from a to b. An animation with this lambda will start at a*runtime and end at
+     * b*runtime. Mostly used for composing with other lambdas.
      *
      * @param a Percentage of runtime to start
      * @param b Percentage of runtime to end
@@ -203,9 +198,8 @@ public class UsefulLambdas {
     }
 
     /**
-     * Restrict the animations to start and end at determinate points. For
-     * example values of .25 and .5 will play the animation with the same
-     * runtime, starting at 25% of animation and ending at 50%.
+     * Restrict the animations to start and end at determinate points. For example values of .25 and .5 will play the
+     * animation with the same runtime, starting at 25% of animation and ending at 50%.
      *
      * @param a Start time of animation (from 0 to 1)
      * @param b End time of animation (from 0 to 1)
@@ -216,8 +210,8 @@ public class UsefulLambdas {
     }
 
     /**
-     * Reverse function. An animation with this lambda will play backwards in
-     * time. Mostly used for composing with other lambdas.
+     * Reverse function. An animation with this lambda will play backwards in time. Mostly used for composing with other
+     * lambdas.
      *
      * @return The lambda function
      */
@@ -225,7 +219,25 @@ public class UsefulLambdas {
         return (double t) -> 1 - t;
     }
 
+    /**
+     * Clone function. Repeat this function N times and allocate them consecutively. Each animation will last por
+     * runTime/N seconds.
+     *
+     * @param cloneNumber Number of clones
+     * @return The lambda function
+     */
     public static DoubleUnaryOperator clone(int cloneNumber) {
-        return (double t) -> t*cloneNumber-Math.floor(t*cloneNumber);
+        return (double t) -> t * cloneNumber - Math.floor(t * cloneNumber);
+    }
+
+    /**
+     * Threshold function. Returns 0 for values less than the threshold parameter and 1 for equal or bigger ones. This
+     * function may be handy when you want a certain animation to perform immediately at a given time.
+     *
+     * @param threshold Threshold value
+     * @return The lambda function
+     */
+    public static DoubleUnaryOperator thresHold(double threshold) {
+        return (double t) -> t < threshold ? 0 : 1;
     }
 }

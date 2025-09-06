@@ -18,8 +18,9 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.AbstractShape;
+import com.jmathanim.mathobjects.JMPath;
 import org.apache.commons.math3.linear.SingularMatrixException;
 
 /**
@@ -28,9 +29,9 @@ import org.apache.commons.math3.linear.SingularMatrixException;
  */
 public class TransformStrategyChecker {
 
-    private static boolean testTransform(Shape shORig, Shape shDest, AffineJTransform tr, double epsilon) {
-        Shape sh = tr.getTransformedObject(shORig);
-        return sh.getPath().isEquivalentTo(shDest.getPath(), epsilon);
+    private static boolean testTransform(AbstractShape<?> shORig, AbstractShape<?> shDest, AffineJTransform tr, double epsilon) {
+        JMPath pathOrigTransformed = shORig.getPath().copy().applyAffineTransform(tr);
+        return shDest.getPath().isEquivalentTo(pathOrigTransformed, epsilon);
     }
 
     /**
@@ -41,11 +42,11 @@ public class TransformStrategyChecker {
      * @param epsilon Max error
      * @return True if an isomorphism is supported. False otherwise
      */
-    public static boolean testDirectIsomorphismTransform(Shape shORig, Shape shDest, double epsilon) {
+    public static boolean testDirectIsomorphismTransform(AbstractShape<?> shORig, AbstractShape<?> shDest, double epsilon) {
         if (!checkMinimalPathRequirements(shORig, 2, shDest, 2)) {
             return false;
         }
-        Point[] points = getIdealPoints(4, shORig, shDest);
+        Vec[] points = getIdealPoints(4, shORig, shDest);
         try {
             AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(points[0], points[1], points[2], points[3], 1);
             return testTransform(shORig, shDest, tr, epsilon);
@@ -54,7 +55,7 @@ public class TransformStrategyChecker {
         }
     }
 
-    private static boolean checkMinimalPathRequirements(Shape shORig, int n1, Shape shDest, int n2) {
+    private static boolean checkMinimalPathRequirements(AbstractShape<?> shORig, int n1, AbstractShape<?> shDest, int n2) {
         boolean mininumPoints = ((shORig.getPath().size() >= n1) && (shDest.getPath().size() >= n2));
         boolean sameSize = (shORig.getPath().size() == shDest.getPath().size());
         return mininumPoints & sameSize;
@@ -69,11 +70,11 @@ public class TransformStrategyChecker {
      * @param epsilon Max error
      * @return True if a general affine transform is supported. False otherwise
      */
-    public static boolean testGeneralAffineTransform(Shape shORig, Shape shDest, double epsilon) {
+    public static boolean testGeneralAffineTransform(AbstractShape<?> shORig, AbstractShape<?> shDest, double epsilon) {
         if (!checkMinimalPathRequirements(shORig, 3, shDest, 3)) {
             return false;
         }
-        Point[] p = getIdealPoints(6, shORig, shDest);
+        Vec[] p = getIdealPoints(6, shORig, shDest);
         try {
             AffineJTransform tr = AffineJTransform.createAffineTransformation(p[0], p[1], p[2], p[3], p[4], p[5], 1);
             return testTransform(shORig, shDest, tr, epsilon);
@@ -91,11 +92,11 @@ public class TransformStrategyChecker {
      * @param epsilon Max error
      * @return True if a general affine transform is supported. False otherwise
      */
-    public static boolean testRotateScaleXYTransform(Shape shORig, Shape shDest, double epsilon) {
+    public static boolean testRotateScaleXYTransform(AbstractShape<?> shORig, AbstractShape<?> shDest, double epsilon) {
         if (!checkMinimalPathRequirements(shORig, 3, shDest, 3)) {
             return false;
         }
-        Point[] p = getIdealPoints(6, shORig, shDest);
+        Vec[] p = getIdealPoints(6, shORig, shDest);
         try {
             AffineJTransform tr = AffineJTransform.createRotateScaleXYTransformation(p[0], p[1], p[2], p[3], p[4], p[5], 1);
             return testTransform(shORig, shDest, tr, epsilon);
@@ -104,27 +105,27 @@ public class TransformStrategyChecker {
         }
     }
 
-    private static Point[] getIdealPoints(int numPoints, Shape shORig, Shape shDest) {
-        Point[] points = null;
+    private static Vec[] getIdealPoints(int numPoints, AbstractShape<?> shORig, AbstractShape<?> shDest) {
+        Vec[] points = null;
         if (numPoints == 4) {
-            Point A = shORig.getPoint(0);// TODO: Take better points (as far as possible)
-            Point B = shORig.getPoint(1);
-            Point C = shDest.getPoint(0);
-            Point D = shDest.getPoint(1);
-            points = new Point[4];
+            Vec A = shORig.get(0).getV();// TODO: Take better points (as far as possible)
+            Vec B = shORig.get(1).getV();
+            Vec C = shDest.get(0).getV();
+            Vec D = shDest.get(1).getV();
+            points = new Vec[4];
             points[0] = A;
             points[1] = B;
             points[2] = C;
             points[3] = D;
         }
         if (numPoints == 6) {
-            Point A = shORig.getPoint(0);// TODO: Take better points (as far as possible)
-            Point B = shORig.getPoint(1);
-            Point C = shORig.getPoint(2);
-            Point D = shDest.getPoint(0);
-            Point E = shDest.getPoint(1);
-            Point F = shDest.getPoint(2);
-            points = new Point[6];
+            Vec A = shORig.get(0).getV();// TODO: Take better points (as far as possible)
+            Vec B = shORig.get(1).getV();
+            Vec C = shORig.get(2).getV();
+            Vec D = shDest.get(0).getV();
+            Vec E = shDest.get(1).getV();
+            Vec F = shDest.get(2).getV();
+            points = new Vec[6];
             points[0] = A;
             points[1] = B;
             points[2] = C;

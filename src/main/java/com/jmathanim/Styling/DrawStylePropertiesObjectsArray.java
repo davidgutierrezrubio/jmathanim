@@ -17,12 +17,12 @@
  */
 package com.jmathanim.Styling;
 
+import com.jmathanim.Enum.DashStyle;
+import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.LatexStyle;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Stateable;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 
@@ -48,10 +48,10 @@ import java.util.Arrays;
  * can be initialized with default properties or copied from existing objects, with
  * modifications propagating across associated entities.
  */
-public class MODrawPropertiesArray implements Stylable, Stateable {
+public class DrawStylePropertiesObjectsArray implements DrawStyleProperties, Stylable {
 
     private final MODrawPropertiesLaTeX mpRef;
-    private ArrayList<MathObject> objects;
+    private ArrayList<MathObject<?>> objects;
     private LatexStyle latexStyle = null;
 
     /**
@@ -60,7 +60,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      *
      * @param mp The MODrawProperties object from which the properties are copied to initialize the new instance.
      */
-    public MODrawPropertiesArray(MODrawProperties mp) {
+    public DrawStylePropertiesObjectsArray(MODrawProperties mp) {
         mpRef = new MODrawPropertiesLaTeX();
         mpRef.copyFrom(mp);
         objects = new ArrayList<>();
@@ -74,10 +74,14 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      * - Copies the default MODrawProperties settings from JMathAnimConfig's configuration into mpRef.
      * - Initializes the objects field as an empty ArrayList of MathObject.
      */
-    public MODrawPropertiesArray() {
+    public DrawStylePropertiesObjectsArray() {
         mpRef = new MODrawPropertiesLaTeX();
         mpRef.copyFrom(JMathAnimConfig.getConfig().getDefaultMP());
         objects = new ArrayList<>();
+    }
+
+    public void clear() {
+        objects.clear();
     }
 
     /**
@@ -85,12 +89,15 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      *
      * @param objects The list of MathObject instances to initialize the MODrawPropertiesArray.
      */
-    public MODrawPropertiesArray(ArrayList<MathObject> objects) {
+    public DrawStylePropertiesObjectsArray(ArrayList<MathObject<?>> objects) {
         this.objects = objects;
         mpRef = new MODrawPropertiesLaTeX();
     }
 
-
+    @Override
+    public DrawStylePropertiesObjectsArray getMp() {
+        return this;
+    }
     /**
      * Returns the LaTeXStyle of the associated AbstractLaTeXMathObject
      *
@@ -116,7 +123,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      *
      * @return An ArrayList containing MathObject instances.
      */
-    public ArrayList<MathObject> getObjects() {
+    public ArrayList<MathObject<?>> getObjects() {
         return objects;
     }
 
@@ -125,7 +132,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      *
      * @param objects The ArrayList of MathObject instances to be set.
      */
-    public void setObjects(ArrayList<MathObject> objects) {
+    public void setObjects(ArrayList<MathObject<?>> objects) {
         this.objects = objects;
     }
 
@@ -134,7 +141,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      *
      * @param objs The MathObject instances to be added.
      */
-    public void add(MathObject... objs) {
+    public void add(MathObject<?>... objs) {
         objects.addAll(Arrays.asList(objs));
     }
 
@@ -145,7 +152,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      */
     @Override
     public void setVisible(Boolean visible) {
-        for (MathObject obj : objects) {
+        for (MathObject<?> obj : objects) {
             obj.getMp().setVisible(visible);
         }
         mpRef.setVisible(visible);
@@ -182,18 +189,18 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     }
 
     /**
-     * Copies the properties from the given {@link Stylable} object to the current instance.
+     * Copies the properties from the given {@link DrawStyleProperties} object to the current instance.
      * This method iterates through all the objects in the current instance, copying
-     * the properties from the provided {@link Stylable} object for each object's `mp`
+     * the properties from the provided {@link DrawStyleProperties} object for each object's `mp`
      * attribute and the `mpRef` attribute of the current instance.
      *
-     * @param prop The {@link Stylable} object whose properties will be copied.
+     * @param prop The {@link DrawStyleProperties} object whose properties will be copied.
      */
     @Override
-    public void copyFrom(Stylable prop) {
-        if (prop instanceof MODrawPropertiesArray) {
-            MODrawPropertiesArray moDrawPropertiesArray = (MODrawPropertiesArray) prop;
-            copyFrom(moDrawPropertiesArray);
+    public void copyFrom(DrawStyleProperties prop) {
+        if (prop instanceof DrawStylePropertiesObjectsArray) {
+            DrawStylePropertiesObjectsArray drawStylePropertiesObjectsArray = (DrawStylePropertiesObjectsArray) prop;
+            copyFrom(drawStylePropertiesObjectsArray);
             return;
         }
         for (MathObject obj : objects) {
@@ -208,7 +215,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         }
     }
 
-    public void copyFrom(MODrawPropertiesArray prop) {
+    public void copyFrom(DrawStylePropertiesObjectsArray prop) {
         if (prop.objects.size() == objects.size()) {//Copy all styles separately
             for (int i = 0; i < prop.objects.size(); i++) {
                 objects.get(i).getMp().copyFrom(prop.objects.get(i).getMp());
@@ -227,7 +234,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      * @param alpha The interpolation parameter, where 0 represents the current object and 1 represents the destination.
      */
     @Override
-    public void interpolateFrom(Stylable dst, double alpha) {
+    public void interpolateFrom(DrawStyleProperties dst, double alpha) {
         for (MathObject obj : objects) {
             obj.getMp().interpolateFrom(dst, alpha);
         }
@@ -244,7 +251,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      * @param alpha The interpolation parameter. Values range from 0.0 (fully state "a") to 1.0 (fully state "b").
      */
     @Override
-    public void interpolateFrom(Stylable a, Stylable b, double alpha) {
+    public void interpolateFrom(DrawStyleProperties a, DrawStyleProperties b, double alpha) {
         for (MathObject obj : objects) {
             obj.getMp().interpolateFrom(a, b, alpha);
         }
@@ -278,40 +285,6 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
             obj.getMp().rawCopyFrom(mp);
         }
         mpRef.rawCopyFrom(mp);
-    }
-
-    /**
-     * Restores the state of this MODrawPropertiesArray object and its associated MathObjects and properties.
-     * This method iterates through the list of MathObjects contained in the `objects` field
-     * and calls the `restoreState` method on each object's `MathProperties` instance. It
-     * ensures that all associated MathObject properties are reverted to their previously
-     * saved state.
-     * <p>
-     * Additionally, it calls the `restoreState` method on the `mpRef` field (a reference
-     * to this object's MathProperties), restoring the preserved state of its main properties.
-     */
-    @Override
-    public void restoreState() {
-        for (MathObject obj : objects) {
-            obj.getMp().restoreState();
-        }
-        mpRef.restoreState();
-
-    }
-
-    /**
-     * Saves the current state of the object and its referenced components.
-     * This method iterates over all MathObject instances in the collection and
-     * invokes their saveState method through their corresponding MODrawProperties (mp).
-     * Additionally, the saveState of the referenced MODrawProperties object (mpRef)
-     * is also called to ensure all relevant state data is preserved.
-     */
-    @Override
-    public void saveState() {
-        for (MathObject obj : objects) {
-            obj.getMp().saveState();
-        }
-        mpRef.saveState();
     }
 
     /**
@@ -441,19 +414,6 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     }
 
     /**
-     * Retrieves a specific sub drawing property from the list of objects based on
-     * the given index.
-     *
-     * @param n The index of the object in the list from which to retrieve the sub
-     *          drawing property.
-     * @return The Stylable associated with the specified index.
-     */
-    @Override
-    public Stylable getSubMP(int n) {
-        return objects.get(n).getMp();
-    }
-
-    /**
      * Retrieves the first instance of the `MODrawProperties` associated with this object.
      *
      * @return The first `MODrawProperties` instance, referenced by `mpRef`.
@@ -539,7 +499,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      * @return The current DotStyle as defined in the referenced object.
      */
     @Override
-    public Point.DotSyle getDotStyle() {
+    public DotStyle getDotStyle() {
         return mpRef.getDotStyle();
     }
 
@@ -549,7 +509,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      * @param dotStyle The dot style to apply. This parameter is of type Point.DotStyle, which determines the style of dots to be set.
      */
     @Override
-    public void setDotStyle(Point.DotSyle dotStyle) {
+    public void setDotStyle(DotStyle dotStyle) {
         for (MathObject obj : objects) {
             obj.getMp().setDotStyle(dotStyle);
         }
@@ -559,10 +519,10 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     /**
      * Retrieves the dash style property from the referenced MODrawProperties.
      *
-     * @return The dash style of type {@link MODrawProperties.DashStyle}.
+     * @return The dash style of type {@link DashStyle}.
      */
     @Override
-    public MODrawProperties.DashStyle getDashStyle() {
+    public DashStyle getDashStyle() {
         return mpRef.getDashStyle();
     }
 
@@ -572,7 +532,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      * @param dashStyle The dash style to apply. This defines the pattern of dashes for drawing lines.
      */
     @Override
-    public void setDashStyle(MODrawProperties.DashStyle dashStyle) {
+    public void setDashStyle(DashStyle dashStyle) {
         for (MathObject obj : objects) {
             obj.getMp().setDashStyle(dashStyle);
         }
@@ -665,52 +625,6 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
             obj.getMp().setFaceToCameraPivot(pivot);
         }
         mpRef.setFaceToCameraPivot(pivot);
-    }
-
-    /**
-     * Retrieves the scaling factor for the first arrowhead associated with the current object.
-     *
-     * @return A {@code Double} representing the scaling factor of the first arrowhead, or {@code null} if not set.
-     */
-    @Override
-    public Double getScaleArrowHead1() {
-        return mpRef.getScaleArrowHead1();
-    }
-
-    /**
-     * Sets the scale of the first arrowhead for all associated MathObjects and the reference draw properties.
-     *
-     * @param scale The new scale value for the first arrowhead, represented as a Double.
-     */
-    @Override
-    public void setScaleArrowHead1(Double scale) {
-        for (MathObject obj : objects) {
-            obj.getMp().setScaleArrowHead1(scale);
-        }
-        mpRef.setScaleArrowHead1(scale);
-    }
-
-    /**
-     * Retrieves the scaling factor for the second arrowhead.
-     *
-     * @return The scaling factor applied to the second arrowhead as a Double.
-     */
-    @Override
-    public Double getScaleArrowHead2() {
-        return mpRef.getScaleArrowHead2();
-    }
-
-    /**
-     * Sets the scaling factor for the second arrowhead of the objects and the reference properties.
-     *
-     * @param scale The scaling factor to be applied to the second arrowhead.
-     */
-    @Override
-    public void setScaleArrowHead2(Double scale) {
-        for (MathObject obj : objects) {
-            obj.getMp().setScaleArrowHead2(scale);
-        }
-        mpRef.setScaleArrowHead2(scale);
     }
 
 }

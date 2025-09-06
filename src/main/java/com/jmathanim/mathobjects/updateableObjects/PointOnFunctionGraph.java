@@ -17,49 +17,48 @@
  */
 package com.jmathanim.mathobjects.updateableObjects;
 
-import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.AbstractPoint;
 import com.jmathanim.mathobjects.FunctionGraph;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Stateable;
 
 /**
- * Updateable point which updates the y-coordinate to be f(x). Shifting this
- * point horizontally moves the point along the funcion graph
+ * Updateable point which updates the y-coordinate to be f(x). Shifting this point horizontally moves the point along
+ * the funcion graph
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class PointOnFunctionGraph extends Point {
+public class PointOnFunctionGraph extends AbstractPoint<PointOnFunctionGraph> {
 
+    private static double DELTA_DERIVATE = 0.000001d;
+    private final Vec slopePointRight;
+    private final Vec slopePointLeft;
     FunctionGraph fg;
-    private final Point slopePointRight;
-    private final Point slopePointLeft;
+
+    /**
+     * Creates an updateable point which automatically updates the y-component to be so that lies in the function graph
+     *
+     * @param x  The initial x component of the point
+     * @param fg Function graph
+     */
+    public PointOnFunctionGraph (double x, FunctionGraph fg) {
+        super(Vec.to(x, 0));
+        this.fg = fg;
+        slopePointRight = Vec.to(x, 0);
+        slopePointLeft = Vec.to(x, 0);
+        computePoints();
+    }
 
     /**
      * Static builder. Creates and returns a new point at given coordinates.
      *
-     * @param x x coordinate
+     * @param x  x coordinate
      * @param fg Function graph
      * @return The created point
      */
     public static PointOnFunctionGraph make(double x, FunctionGraph fg) {
         return new PointOnFunctionGraph(x, fg);
-    }
-
-    /**
-     * Creates an updateable point which automatically updates the y-component
-     * to be so that lies in the function graph
-     *
-     * @param x The initial x component of the point
-     * @param fg Function graph
-     */
-    public PointOnFunctionGraph(double x, FunctionGraph fg) {
-        super();
-        this.fg = fg;
-        slopePointRight = Point.at(x, 0);
-        slopePointLeft = Point.at(x, 0);
-        this.v.x = x;
-        computePoints();
     }
 
     @Override
@@ -69,23 +68,23 @@ public class PointOnFunctionGraph extends Point {
     }
 
     private void computePoints() {
-        this.v.y = this.fg.getFunctionValue(this.v.x);
-        slopePointRight.v.x = this.v.x + 1;
-        slopePointRight.v.y = this.v.y + this.fg.getSlope(this.v.x, -1);
+        getVec().y = this.fg.getFunctionValue(getVec().x);
+        slopePointRight.x = getVec().x + DELTA_DERIVATE;
+        slopePointRight.y = getVec().y + this.fg.getSlope(getVec().x, -1)*DELTA_DERIVATE;
 
-        slopePointLeft.v.x = this.v.x - 1;
-        slopePointLeft.v.y = this.v.y - this.fg.getSlope(this.v.x, -1);
+        slopePointLeft.x = getVec().x - DELTA_DERIVATE;
+        slopePointLeft.y = getVec().y - this.fg.getSlope(getVec().x, -1)*DELTA_DERIVATE;
     }
 
-    public FunctionGraph getFg() {
+    public FunctionGraph getFunctionGraph() {
         return fg;
     }
 
-    public Point getSlopePointRight() {
+    public Vec getSlopePointRight() {
         return slopePointRight;
     }
 
-    public Point getSlopePointLeft() {
+    public Vec getSlopePointLeft() {
         return slopePointLeft;
     }
 
@@ -96,23 +95,15 @@ public class PointOnFunctionGraph extends Point {
 
     @Override
     public PointOnFunctionGraph copy() {
-        PointOnFunctionGraph copy = new PointOnFunctionGraph(this.v.x, fg);
+        PointOnFunctionGraph copy = new PointOnFunctionGraph(getVec().x, fg);
         copy.copyStateFrom(this);
         return copy;
     }
 
     @Override
-    public void copyStateFrom(MathObject obj) {
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof PointOnFunctionGraph)) return;
         super.copyStateFrom(obj);
         PointOnFunctionGraph pg = (PointOnFunctionGraph) obj;
-        this.v.y = pg.v.y;
     }
-
-    @Override
-    public PointOnFunctionGraph applyAffineTransform(AffineJTransform tr) {
-        super.applyAffineTransform(tr);
-        computePoints();
-        return this;
-    }
-
 }

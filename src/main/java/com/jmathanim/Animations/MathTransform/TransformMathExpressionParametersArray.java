@@ -18,6 +18,7 @@
 package com.jmathanim.Animations.MathTransform;
 
 import com.jmathanim.Animations.AnimationEffect;
+import com.jmathanim.Enum.JumpType;
 
 import java.util.ArrayList;
 
@@ -68,7 +69,7 @@ public class TransformMathExpressionParametersArray {
 		return this;
 	}
 
-	public TransformMathExpressionParametersArray addJumpEffect(double heightJump, AnimationEffect.JumpType jumpType) {
+	public TransformMathExpressionParametersArray addJumpEffect(double heightJump, JumpType jumpType) {
 		for (TransformMathExpressionParameters par : pars) {
 			par.addJumpEffect(heightJump, jumpType);
 		}

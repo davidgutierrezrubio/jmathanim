@@ -20,7 +20,6 @@ package com.jmathanim.mathobjects.updateableObjects;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
 /**
@@ -36,7 +35,7 @@ public class TransformedJMPath extends Shape {
         super();
         this.transform = tr;
         this.srcOBj = jmpobj;
-        this.getPath().setJMPoints(jmpobj.getPath());
+        this.copyStateFrom(jmpobj);
     }
 
     @Override
@@ -55,14 +54,15 @@ public class TransformedJMPath extends Shape {
         int size = srcOBj.getPath().size();
         for (int n = 0; n < size; n++) {
             JMPathPoint jmPDst = get(n);
-            JMPathPoint pSrc = srcOBj.get(n);
-            Point pDst = transform.getTransformedObject(pSrc.p);
-            Point cp1Dst = transform.getTransformedObject(pSrc.cpExit);
-            Point cp2Dst = transform.getTransformedObject(pSrc.cpEnter);
 
-            jmPDst.p.v.copyFrom(pDst.v);
-            jmPDst.cpExit.v.copyFrom(cp1Dst.v);
-            jmPDst.cpEnter.v.copyFrom(cp2Dst.v);
+            jmPDst.getV().copyCoordinatesFrom(jmPDst.getV());
+            jmPDst.getvExit().copyCoordinatesFrom(jmPDst.getvExit());
+            jmPDst.getvEnter().copyCoordinatesFrom(jmPDst.getvEnter());
+
+            jmPDst.getV().applyAffineTransform(transform);
+            jmPDst.getvExit().applyAffineTransform(transform);
+            jmPDst.getvEnter().applyAffineTransform(transform);
+
         }
     }
 

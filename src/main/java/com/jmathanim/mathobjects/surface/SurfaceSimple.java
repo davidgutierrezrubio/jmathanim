@@ -17,9 +17,9 @@
  */
 package com.jmathanim.mathobjects.surface;
 
-import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
 
 /**
  *
@@ -44,7 +44,7 @@ public class SurfaceSimple extends MultiShapeObject {
         Point[] vertices = new Point[coords.length / 3];
         int k = 0;
         for (int i = 0; i < coords.length; i += 3) {
-            vertices[k] = Point.at(coords[i], coords[i + 1], coords[i + 2]);
+            vertices[k] = Point.at(coords[i], coords[i + 1], coords[i + 2]);//TODO: Replace with Vec
             k++;
         }
         return addFace(vertices);

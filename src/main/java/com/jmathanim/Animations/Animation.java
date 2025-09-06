@@ -21,10 +21,12 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.jmathanim.LogUtils;
+import com.jmathanim.mathobjects.Copyable;
 import com.jmathanim.mathobjects.MathObject;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.function.DoubleUnaryOperator;
 
 /**
@@ -34,10 +36,10 @@ import java.util.function.DoubleUnaryOperator;
  */
 public abstract class Animation {
 
-    protected final ArrayList<MathObject> removeThisAtTheEnd;
-    protected final ArrayList<MathObject> addThisAtTheEnd;
+    protected final HashSet<MathObject<?>> removeThisAtTheEnd;
+    protected final HashSet<MathObject<?>> addThisAtTheEnd;
     private final JMathAnimConfig config;
-    private final HashMap<MathObject, MathObject> backups;
+    private final HashMap<Copyable<?>, Copyable<?>> backups;
     protected double lastTComputed;
     protected double t, dt;
     protected boolean printProgressBar;
@@ -70,7 +72,7 @@ public abstract class Animation {
     protected double allocateStart;
     protected double allocateEnd;
     private String debugName;
-    private boolean shouldResetAtReuse;
+    private boolean shouldResetAtFinish;
     private Status status;
 
     /**
@@ -85,12 +87,12 @@ public abstract class Animation {
         this.runTime = runTime;
         this.useObjectState = true;
         this.shouldAddObjectsToScene = true;
-        this.shouldResetAtReuse = true;
+        this.shouldResetAtFinish = true;
         this.shouldInterpolateStyles = true;
         lambda = JMathAnimConfig.getConfig().getDefaultLambda();
         backups = new HashMap<>();
-        addThisAtTheEnd = new ArrayList<>();
-        removeThisAtTheEnd = new ArrayList<>();
+        addThisAtTheEnd = new HashSet<>();
+        removeThisAtTheEnd = new HashSet<>();
         allocateStart = 0d;
         allocateEnd = 1d;
         config = JMathAnimConfig.getConfig();
@@ -191,19 +193,23 @@ public abstract class Animation {
         if (status == Status.INITIALIZED) {
             t += dt;
         }
+        if (t > 1) t=1;
+        if (t <0) t=0;
         boolean resul;
         if (t <= 1 && t >= 0) {
             this.doAnim(t);
             if (printProgressBar && config.isPrintProgressBar()) LogUtils.printProgressBar(t);
-            resul = false;
+            resul = (t==1);
         } else {
             resul = true;
         }
         t += dt;
-        //If t is closer to 1 than dt, make it 1
+        //If t is closer to 1 than dt, makeLengthMeasure it 1
         if ((t < 1) && (1 - t < dt)) {
             t = 1;
         }
+        //if t>1, do it 1
+        if (t>1) t=1;
         return resul;
     }
 
@@ -222,7 +228,6 @@ public abstract class Animation {
             if (doInitialization()) {//If initialization returned sucess...
                 setFps(scene.getConfig().fps);
                 status = Status.INITIALIZED;
-
                 return true;
             } else {
                 JMathAnimScene.logger.error("Error initializating animation " + getDebugName());
@@ -284,13 +289,13 @@ public abstract class Animation {
      */
     public abstract void prepareForAnim(double t);
 
-    /**
-     * Returns the smooth function
-     *
-     * @return A lambda operator with the smooth function
-     */
     public DoubleUnaryOperator getTotalLambda() {
         return lambda.compose(UsefulLambdas.allocateTo(allocateStart, allocateEnd));
+    }
+    protected double allocateT(double t) {
+        double rt = (t < 0 ? 0 : t);
+        rt = (rt > 1 ? 1 : rt);
+        return UsefulLambdas.allocateTo(allocateStart, allocateEnd).applyAsDouble(rt);
     }
 
     protected double getLT(double t) {
@@ -322,13 +327,14 @@ public abstract class Animation {
     /**
      * Save state of all given mathobjects.If the useObjectState flag is set to false, this method does nothing
      *
-     * @param mathObjects MathObjects to save state (varargs)
+     * @param copyables MathObjects to save state (varargs)
      */
-    protected void saveStates(MathObject... mathObjects) {
+    protected void saveStates(Copyable<?>... copyables) {
         if (this.isUseObjectState()) {
             backups.clear();
-            for (MathObject obj : mathObjects) {
+            for (Copyable<?> obj : copyables) {
 //                obj.saveState();
+                Object aa = obj.copy();
                 backups.put(obj, obj.copy());
             }
         }
@@ -337,11 +343,11 @@ public abstract class Animation {
     /**
      * Restore state of all given mathobjects.If the useObjectState flag is set to false, this method does nothing
      *
-     * @param mathObjects MathObjects to restore state (varargs)
+     * @param copyables MathObjects to restore state (varargs)
      */
-    protected void restoreStates(MathObject... mathObjects) {
+    protected void restoreStates(Copyable<?>... copyables) {
         if (this.isUseObjectState()) {
-            for (MathObject obj : mathObjects) {
+            for (Copyable<?> obj : copyables) {
                 obj.copyStateFrom(backups.get(obj));
             }
         }
@@ -352,7 +358,7 @@ public abstract class Animation {
      *
      * @param mathObjects Objects to add (varargs)
      */
-    protected void addObjectsToscene(MathObject... mathObjects) {
+    protected void addObjectsToscene(MathObject<?>... mathObjects) {
         if (this.shouldAddObjectsToScene) {
             scene.add(mathObjects);
         }
@@ -363,17 +369,17 @@ public abstract class Animation {
      *
      * @param mathObjects Objects to add (varargs)
      */
-    protected void removeObjectsFromScene(MathObject... mathObjects) {
+    protected void removeObjectsFromScene(MathObject<?>... mathObjects) {
         if (this.shouldAddObjectsToScene) {
             scene.remove(mathObjects);
         }
     }
 
-    protected void removeObjectsFromScene(ArrayList<MathObject> objectsToRemove) {
+    protected void removeObjectsFromScene(HashSet<MathObject<?>> objectsToRemove) {
         removeObjectsFromScene(objectsToRemove.toArray(new MathObject[0]));
     }
 
-    protected void addObjectsToscene(ArrayList<MathObject> objectsToAdd) {
+    protected void addObjectsToscene(HashSet<MathObject<?>> objectsToAdd) {
         addObjectsToscene(objectsToAdd.toArray(new MathObject[0]));
     }
 
@@ -506,7 +512,7 @@ public abstract class Animation {
      *
      * @return The intermediate object
      */
-    public abstract <T extends MathObject> T getIntermediateObject();
+    public abstract <T extends MathObject<?>> T getIntermediateObject();
 
     /**
      * Resets the animation so it can be reused with different initialization parameters.
@@ -515,15 +521,26 @@ public abstract class Animation {
         status = Status.NOT_INITIALIZED;
     }
 
-    public boolean isShouldResetAtReuse() {
-        return shouldResetAtReuse;
+    public boolean isShouldResetAtFinish() {
+        return shouldResetAtFinish;
     }
 
     public <T extends Animation> T setShouldResetAtFinish(boolean shouldResetAtFinish) {
-        this.shouldResetAtReuse = shouldResetAtFinish;
+        this.shouldResetAtFinish = shouldResetAtFinish;
         return (T) this;
     }
 
+    /**
+     * Filter MathObjects from an array
+     * @param objects Objects to filter
+     * @return An array of MathObjects
+     */
+    protected MathObject<?>[] filterMathObjects(Object[] objects) {
+        return Arrays.stream(objects)
+                .filter(a -> a instanceof MathObject<?>)
+                .map(a -> (MathObject<?>) a)
+                .toArray(MathObject<?>[]::new);
+    }
 
     /**
      * Animation status

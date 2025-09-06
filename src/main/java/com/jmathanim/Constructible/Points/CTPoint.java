@@ -17,20 +17,15 @@
  */
 package com.jmathanim.Constructible.Points;
 
-import com.jmathanim.Constructible.Constructible;
-import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.Point;
 
 /**
  *
  * @author David
  */
-public class CTPoint extends Constructible {
-    
-    public final Point p;
-    public final Vec v;
+public class CTPoint extends CTAbstractPoint<CTPoint> {
 
     /**
      * Creates a CTPoint from a Point
@@ -38,14 +33,20 @@ public class CTPoint extends Constructible {
      * @param A Point object to wrap into
      * @return The created object
      */
-    public static CTPoint make(Point A) {
-        CTPoint resul = new CTPoint(A);
+    public static CTPoint make(Coordinates<?> A) {
+        Point buildPoint;
+        if (A instanceof Point) {
+            buildPoint = (Point) A;
+        } else {
+            buildPoint = new Point(A.getVec());
+        }
+        CTPoint resul = new CTPoint(buildPoint);
         resul.rebuildShape();
         return resul;
     }
     
     public static CTPoint at(double x, double y) {
-        CTPoint resul = new CTPoint(Point.at(x, y));
+        CTPoint resul =  new CTPoint(Vec.to(x, y));
         resul.rebuildShape();
         return resul;
     }
@@ -54,83 +55,22 @@ public class CTPoint extends Constructible {
         this(Point.origin());
     }
     
-    protected CTPoint(Point A) {
-        this.p = Point.origin();
-        this.p.copyStateFrom(A);
-        this.v = A.v;
+    protected CTPoint(Coordinates A) {
+        super(A);
     }
-    
-    @Override
-    public Point getMathObject() {
-        return p;
-    }
-    
-    @Override
-    public void rebuildShape() {
-        if (!isFreeMathObject()) {
-            this.p.v.copyFrom(this.v);
-        }
-    }
-    
+
     @Override
     public CTPoint copy() {
-        CTPoint copy = make(new Point(this.v));
+        CTPoint copy = make(new Point(this.coordinatesOfPoint.x,this.coordinatesOfPoint.y));
         copy.setFreeMathObject(this.isFreeMathObject());
         copy.getMathObject().copyStateFrom(this.getMathObject());
         copy.getMp().copyFrom(this.getMp());
         return copy;
     }
-    
-    @Override
-    public void copyStateFrom(MathObject obj) {
-        if (obj instanceof CTPoint) {
-            CTPoint cnst = (CTPoint) obj;
-            this.v.copyFrom(cnst.v);
-            this.getMathObject().copyStateFrom(cnst.getMathObject());
-            this.setFreeMathObject(cnst.isFreeMathObject());
-        }
-        super.copyStateFrom(obj);
-    }
 
-    /**
-     * Computes the vector another CTPoint
-     *
-     * @param B Second CTPoint
-     * @return The vector
-     */
-    public Vec to(CTPoint B) {
-        return B.v.minus(this.v);
-    }
-
-    /**
-     * Creates a new CTPoint vector adding a given vector. The original CTPoint
-     * is unaltered
-     *
-     * @param v Vector to add
-     * @return The created object
-     */
-    public CTPoint add(Vec v) {
-        return CTPoint.make(new Point(this.v));
-    }
-    
     @Override
     public String toString() {
-        return this.getObjectLabel() + ":" + String.format("CTPoint[%.2f, %.2f]", this.v.x, this.v.y);
+        return this.getObjectLabel() + ":" + String.format("CTPoint[%.2f, %.2f]", this.coordinatesOfPoint.x, this.coordinatesOfPoint.y);
     }
-    
-    public CTPoint dotStyle(Point.DotSyle dotStyle) {
-        p.dotStyle(dotStyle);
-        return this;
-    }
-    
-    @Override
-    public Constructible applyAffineTransform(AffineJTransform transform) {
-        p.applyAffineTransform(transform);
-        if (!isFreeMathObject()) {
-            this.v.copyFrom(p.v);
-        }
-        rebuildShape();
-        return this;
-    }
-    
+
 }

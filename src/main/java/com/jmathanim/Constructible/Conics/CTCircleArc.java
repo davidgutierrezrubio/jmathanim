@@ -17,127 +17,101 @@
  */
 package com.jmathanim.Constructible.Conics;
 
-import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.Stateable;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
+import static com.jmathanim.jmathanim.JMathAnimScene.logger;
 
 /**
  * A Constructible circle arc
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTCircleArc extends CTAbstractCircle {
+public class CTCircleArc extends CTAbstractCircle<CTCircleArc> {
 
-    private final CTPoint center;
     private final CTPoint A;
     private final CTPoint B;
-    private final Shape arcTODraw;
+
+    protected CTCircleArc(CTPoint center, CTPoint A, CTPoint B) {
+        super(center, Scalar.make(0));
+        this.A = A;
+        this.B = B;
+    }
 
     /**
      * Creates a new Constructible circle arc
      *
      * @param center Center of arc
-     * @param A Starting point. Arc will pass through this point
-     * @param B Point that determines the angle of the arc.
+     * @param A      Starting point. Arc will pass through this point
+     * @param B      Point that determines the angle of the arc.
      * @return The created arc
      */
-    public static CTCircleArc make(CTPoint center, CTPoint A, CTPoint B) {
-        CTCircleArc resul = new CTCircleArc(center, A, B);
-        resul.rebuildShape();
-        return resul;
-    }
-
-    /**
-     * Overloaded method. Creates a new Constructible circle arc
-     *
-     * @param center Center of arc
-     * @param A Starting point. Arc will pass through this point
-     * @param B Point that determines the angle of the arc.
-     * @return The created arc
-     */
-    public static CTCircleArc make(Point center, Point A, Point B) {
+    public static CTCircleArc make(Coordinates<?> center, Coordinates<?> A, Coordinates<?> B) {
         CTCircleArc resul = new CTCircleArc(CTPoint.make(center), CTPoint.make(A), CTPoint.make(B));
         resul.rebuildShape();
         return resul;
     }
 
-    private CTCircleArc(CTPoint center, CTPoint A, CTPoint B) {
-        this.center = center;
-        this.A = A;
-        this.B = B;
-        arcTODraw = new Shape();
-    }
 
     @Override
-    public CTPoint getCircleCenter() {
-        return center.copy();
-    }
-
-    @Override
-    public Scalar getRadius() {
-        return Scalar.make(center.to(A).norm());
-    }
-
-    @Override
-    public MathObject getMathObject() {
-        return arcTODraw;
-    }
-
-    @Override
-    public Constructible copy() {
-        CTCircleArc copy = CTCircleArc.make(center.copy(), A.copy(), B.copy());
+    public CTCircleArc copy() {
+        CTCircleArc copy = CTCircleArc.make(getCircleCenter().copy(), A.copy(), B.copy());
         copy.copyStateFrom(this);
         return copy;
     }
 
     @Override
-    public void copyStateFrom(MathObject obj) {
-        if (obj instanceof CTCircleArc) {
-            CTCircleArc cnst = (CTCircleArc) obj;
-            this.center.copyStateFrom(cnst.center);
-            this.A.copyStateFrom(cnst.A);
-            this.B.copyStateFrom(cnst.B);
-        }
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof CTCircleArc)) return;
+        CTCircleArc cnst = (CTCircleArc) obj;
+        super.copyStateFrom(cnst);
+        this.getCircleCenter().copyCoordinatesFrom(cnst.getCircleCenter());
+        this.A.copyStateFrom(cnst.A);
+        this.B.copyStateFrom(cnst.B);
         super.copyStateFrom(obj);
     }
 
     @Override
     public void rebuildShape() {
-        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(Point.at(0, 0), Point.at(1, 0), new Point(center.v), new Point(A.v), 1);
+        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(
+                Vec.to(0, 0),
+                Vec.to(1, 0),
+                getCircleCenter().copy(),
+                A.copy(), 1);
 
-        Vec v1 = center.to(A);
-        Vec v2 = center.to(B);
+        Vec v1 = getCircleCenter().to(A);
+        Vec v2 = getCircleCenter().to(B);
 
         if (!isFreeMathObject()) {
             double angle = v2.getAngle() - v1.getAngle();
             if (angle < 0) {
                 angle += 2 * PI;
             }
-            arcTODraw.getPath().clear();
-            arcTODraw.getPath().copyStateFrom(Shape.arc(angle).getPath());
-            arcTODraw.applyAffineTransform(tr);
+            getMathObject().getPath().clear();
+            getMathObject().getPath().copyStateFrom(Shape.arc(angle).getPath());
+            getMathObject().applyAffineTransform(tr);
         }
 
     }
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, center, A, B);
+        dependsOn(scene, getCircleCenter(), A, B);
     }
 
     @Override
     public Vec getHoldCoordinates(Vec coordinates) {
         //TODO: Implement this, for now, act as a simple circle
-        Vec v = coordinates.minus(getCircleCenter().v).normalize().mult(getRadius().value);
-        return getCircleCenter().v.add(v);
+        logger.warn("Hold coordinates not fully implemented yet for CTCircleArc");
+        Vec v = coordinates.minus(getCircleCenter()).normalize().mult(getCircleRadius().getValue());
+        return getCircleCenter().add(v).getVec();
 
     }
 }

@@ -17,8 +17,8 @@
 package com.jmathanim.Utils.Layouts;
 
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.AbstractMathGroup;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
 
 import java.util.Random;
@@ -110,16 +110,16 @@ public class RandomLayout extends GroupLayout {
     }
 
     @Override
-    public void executeLayout(MathObjectGroup group) {
+    public void executeLayout(AbstractMathGroup<?> group) {
         Vec v;
         if (center != null) {
             v = center.v;
         } else {
-            v = group.getCenter().v;
+            v = group.getCenter();
         }
 
-        for (MathObject obj : group) {
-            obj.moveTo(Point.at(v.add(getRandomVector())));
+        for (MathObject<?> obj : group) {
+            obj.moveTo(v.add(getRandomVector()));
         }
 
     }

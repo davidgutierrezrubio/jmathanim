@@ -25,6 +25,14 @@ package com.jmathanim.Utils;
 public interface Boxable {
 
 	Rect getBoundingBox();
+	/**
+	 * Return center of object, intented by default as the center of bounding box.
+	 *
+	 * @return Vec object with center
+	 */
+	default Vec getCenter() {
+		return this.getBoundingBox().getCenter();
+	}
 
 	boolean isEmpty();
 

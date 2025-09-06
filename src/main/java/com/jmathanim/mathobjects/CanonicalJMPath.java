@@ -18,6 +18,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,7 +48,7 @@ public class CanonicalJMPath {
 
     public MultiShapeObject createMultiShape(MathObject obj) {
         MODrawProperties mpCopy = null;
-        MultiShapeObject msh = new MultiShapeObject();
+        MultiShapeObject msh = MultiShapeObject.make();
         if (obj != null) {
             mpCopy = obj.getMp().copy();
             msh.getMp().copyFrom(mpCopy);
@@ -154,7 +155,7 @@ public class CanonicalJMPath {
             if (alpha > 0 && alpha < 1) {
                 // Interpolate
                 JMPathPoint interp = resul.interpolateBetweenTwoPoints(k, alpha);
-                interp.isThisSegmentVisible = true;
+                interp.setThisSegmentVisible(true);
             }
 
             ArrayList<JMPathPoint> subList = new ArrayList<>();
@@ -162,10 +163,10 @@ public class CanonicalJMPath {
                 k--;
             }
             for (int n = 0; n < k + 1; n++) {
-                subList.add(resul.jmPathPoints.get(n));
+                subList.add(resul.getJmPathPoints().get(n));
             }
-            resul.jmPathPoints.clear();
-            resul.jmPathPoints.addAll(subList);
+            resul.getJmPathPoints().clear();
+            resul.getJmPathPoints().addAll(subList);
         }
         return resul;
 

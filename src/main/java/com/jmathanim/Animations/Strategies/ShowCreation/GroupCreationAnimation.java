@@ -19,9 +19,10 @@ package com.jmathanim.Animations.Strategies.ShowCreation;
 
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.ShowCreation;
+import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.Point;
 
 /**
  *
@@ -32,7 +33,7 @@ public class GroupCreationAnimation extends AnimationGroup implements CreationSt
 
     public GroupCreationAnimation(double runtime, MathObjectGroup group) {
         super();
-        for (MathObject obj : group.getObjects()) {
+        for (MathObject<?> obj : group.getObjects()) {
            add(new ShowCreation(runtime, obj));
         }
       addDelayEffect(.2);
@@ -63,11 +64,11 @@ public class GroupCreationAnimation extends AnimationGroup implements CreationSt
 //    }
 
     @Override
-    public void setPencilPosition(Point previous, Point current) {
+    public void setPencilPosition(Coordinates previous, Coordinates current) {
     }
 
     @Override
-    public Point[] getPencilPosition() {
+    public Vec[] getPencilPosition() {
         return null;
     }
 

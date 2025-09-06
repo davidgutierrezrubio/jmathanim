@@ -17,36 +17,31 @@
  */
 package com.jmathanim.mathobjects.updateableObjects;
 
+import com.jmathanim.Enum.BooleanOperation;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.Stateable;
 
 /**
- *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class BooleanShape extends Shape {
 
-    private Operation operation;
-
-    public enum Operation {
-        UNION, INTERSECTION, SUBSTRACTION
-    }
-
     Shape shape1, shape2;
+    private BooleanOperation booleanOperation;
 
-    public BooleanShape(Operation operation, Shape shape1, Shape shape2) {
+    public BooleanShape(BooleanOperation booleanOperation, Shape shape1, Shape shape2) {
         this.shape1 = shape1;
         this.shape2 = shape2;
-        this.operation = operation;
+        this.booleanOperation = booleanOperation;
     }
 
     @Override
     public void update(JMathAnimScene scene) {
         super.update(scene);
         JMPath newPath = null;
-        switch (this.operation) {
+        switch (this.booleanOperation) {
             case UNION:
                 newPath = shape1.getUnionPath(shape2);
                 break;
@@ -69,21 +64,19 @@ public class BooleanShape extends Shape {
 
     @Override
     public Shape copy() {
-        BooleanShape copy = new BooleanShape(this.operation, shape1.copy(), shape2.copy());
+        BooleanShape copy = new BooleanShape(this.booleanOperation, shape1.copy(), shape2.copy());
         copy.copyStateFrom(this);
         return this;
     }
 
     @Override
-    public void copyStateFrom(MathObject obj) {
-         super.copyStateFrom(obj);
-        if (obj instanceof BooleanShape) {
-            BooleanShape bs = (BooleanShape) obj;
-            this.shape1.copyStateFrom(bs.shape1);
-            this.shape2.copyStateFrom(bs.shape2);
-            this.operation = bs.operation;
-
-        }
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof BooleanShape)) return;
+        super.copyStateFrom(obj);
+        BooleanShape bs = (BooleanShape) obj;
+        this.shape1.copyStateFrom(bs.shape1);
+        this.shape2.copyStateFrom(bs.shape2);
+        this.booleanOperation = bs.booleanOperation;
     }
 
 }

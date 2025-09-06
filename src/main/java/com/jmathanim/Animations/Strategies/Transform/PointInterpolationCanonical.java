@@ -18,7 +18,9 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.DivideOnSensiblePointsStrategy;
+import com.jmathanim.Animations.Strategies.Transform.Optimizers.SimpleConnectedPathsOptimizationStrategy;
 import com.jmathanim.Styling.JMColor;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.*;
 
 import java.util.ArrayList;
@@ -29,12 +31,12 @@ import java.util.Comparator;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class PointInterpolationCanonical extends TransformStrategy {
+public class PointInterpolationCanonical extends TransformStrategy<AbstractShape<?>> {
 
-    private final Shape destinyCopy;
-    private final Shape shOrigin;
-    private final Shape shDestiny;
-    private final Shape shIntermediate;
+    private final AbstractShape<?> destinyCopy;
+//    private final AbstractShape<?> shOrigin;
+//    private final AbstractShape<?> shDestiny;
+//    private final AbstractShape<?> shIntermediate;
     public CanonicalJMPath connectedOrigin, connectedDst, connectedOriginaRawCopy;
     private final ArrayList<Shape> addedAuxiliaryObjectsToScene;
 //    private final Shape mobjDestinyOrig;
@@ -50,15 +52,15 @@ public class PointInterpolationCanonical extends TransformStrategy {
      * @param origin Origin shape
      * @param destiny Destinty Shape
      */
-    public PointInterpolationCanonical(double runtime, Shape origin, Shape destiny) {
+    public PointInterpolationCanonical(double runtime, AbstractShape<?> origin, AbstractShape<?> destiny) {
         super(runtime);
         this.setOrigin(origin);
         this.setIntermediate(new Shape());
         this.setDestiny(destiny);
         this.destinyCopy = new Shape();
-        this.shOrigin = origin;
-        this.shDestiny = destiny;
-        this.shIntermediate = (Shape) getIntermediateObject();
+//        this.shOrigin = origin;
+//        this.shDestiny = destiny;
+//        this.shIntermediate = (Shape) getIntermediateObject();
         this.addedAuxiliaryObjectsToScene = new ArrayList<>();
     }
 
@@ -73,24 +75,26 @@ public class PointInterpolationCanonical extends TransformStrategy {
         // Prepare paths.
         // First, if any of the shapes is empty, do nothing
 
-        if ((shIntermediate.size() == 0) || (shDestiny.size() == 0)) {
+        if ((getIntermediateObject().isEmpty()) || (destinyCopy.isEmpty())) {
             return false;
         }
 
         // I ensure they have the same number of points
         // and be in connected components form.
         // Remove consecutive hidden vertices, in case.
-        this.shIntermediate.getPath().distille();
+        this.getIntermediateObject().getPath().distille();
         this.destinyCopy.getPath().distille();
+
+
         if (optimizeStrategy == null) {
             optimizeStrategy = new DivideOnSensiblePointsStrategy();
 //            optimizeStrategy = new DivideEquallyStrategy();
         }
-        optimizeStrategy.optimizePaths(shIntermediate, destinyCopy);
-        optimizeStrategy.optimizePaths(destinyCopy, shIntermediate);
+        optimizeStrategy.optimizePaths(getIntermediateObject(), destinyCopy);
+        optimizeStrategy.optimizePaths(destinyCopy, getIntermediateObject());
 
 //        originalShapeBaseCopy = intermediate.copy();
-        preparePaths(shIntermediate.getPath(), destinyCopy.getPath());
+        preparePaths();
         if (DEBUG_COLORS) {
             for (int n = 0; n < connectedOrigin.getNumberOfPaths(); n++) {
                 Shape sh = new Shape(connectedOrigin.get(n));
@@ -100,12 +104,12 @@ public class PointInterpolationCanonical extends TransformStrategy {
             }
 
         }
-        shIntermediate.getPath().clear();
-        shIntermediate.getPath().addJMPointsFrom(connectedOrigin.toJMPath());
+        getIntermediateObject().getPath().clear();
+        getIntermediateObject().getPath().addJMPointsFrom(connectedOrigin.toJMPath());
 
         // Jump paths
-        Point origCenter = this.getOriginObject().getCenter();
-        Point dstCenter = this.getDestinyObject().getCenter();
+        Vec origCenter = this.getOriginObject().getCenter();
+        Vec dstCenter = this.getDestinyObject().getCenter();
         prepareJumpPath(origCenter, dstCenter, getIntermediateObject());
         return true;
     }
@@ -125,29 +129,29 @@ public class PointInterpolationCanonical extends TransformStrategy {
             JMPath fromPath = connectedOriginaRawCopy.get(numConnected);
             JMPath toPath = connectedDst.get(numConnected);
             for (int n = 0; n < convertedPath.size(); n++) {
-                interPoint = convertedPath.jmPathPoints.get(n);
-                basePoint = fromPath.jmPathPoints.get(n);
-                dstPoint = toPath.jmPathPoints.get(n);
+                interPoint = convertedPath.getJmPathPoints().get(n);
+                basePoint = fromPath.getJmPathPoints().get(n);
+                dstPoint = toPath.getJmPathPoints().get(n);
 
                 // Interpolate point
-                interPoint.p.v.x = (1 - lt) * basePoint.p.v.x + lt * dstPoint.p.v.x;
-                interPoint.p.v.y = (1 - lt) * basePoint.p.v.y + lt * dstPoint.p.v.y;
-                interPoint.p.v.z = (1 - lt) * basePoint.p.v.z + lt * dstPoint.p.v.z;
+                interPoint.getV().x = (1 - lt) * basePoint.getV().x + lt * dstPoint.getV().x;
+                interPoint.getV().y = (1 - lt) * basePoint.getV().y + lt * dstPoint.getV().y;
+                interPoint.getV().z = (1 - lt) * basePoint.getV().z + lt * dstPoint.getV().z;
 
                 // Interpolate control point 1
-                interPoint.cpExit.v.x = (1 - lt) * basePoint.cpExit.v.x + lt * dstPoint.cpExit.v.x;
-                interPoint.cpExit.v.y = (1 - lt) * basePoint.cpExit.v.y + lt * dstPoint.cpExit.v.y;
-                interPoint.cpExit.v.z = (1 - lt) * basePoint.cpExit.v.z + lt * dstPoint.cpExit.v.z;
+                interPoint.getvExit().x = (1 - lt) * basePoint.getvExit().x + lt * dstPoint.getvExit().x;
+                interPoint.getvExit().y = (1 - lt) * basePoint.getvExit().y + lt * dstPoint.getvExit().y;
+                interPoint.getvExit().z = (1 - lt) * basePoint.getvExit().z + lt * dstPoint.getvExit().z;
 
                 // Interpolate control point 2
-                interPoint.cpEnter.v.x = (1 - lt) * basePoint.cpEnter.v.x + lt * dstPoint.cpEnter.v.x;
-                interPoint.cpEnter.v.y = (1 - lt) * basePoint.cpEnter.v.y + lt * dstPoint.cpEnter.v.y;
-                interPoint.cpEnter.v.z = (1 - lt) * basePoint.cpEnter.v.z + lt * dstPoint.cpEnter.v.z;
+                interPoint.getvEnter().x = (1 - lt) * basePoint.getvEnter().x + lt * dstPoint.getvEnter().x;
+                interPoint.getvEnter().y = (1 - lt) * basePoint.getvEnter().y + lt * dstPoint.getvEnter().y;
+                interPoint.getvEnter().z = (1 - lt) * basePoint.getvEnter().z + lt * dstPoint.getvEnter().z;
             }
 
         }
         if (isShouldInterpolateStyles()) {
-            getIntermediateObject().getMp().interpolateFrom(getOriginObject().getMp(), getOriginObject().getMp(), lt);
+         getIntermediateObject().getMp().interpolateFrom(getOriginObject().getMp(), getDestinyObject().getMp(), lt);
         }
 
         // Transform effects
@@ -159,10 +163,19 @@ public class PointInterpolationCanonical extends TransformStrategy {
      * Creates connectedOrigin and connectedDst, two paths in their
      * canonicalforms (and array of simple connected open paths)
      *
-     * @param pathTransformed F
-     * @param pathDestiny
      */
-    private void preparePaths(JMPath pathTransformed, JMPath pathDestiny) {
+    private void preparePaths() {
+
+
+        //If shapes are simple (closed, 1 component) we can do a previous extra optimization, cycling points
+        int n1 = getIntermediateObject().getPath().getNumberOfConnectedComponents();
+        int n2 = destinyCopy.getPath().getNumberOfConnectedComponents();
+        if ((n1==0)&&(n2==0)) {
+            SimpleConnectedPathsOptimizationStrategy strategy=new SimpleConnectedPathsOptimizationStrategy(getIntermediateObject(),destinyCopy);
+            strategy.optimizePaths(getIntermediateObject(),destinyCopy);
+        }
+        JMPath pathTransformed=getIntermediateObject().getPath();
+        JMPath pathDestiny=destinyCopy.getPath();
 
         connectedOrigin = pathTransformed.canonicalForm();
         connectedDst = pathDestiny.canonicalForm();
@@ -182,8 +195,14 @@ public class PointInterpolationCanonical extends TransformStrategy {
         if ((connectedOrigin.getNumberOfPaths() == 0) || (connectedDst.getNumberOfPaths() == 0)) {
             return;
         }
+        //Ensure that both paths have the same number of elements, interpolating if necessary
 
         alignNumberOfComponents(connectedOrigin, connectedDst);
+
+
+
+
+
         connectedOriginaRawCopy = new CanonicalJMPath();
         for (JMPath p : connectedOrigin.getPaths()) {
             connectedOriginaRawCopy.add(p.copy());
@@ -191,8 +210,8 @@ public class PointInterpolationCanonical extends TransformStrategy {
         // Mark all points as curved during the transform
         for (int numConnected = 0; numConnected < this.connectedDst.getNumberOfPaths(); numConnected++) {
             JMPath convertedPath = connectedOrigin.get(numConnected);
-            for (JMPathPoint p : convertedPath.jmPathPoints) {
-                p.isCurved = true;
+            for (JMPathPoint p : convertedPath.getJmPathPoints()) {
+                p.setCurved(true);
             }
 
         }
@@ -230,15 +249,15 @@ public class PointInterpolationCanonical extends TransformStrategy {
 //                throw new Exception("Paths should have at least 2 points!");
 //            }
             // Last point of conSmall
-            Point p = conSmall.get(n - 1).getJMPointAt(-1).p;
+            Vec v = conSmall.get(n - 1).getJMPointAt(-1).getV();
 
             // Create a dummy path with sizePathToAdd points, all equal
             JMPath pa = new JMPath();
             for (int k = 0; k < sizePathToAdd; k++) {
-                JMPathPoint jmp = JMPathPoint.curveTo(p.copy());
+                JMPathPoint jmp = JMPathPoint.curveTo(v.copy());
                 pa.addJMPoint(jmp);
             }
-            pa.jmPathPoints.get(0).isThisSegmentVisible = false;
+            pa.getJmPathPoints().get(0).setThisSegmentVisible(false);
             // Add the new path created
             conSmall.add(pa);
         }

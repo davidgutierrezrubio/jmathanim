@@ -26,8 +26,8 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.AbstractJMImage;
+import com.jmathanim.mathobjects.AbstractShape;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.surface.Surface;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.GLCapabilities;
@@ -90,9 +90,11 @@ public class JOGLRenderer extends Renderer {
     }
 
     @Override
-    public void drawPath(Shape mobj, Camera camera) {
-        queue.addToQueue(mobj);
+    public void drawPath(AbstractShape<?> mobj, Vec shiftVector, Camera camera) {
+        queue.addToQueue(mobj);//TODO: SHiftvector is not passed trhough queue
     }
+
+
 
     @Override
     protected BufferedImage getRenderedImage(int frameCount) {
@@ -187,6 +189,7 @@ public class JOGLRenderer extends Renderer {
 
     @Override
     public void clearAndPrepareCanvasForAnotherFrame() {
+        super.clearAndPrepareCanvasForAnotherFrame();
         //This should delete the JOGL queue
 //        JMathAnimScene.logger.info("JOGLRenderer: Clear frame");
     }
@@ -197,7 +200,7 @@ public class JOGLRenderer extends Renderer {
     }
 
     @Override
-    public void drawPath(Shape mobj) {
+    public void drawPath(AbstractShape<?> mobj) {
         //This should create JOGL objects and add them to the queue
 //        JMathAnimScene.logger.info("JOGLRenderer: Drawing path");
 //        queue.addShapeFill(mobj);
@@ -205,7 +208,7 @@ public class JOGLRenderer extends Renderer {
     }
 
     @Override
-    public void drawAbsoluteCopy(Shape sh, Vec anchor) {
+    public void drawAbsoluteCopy(AbstractShape<?> sh, Vec anchor) {
         drawPath(sh);//TODO: Fix this
     }
 
@@ -214,7 +217,7 @@ public class JOGLRenderer extends Renderer {
     }
 
     @Override
-    public void drawImage(AbstractJMImage obj, Camera cam) {
+    public void drawImage(AbstractJMImage<?> obj, Camera cam) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

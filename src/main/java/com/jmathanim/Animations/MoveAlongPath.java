@@ -17,10 +17,13 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.Anchor.Type;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.JMPath;
+import com.jmathanim.mathobjects.JMPathPoint;
+import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Shape;
 
 /**
  * This class animates an object moving it through a given path. An anchor
@@ -33,7 +36,7 @@ public class MoveAlongPath extends Animation {
 
     private final JMPath path;
     private final MathObject mobjTransformed;
-    private final Type anchorType;
+    private final AnchorType anchorType;
     boolean shouldRotate;
     boolean parametrized;
 
@@ -55,7 +58,7 @@ public class MoveAlongPath extends Animation {
      * segments.
      * @return The created animation
      */
-    public static MoveAlongPath make(double runtime, JMPath path, MathObject mobjTransformed, Type anchorType, boolean shouldRotate, boolean parametrized) {
+    public static MoveAlongPath make(double runtime, JMPath path, MathObject mobjTransformed, AnchorType anchorType, boolean shouldRotate, boolean parametrized) {
         MoveAlongPath resul = new MoveAlongPath(runtime, path, mobjTransformed, anchorType, shouldRotate, parametrized);
         return resul;
     }
@@ -78,12 +81,12 @@ public class MoveAlongPath extends Animation {
      * segments.
      * @return The created animation
      */
-    public static MoveAlongPath make(double runtime, Shape sh, MathObject mobjTransformed, Type anchorType, boolean shouldRotate, boolean parametrized) {
+    public static MoveAlongPath make(double runtime, Shape sh, MathObject mobjTransformed, AnchorType anchorType, boolean shouldRotate, boolean parametrized) {
         MoveAlongPath resul = new MoveAlongPath(runtime, sh.getPath(), mobjTransformed, anchorType, shouldRotate, parametrized);
         return resul;
     }
 
-    private MoveAlongPath(double runtime, JMPath path, MathObject mobjTransformed, Type anchorType, boolean shouldRotate, boolean parametrized) {
+    private MoveAlongPath(double runtime, JMPath path, MathObject mobjTransformed, AnchorType anchorType, boolean shouldRotate, boolean parametrized) {
         super(runtime);
         this.path = path;
         this.mobjTransformed = mobjTransformed;
@@ -104,13 +107,13 @@ public class MoveAlongPath extends Animation {
         super.doAnim(t);
         double lt = getLT(t);
         restoreStates(mobjTransformed);
-        Point destinyPoint = (parametrized ? path.getParametrizedPointAt(lt) : path.getJMPointAt(lt).p);
-        Point anchPoint = Anchor.getAnchorPoint(mobjTransformed, anchorType);
-        mobjTransformed.shift(anchPoint.to(destinyPoint));
+        Vec destinyPoint = (parametrized ? path.getParametrizedVecAt(lt) : path.getJMPointAt(lt).getV());
+        Vec anchPoint = Anchor.getAnchorPoint(mobjTransformed, anchorType);
+        mobjTransformed.shift(destinyPoint.minus(anchPoint));
 
         if (shouldRotate) {
             JMPathPoint pp = path.getJMPointAt(lt);
-            Vec tangent = pp.p.to(pp.cpExit);
+            Vec tangent = pp.getvExit().minus(pp.getV());
             mobjTransformed.rotate(destinyPoint, tangent.getAngle());
         }
     }

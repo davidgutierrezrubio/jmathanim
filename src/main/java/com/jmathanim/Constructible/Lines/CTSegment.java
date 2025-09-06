@@ -17,10 +17,9 @@
  */
 package com.jmathanim.Constructible.Lines;
 
-import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.hasScalarParameter;
 
@@ -29,21 +28,13 @@ import com.jmathanim.mathobjects.hasScalarParameter;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTSegment extends CTAbstractLine implements hasScalarParameter {
-
-    protected final CTPoint B;
-    protected final CTPoint A;
+public class CTSegment extends CTAbstractLine<CTSegment> implements hasScalarParameter {
     private final Shape segmentToDraw;
 
-    /**
-     * Creates a Constructible segment between 2 points
-     *
-     * @param A First point
-     * @param B Second point
-     * @return The created object
-     */
-    public static CTSegment make(Point A, Point B) {
-        return CTSegment.make(CTPoint.make(A), CTPoint.make(B));
+
+    private CTSegment(Coordinates<?> A, Coordinates<?> B) {
+        super(A, B);
+        segmentToDraw = Shape.segment(P1draw, P2draw);
     }
 
     /**
@@ -53,22 +44,14 @@ public class CTSegment extends CTAbstractLine implements hasScalarParameter {
      * @param B Second point
      * @return The created object
      */
-    public static CTSegment make(CTPoint A, CTPoint B) {
+    public static CTSegment make(Coordinates A, Coordinates B) {
         CTSegment resul = new CTSegment(A, B);
         resul.rebuildShape();
         return resul;
     }
 
-    private CTSegment(CTPoint A, CTPoint B) {
-        super();
-        this.A = A;
-        this.B = B;
-        segmentToDraw = Shape.segment(this.A.getMathObject().copy(), this.B.getMathObject().copy());
-    }
-
     /**
-     * Creates a Constructible line from a Shape, considering only first and
-     * last point
+     * Creates a Constructible line from a Shape, considering only first and last point
      *
      * @param shape Shape object
      * @return The created object
@@ -79,7 +62,7 @@ public class CTSegment extends CTAbstractLine implements hasScalarParameter {
 
     @Override
     public CTSegment copy() {
-        CTSegment copy = CTSegment.make(this.A.copy(), this.B.copy());
+        CTSegment copy = CTSegment.make(getP1().getVec().copy(), getP2().getVec().copy());
         copy.copyStateFrom(this);
         return copy;
     }
@@ -87,11 +70,11 @@ public class CTSegment extends CTAbstractLine implements hasScalarParameter {
     @Override
     public Vec getHoldCoordinates(Vec coordinates) {
         Vec v1 = getDirection().normalize();
-        Vec v2 = coordinates.minus(getP1().v);
+        Vec v2 = coordinates.minus(getP1());
         double dotProd = v1.dot(v2);
         dotProd = Math.max(dotProd, 0);
         dotProd = Math.min(dotProd, getDirection().norm());
-        return getP1().v.add(v1.mult(dotProd));
+        return getP1().add(v1.mult(dotProd)).getVec();
     }
 
     @Override
@@ -101,31 +84,31 @@ public class CTSegment extends CTAbstractLine implements hasScalarParameter {
 
     @Override
     public void rebuildShape() {
-        this.P1.v.copyFrom(this.A.v);
-        this.P2.v.copyFrom(this.B.v);
+        this.P1.copyCoordinatesFrom(getP1().getVec());
+        this.P2.copyCoordinatesFrom(getP2().getVec());
         if (!isFreeMathObject()) {
-            segmentToDraw.get(0).p.v.copyFrom(this.P1.v);
-            segmentToDraw.get(1).p.v.copyFrom(this.P2.v);
+            segmentToDraw.get(0).getV().copyCoordinatesFrom(this.P1);
+            segmentToDraw.get(1).getV().copyCoordinatesFrom(this.P2);
         }
     }
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, this.A, this.B);
+        dependsOn(scene, getP1(), getP2());
     }
 
     @Override
     public String toString() {
-        return String.format("CTSegment[" + this.A.getObjectLabel() + ", " + this.B.getObjectLabel() + "]");
+        return String.format("CTSegment[" + getP1().getVec() + ", " + getP2().getVec() + "]");
     }
 
     @Override
-    public double getScalar() {
+    public double getValue() {
         return getP1().to(getP2()).norm();
     }
 
     @Override
-    public void setScalar(double scalar) {
+    public void setValue(double scalar) {
         //Cannot change
     }
 }

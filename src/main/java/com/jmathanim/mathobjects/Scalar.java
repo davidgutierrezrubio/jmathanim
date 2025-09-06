@@ -32,19 +32,19 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  */
 public class Scalar extends Constructible implements hasScalarParameter{
 
-    public double value;
+    protected double value;
 
     public static Scalar make(double scalar) {
         return new Scalar(scalar);
     }
 
     private Scalar(double scalar) {
-        this.value = scalar;
+        this.setValue(scalar);
     }
 
     @Override
     public Scalar copy() {
-        double sc = this.value;
+        double sc = this.getValue();
         return new Scalar(sc);
     }
 
@@ -54,23 +54,24 @@ public class Scalar extends Constructible implements hasScalarParameter{
     }
 
     @Override
-    public Rect computeBoundingBox() {
+    protected Rect computeBoundingBox() {
         return new EmptyRect();// Nothing
     }
 
     @Override
     public String toString() {
-        return "Scalar{" + "value=" + value + '}';
+        return "Scalar{" + "value=" + getValue() + '}';
     }
 
     @Override
-    public void copyStateFrom(MathObject obj) {
+    public void copyStateFrom(Stateable obj) {
+
          super.copyStateFrom(obj);
         if (!(obj instanceof Scalar)) {
             return;
         }
         Scalar sc = (Scalar) obj;
-        this.value = sc.value;
+        this.setValue(sc.getValue());
     }
 
     @Override
@@ -88,12 +89,12 @@ public class Scalar extends Constructible implements hasScalarParameter{
     }
 
     @Override
-    public double getScalar() {
+    public double getValue() {
         return value;
     }
 
     @Override
-    public void setScalar(double scalar) {
+    public void setValue(double scalar) {
         value=scalar;
     }
 

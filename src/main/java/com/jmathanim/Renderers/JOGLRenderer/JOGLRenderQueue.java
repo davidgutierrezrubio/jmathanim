@@ -70,7 +70,7 @@ public class JOGLRenderQueue implements GLEventListener {
     public int frameCount;
     public JOGLRenderer renderer;
     JMathAnimConfig config;
-    ArrayList<MathObject> objectsToDraw;
+    ArrayList<MathObject<?>> objectsToDraw;
     //Shaders and uniform variables
     //Shader that draws thin, rounded cap lines
     ShaderLoader thinLinesShader;
@@ -188,7 +188,7 @@ public class JOGLRenderQueue implements GLEventListener {
             PaintStyle backgroundColor = config.getBackgroundColor();
             if (backgroundColor instanceof JMColor) {
                 JMColor col = (JMColor) backgroundColor;
-                gl4.glClearColor((float) col.r, (float) col.g, (float) col.b, (float) col.getAlpha());
+                gl4.glClearColor((float) col.getRed(), (float) col.getGreen(), (float) col.getBlue(), (float) col.getAlpha());
             }
             gl4.glClear(GL4.GL_COLOR_BUFFER_BIT | GL4.GL_DEPTH_BUFFER_BIT | GL4.GL_STENCIL_BUFFER_BIT);
 
@@ -475,9 +475,9 @@ public class JOGLRenderQueue implements GLEventListener {
         float alpha = 1;
         if (st instanceof JMColor) {
             JMColor col = (JMColor) st;
-            r = (float) col.r;
-            g = (float) col.g;
-            b = (float) col.b;
+            r = (float) col.getRed();
+            g = (float) col.getGreen();
+            b = (float) col.getBlue();
             alpha = (float) col.getAlpha();
         }
         return new float[]{r, g, b, alpha};

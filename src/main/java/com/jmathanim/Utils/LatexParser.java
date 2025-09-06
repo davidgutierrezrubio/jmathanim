@@ -16,8 +16,9 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.Enum.LatexTokenType;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Text.AbstractLaTeXMathObject;
+import com.jmathanim.mathobjects.Text.AbstractLatexMathObject;
 import org.scilab.forge.jlatexmath.*;
 
 import java.lang.reflect.Field;
@@ -37,7 +38,7 @@ public class LatexParser implements Iterable<LatexToken> {
 
     public final ArrayList<Box> boxes;
     private final ArrayList<LatexToken> assignedTokens;
-    private final AbstractLaTeXMathObject latex;
+    private final AbstractLatexMathObject latex;
     private final ArrayList<LatexToken> tokens;
     public TeXIcon icon;
     public List<MiddleAtom> list;
@@ -65,7 +66,7 @@ public class LatexParser implements Iterable<LatexToken> {
     private boolean configDistilleDotSign = true;
 
 
-    public LatexParser(AbstractLaTeXMathObject latex) {
+    public LatexParser(AbstractLatexMathObject latex) {
         this.latex = latex;
         this.list = new ArrayList<>();
         this.boxes = new ArrayList<>();
@@ -144,7 +145,7 @@ public class LatexParser implements Iterable<LatexToken> {
             //If first token is a "minus" it should be treated always as part of a number
             LatexToken firstToken = getTokens().get(0);
             if ("minus".equals(firstToken.getString())) {
-                firstToken.setType(LatexToken.TokenType.NUMBER);
+                firstToken.setType(LatexTokenType.NUMBER);
             }
         }
 
@@ -154,15 +155,15 @@ public class LatexParser implements Iterable<LatexToken> {
             LatexToken token = getTokens().get(i);
             LatexToken prevToken = getTokens().get(i - 1);
             if (configDistilleDotSign) {
-                if (token.getType() == LatexToken.TokenType.NUMBER) {
+                if (token.getType() == LatexTokenType.NUMBER) {
                     if ("normaldot".equals(prevToken.getString())) {
-                        prevToken.setType(LatexToken.TokenType.NUMBER);
+                        prevToken.setType(LatexTokenType.NUMBER);
                     }
                 }
                 //If a dot is next to a NON_MATH_CHAR, we assume it is also a non math char
                 if ("normaldot".equals(token.getString())) {
-                    if (prevToken.getType() == LatexToken.TokenType.NON_MATH_CHAR) {
-                        token.setType(LatexToken.TokenType.NON_MATH_CHAR);
+                    if (prevToken.getType() == LatexTokenType.NON_MATH_CHAR) {
+                        token.setType(LatexTokenType.NON_MATH_CHAR);
                     }
                 }
             }
@@ -174,17 +175,17 @@ public class LatexParser implements Iterable<LatexToken> {
                 //preceded by sqrt token
                 if ("minus".equals(token.getString())) {
                     if ("comma".equals(prevToken.getString())) {
-                        token.setType(LatexToken.TokenType.NUMBER);
+                        token.setType(LatexTokenType.NUMBER);
                     }
-                    for (LatexToken.TokenType tokenType : Arrays.asList(
-                            LatexToken.TokenType.DELIMITER,
-                            LatexToken.TokenType.RELATION,
-                            LatexToken.TokenType.FRACTION_BAR,
-                            LatexToken.TokenType.SQRT,
-                            LatexToken.TokenType.ARROW
+                    for (LatexTokenType latexTokenType : Arrays.asList(
+                            LatexTokenType.DELIMITER,
+                            LatexTokenType.RELATION,
+                            LatexTokenType.FRACTION_BAR,
+                            LatexTokenType.SQRT,
+                            LatexTokenType.ARROW
                     )) {
-                        if (prevToken.getType() == tokenType) {
-                            token.setType(LatexToken.TokenType.NUMBER);
+                        if (prevToken.getType() == latexTokenType) {
+                            token.setType(LatexTokenType.NUMBER);
                         }
                     }
                 }
@@ -269,7 +270,7 @@ public class LatexParser implements Iterable<LatexToken> {
             classField.setAccessible(true);
             String str = (String) classField.get(javaFontRenderingAtom);
 
-            LatexToken.TokenType type = LatexToken.TokenType.CHAR;
+            LatexTokenType type = LatexTokenType.CHAR;
             addTokenToList(type, str);
 
             return;
@@ -318,8 +319,8 @@ public class LatexParser implements Iterable<LatexToken> {
 
         if (atom instanceof CharAtom) {
             CharAtom charAtom = (CharAtom) atom;
-            LatexToken.TokenType type;
-            type = (isMathMode ? LatexToken.TokenType.CHAR : LatexToken.TokenType.NON_MATH_CHAR);
+            LatexTokenType type;
+            type = (isMathMode ? LatexTokenType.CHAR : LatexTokenType.NON_MATH_CHAR);
 
             String name = "" + charAtom.getCharacter();
             addTokenToList(type, name);
@@ -327,7 +328,7 @@ public class LatexParser implements Iterable<LatexToken> {
         }
         if (atom instanceof SymbolAtom) {
             SymbolAtom symbolAtom = (SymbolAtom) atom;
-            LatexToken.TokenType type = LatexToken.TokenType.SYMBOL;
+            LatexTokenType type = LatexTokenType.SYMBOL;
             String name = symbolAtom.getName();
 
             addTokenToList(type, name);
@@ -337,7 +338,7 @@ public class LatexParser implements Iterable<LatexToken> {
         if (atom instanceof BigDelimiterAtom) {
             BigDelimiterAtom bigDelimiterAtom = (BigDelimiterAtom) atom;
             //Secondary type is stablished later, when assigning tokens from box list.
-            addTokenToList(LatexToken.TokenType.SYMBOL, bigDelimiterAtom.delim.getName());
+            addTokenToList(LatexTokenType.SYMBOL, bigDelimiterAtom.delim.getName());
             return;
         }
 
@@ -372,8 +373,8 @@ public class LatexParser implements Iterable<LatexToken> {
             classField.setAccessible(true);
             parseAtom(classField.get(nthRoot));
 
-//            tokens.add(new LatexToken(LatexToken.TokenType.SQRT, "sqrt"));//TODO: IMPROVE
-            addTokenToList(LatexToken.TokenType.SQRT, "sqrt");
+//            tokens.add(new LatexToken(TokenType.SQRT, "sqrt"));//TODO: IMPROVE
+            addTokenToList(LatexTokenType.SQRT, "sqrt");
             classField = NthRoot.class.getDeclaredField("base");
             classField.setAccessible(true);
             parseAtom(classField.get(nthRoot));
@@ -389,7 +390,7 @@ public class LatexParser implements Iterable<LatexToken> {
             parseAtom(classField.get(fractionAtom));
             deactivateSecondaryBit(LatexToken.SEC_NUMERATOR);
 
-            addTokenToList(LatexToken.TokenType.FRACTION_BAR, "fractionRule");
+            addTokenToList(LatexTokenType.FRACTION_BAR, "fractionRule");
 
             classField = FractionAtom.class.getDeclaredField("denominator");
             classField.setAccessible(true);
@@ -436,7 +437,7 @@ public class LatexParser implements Iterable<LatexToken> {
             OverlinedAtom overlinedAtom = (OverlinedAtom) atom;
 
             this.takesStyleFromNextFlag = true;
-            addTokenToList(LatexToken.TokenType.SYMBOL, "overbar");
+            addTokenToList(LatexTokenType.SYMBOL, "overbar");
             this.takesStyleFromNextFlag = false;
 
             classField = OverlinedAtom.class.getDeclaredField("base");
@@ -472,12 +473,12 @@ public class LatexParser implements Iterable<LatexToken> {
 
             if (over) {
                 this.takesStyleFromNextFlag = true;
-                addTokenToList(LatexToken.TokenType.DELIMITER, arrowTypeName);
+                addTokenToList(LatexTokenType.DELIMITER, arrowTypeName);
                 this.takesStyleFromNextFlag = false;
                 parseAtom(base);
             } else {
                 parseAtom(base);
-                addTokenToList(LatexToken.TokenType.DELIMITER, arrowTypeName);
+                addTokenToList(LatexTokenType.DELIMITER, arrowTypeName);
             }
         }
 
@@ -599,14 +600,14 @@ public class LatexParser implements Iterable<LatexToken> {
 
     }
 
-    protected void addTokenToList(LatexToken.TokenType type, String name) {
-        if (type == LatexToken.TokenType.CHAR) {
+    protected void addTokenToList(LatexTokenType type, String name) {
+        if (type == LatexTokenType.CHAR) {
             switch (modifier) {
                 case TYPED:
-                    type = LatexToken.TokenType.NAMED_FUNCTION;
+                    type = LatexTokenType.NAMED_FUNCTION;
                     break;
                 case RAW_TEXT:
-                    type = LatexToken.TokenType.NON_MATH_CHAR;
+                    type = LatexTokenType.NON_MATH_CHAR;
                     break;
             }
         }
@@ -815,7 +816,7 @@ public class LatexParser implements Iterable<LatexToken> {
     }
 
     private boolean tokenIsNonMathChar(LatexToken token, String letter) {
-        return ((token.getType() == LatexToken.TokenType.NON_MATH_CHAR) && (letter.equals(token.getString())));
+        return ((token.getType() == LatexTokenType.NON_MATH_CHAR) && (letter.equals(token.getString())));
     }
 
     public void addAssignedTokenToList(LatexToken token) {
@@ -940,7 +941,7 @@ public class LatexParser implements Iterable<LatexToken> {
                 );
                 break;
             case "vert":
-                token.setType(LatexToken.TokenType.DELIMITER);
+                token.setType(LatexTokenType.DELIMITER);
                 scanBigDelimiter(token,
                         8, 106,//Normal (LR)
                         0, 0, //\big (LR)
@@ -954,7 +955,7 @@ public class LatexParser implements Iterable<LatexToken> {
                 );
                 break;
             case "Vert":
-                token.setType(LatexToken.TokenType.DELIMITER);
+                token.setType(LatexTokenType.DELIMITER);
                 scanBigDelimiter(token,
                         8, 107,//Normal (LR)
                         0, 0, //\big (LR)
@@ -1053,7 +1054,7 @@ public class LatexParser implements Iterable<LatexToken> {
                 );
                 break;
             case "overrightarrow":
-                token.setType(LatexToken.TokenType.ARROW);
+                token.setType(LatexTokenType.ARROW);
                 token.activateSecondaryFlag(LatexToken.SEC_RIGHT_ARROW);
                 scanBigDelimiter(token,
                         8, 33, //Normal
@@ -1086,7 +1087,7 @@ public class LatexParser implements Iterable<LatexToken> {
 
                 break;
             case "overleftrightarrow":
-                token.setType(LatexToken.TokenType.ARROW);
+                token.setType(LatexTokenType.ARROW);
                 token.activateSecondaryFlag(LatexToken.SEC_LEFTRIGHT_ARROW);
                 scanBigDelimiter(token,
                         8, 33, //Normal FIX THIS
@@ -1125,7 +1126,7 @@ public class LatexParser implements Iterable<LatexToken> {
         Box b = boxes.get(boxCounter);
         if (compareCharFont(b, cfStart, cStart)) {
             token.activateSecondaryFlag(LatexToken.SEC_LEFT_ARROW);
-            token.setType(LatexToken.TokenType.ARROW);
+            token.setType(LatexTokenType.ARROW);
             assignedTokens.add(token);
             boxCounter++;
             b = boxes.get(boxCounter);

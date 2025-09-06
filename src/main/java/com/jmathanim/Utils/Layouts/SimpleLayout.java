@@ -17,9 +17,10 @@
  */
 package com.jmathanim.Utils.Layouts;
 
-import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Enum.AnchorType;
+import com.jmathanim.Enum.LayoutType;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.MathObjectGroup;
+import com.jmathanim.mathobjects.AbstractMathGroup;
 import com.jmathanim.mathobjects.Point;
 
 /**
@@ -30,135 +31,135 @@ import com.jmathanim.mathobjects.Point;
 public class SimpleLayout extends GroupLayout {
 
 	private final double horizontalGap;
-	private final MathObjectGroup.Layout layout;
+	private final LayoutType layoutType;
 	private final double verticalGap;
 	private final Point refPoint;
 
 	/**
 	 * Creates a simple layout
 	 *
-	 * @param layout Layout to apply. A value from the enum MathObjectGroup.Layout:
+	 * @param layoutType Layout to apply. A value from the enum Layout:
 	 *               CENTER, RIGHT, LEFT, UPPER, LOWER, URIGHT, ULEFT, DRIGHT,
 	 *               DLEFT, RUPPER, LUPPER, RLOWER, LLOWER, DIAG1, DIAG2, DIAG3,
 	 *               DIAG4
 	 * @param hgap   Horizontal gap between elements
 	 * @param vgap   Vertical gap between elements
 	 */
-	public SimpleLayout(MathObjectGroup.Layout layout, double hgap, double vgap) {
-		this(null, layout, hgap, vgap);
+	public SimpleLayout(LayoutType layoutType, double hgap, double vgap) {
+		this(null, layoutType, hgap, vgap);
 	}
 
 	/**
 	 * Creates a simple layout, starting from a reference point
 	 *
 	 * @param refPoint Reference point
-	 * @param layout   Layout to apply. A value from the enum
-	 *                 MathObjectGroup.Layout: CENTER, RIGHT, LEFT, UPPER, LOWER,
+	 * @param layoutType   Layout to apply. A value from the enum
+	 *                 Layout: CENTER, RIGHT, LEFT, UPPER, LOWER,
 	 *                 URIGHT, ULEFT, DRIGHT, DLEFT, RUPPER, LUPPER, RLOWER, LLOWER,
 	 *                 DIAG1, DIAG2, DIAG3, DIAG4
 	 * @param hgap     Horizontal gap between elements
 	 * @param vgap     Vertical gap between elements
 	 */
-	public SimpleLayout(Point refPoint, MathObjectGroup.Layout layout, double hgap, double vgap) {
-		this.layout = layout;
+	public SimpleLayout(Point refPoint, LayoutType layoutType, double hgap, double vgap) {
+		this.layoutType = layoutType;
 		this.horizontalGap = hgap;
 		this.verticalGap = vgap;
 		this.refPoint = refPoint;
 	}
 
 	@Override
-	public void executeLayout(MathObjectGroup group) {
-		Anchor.Type anchor1 = Anchor.Type.CENTER;
-		Anchor.Type anchor2 = Anchor.Type.CENTER;
+	public void executeLayout(AbstractMathGroup<?> group) {
+		AnchorType anchor1 = AnchorType.CENTER;
+		AnchorType anchor2 = AnchorType.CENTER;
 
 		double hgap = 0;
 		double vgap = 0;
-		switch (layout) {
+		switch (layoutType) {
 		case CENTER:
-			anchor1 = Anchor.Type.CENTER;
-			anchor2 = Anchor.Type.CENTER;
+			anchor1 = AnchorType.CENTER;
+			anchor2 = AnchorType.CENTER;
 			break;
 		case RIGHT:
-			anchor1 = Anchor.Type.LEFT;
-			anchor2 = Anchor.Type.RIGHT;
+			anchor1 = AnchorType.LEFT;
+			anchor2 = AnchorType.RIGHT;
 			hgap = this.horizontalGap;
 			break;
 		case LEFT:
-			anchor1 = Anchor.Type.RIGHT;
-			anchor2 = Anchor.Type.LEFT;
+			anchor1 = AnchorType.RIGHT;
+			anchor2 = AnchorType.LEFT;
 			hgap = this.horizontalGap;
 			break;
 		case UPPER:
-			anchor1 = Anchor.Type.LOWER;
-			anchor2 = Anchor.Type.UPPER;
+			anchor1 = AnchorType.LOWER;
+			anchor2 = AnchorType.UPPER;
 			vgap = this.verticalGap;
 			break;
 		case LOWER:
-			anchor1 = Anchor.Type.UPPER;
-			anchor2 = Anchor.Type.LOWER;
+			anchor1 = AnchorType.UPPER;
+			anchor2 = AnchorType.LOWER;
 			vgap = this.verticalGap;
 			break;
 		case URIGHT:
-			anchor1 = Anchor.Type.ULEFT;
-			anchor2 = Anchor.Type.URIGHT;
+			anchor1 = AnchorType.LEFT_AND_ALIGNED_UPPER;
+			anchor2 = AnchorType.RIGHT_AND_ALIGNED_UPPER;
 			hgap = this.horizontalGap;
 			break;
 		case ULEFT:
-			anchor1 = Anchor.Type.URIGHT;
-			anchor2 = Anchor.Type.ULEFT;
+			anchor1 = AnchorType.RIGHT_AND_ALIGNED_UPPER;
+			anchor2 = AnchorType.LEFT_AND_ALIGNED_UPPER;
 			hgap = this.horizontalGap;
 			break;
 		case DRIGHT:
-			anchor1 = Anchor.Type.DLEFT;
-			anchor2 = Anchor.Type.DRIGHT;
+			anchor1 = AnchorType.LEFT_AND_ALIGNED_LOWER;
+			anchor2 = AnchorType.RIGHT_AND_ALIGNED_LOWER;
 			hgap = this.horizontalGap;
 			break;
 		case DLEFT:
-			anchor1 = Anchor.Type.DRIGHT;
-			anchor2 = Anchor.Type.DLEFT;
+			anchor1 = AnchorType.RIGHT_AND_ALIGNED_LOWER;
+			anchor2 = AnchorType.LEFT_AND_ALIGNED_LOWER;
 			hgap = this.horizontalGap;
 			break;
 		case RUPPER:
-			anchor1 = Anchor.Type.DRIGHT;
-			anchor2 = Anchor.Type.URIGHT;
+			anchor1 = AnchorType.RIGHT_AND_ALIGNED_LOWER;
+			anchor2 = AnchorType.RIGHT_AND_ALIGNED_UPPER;
 			vgap = this.verticalGap;
 			break;
 		case LUPPER:
-			anchor1 = Anchor.Type.DLEFT;
-			anchor2 = Anchor.Type.ULEFT;
+			anchor1 = AnchorType.LEFT_AND_ALIGNED_LOWER;
+			anchor2 = AnchorType.LEFT_AND_ALIGNED_UPPER;
 			vgap = this.verticalGap;
 			break;
 		case RLOWER:
-			anchor1 = Anchor.Type.URIGHT;
-			anchor2 = Anchor.Type.DRIGHT;
+			anchor1 = AnchorType.RIGHT_AND_ALIGNED_UPPER;
+			anchor2 = AnchorType.RIGHT_AND_ALIGNED_LOWER;
 			vgap = this.verticalGap;
 			break;
 		case LLOWER:
-			anchor1 = Anchor.Type.ULEFT;
-			anchor2 = Anchor.Type.DLEFT;
+			anchor1 = AnchorType.LEFT_AND_ALIGNED_UPPER;
+			anchor2 = AnchorType.LEFT_AND_ALIGNED_LOWER;
 			vgap = this.verticalGap;
 			break;
 		case DIAG1:
-			anchor1 = Anchor.Type.DLEFT;
-			anchor2 = Anchor.Type.URIGHT;
+			anchor1 = AnchorType.LEFT_AND_ALIGNED_LOWER;
+			anchor2 = AnchorType.RIGHT_AND_ALIGNED_UPPER;
 			vgap = this.verticalGap;
 			hgap = this.horizontalGap;
 			break;
 		case DIAG2:
-			anchor1 = Anchor.Type.DRIGHT;
-			anchor2 = Anchor.Type.ULEFT;
+			anchor1 = AnchorType.RIGHT_AND_ALIGNED_LOWER;
+			anchor2 = AnchorType.LEFT_AND_ALIGNED_UPPER;
 			vgap = this.verticalGap;
 			hgap = this.horizontalGap;
 			break;
 		case DIAG3:
-			anchor1 = Anchor.Type.URIGHT;
-			anchor2 = Anchor.Type.DLEFT;
+			anchor1 = AnchorType.RIGHT_AND_ALIGNED_UPPER;
+			anchor2 = AnchorType.LEFT_AND_ALIGNED_LOWER;
 			vgap = this.verticalGap;
 			hgap = this.horizontalGap;
 			break;
 		case DIAG4:
-			anchor1 = Anchor.Type.ULEFT;
-			anchor2 = Anchor.Type.DRIGHT;
+			anchor1 = AnchorType.LEFT_AND_ALIGNED_UPPER;
+			anchor2 = AnchorType.RIGHT_AND_ALIGNED_LOWER;
 			vgap = this.verticalGap;
 			hgap = this.horizontalGap;
 			break;
@@ -167,10 +168,20 @@ public class SimpleLayout extends GroupLayout {
 			break;
 		}
 		if (this.refPoint != null) {
-			group.get(0).stackTo(anchor1, this.refPoint, Anchor.Type.CENTER, hgap, vgap);
+//			group.get(0).stackTo(anchor1, this.refPoint, AnchorType.CENTER, hgap, vgap);
+			group.get(0).stack()
+					.withGaps(hgap,vgap)
+					.withOriginAnchor(anchor1)
+					.withDestinyAnchor(AnchorType.CENTER)
+					.toObject(this.refPoint);
 		}
 		for (int n = 1; n < group.size(); n++) {
-			group.get(n).stackTo(anchor1, group.get(n - 1), anchor2, hgap, vgap);
+//			group.get(n).stackTo(anchor1, group.get(n - 1), anchor2, hgap, vgap);
+			group.get(n).stack()
+					.withGaps(hgap,vgap)
+					.withOriginAnchor(anchor1)
+					.withDestinyAnchor(anchor2)
+					.toObject(group.get(n - 1));
 		}
 	}
 
@@ -178,9 +189,9 @@ public class SimpleLayout extends GroupLayout {
 	@SuppressWarnings("unchecked")
 	public SimpleLayout copy() {
 		if (refPoint != null) {
-			return new SimpleLayout(refPoint.copy(), layout, verticalGap, verticalGap);
+			return new SimpleLayout(refPoint.copy(), layoutType, verticalGap, verticalGap);
 		} else {
-			return new SimpleLayout(layout, verticalGap, verticalGap);
+			return new SimpleLayout(layoutType, verticalGap, verticalGap);
 		}
 	}
 

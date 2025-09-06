@@ -19,35 +19,75 @@ package com.jmathanim.Constructible.Conics;
 
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.PointOwner;
-import com.jmathanim.Constructible.Points.CTPoint;
-import com.jmathanim.mathobjects.Scalar;
-import com.jmathanim.mathobjects.hasScalarParameter;
+import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.*;
 
 /**
  * An abstract class representing a Constructible circle or similar
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class CTAbstractCircle extends Constructible implements hasScalarParameter,PointOwner {
+public abstract class CTAbstractCircle<T extends CTAbstractCircle<T>> extends Constructible<T> implements PointOwner {
+
+    private final Shape circleToDraw;
+    private final JMPath originalUnitCirclePath;
+    protected Scalar abstractCircleRadius;
+    private final Vec abstractCircleCenter;
+
+
+    protected CTAbstractCircle(Coordinates<?> abstractCircleCenter, Scalar abstractCircleRadius) {
+        this.abstractCircleCenter = abstractCircleCenter.getVec();
+        this.abstractCircleRadius = abstractCircleRadius;
+        circleToDraw = new Shape();
+        originalUnitCirclePath = Shape.circle().getPath();
+    }
 
     /**
      * Returns the geometrical center of the circle or similar
+     *
      * @return a newly created CTpoint with the coordinates of center
      */
-    public abstract CTPoint getCircleCenter();
+    public final Coordinates<?> getCircleCenter() {
+        return abstractCircleCenter;
+    }
+
+    public final void setCircleCenter(Coordinates<?> center) {
+        abstractCircleCenter.copyCoordinatesFrom(center.getVec());
+    }
 
     /**
      * Retruns the radius of the circle or similar
+     *
      * @return A newly created Scalar object containing the radius
      */
-    public abstract Scalar getRadius();
+    public final Scalar getCircleRadius() {
+        return abstractCircleRadius;
+    }
 
-    @Override
-    public double getScalar() {
-        return getRadius().value;
+    public final void setCircleRadius(Scalar radius) {
+        abstractCircleRadius.setValue(radius.getValue());
+    }
+
+    public final void setCircleRadius(double radius) {
+        abstractCircleRadius = Scalar.make(radius);
     }
 
     @Override
-    public void setScalar(double scalar) {
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof CTAbstractCircle)) return;
+        super.copyStateFrom(obj);
+        CTAbstractCircle<?> ct = (CTAbstractCircle<?>) obj;
+        this.setCircleCenter(ct.getCircleCenter());
+        this.abstractCircleCenter.copyCoordinatesFrom(ct.getCircleCenter());
+        this.abstractCircleRadius.setValue(ct.getCircleRadius().getValue());
+    }
+
+    protected JMPath getOriginalUnitCirclePath() {
+        return originalUnitCirclePath;
+    }
+
+    @Override
+    public Shape getMathObject() {
+        return circleToDraw;
     }
 }

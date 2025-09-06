@@ -16,6 +16,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
 import javafx.scene.shape.StrokeLineCap;
@@ -74,7 +75,7 @@ public interface StyleHookable {
      *
      * @param style New dash style
      */
-    void on_setDashStyle(MODrawProperties.DashStyle style);
+    void on_setDashStyle(DashStyle style);
 
     void on_setLineCap(StrokeLineCap linecap);
 

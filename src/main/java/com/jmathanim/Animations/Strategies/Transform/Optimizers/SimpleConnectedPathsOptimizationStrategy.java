@@ -17,8 +17,8 @@
  */
 package com.jmathanim.Animations.Strategies.Transform.Optimizers;
 
+import com.jmathanim.mathobjects.AbstractShape;
 import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.Shape;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,15 +29,15 @@ import java.util.Collections;
  */
 public class SimpleConnectedPathsOptimizationStrategy implements OptimizePathsStrategy {
 
-	Shape sh1, sh2;
+	AbstractShape<?> sh1, sh2;
 
-	public SimpleConnectedPathsOptimizationStrategy(Shape sh1, Shape sh2) {
+	public SimpleConnectedPathsOptimizationStrategy(AbstractShape<?> sh1, AbstractShape<?> sh2) {
 		this.sh1 = sh1;
 		this.sh2 = sh2;
 	}
 
 	@Override
-	public void optimizePaths(Shape shape1, Shape shape2) {
+	public void optimizePaths(AbstractShape<?> shape1, AbstractShape<?> shape2) {
 		JMPath pa1c = shape1.getPath().copy();
 		JMPath pa2 = shape2.getPath();
 		int direction = pa1c.getOrientation() * pa2.getOrientation();
@@ -59,7 +59,7 @@ public class SimpleConnectedPathsOptimizationStrategy implements OptimizePathsSt
 	private double SumDistancesBetweenPaths(JMPath pa1, JMPath pa2) {
 		double dist = 0;
 		for (int n = 0; n < pa1.size(); n++) {
-			dist += pa1.jmPathPoints.get(n).p.to(pa2.jmPathPoints.get(n).p).norm();
+			dist += pa1.getJmPathPoints().get(n).getV().to(pa2.getJmPathPoints().get(n).getV()).norm();
 		}
 		return dist;
 	}

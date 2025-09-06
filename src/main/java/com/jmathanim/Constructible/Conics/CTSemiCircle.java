@@ -17,13 +17,10 @@
  */
 package com.jmathanim.Constructible.Conics;
 
-import com.jmathanim.Constructible.Constructible;
-import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.Shape;
 
@@ -34,24 +31,13 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTSemiCircle extends CTAbstractCircle{
+public class CTSemiCircle extends CTAbstractCircle<CTSemiCircle>{
 
     private final Shape arcTODraw;
     private final Shape arcTODrawOrig;
-    private final CTPoint B;
-    private final CTPoint A;
+    private final Vec B;
+    private final Vec A;
 
-    /**
-     * Overloaded method. Creates a Constructible semicircle from 2 given
-     * points. The semicircle will run clockwise from first to second point
-     *
-     * @param A First point
-     * @param B Second point
-     * @return The created object
-     */
-    public static CTSemiCircle make(Point A, Point B) {
-        return make(CTPoint.make(A), CTPoint.make(B));
-    }
 
     /**
      * Creates a Constructible semicircle from 2 given points. The semicircle
@@ -61,29 +47,27 @@ public class CTSemiCircle extends CTAbstractCircle{
      * @param B Second point
      * @return The created object
      */
-    public static CTSemiCircle make(CTPoint A, CTPoint B) {
+    public static CTSemiCircle make(Coordinates<?> A, Coordinates<?> B) {
         CTSemiCircle resul = new CTSemiCircle(A, B);
         resul.rebuildShape();
         return resul;
     }
 
-    private CTSemiCircle(CTPoint A, CTPoint B) {
-        this.A = A;
-        this.B = B;
+    private CTSemiCircle(Coordinates<?> A, Coordinates<?> B) {
+        super(Vec.to(0,0), Scalar.make(0));
+        this.A = A.getVec();
+        this.B = B.getVec();
         arcTODraw = Shape.arc(PI);
         arcTODrawOrig = Shape.arc(PI);
     }
 
     @Override
-    public CTPoint getCircleCenter() {
-        final Vec vv = A.v.interpolate(B.v, .5);
-        return CTPoint.at(vv.x, vv.y);
-    }
-
-    @Override
     public Vec getHoldCoordinates(Vec coordinates) {
         //Map A and B to (1,0) and (-1,0)
-        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(B.getMathObject(), A.getMathObject(), Point.at(1, 0), Point.at(-1, 0), 1);
+        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(
+                B, A,
+                Vec.to(1, 0),
+                Vec.to(-1, 0), 1);
         Vec v = coordinates.applyAffineTransform(tr);
         if (v.x <= - 1) {
             v.x = -1;
@@ -98,17 +82,12 @@ public class CTSemiCircle extends CTAbstractCircle{
     }
 
     @Override
-    public Scalar getRadius() {
-        return Scalar.make(.5 * A.to(B).norm());
-    }
-
-    @Override
-    public MathObject getMathObject() {
+    public Shape getMathObject() {
         return arcTODraw;
     }
 
     @Override
-    public Constructible copy() {
+    public CTSemiCircle copy() {
         CTSemiCircle copy = new CTSemiCircle(A.copy(), B.copy());
         copy.getMp().copyFrom(getMp());
         return copy;
@@ -116,10 +95,13 @@ public class CTSemiCircle extends CTAbstractCircle{
 
     @Override
     public void rebuildShape() {
-        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(Point.at(-1, 0), Point.at(1, 0), new Point(A.v), new Point(B.v), 1);
+        setCircleCenter(A.interpolate(B,.5));
+        setCircleRadius(A.to(B).norm());
+        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(Vec.to(-1, 0), Vec.to(1, 0),
+                A, B, 1);
         if (!isFreeMathObject()) {
             for (int i = 0; i < arcTODraw.size(); i++) {
-                arcTODraw.get(i).copyFrom(arcTODrawOrig.get(i));
+                arcTODraw.get(i).copyControlPointsFrom(arcTODrawOrig.get(i));
             }
             arcTODraw.applyAffineTransform(tr);
         }

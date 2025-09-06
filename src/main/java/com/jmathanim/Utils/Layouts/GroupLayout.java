@@ -17,8 +17,9 @@
  */
 package com.jmathanim.Utils.Layouts;
 
-import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Enum.InnerAnchorType;
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.mathobjects.AbstractMathGroup;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Shape;
@@ -34,7 +35,7 @@ import java.util.ArrayList;
 public abstract class GroupLayout {
 
     private final ArrayList<double[]> backupGaps;
-    private Anchor.innerType innerAnchor;
+    private InnerAnchorType innerAnchor;
     private double ugap, rgap, logap, lgap;
 
     public GroupLayout() {
@@ -57,7 +58,7 @@ public abstract class GroupLayout {
      * @param group The MathObjectGroup to which the layout logic will
      *              be applied.
      */
-    protected abstract void executeLayout(MathObjectGroup group);
+    protected abstract void executeLayout(AbstractMathGroup<?> group);
 
     /**
      * Applies the layout configuration to the specified MathObjectGroup.
@@ -66,7 +67,7 @@ public abstract class GroupLayout {
      *
      * @param group The MathObjectGroup to which the layout is applied.
      */
-    public final void applyLayout(MathObjectGroup group) {
+    public final void applyLayout(AbstractMathGroup<?> group) {
         if (innerAnchor != null) {//Should homogeneize bounding boxes first
             saveGaps(group);
             group.homogeneizeBoundingBoxes(innerAnchor, rgap, ugap, logap, logap);
@@ -77,14 +78,14 @@ public abstract class GroupLayout {
         }
     }
 
-    private void saveGaps(MathObjectGroup group) {
+    private void saveGaps(AbstractMathGroup<?> group) {
         backupGaps.clear();
         for (MathObject ob : group) {
             backupGaps.add(ob.getGaps());
         }
     }
 
-    private void restoreGaps(MathObjectGroup group) {
+    private void restoreGaps(AbstractMathGroup<?> group) {
         for (int i = 0; i < group.size(); i++) {
             double[] gaps = backupGaps.get(i);
             group.get(i).setGaps(
@@ -111,7 +112,7 @@ public abstract class GroupLayout {
      * @param leftGap  Left gap to add
      * @return This object
      */
-    public <T extends GroupLayout> T homogenize(Anchor.innerType anchor, double upperGap, double rightGap, double lowerGap, double leftGap) {
+    public <T extends GroupLayout> T homogenize(InnerAnchorType anchor, double upperGap, double rightGap, double lowerGap, double leftGap) {
         innerAnchor = anchor;
         this.ugap = upperGap;
         this.rgap = rightGap;

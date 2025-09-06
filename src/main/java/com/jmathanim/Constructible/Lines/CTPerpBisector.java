@@ -17,79 +17,53 @@
  */
 package com.jmathanim.Constructible.Lines;
 
-import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Coordinates;
 
 /**
- * A perpendicular bisector of a segment (perpendicular line that pass through
- * midpoint)
+ * A perpendicular bisector of a segment (perpendicular line that pass through midpoint)
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTPerpBisector extends CTAbstractLine {
+public class CTPerpBisector extends CTAbstractLine<CTPerpBisector> {
 
-    protected final CTPoint A;
-    protected final CTPoint B;
-    protected final Line lineToDraw;
+    private Vec A, B;
 
-    public static CTPerpBisector make(Point A, Point B) {
-        CTPerpBisector resul = CTPerpBisector.makePerpBisector(CTPoint.make(A), CTPoint.make(B));
-        resul.rebuildShape();
-        return resul;
+    private CTPerpBisector(Coordinates<?> A, Coordinates<?> B) {
+        super(Vec.to(0,0),Vec.to(1,0));
+        this.A = A.getVec();
+        this.B = B.getVec();
+        rebuildShape();
     }
 
-    public static CTPerpBisector makePerpBisector(CTPoint A, CTPoint B) {
+    public static CTPerpBisector make(Coordinates<?> A, Coordinates<?> B) {
+//        CTPerpBisector resul = CTPerpBisector.makeLengthMeasure(CTPoint.makeLengthMeasure(A), CTPoint.makeLengthMeasure(B));
         CTPerpBisector resul = new CTPerpBisector(A, B);
         resul.rebuildShape();
         return resul;
     }
 
     public static CTPerpBisector make(CTSegment segment) {
-        return makePerpBisector(segment.A, segment.B);
-    }
-
-    private CTPerpBisector(CTPoint A, CTPoint B) {
-        super();
-        this.A = A;
-        this.B = B;
-        lineToDraw = Line.XAxis();
+        return make(segment.getP1(), segment.getP2());
     }
 
     @Override
     public CTPerpBisector copy() {
-        CTPerpBisector copy = CTPerpBisector.makePerpBisector(A.copy(), B.copy());
+        CTPerpBisector copy = CTPerpBisector.make(getP1().getVec().copy(), getP2().getVec().copy());
         copy.copyStateFrom(this);
         return copy;
     }
 
     @Override
     public void rebuildShape() {
-        getP1().v.copyFrom(A.v.interpolate(B.v, .5));
-        Vec v = A.to(B);
-        getP2().v.copyFrom(Vec.to(getP1().v.x - v.y, getP1().v.y + v.x));
-        if (!isFreeMathObject()) {
-            lineToDraw.getP1().v.copyFrom(P1.v);
-            lineToDraw.getP2().v.copyFrom(P2.v);
-        }
-    }
 
-    @Override
-    public MathObject getMathObject() {
-        return lineToDraw;
-    }
+            Vec midPoint=A.getVec().interpolate(B, .5);
+            Vec v = A.to(B);
+//        getP2().copyCoordinatesFrom(Vec.to(getP1().x - v.y, getP1().y + v.x));
+            Vec vOrthogonal = Vec.to(midPoint.x - v.y, midPoint.y + v.x);
+            P1.copyCoordinatesFrom(midPoint);
+            P2.copyCoordinatesFrom(vOrthogonal);
+            super.rebuildShape();
 
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, this.A, this.B);
-    }
-      @Override
-    public Vec getHoldCoordinates(Vec coordinates) {
-        Vec v1 = getDirection().normalize();
-        Vec v2 = coordinates.minus(getP1().v);
-        return(getP1().v.add(v1.mult(v1.dot(v2))));
     }
 }

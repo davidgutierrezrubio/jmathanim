@@ -17,6 +17,9 @@
  */
 package com.jmathanim.Utils.Layouts;
 
+import com.jmathanim.Enum.LayoutType;
+import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.AbstractMathGroup;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
 
@@ -60,7 +63,7 @@ public class HeapLayout extends GroupLayout {
 	}
 
 	@Override
-	public void executeLayout(MathObjectGroup group) {
+	public void executeLayout(AbstractMathGroup<?> group) {
 		center.clear();
 		rightSide.clear();
 		leftSide.clear();
@@ -102,12 +105,12 @@ public class HeapLayout extends GroupLayout {
 			colIndex++;
 		}
 		// Now that I have created the appropiate groups, stack them
-		center.setLayout(MathObjectGroup.Layout.UPPER, this.verticalGap);
+		center.setLayout(LayoutType.UPPER, this.verticalGap);
 		for (MathObjectGroup cols : leftSide) {
-			cols.setLayout(MathObjectGroup.Layout.UPPER, this.verticalGap);
+			cols.setLayout(LayoutType.UPPER, this.verticalGap);
 		}
 		for (MathObjectGroup cols : rightSide) {
-			cols.setLayout(MathObjectGroup.Layout.UPPER, this.verticalGap);
+			cols.setLayout(LayoutType.UPPER, this.verticalGap);
 		}
 
 		// This group holds all objects, grouped by columns
@@ -122,9 +125,9 @@ public class HeapLayout extends GroupLayout {
             whole.add(get);
         }
 		// Stack them horizontally
-		whole.setLayout(MathObjectGroup.Layout.DRIGHT, this.horizontalGap);
+		whole.setLayout(LayoutType.DRIGHT, this.horizontalGap);
 		// Allocates them properly
-		Point a = center.get(0).getBoundingBox().getLower();// The center
+		Vec a = center.get(0).getBoundingBox().getLower();// The center
 		if (this.base != null) {
 			whole.shift(a.to(this.base));
 		}

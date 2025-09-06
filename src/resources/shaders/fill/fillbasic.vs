@@ -1,5 +1,5 @@
 #version 330 core
-layout(location = 0) in vec4 position;
+layoutType(location = 0) in vec4 position;
 uniform int fillType;
 uniform mat4 view;
 uniform mat4 projection;

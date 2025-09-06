@@ -27,7 +27,7 @@ import com.jmathanim.mathobjects.MathObject;
  *
  * @author David
  */
-public class CTImage extends Constructible {
+public class CTImage extends Constructible<CTImage> {
 
     private final JMImage image;
     private final CTPoint A;

@@ -19,11 +19,12 @@ package com.jmathanim.Utils;
 
 import ch.qos.logback.classic.Level;
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Enum.DashStyle;
+import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 
 import java.io.File;
 import java.net.URL;
@@ -303,14 +304,14 @@ public class JMathAnimConfig {
         defaultMP.setFillColor(JMColor.GRAY);
         defaultMP.setFillAlpha(0);// No filling by default
         defaultMP.setThickness(4d);
-        defaultMP.setDashStyle(MODrawProperties.DashStyle.SOLID);
+        defaultMP.setDashStyle(DashStyle.SOLID);
         defaultMP.setAbsoluteThickness(false);
         styles.put("DEFAULT", defaultMP);
 
         MODrawProperties defaultDotMP = new MODrawProperties();
         defaultDotMP.setDrawColor(JMColor.WHITE);
         defaultDotMP.setFillColor(JMColor.GRAY);
-        defaultDotMP.setDotStyle(Point.DotSyle.CIRCLE);
+        defaultDotMP.setDotStyle(DotStyle.CIRCLE);
         defaultDotMP.setThickness(30d);
         styles.put("DOTDEFAULT", defaultMP);
 
@@ -380,7 +381,7 @@ public class JMathAnimConfig {
         return showPreview;
     }
 
-    public MODrawProperties createStyleFrom(Stylable mp, String styleName) {
+    public MODrawProperties createStyleFrom(DrawStyleProperties mp, String styleName) {
         logger.info("Creating style {}", styleName.toUpperCase());
         MODrawProperties mpO = mp.getFirstMP();
         return styles.put(styleName.toUpperCase(), mpO);

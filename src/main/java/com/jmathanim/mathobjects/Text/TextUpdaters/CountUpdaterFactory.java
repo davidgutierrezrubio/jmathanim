@@ -2,7 +2,7 @@ package com.jmathanim.mathobjects.Text.TextUpdaters;
 
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.Text.LaTeXMathObject;
+import com.jmathanim.mathobjects.Text.LatexMathObject;
 import com.jmathanim.mathobjects.updaters.Updater;
 
 import java.lang.reflect.Array;
@@ -13,13 +13,13 @@ public class CountUpdaterFactory extends TextUpdaterFactory{
 
     private final Object objectToCount;
 
-    public CountUpdaterFactory(JMathAnimScene scene, LaTeXMathObject t,Object objectToCount, String format) {
+    public CountUpdaterFactory(JMathAnimScene scene, LatexMathObject t, Object objectToCount, String format) {
         super(scene, format);
         this.objectToCount=objectToCount;
         this.updater=new Updater() {
             @Override
             public void update(JMathAnimScene scene) {
-                t.getArg(0).setScalar(getElementCount(objectToCount));
+                t.getArg(0).setValue(getElementCount(objectToCount));
             }
         };
     }

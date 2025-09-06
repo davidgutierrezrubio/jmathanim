@@ -18,37 +18,37 @@
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
 import com.jmathanim.Animations.Animation;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.Coordinates;
 
 /**
- *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class AbstractCreationStrategy extends Animation implements CreationStrategy{
+public abstract class AbstractCreationStrategy extends Animation implements CreationStrategy {
 
-	private final Point[] pencil;
+    private final Vec[] pencil;
 
-	public AbstractCreationStrategy(double runtime) {
-		super(runtime);
-		this.pencil = new Point[2];
-	}
+    public AbstractCreationStrategy(double runtime) {
+        super(runtime);
+        this.pencil = new Vec[2];
+    }
 
-	/**
-	 * Returns the "pencil" position.
-	 *
-	 * @return An array with 2 point objects. The 0 index stores the previous
-	 *         position of the pencil and 1 stores the current
-	 */
-        @Override
-	public Point[] getPencilPosition() {
-		return pencil;
-	}
+    /**
+     * Returns the "pencil" position.
+     *
+     * @return An array with 2 point objects. The 0 index stores the previous position of the pencil and 1 stores the
+     * current
+     */
+    @Override
+    public Vec[] getPencilPosition() {
+        return pencil;
+    }
 
-        @Override
-	public void setPencilPosition(Point previous, Point current) {
-		pencil[0] = previous;
-		pencil[1] = current;
-	}
-     
+    @Override
+    public void setPencilPosition(Coordinates previous, Coordinates current) {
+        pencil[0] = previous.getVec();
+        pencil[1] = current.getVec();
+    }
+
 
 }

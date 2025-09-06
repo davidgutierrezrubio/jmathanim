@@ -10,8 +10,8 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.AbstractJMImage;
+import com.jmathanim.mathobjects.AbstractShape;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Shape;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -150,11 +150,12 @@ public class SkijaRenderer extends Renderer {
 
     @Override
     public void clearAndPrepareCanvasForAnotherFrame() {
+        super.clearAndPrepareCanvasForAnotherFrame();
         skijaHandler.clearAndPrepareCanvasForAnotherFrame();
     }
 
     @Override
-    public void drawPath(Shape mobj) {
+    public void drawPath(AbstractShape<?> mobj) {
         Camera cam = mobj.getCamera();
         if (cam == null) {
             cam = camera;
@@ -163,12 +164,12 @@ public class SkijaRenderer extends Renderer {
     }
 
     @Override
-    public void drawPath(Shape mobj, Camera camera) {
+    public void drawPath(AbstractShape<?> mobj, Vec shiftVector, Camera camera) {
         skijaHandler.drawPath(mobj, camera);
     }
 
     @Override
-    public void drawAbsoluteCopy(Shape sh, Vec anchor) {
+    public void drawAbsoluteCopy(AbstractShape<?> sh, Vec anchor) {
         skijaHandler.drawAbsoluteCopy(sh, anchor, fixedCamera);
     }
 
@@ -180,7 +181,7 @@ public class SkijaRenderer extends Renderer {
     }
 
     @Override
-    public void drawImage(AbstractJMImage obj, Camera cam) {
+    public void drawImage(AbstractJMImage<?> obj, Camera cam) {
         JMathAnimScene.logger.warn("drawImage not implemented yet, sorry!");
 
     }

@@ -17,28 +17,25 @@
  */
 package com.jmathanim.Constructible.Lines;
 
-import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Coordinates;
 
 /**
  * A CTLine that is the angle bisector of 2 other lines or 3 points
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTAngleBisector extends CTAbstractLine {
+public class CTAngleBisector extends CTAbstractLine<CTAngleBisector> {
 
     private enum LineType {
         PointPointPoint, LineLine
     }
     private LineType bisectorType;
-    CTPoint A;
-    CTPoint B;
-    CTPoint C;
-    private final Line lineToDraw;
-    Point dirPoint;//The second point of the angle bisector. The first is B
+    Vec A;
+    Vec B;
+    Vec C;
+    Vec dirPoint;//The second point of the angle bisector. The first is B
 
     /**
      * Creates the angle bisector of the angle given by 3 points ABC
@@ -48,32 +45,19 @@ public class CTAngleBisector extends CTAbstractLine {
      * @param C Third point
      * @return The created object
      */
-    public static CTAngleBisector make(Point A, Point B, Point C) {
-        return CTAngleBisector.make(CTPoint.make(A), CTPoint.make(B), CTPoint.make(C));
-    }
-
-    /**
-     * Creates the angle bisector of the angle given by 3 points ABC
-     *
-     * @param A First point
-     * @param B Second point (the vertex of the angle)
-     * @param C Third point
-     * @return The created object
-     */
-    public static CTAngleBisector make(CTPoint A, CTPoint B, CTPoint C) {
+    public static CTAngleBisector make(Coordinates<?> A, Coordinates<?> B, Coordinates<?> C) {
         CTAngleBisector resul = new CTAngleBisector(A, B, C);
         resul.bisectorType = LineType.PointPointPoint;
         resul.rebuildShape();
         return resul;
     }
 
-    private CTAngleBisector(CTPoint A, CTPoint B, CTPoint C) {
-        super();
-        this.A = A;
-        this.B = B;
-        this.C = C;
-        dirPoint = Point.origin();
-        lineToDraw = Line.make(B.getMathObject(), dirPoint);
+    private CTAngleBisector(Coordinates<?> A, Coordinates<?> B, Coordinates<?> C) {
+        super(A,B);
+        this.A = A.getVec();
+        this.B = B.getVec();
+        this.C = C.getVec();
+        dirPoint = Vec.to(0,0);
     }
 
     @Override
@@ -84,23 +68,20 @@ public class CTAngleBisector extends CTAbstractLine {
     }
 
     @Override
-    public Line getMathObject() {
-        return lineToDraw;
-    }
-
-    @Override
     public void rebuildShape() {
         switch (bisectorType) {
             case PointPointPoint:
                 Vec vdir = B.to(A).normalize().add(B.to(C).normalize());
-                dirPoint.v.copyFrom(B.getMathObject().add(vdir).v);
-                P1.v.copyFrom(B.v);
-                P2.v.copyFrom(dirPoint.v);
+                dirPoint.copyCoordinatesFrom(B.add(vdir));
+                P1draw.copyCoordinatesFrom(B);
+                P2draw.copyCoordinatesFrom(dirPoint);
                 break;
             case LineLine:
                 //TODO: Implement
+                JMathAnimScene.logger.warn("CTAngleBisector Line-Line not implemente yet. Don't worry we're working at it!");
                 break;
         }
+        lineToDraw.rebuildShape();
     }
 
     @Override
@@ -114,10 +95,4 @@ public class CTAngleBisector extends CTAbstractLine {
         }
     }
 
-    @Override
-    public Vec getHoldCoordinates(Vec coordinates) {
-        Vec v1 = getDirection().normalize();
-        Vec v2 = coordinates.minus(getP1().v);
-        return (getP1().v.add(v1.mult(v1.dot(v2))));
-    }
 }

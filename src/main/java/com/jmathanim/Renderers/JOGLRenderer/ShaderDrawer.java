@@ -25,6 +25,7 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Shape;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL4;
+
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -342,9 +343,9 @@ public class ShaderDrawer {
     private float[] toColor(PaintStyle st) {
         if (st instanceof JMColor) {
             JMColor col = (JMColor) st;
-            float r = (float) col.r;
-            float g = (float) col.g;
-            float b = (float) col.b;
+            float r = (float) col.getRed();
+            float g = (float) col.getGreen();
+            float b = (float) col.getBlue();
             float alpha = (float) col.getAlpha();
             return new float[]{r, g, b, alpha};
         } else {

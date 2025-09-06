@@ -1,11 +1,11 @@
 package com.jmathanim.Renderers.SkijaRenderer;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Styling.PaintStyle;
-import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.AbstractShape;
 import io.github.humbleui.skija.*;
 
 import java.awt.image.BufferedImage;
@@ -37,7 +37,7 @@ public abstract class SkijaHandler {
      * @param mobj Shape to draw
      * @param mat  Transformation matrix
      */
-    protected void drawPath(Shape mobj, Matrix33 mat) {
+    protected void drawPath(AbstractShape<?> mobj, Matrix33 mat) {
         canvas.save();
         canvas.concat(mat);
         applyPaintCommands(mobj);
@@ -47,14 +47,13 @@ public abstract class SkijaHandler {
 
 
 
-    public void drawAbsoluteCopy(Shape sh, Vec anchor,Camera fixedCamera) {
-        Shape shape = sh.copy();
+    public void drawAbsoluteCopy(AbstractShape<?> sh, Vec anchor,Camera fixedCamera) {
         Matrix33 projecToCameraMat = skijaUtils.projectToCamera(retrieveCameraMatrix(sh.getCamera()), anchor, retrieveCameraMatrix(fixedCamera));
 
         drawPath(sh, projecToCameraMat);
     }
 
-    protected void applyPaintCommands(Shape mobj) {
+    protected void applyPaintCommands(AbstractShape<?> mobj) {
         PaintStyle drawStyle = mobj.getMp().getDrawColor();
         PaintStyle fillStyle = mobj.getMp().getFillColor();
         Path path = skijaUtils.convertJMPathToSkijaPath(mobj.getPath());
@@ -91,7 +90,7 @@ public abstract class SkijaHandler {
 
     protected abstract void closeWindow();
 
-    public abstract void drawPath(Shape mobj, Camera camera);
+    public abstract void drawPath(AbstractShape<?> mobj, Camera camera);
 
 
 
@@ -103,9 +102,9 @@ public abstract class SkijaHandler {
         return th / 1066;
     }
 
-    public double ThicknessToMathWidth(Stylable stylable) {
-        Camera cam = (stylable.isAbsoluteThickness() ? fixedCamera : camera);
-        return stylable.getThickness() / 1066 * 4 / cam.getMathView().getWidth();
+    public double ThicknessToMathWidth(DrawStyleProperties drawStyleProperties) {
+        Camera cam = (drawStyleProperties.isAbsoluteThickness() ? fixedCamera : camera);
+        return drawStyleProperties.getThickness() / 1066 * 4 / cam.getMathView().getWidth();
     }
 //
 //    public void saveFrame(int frameCount) {

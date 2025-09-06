@@ -19,7 +19,10 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.DrawStyleProperties;
+import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import javafx.scene.image.Image;
@@ -28,26 +31,32 @@ import javafx.scene.image.Image;
  *
  * @author David
  */
-public abstract class AbstractJMImage extends MathObject {
+public abstract class AbstractJMImage<T extends AbstractJMImage<T>>  extends MathObject<T>  {
 
     protected Rect bbox;
     public boolean preserveRatio = false;
     private boolean cached = false;
     protected AffineJTransform currentViewTransform;
+    private final MODrawProperties mp;
+
 
     public AbstractJMImage() {
         this.currentViewTransform = new AffineJTransform();
+        this.mp = JMathAnimConfig.getConfig().getDefaultMP();
     }
-
+    @Override
+    public DrawStyleProperties getMp() {
+        return mp;
+    }
     
     
     @Override
-    public Rect computeBoundingBox() {
+    protected Rect computeBoundingBox() {
         return bbox.getTransformedRect(currentViewTransform);
     }
 
     @Override
-    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
+    public T applyAffineTransform(AffineJTransform tr) {
         currentViewTransform = currentViewTransform.compose(tr);
         return (T) this;
     }

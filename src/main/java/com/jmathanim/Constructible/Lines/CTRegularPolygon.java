@@ -21,6 +21,7 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
@@ -31,14 +32,14 @@ import java.util.ArrayList;
  *
  * @author David
  */
-public class CTRegularPolygon extends Constructible {
+public class CTRegularPolygon extends Constructible<CTRegularPolygon> {
 
     private final int nSides;
-    private final CTPoint B;
-    private final CTPoint A;
+    private final Coordinates<?> B;
+    private final Coordinates<?> A;
     private final Shape poligonToView;
     private final Shape origPolygon;
-    private final ArrayList<CTPoint> generatedPoints;
+    private final ArrayList<Coordinates<?>> generatedPoints;
 
     /**
      * Creates a new regular polygon from an ArrayList of CTPoints. All but the
@@ -47,7 +48,7 @@ public class CTRegularPolygon extends Constructible {
      * @param generatedPoints ArrayList of generated CTPoints.
      * @return The generated polygon
      */
-    public static CTRegularPolygon makeFromPointList(ArrayList<CTPoint> generatedPoints) {
+    public static CTRegularPolygon makeFromPointList(ArrayList<Coordinates<?>> generatedPoints) {
         CTRegularPolygon resul = new CTRegularPolygon(generatedPoints);
         resul.rebuildShape();
         return resul;
@@ -62,8 +63,8 @@ public class CTRegularPolygon extends Constructible {
      * @param nSides Number of sides
      * @return The created object
      */
-    public static CTRegularPolygon make(CTPoint A, CTPoint B, int nSides) {
-        ArrayList<CTPoint> vertices = new ArrayList<>();
+    public static CTRegularPolygon make(Coordinates<?> A, Coordinates<?> B, int nSides) {
+        ArrayList<Coordinates<?>> vertices = new ArrayList<>();
         vertices.add(A);
         vertices.add(B);
         for (int i = 0; i < nSides - 2; i++) {
@@ -74,29 +75,8 @@ public class CTRegularPolygon extends Constructible {
         return resul;
     }
 
-     /**
-     * Overloaded method. Creates a constructible regular polygon with a side given by 2 points and
-     * a number of side
-     *
-     * @param A First point of side
-     * @param B Second point of side
-     * @param nSides Number of sides
-     * @return The created object
-     */
-    public static CTRegularPolygon make(Point A, Point B, int nSides) {
-        ArrayList<CTPoint> vertices = new ArrayList<>();
-        vertices.add(CTPoint.make(A));
-        vertices.add(CTPoint.make(B));
-        for (int i = 0; i < nSides - 2; i++) {
-            vertices.add(CTPoint.make(new Point()));
-        }
-        CTRegularPolygon resul = makeFromPointList(vertices);
-        resul.rebuildShape();
-        return resul;
-    }
-    
-    
-    private CTRegularPolygon(ArrayList<CTPoint> generatedPoints) {
+
+    private CTRegularPolygon(ArrayList<Coordinates<?>> generatedPoints) {
         super();
         this.generatedPoints = generatedPoints;
         this.nSides = generatedPoints.size();
@@ -106,26 +86,26 @@ public class CTRegularPolygon extends Constructible {
 //        generatedPoints.remove(0);
 //        generatedPoints.add(0,this.B.copy());
 //        generatedPoints.add(0,this.A.copy());
-        Point[] pointsPolToView = generatedPoints.stream().map(t -> t.getMathObject().copy()).toArray(Point[]::new);
+        Coordinates<?>[] pointsPolToView = generatedPoints.toArray(Coordinates<?>[]::new);
         poligonToView = Shape.polygon(pointsPolToView);
         origPolygon = Shape.regularPolygon(nSides).visible(false);//Base polygon q
     }
 
     @Override
-    public MathObject getMathObject() {
+    public MathObject<?> getMathObject() {
         return poligonToView;
     }
 
     @Override
     public void rebuildShape() {
-        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(origPolygon.get(0).p, origPolygon.get(1).p, A.getMathObject(), B.getMathObject(), 1);
+        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(origPolygon.get(0), origPolygon.get(1), A.copy(), B.copy(), 1);
         for (int k = 0; k < nSides; k++) {
-            generatedPoints.get(k).v.copyFrom(origPolygon.get(k).p.v.copy().applyAffineTransform(tr));
+            generatedPoints.get(k).copyCoordinatesFrom(origPolygon.get(k).getV().copy().applyAffineTransform(tr));
         }
 
         if (!isFreeMathObject()) {
             for (int k = 0; k < nSides; k++) {
-                poligonToView.get(k).p.v.copyFrom(generatedPoints.get(k).v);
+                poligonToView.get(k).getV().copyCoordinatesFrom(generatedPoints.get(k));
             }
         }
 

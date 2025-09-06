@@ -17,68 +17,49 @@
  */
 package com.jmathanim.Constructible.Conics;
 
-import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.Coordinates;
+import com.jmathanim.mathobjects.Scalar;
+import com.jmathanim.mathobjects.Stateable;
 
 /**
- * Represents a Circle imported from Geogebra with 2 points (center and another
- * one in the perimeter)
+ * Represents a Circle imported from Geogebra with 2 points (center and another one in the perimeter)
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTCircle extends CTAbstractCircle {
+public class CTCircle extends CTAbstractCircle<CTCircle> {
 
-    @Override
-    public Vec getHoldCoordinates(Vec coordinates) {
-        Vec v=coordinates.minus(getCircleCenter().v).normalize().mult(getRadius().value);
-        return getCircleCenter().v.add(v);
-        
-    }
-
-    private enum CircleType {
-        THREE_POINTS, CENTER_POINT, CENTER_RADIUS
-    }
-
-    private CircleType circleType;
     //Currently Geogebra has these methods to create circles:
     // Circle(point,point)
     // Circle(point,number)
     // Circle(point,Segment)
     // Circle(point,point,point)
-    CTPoint A;//Point of the circle
-    CTPoint B;
-    CTPoint C;
-    protected Scalar radius;
-    protected CTPoint circleCenter;
-    protected final Shape originalCircle;
-    protected final Shape circleToDraw;
+    Vec A;//Point of the circle
+    Vec B;
+    Vec C;
+    private CircleType circleType;
 
-    /**
-     * Creates a constructible circle with given center that pass through P
-     *
-     * @param center Center of circle
-     * @param P Point of circle
-     * @return Created constructible circle
-     */
-    public static CTCircle makeCenterPoint(Point center, Point P) {
-        return makeCenterPoint(CTPoint.make(center), CTPoint.make(P));
+
+    public CTCircle(Coordinates<?> abstractCircleCenter, Scalar abstractCircleRadius) {
+        super(abstractCircleCenter, abstractCircleRadius);
     }
 
+
+
     /**
      * Creates a constructible circle with given center that pass through P
      *
      * @param center Center of circle
-     * @param P Point of circle
+     * @param P      Point of circle
      * @return Created constructible circle
      */
-    public static CTCircle makeCenterPoint(CTPoint center, CTPoint P) {
-        CTCircle resul = new CTCircle();
+    public static CTCircle makeCenterPoint(Coordinates<?> center, Coordinates<?> P) {
+        CTCircle resul = new CTCircle(center, Scalar.make(0));
         resul.circleType = CircleType.CENTER_POINT;
-        resul.circleCenter = center;
-        resul.A = P;
+        resul.setCircleCenter(center);
+        resul.A = P.getVec();
         resul.rebuildShape();
         return resul;
     }
@@ -90,18 +71,7 @@ public class CTCircle extends CTAbstractCircle {
      * @param radius Radius of the circle
      * @return Created constructible circle
      */
-    public static CTCircle makeCenterRadius(Point center, double radius) {
-        return makeCenterRadius(CTPoint.make(center), Scalar.make(radius));
-    }
-
-    /**
-     * Creates a constructible circle with given center and radius
-     *
-     * @param center Center of circle
-     * @param radius Radius of the circle
-     * @return Created constructible circle
-     */
-    public static CTCircle makeCenterRadius(CTPoint center, double radius) {
+    public static CTCircle makeCenterRadius(Coordinates<?> center, double radius) {
         return makeCenterRadius(center, Scalar.make(radius));
     }
 
@@ -112,11 +82,9 @@ public class CTCircle extends CTAbstractCircle {
      * @param radius Radius of the circle
      * @return Created constructible circle
      */
-    public static CTCircle makeCenterRadius(CTPoint center, Scalar radius) {
-        CTCircle resul = new CTCircle();
+    public static CTCircle makeCenterRadius(Coordinates<?> center, Scalar radius) {
+        CTCircle resul = new CTCircle(center, radius);
         resul.circleType = CircleType.CENTER_RADIUS;
-        resul.circleCenter = center;
-        resul.radius = radius;
         resul.rebuildShape();
         return resul;
     }
@@ -129,34 +97,21 @@ public class CTCircle extends CTAbstractCircle {
      * @param C Third point of the circle
      * @return Created constructible circle
      */
-    public static CTCircle make3Points(Point A, Point B, Point C) {
-        return make3Points(CTPoint.make(A), CTPoint.make(B), CTPoint.make(C));
-    }
-
-    /**
-     * Creates a constructible circle through 3 given points
-     *
-     * @param A First point of the circle
-     * @param B Second point of the circle
-     * @param C Third point of the circle
-     * @return Created constructible circle
-     */
-    public static CTCircle make3Points(CTPoint A, CTPoint B, CTPoint C) {
-        CTCircle resul = new CTCircle();
+    public static CTCircle make3Points(Coordinates<?> A, Coordinates<?> B, Coordinates<?> C) {
+        CTCircle resul = new CTCircle(Vec.to(0,0), Scalar.make(0));
         resul.circleType = CircleType.THREE_POINTS;
-        resul.A = A;
-        resul.B = B;
-        resul.C = C;
+        resul.A = A.getVec();
+        resul.B = B.getVec();
+        resul.C = C.getVec();
         resul.rebuildShape();
         return resul;
     }
 
-    protected CTCircle() {
-        super();
-        radius = Scalar.make(0);
-        originalCircle = Shape.circle();
-        circleToDraw = originalCircle.copy();
-        circleCenter = CTPoint.make(Point.at(0, 0));
+    @Override
+    public Vec getHoldCoordinates(Vec coordinates) {
+        Vec v = coordinates.minus(getCircleCenter()).normalize().mult(getCircleRadius().getValue());
+        return getCircleCenter().add(v).getVec();
+
     }
 
     @Override
@@ -164,36 +119,38 @@ public class CTCircle extends CTAbstractCircle {
         CTCircle copy = null;
         switch (circleType) {
             case CENTER_POINT:
-                copy = CTCircle.makeCenterPoint(circleCenter.copy(), A.copy());
+                copy = CTCircle.makeCenterPoint(getCircleCenter().copy(), A.copy());
                 break;
             case THREE_POINTS:
                 copy = CTCircle.make3Points(A.copy(), B.copy(), C.copy());
                 break;
             case CENTER_RADIUS:
-                copy = CTCircle.makeCenterRadius(circleCenter.copy(), radius.copy());
+                copy = CTCircle.makeCenterRadius(getCircleCenter().copy(), getCircleRadius());
         }
         if (copy != null) {
-             copy.copyStateFrom(this);
+            copy.copyStateFrom(this);
         }
         return copy;
     }
 
     @Override
-    public void copyStateFrom(MathObject obj) {
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof CTCircle)) return;
         CTCircle c = (CTCircle) obj;
+        super.copyStateFrom(c);
         switch (circleType) {
             case CENTER_POINT:
-                this.circleCenter = c.getCircleCenter();
-                this.A.copyStateFrom(c.A);
+                this.setCircleCenter(c.getCircleCenter());
+                this.A.copyCoordinatesFrom(c.A);
                 break;
             case THREE_POINTS:
-                this.A.copyStateFrom(c.A);
-                this.B.copyStateFrom(c.B);
-                this.C.copyStateFrom(c.C);
+                this.A.copyCoordinatesFrom(c.A);
+                this.B.copyCoordinatesFrom(c.B);
+                this.C.copyCoordinatesFrom(c.C);
                 break;
             case CENTER_RADIUS:
-                this.circleCenter = c.getCircleCenter();
-                this.radius.copyStateFrom(c.radius);
+                this.setCircleCenter(c.getCircleCenter());
+                this.abstractCircleRadius.copyStateFrom(c.abstractCircleRadius);
         }
         this.circleType = c.circleType;
         super.copyStateFrom(obj);
@@ -204,25 +161,20 @@ public class CTCircle extends CTAbstractCircle {
     public void registerUpdateableHook(JMathAnimScene scene) {
         switch (circleType) {
             case CENTER_POINT:
-                dependsOn(scene, this.circleCenter, this.A);
+                dependsOn(scene, this.getCircleCenter(), this.A);
                 break;
             case THREE_POINTS:
-                dependsOn(scene, this.circleCenter, this.A, this.B, this.C);
+                dependsOn(scene, this.getCircleCenter(), this.A, this.B, this.C);
                 break;
             case CENTER_RADIUS:
-                dependsOn(scene, this.circleCenter, this.radius);
+                dependsOn(scene, this.getCircleCenter(), this.abstractCircleRadius);
         }
     }
 
     @Override
-    public Rect computeBoundingBox() {
+    protected Rect computeBoundingBox() {
         rebuildShape();
-        return circleToDraw.getBoundingBox();
-    }
-
-    @Override
-    public Shape getMathObject() {
-        return circleToDraw;
+        return getMathObject().getBoundingBox();
     }
 
     @Override
@@ -233,44 +185,31 @@ public class CTCircle extends CTAbstractCircle {
 //        circleToDraw.getPath().addJMPointsFrom(originalCircle.copy().getPath());
 
         if (!isFreeMathObject()) {
-            for (int i = 0; i < circleToDraw.size(); i++) {
-                JMPathPoint get = circleToDraw.get(i);
-                get.copyFrom(originalCircle.get(i));
-            }
-            circleToDraw.scale(this.radius.value);
-            circleToDraw.shift(this.circleCenter.v);
+//            for (int i = 0; i < getMathObject().size(); i++) {
+//                JMPathPoint get = getMathObject().get(i);
+//                get.copyControlPointsFrom(getOriginalUnitCirclePath().get(i));
+//            }
+
+            getMathObject().getPath().copyStateFrom(
+                    getOriginalUnitCirclePath().copy()
+                            .scale(this.getCircleRadius().getValue())
+                            .shift(this.getCircleCenter())
+            );
         }
     }
 
     public void computeCircleCenterRadius() {
         switch (circleType) {
             case CENTER_POINT:
-                this.radius.value = circleCenter.getMathObject().to(A.getMathObject()).norm();
+                setCircleRadius(getCircleCenter().to(A).norm());
                 break;
             case THREE_POINTS:
-                findCircleThatPassThroughThreePoints(A.v.x, A.v.y, B.v.x, B.v.y, C.v.x, C.v.y);
+                findCircleThatPassThroughThreePoints(A.x, A.y, B.x, B.y, C.x, C.y);
                 break;
             case CENTER_RADIUS:
-            //Nothing to do, everything is already calculated!
+                //Nothing to do, everything is already calculated!
         }
     }
-
-    @Override
-    public Scalar getRadius() {
-        return radius;
-    }
-
-    @Override
-    public CTPoint getCircleCenter() {
-        return circleCenter;
-    }
-//    @Override
-//    public int getUpdateLevel() {
-//        return Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1;
-//    }
-    // Function to find the circle on
-    // which the given three points lie
-    //Found in https://www.geeksforgeeks.org/equation-of-circle-when-three-points-on-the-circle-are-given/
 
     private void findCircleThatPassThroughThreePoints(double x1, double y1, double x2, double y2, double x3, double y3) {
         double x12 = x1 - x2;
@@ -310,11 +249,21 @@ public class CTCircle extends CTAbstractCircle {
 
         // r is the radius
 //        this.radius = Math.sqrt(sqr_of_r);//this doesn't work
-        this.circleCenter.v.x = h;
-        this.circleCenter.v.y = k;
-        final Vec radd = A.v.minus(this.circleCenter.v);
-        this.radius.value = radd.norm();
+        setCircleCenter(Vec.to(h, k));
+        final Vec radd = A.to(this.getCircleCenter());
+        this.setCircleRadius(radd.norm());
         // Center (h,k)
+    }
+//    @Override
+//    public int getUpdateLevel() {
+//        return Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1;
+//    }
+    // Function to find the circle on
+    // which the given three points lie
+    //Found in https://www.geeksforgeeks.org/equation-of-circle-when-three-points-on-the-circle-are-given/
+
+    private enum CircleType {
+        THREE_POINTS, CENTER_POINT, CENTER_RADIUS
     }
 // This code is contributed by chandan_jnu
 }

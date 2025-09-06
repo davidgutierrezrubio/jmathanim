@@ -18,19 +18,19 @@
 package com.jmathanim.Constructible;
 
 import com.jmathanim.Constructible.Points.CTPoint;
-import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Text.LaTeXMathObject;
+import com.jmathanim.mathobjects.Text.LatexMathObject;
 
 /**
  * A constructible LaTeX expression, anchored to a CTPoint
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTLaTeX extends Constructible {
+public class CTLaTeX extends Constructible<CTLaTeX> {
 
-    private final LaTeXMathObject tex;
-    private final Anchor.Type anchorType;
+    private final LatexMathObject tex;
+    private final AnchorType anchorType;
     private final double gap;
 
     /**
@@ -43,15 +43,15 @@ public class CTLaTeX extends Constructible {
      * @param gap Gap between anchor and text
      * @return The created object
      */
-    public static CTLaTeX make(String text, CTPoint anchor, Anchor.Type anchorType, double gap) {
+    public static CTLaTeX make(String text, CTPoint anchor, AnchorType anchorType, double gap) {
         CTLaTeX resul = new CTLaTeX(text, anchor, anchorType, gap);
         return resul;
     }
     private final CTPoint anchor;
     private boolean visible;
 
-    private CTLaTeX(String text, CTPoint anchor, Anchor.Type anchorType, double gap) {
-        tex = LaTeXMathObject.make(text);
+    private CTLaTeX(String text, CTPoint anchor, AnchorType anchorType, double gap) {
+        tex = LatexMathObject.make(text);
         this.gap = gap;
         this.anchorType = anchorType;
         this.anchor = anchor;
@@ -59,21 +59,27 @@ public class CTLaTeX extends Constructible {
     }
 
     @Override
-    public LaTeXMathObject getMathObject() {
+    public LatexMathObject getMathObject() {
         return tex;
     }
 
     @Override
     public void rebuildShape() {
         if (!isFreeMathObject()) {
-            if (anchor.v.isNaN()) {
+            if (anchor.isNaN()) {
                 //If anchor is NaN point, to prevent the shape to be completely NaN
                 //we made it invisible
                 visible = tex.isVisible();
                 tex.visible(false);
             } else {
                 tex.visible(true);
-                tex.stackTo(anchorType, anchor, Anchor.Type.CENTER, this.gap);
+//                tex.stackTo(anchorType, anchor, AnchorType.CENTER, this.gap);
+                tex.stack()
+                        .withOriginAnchor(anchorType)
+                        .withDestinyAnchor(AnchorType.CENTER)
+                        .withGaps(this.gap, this.gap)
+                        .toObject(anchor);
+
             }
         }
     }

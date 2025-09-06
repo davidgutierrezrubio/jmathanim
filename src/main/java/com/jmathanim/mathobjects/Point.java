@@ -17,16 +17,9 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.apache.commons.math3.linear.RealMatrix;
 
 import java.text.DecimalFormat;
 
@@ -35,29 +28,46 @@ import java.text.DecimalFormat;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Point extends MathObject {
+public class Point extends AbstractPoint<Point> {
 
-    public final Vec v;
-    private Shape dotShape;
 
-    @Override
-    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
-        RealMatrix pRow = new Array2DRowRealMatrix(new double[][]{{1d, v.x, v.y, v.z}});
-        RealMatrix pNew = pRow.multiply(tr.getMatrix());
-
-        v.x = pNew.getEntry(0, 1);
-        v.y = pNew.getEntry(0, 2);
-        v.z = pNew.getEntry(0, 3);
-        tr.applyTransformsToDrawingProperties(this);
-        return (T) this;
+    /**
+     * Creates a new Point with coordinates (0,0,0), with default style.
+     */
+    public Point() {
+        this(0, 0, 0);
     }
 
-    public enum DotSyle {
-        CIRCLE, CROSS, PLUS, RING
+
+    /**
+     * Creates a new point linking coordinates from given vector, with default style.
+     *
+     * @param v Vector with coordinates
+     */
+    public Point(Vec v) {
+        super(v);
     }
 
-    public enum ShadingStyle {
-        NO_SHADING, FLAT, SMOOTH, PHONG, GOURAUD
+    /**
+     * Overloaded method. Creates a new Point with coordinates x,y, with default style. The z coordinates is set to 0.
+     *
+     * @param x x coordinate
+     * @param y y coordinate
+     */
+    public Point(double x, double y) {
+        this(x, y, 0);
+    }
+
+
+    /**
+     * Creates a new Point with coordinates x,y,z, with default style.
+     *
+     * @param x x coordinate
+     * @param y y coordinate
+     * @param z z coordinate
+     */
+    public Point(double x, double y, double z) {
+        super(new Vec(x, y, z));
     }
 
     /**
@@ -70,7 +80,7 @@ public class Point extends MathObject {
     }
 
     public static Point relAt(double x, double y) {
-        return JMathAnimConfig.getConfig().getCamera().getMathView().getRelPoint(x, y);
+        return Point.at(JMathAnimConfig.getConfig().getCamera().getMathView().getRelCoordinates(x, y));
     }
 
     /**
@@ -95,60 +105,18 @@ public class Point extends MathObject {
         return new Point(0, 0, 1);
     }
 
-    public static Point segmentIntersection(Point A, Point B, Point C, Point D) {
+    public static Vec segmentIntersection(Coordinates A, Coordinates B, Coordinates C, Coordinates D) {
         AffineJTransform tr = AffineJTransform.createAffineTransformation(A, B, C, Point.unitX(), Point.unitY(),
                 Point.origin(), 1);
-        Point P = tr.getTransformedObject(D);
-        double r = P.v.x + P.v.y;
-        if ((r >= 1) & (P.v.x >= 0) & (P.v.y >= 0)) {
-            P.v.x /= r;
-            P.v.y /= r;
-            return tr.getInverse().getTransformedObject(P);
+        Vec P = D.getVec().copy().applyAffineTransform(tr);
+        double r = P.x + P.y;
+        if ((r >= 1) & (P.x >= 0) & (P.y >= 0)) {
+            P.x /= r;
+            P.y /= r;
+            return P.applyAffineTransform(tr.getInverse());
         } else {
             return null;
         }
-    }
-
-    /**
-     * Creates a new Point with coordinates (0,0,0), with default style.
-     */
-    public Point() {
-        this(0, 0, 0);
-    }
-
-    /**
-     * Creates a new point copying coordinates from given vector, with default
-     * style.
-     *
-     * @param v Vector with coordinates
-     */
-    public Point(Vec v) {
-        this(v.x, v.y, v.z);
-    }
-
-    /**
-     * Overloaded method. Creates a new Point with coordinates x,y, with default
-     * style. The z coordinates is set to 0.
-     *
-     * @param x x coordinate
-     * @param y y coordinate
-     */
-    public Point(double x, double y) {
-        this(x, y, 0);
-    }
-
-    /**
-     * Creates a new Point with coordinates x,y,z, with default style.
-     *
-     * @param x x coordinate
-     * @param y y coordinate
-     * @param z z coordinate
-     */
-    public Point(double x, double y, double z) {
-        super();
-        this.v = new Vec(x, y, z);
-        this.getMp().loadFromStyle("dotdefault");
-        this.getMp().setAbsoluteThickness(true);
     }
 
     /**
@@ -163,19 +131,30 @@ public class Point extends MathObject {
     }
 
     /**
-     * Returns a new Point with coordinates those of given vector. Vector
-     * coordinates are copied.
+     * Returns a new Point with coordinates those of given vector. Vector object is referenced
      *
-     * @param v Vector with coordinates
+     * @param coords Vector with coordinates
      * @return The new point
      */
-    public static Point at(Vec v) {
-        return new Point(v.x, v.y);
+    public static Point at(Coordinates<?> coords) {
+        Vec v = coords.getVec();
+        return new Point(v);
     }
 
     /**
-     * Static builder. Creates and returns a new point at given coordinates (3d
-     * space).
+     * Returns a new Point with coordinates those of given vector. Vector object is copied
+     *
+     * @param coords Vector with coordinates
+     * @return The new point
+     */
+    public static Point atCopy(Coordinates<?> coords) {
+        Vec v = coords.getVec().copy();
+        return new Point(v);
+    }
+
+
+    /**
+     * Static builder. Creates and returns a new point at given coordinates (3d space).
      *
      * @param x x coordinate
      * @param y y coordinate
@@ -187,117 +166,26 @@ public class Point extends MathObject {
     }
 
     /**
-     * Static builder.Creates and returns a new point at random coordinates,
-     * inside the math view.
+     * Static builder.Creates and returns a new point at random coordinates, inside the math view.
      *
      * @return The created point
      */
     public static Point random() {
-        Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
-        double x = r.xmin + (r.xmax - r.xmin) * Math.random();
-        double y = r.ymin + (r.ymax - r.ymin) * Math.random();
-        return new Point(x, y);
-    }
-
-    @Override
-    public Point getCenter() {
-        return this.copy();
-    }
-
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
-        if (v.isNaN()) {
-//        if ((v.isNaN()) || (this.scene == null))  {
-            return;
-        }
-        dotShape = generateDotShape();//TODO: Do this only when needed
-        dotShape.setAbsoluteSize(this.copy());
-        if (isVisible()) {
-            dotShape.draw(scene, r, cam);
-        }
-        scene.markAsAlreadydrawn(this);
-
-    }
-
-    /**
-     * Stablishes dot style.
-     *
-     * @param dotStyle Style dot. DOT_STYLE_CIRCLE, DOT_STYLE_CROSS,
-     *                 DOT_STYLE_PLUS
-     * @return The object
-     */
-    public Point dotStyle(DotSyle dotStyle) {
-        this.getMp().setDotStyle(dotStyle);
-        return this;
-    }
-
-    private Shape generateDotShape() {
-        double st = scene.getRenderer().ThicknessToMathWidth(this);
-        double th = scene.getRenderer().MathWidthToThickness(st);
-        switch (getMp().getDotStyle()) {
-            case CROSS:
-                dotShape = new Shape();
-                dotShape.getPath().addPoint(Point.at(-1, 1), Point.at(1, -1), Point.at(1, 1), Point.at(-1, -1));
-                dotShape.get(0).isThisSegmentVisible = false;
-                dotShape.get(2).isThisSegmentVisible = false;
-                dotShape.shift(v).scale(.5 * st).drawColor(getMp().getDrawColor()).thickness(.25 * th);
-                break;
-            case PLUS:
-                dotShape = new Shape();
-                dotShape.getPath().addPoint(Point.at(0, 1), Point.at(0, -1), Point.at(1, 0), Point.at(-1, 0));
-                dotShape.get(0).isThisSegmentVisible = false;
-                dotShape.get(2).isThisSegmentVisible = false;
-                dotShape.shift(v).scale(.5 * st).drawColor(getMp().getDrawColor()).thickness(.25 * th);
-                break;
-            case RING:
-                dotShape = Shape.circle().shift(v).scale(.5 * st).drawColor(getMp().getDrawColor())
-                        .fillColor(JMColor.NONE).thickness(.25 * th);
-                break;
-            default:// Default case, includes CIRCLE
-                dotShape = Shape.circle().shift(v).scale(.5 * st).drawColor(getMp().getDrawColor())
-                        .fillColor(getMp().getDrawColor()).thickness(0);
-                break;
-        }
-        dotShape.getMp().setFaceToCamera(true);
-        dotShape.getMp().setFaceToCameraPivot(this.v);
-        return dotShape;
-    }
-
-    /**
-     * Returns the current dot style
-     *
-     * @return A value of enum DotStyle: CIRCLE, CROSS, PLUS
-     */
-    public DotSyle getDotStyle() {
-        return getMp().getDotStyle();
+        return new Point(Vec.random());
     }
 
     @Override
     public Point copy() {
-        Point resul = new Point(v);
-        resul.getMp().copyFrom(getMp());
-        resul.visible(this.isVisible());
-        return resul;
-    }
-
-    /**
-     * Return a new Point object which represents the original point plus a
-     * given vector. The original point is unaltered.
-     *
-     * @param addVector Vector to add
-     * @return Original point+addVector
-     */
-    public Point add(Vec addVector) {
-        Point resul = this.copy();
-        resul.v.addInSite(addVector);
-        return resul;
+        Point copy = Point.origin();
+        copy.copyStateFrom(this);
+        return copy;
     }
 
     @Override
     public String toString() {
-        String pattern = "##0.###########";
+        String pattern = "##0.####";
         DecimalFormat decimalFormat = new DecimalFormat(pattern);
-        return objectLabel + "|Point(" + decimalFormat.format(v.x) + ",  " + decimalFormat.format(v.y) + ",  " + decimalFormat.format(v.z) + ")";
+        return objectLabel + "|Point(" + decimalFormat.format(getVec().x) + ",  " + decimalFormat.format(getVec().y) + ",  " + decimalFormat.format(getVec().z) + ")";
 
     }
 
@@ -308,61 +196,8 @@ public class Point extends MathObject {
      * @return The vector from this point to B
      */
     public Vec to(Point B) {
-        return new Vec(B.v.x - v.x, B.v.y - v.y, B.v.z - v.z);
+        return new Vec(B.getVec().x - getVec().x, B.getVec().y - getVec().y, B.getVec().z - getVec().z);
     }
 
-    /**
-     * Returns a new Point, linearly interpolated between this and p2 with alpha
-     * parameter
-     *
-     * @param p2
-     * @param alpha
-     * @return The new Point
-     */
-    public Point interpolate(Point p2, double alpha) {
-        Vec w = v.interpolate(p2.v, alpha);
-        return new Point(w);
-
-    }
-
-    @Override
-    public Rect computeBoundingBox() {
-        return new Rect(v.x, v.y, v.z, v.x, v.y, v.z);
-    }
-
-    @Override
-    public void saveState() {
-        super.saveState();
-        this.v.saveState();
-    }
-
-    @Override
-    public void restoreState() {
-        super.restoreState();
-        this.v.restoreState();
-    }
-
-
-    /**
-     * Copy full state form another point p
-     *
-     * @param obj
-     */
-    @Override
-    public void copyStateFrom(MathObject obj) {
-        super.copyStateFrom(obj);
-        if (!(obj instanceof Point)) {
-            return;
-        }
-        Point p2 = (Point) obj;
-        this.v.copyFrom(p2.v);//Copy coordinates
-        this.getMp().copyFrom(p2.getMp());
-        this.scene = obj.scene;
-    }
-
-    public boolean isEquivalentTo(Point p2, double epsilon) {
-        boolean resul = (Math.abs(v.x - p2.v.x) <= epsilon) & (Math.abs(v.y - p2.v.y) <= epsilon) & (Math.abs(v.z - p2.v.z) <= epsilon);
-        return resul;
-    }
 
 }

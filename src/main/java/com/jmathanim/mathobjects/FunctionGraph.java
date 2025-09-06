@@ -36,7 +36,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class FunctionGraph extends Shape implements hasScalarParameter, shouldUdpateWithCamera {
+public class FunctionGraph extends AbstractShape<FunctionGraph> implements hasScalarParameter, shouldUdpateWithCamera {
 
     public static final double DELTA_DERIVATIVE = .00001d;
     public static final int DEFAULT_NUMBER_OF_POINTS = 49;
@@ -47,12 +47,12 @@ public class FunctionGraph extends Shape implements hasScalarParameter, shouldUd
     private boolean dynamicRange;
 
     @Override
-    public double getScalar() {
+    public double getValue() {
         return this.w;
     }
 
     @Override
-    public void setScalar(double scalar) {
+    public void setValue(double scalar) {
         this.w = scalar;
         updatePoints();
     }
@@ -82,6 +82,7 @@ public class FunctionGraph extends Shape implements hasScalarParameter, shouldUd
     public DoubleBinaryOperator functionBase;
     private double w;
 
+    //TODO: Change this to Constructible subclass
     public static FunctionGraph make(String function, double xmin, double xmax) {
         Function f = new Function(function);
         return make(x -> f.calculate(x), xmin, xmax);
@@ -148,15 +149,14 @@ public class FunctionGraph extends Shape implements hasScalarParameter, shouldUd
      * @param numPoints Number of points to calculate
      */
     private FunctionGraph(DoubleBinaryOperator function, double xmin, double xmax, int numPoints) {
-        style("FunctionGraphDefault");// Default style, if any
         this.w = 1;
         this.function = function;
         this.functionBase = function;
         this.functionType = FunctionDefinitionType.LAMBDA;
         this.xPoints = new ArrayList<>();
         this.numPoints = numPoints;
+        style("FunctionGraphDefault");// Default style, if any
         recomputeBasePoints(xmin, xmax);
-
     }
 
     protected final void recomputeBasePoints(double xmin, double xmax) {
@@ -178,19 +178,19 @@ public class FunctionGraph extends Shape implements hasScalarParameter, shouldUd
     }
 
     private void generateFunctionPoints() {
-        this.getPath().clear();
+        getPath().clear();
         for (int n = 0; n < xPoints.size(); n++) {
             double x = xPoints.get(n);
             double y = getFunctionValue(x, this.w);
-            Point p = Point.at(x, y);
-            final JMPathPoint jmp = JMPathPoint.curveTo(p);
-            this.getPath().addJMPoint(jmp);
+            final JMPathPoint jmp = JMPathPoint.curveTo(Vec.to(x,y));
+            getPath().addJMPoint(jmp);
             if (n == 0) {
-                jmp.isThisSegmentVisible = false;
+                jmp.setThisSegmentVisible(false);
             }
         }
 
         generateControlPoints();
+//        getPath().distille();
     }
 
     private void adaptativeAddPoints() {
@@ -237,8 +237,8 @@ public class FunctionGraph extends Shape implements hasScalarParameter, shouldUd
      */
     protected void generateControlPoints() {
         for (int n = 0; n < xPoints.size(); n++) {
-            JMPathPoint jmp = this.get(n);
-            double x = jmp.p.v.x;
+            JMPathPoint jmp = get(n);
+            double x = jmp.getV().x;
             if (n < xPoints.size() - 1) {
                 double deltaX = .3 * (xPoints.get(n + 1) - x);
                 double slope = getSlope(x, 1);
@@ -248,15 +248,15 @@ public class FunctionGraph extends Shape implements hasScalarParameter, shouldUd
                     slope = 0;
                 }
                 Vec v = new Vec(deltaX, slope * deltaX);
-                jmp.cpExit.v.copyFrom(jmp.p.add(v).v);
+                jmp.getvExit().copyCoordinatesFrom(jmp.getV().add(v));
             }
             if (n > 0) {
                 final double deltaX = .3 * (xPoints.get(n - 1) - x);
                 Vec v = new Vec(deltaX, getSlope(x, -1) * deltaX);
-                jmp.cpEnter.v.copyFrom(jmp.p.add(v).v);
+                jmp.getvEnter().copyCoordinatesFrom(jmp.getV().add(v));
                 double h = x - xPoints.get(n - 1);
                 double deriv = (getFunctionValue(x, this.w) - getFunctionValue(xPoints.get(n - 1), this.w)) / h;
-                jmp.isThisSegmentVisible = (Math.abs(deriv) < CONTINUUM_THRESHOLD);
+                jmp.setThisSegmentVisible((Math.abs(deriv) < CONTINUUM_THRESHOLD));
             }
 
         }
@@ -268,8 +268,8 @@ public class FunctionGraph extends Shape implements hasScalarParameter, shouldUd
      * recalculated.
      */
     public void updatePoints() {
-        for (JMPathPoint jmp : this.getPath().jmPathPoints) {
-            jmp.p.v.y = getFunctionValue(jmp.p.v.x, this.w);
+        for (JMPathPoint jmp : getPath().getJmPathPoints()) {
+            jmp.getV().y = getFunctionValue(jmp.getV().x, this.w);
         }
         generateControlPoints();
     }
@@ -322,15 +322,14 @@ public class FunctionGraph extends Shape implements hasScalarParameter, shouldUd
                     x0 = xPoints.get(n);
                 }
                 if (x0 == x) {
-                    return this.get(n);
+                    return get(n);
                 }
             }
         }
         xPoints.add(n, x);
         double y = getFunctionValue(x, this.w);
-        Point p = Point.at(x, y);
-        final JMPathPoint jmp = JMPathPoint.curveTo(p);
-        this.getPath().jmPathPoints.add(n, jmp);
+        final JMPathPoint jmp = JMPathPoint.curveTo(Vec.to(x,y));
+        getPath().getJmPathPoints().add(n, jmp);
         return jmp;
     }
 
@@ -350,17 +349,6 @@ public class FunctionGraph extends Shape implements hasScalarParameter, shouldUd
         return resul;
     }
 
-    @Override
-    public void saveState() {
-        super.saveState();
-        this.functionBase = this.function;
-    }
-
-    @Override
-    public void restoreState() {
-        super.restoreState();
-        this.functionBase = this.function;
-    }
 
     /**
      * Returns a Shape object representing the enclosed of the funcion between
@@ -381,25 +369,24 @@ public class FunctionGraph extends Shape implements hasScalarParameter, shouldUd
         }
         funcAux.generateControlPoints();
         JMPath areaPath = funcAux.getPath();
-        areaPath.addPoint(Point.at(mb, 0), Point.at(ma, 0));
-        areaPath.jmPathPoints.get(0).isThisSegmentVisible = true;
+        areaPath.addPoint(Vec.to(mb, 0), Vec.to(ma, 0));
+        areaPath.getJmPathPoints().get(0).setThisSegmentVisible(true);
         return new Shape(areaPath);
     }
 
     @Override
-    public void copyStateFrom(MathObject obj) {
-         super.copyStateFrom(obj);
+    public void copyStateFrom(Stateable obj) {
         if (!(obj instanceof FunctionGraph)) {
             return;
         }
+        super.copyStateFrom(obj);
         FunctionGraph fg = (FunctionGraph) obj;
-        this.getMp().copyFrom(fg.getMp());
         xPoints.clear();
         xPoints.addAll(fg.xPoints);
 
-        getPath().copyStateFrom(fg.getPath());
+//        functionShape.getPath().copyStateFrom(fg.functionShape.getPath());
         function = fg.function;
-        setScalar(fg.getScalar());
+        setValue(fg.getValue());
     }
 
     /**
@@ -421,4 +408,6 @@ public class FunctionGraph extends Shape implements hasScalarParameter, shouldUd
     public void setDynamicRange(boolean dynamicRange) {
         this.dynamicRange = dynamicRange;
     }
+
+
 }

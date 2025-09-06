@@ -17,10 +17,9 @@
  */
 package com.jmathanim.Utils.Layouts;
 
-import com.jmathanim.Utils.Anchor;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.Enum.AnchorType;
+import com.jmathanim.Enum.BoxDirection;
+import com.jmathanim.mathobjects.*;
 
 /**
  * A box layout. This layout allocates the objects following a row-column
@@ -41,7 +40,7 @@ public class BoxLayout extends AbstractBoxLayout {
      * @return The created layout
      */
     public static BoxLayout make(int rowSize, double colGap, double rowGap) {
-        return new BoxLayout(rowSize, Direction.RIGHT_UP, colGap, rowGap);
+        return new BoxLayout(rowSize, BoxDirection.RIGHT_UP, colGap, rowGap);
     }
 
     /**
@@ -56,7 +55,7 @@ public class BoxLayout extends AbstractBoxLayout {
     
 
     public BoxLayout(int rowSize) {
-        this(null, rowSize, Direction.RIGHT_DOWN, 0, 0);
+        this(null, rowSize, BoxDirection.RIGHT_DOWN, 0, 0);
     }
 
     /**
@@ -67,7 +66,7 @@ public class BoxLayout extends AbstractBoxLayout {
      * @param rowSize Numbers of elements in a row
      */
     public BoxLayout(Point corner, int rowSize) {
-        this(corner, rowSize, Direction.RIGHT_UP, 0, 0);
+        this(corner, rowSize, BoxDirection.RIGHT_UP, 0, 0);
     }
 
     /**
@@ -79,15 +78,15 @@ public class BoxLayout extends AbstractBoxLayout {
      * corner will be the upper right one.
      * @param rowSize Numbers of element in each row. Note that "row" becomes
      * "columns" if direction is UP_LEFT, UP_RIGHT, DOWN_LEFT or DOWN_RIGHT
-     * @param direction Direction of the box. Specifies the direction to stack
+     * @param boxDirection Direction of the box. Specifies the direction to stack
      * the elements. A direction of RIGHT_UP will stack the row in the RIGHT
      * direction and then UP to allocate the next row
      * @param inRowGap Gap between 2 consecutive elements in the same row
      * @param inColGap Gap between 2 consecutive elements in the same column
      */
-    public BoxLayout(Point corner, int rowSize, Direction direction, double inRowGap, double inColGap) {
+    public BoxLayout(Coordinates<?> corner, int rowSize, BoxDirection boxDirection, double inRowGap, double inColGap) {
         super(corner, inRowGap, inColGap);
-        computeDirections(direction);
+        computeDirections(boxDirection);
         this.rowSize = rowSize;
     }
 
@@ -96,34 +95,47 @@ public class BoxLayout extends AbstractBoxLayout {
      *
      * @param rowSize Numbers of element in each row. Note that "row" becomes
      * "columns" if direction is UP_LEFT, UP_RIGHT, DOWN_LEFT or DOWN_RIGHT
-     * @param direction Direction of the box. Specifies the direction to stack
+     * @param boxDirection Direction of the box. Specifies the direction to stack
      * the elements. A direction of RIGHT_UP will stack the row in the RIGHT
      * direction and then UP to allocate the next row
      * @param inRowGap Gap between 2 consecutive elements in the same row
      * @param inColGap Gap between 2 consecutive elements in the same column
      */
-    public BoxLayout(int rowSize, Direction direction, double inRowGap, double inColGap) {
-        this(null, rowSize, direction, inRowGap, inColGap);
+    public BoxLayout(int rowSize, BoxDirection boxDirection, double inRowGap, double inColGap) {
+        this(null, rowSize, boxDirection, inRowGap, inColGap);
     }
 
     @Override
-    public void executeLayout(MathObjectGroup group) {
+    public void executeLayout(AbstractMathGroup<?> group) {
         int rowCounter = 0; // This counter checks if another row is necessary
         MathObject firstOfTheRow = group.get(0);
         // Stacks the first object to the corner point, if it exists
         if (this.corner != null) {
-            group.get(0).stackTo(firstElementStack, this.corner, Anchor.Type.CENTER, 0);
+//            group.get(0).stackTo(firstElementStack, this.corner, AnchorType.CENTER, 0);
+            group.get(0).stack()
+                    .withOriginAnchor(firstElementStack)
+                    .withDestinyAnchor(AnchorType.CENTER)
+                    .toObject(this.corner);
+
         }
 
         for (int n = 1; n < group.size(); n++) {// n=0 gets unaltered
             rowCounter++;
             if (rowCounter < this.rowSize) {
-                group.get(n).stackTo(group.get(n - 1), inRowStack, this.inRowGap);
+//                group.get(n).stackTo(group.get(n - 1), inRowStack, this.inRowGap);
+                group.get(n).stack()
+                        .withDestinyAnchor(inRowStack)
+                        .withGaps(this.inRowGap, this.inRowGap)
+                        .toObject(group.get(n - 1));
             }
 
             if (rowCounter == this.rowSize) {
                 rowCounter = 0;
-                group.get(n).stackTo(firstOfTheRow, inColStack, this.inColGap);
+//                group.get(n).stackTo(firstOfTheRow, inColStack, this.inColGap);
+                group.get(n).stack()
+                        .withDestinyAnchor(inColStack)
+                        .withGaps(this.inColGap, this.inColGap)
+                        .toObject(firstOfTheRow);
                 firstOfTheRow = group.get(n);
             }
         }
@@ -185,9 +197,9 @@ public class BoxLayout extends AbstractBoxLayout {
     @Override
     public BoxLayout copy() {
         if (this.corner != null) {
-            return new BoxLayout(corner.copy(), rowSize, Direction.RIGHT_UP, inRowGap, inColGap);
+            return new BoxLayout(corner.copy(), rowSize, BoxDirection.RIGHT_UP, inRowGap, inColGap);
         } else {
-            return new BoxLayout(rowSize, Direction.RIGHT_UP, inRowGap, inColGap);
+            return new BoxLayout(rowSize, BoxDirection.RIGHT_UP, inRowGap, inColGap);
         }
     }
 

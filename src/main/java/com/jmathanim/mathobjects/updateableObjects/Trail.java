@@ -18,18 +18,18 @@
 package com.jmathanim.mathobjects.updateableObjects;
 
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.AbstractShape;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Shape;
 
 /**
  * Shape representing the trail drawn by a moving a point
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Trail extends Shape {
+public class Trail extends AbstractShape<Trail> {
 
-    MathObject marker;
+    MathObject<?> marker;
     private boolean cutNext = true;
     private boolean draw = true;
 
@@ -37,10 +37,10 @@ public class Trail extends Shape {
      * Builds new Trail object. A trail is a updateable Shape that adds a copy
      * of a marker point every frame.
      *
-     * @param marker Point to be followed
+     * @param marker Object to be followed. The center of this object will be used as reference point
      * @return The new Trail object
      */
-    public static Trail make(MathObject marker) {
+    public static Trail make(MathObject<?> marker) {
         return new Trail(marker);
     }
 
@@ -50,23 +50,25 @@ public class Trail extends Shape {
      *
      * @param marker Point to be followed
      */
-    public Trail(MathObject marker) {
+    public Trail(MathObject<?> marker) {
         this.marker = marker;
         getPath().addPoint(marker.getCenter());
-        get(0).isThisSegmentVisible = false;
+        get(0).setThisSegmentVisible(false);
     }
+
 
     @Override
     public Trail copy() {
         return new Trail(marker.copy());
     }
 
+
     @Override
     public void update(JMathAnimScene scene) {
         super.update(scene);
         if (draw) {
             JMPathPoint pa = JMPathPoint.lineTo(marker.getCenter());
-            pa.isThisSegmentVisible = !cutNext;
+            pa.setThisSegmentVisible(!cutNext);
             cutNext = false;
             getPath().addJMPoint(pa);
         }
@@ -79,7 +81,7 @@ public class Trail extends Shape {
 
     /**
      * Disables adding new elements to the trail, until a call to
-     * {@link lowerPen} is made.
+     *  lowerPen is made.
      */
     public void raisePen() {
         draw = false;

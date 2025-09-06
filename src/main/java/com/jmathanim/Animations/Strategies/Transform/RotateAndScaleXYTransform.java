@@ -18,8 +18,8 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.AbstractShape;
 
 /**
  *
@@ -28,7 +28,7 @@ import com.jmathanim.mathobjects.Shape;
 public class RotateAndScaleXYTransform extends AffineTransformStrategy {
 
 
-    public RotateAndScaleXYTransform(double runtime, Shape origin, Shape destiny) {
+    public RotateAndScaleXYTransform(double runtime, AbstractShape<?> origin, AbstractShape<?> destiny) {
         super(runtime,origin,destiny);
     }
 
@@ -36,7 +36,7 @@ public class RotateAndScaleXYTransform extends AffineTransformStrategy {
     @Override
     protected AffineJTransform createIntermediateTransform(double lt) {
         // First map A,B into (0,0) and (1,0)
-        AffineJTransform tr1 = AffineJTransform.createDirect2DIsomorphic(A, B, new Point(0, 0), new Point(1, 0), 1);
+        AffineJTransform tr1 = AffineJTransform.createDirect2DIsomorphic(A, B, Vec.to(0,0), Vec.to(1,0), 1);
         // Now I create a transformation that adjust the y-scale, proportionally
         // This transform will be applied inversely too
         AffineJTransform tr2 = new AffineJTransform();

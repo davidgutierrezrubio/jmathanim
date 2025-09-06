@@ -25,6 +25,7 @@ import com.jmathanim.Constructible.Lines.CTSegment;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.Point;
 
@@ -35,9 +36,9 @@ import com.jmathanim.mathobjects.Point;
  */
 public class CTMirrorPoint extends CTPoint {
 
-    private final CTAbstractLine axis;
-    private final CTPoint originalPoint;
-    private final CTPoint center;
+    private final CTAbstractLine<?> axis;
+    private final Coordinates originalPoint;
+    private final Coordinates center;
 
     private enum MirrorType {
         AXIAL, CENTRAL
@@ -52,7 +53,7 @@ public class CTMirrorPoint extends CTPoint {
         return resul;
     }
 
-    public static CTMirrorPoint make(Point orig, Point A, Point B) {
+    public static CTMirrorPoint make(Coordinates orig, Coordinates A, Coordinates B) {
         CTMirrorPoint resul = new CTMirrorPoint(CTPoint.make(orig), CTSegment.make(A, B), null);
         resul.rebuildShape();
         resul.mirrorType = MirrorType.AXIAL;
@@ -110,15 +111,15 @@ public class CTMirrorPoint extends CTPoint {
             case CENTRAL:
                 //Note that we don't use this.center.getMathObject() because 
                 //the mathobject may be free. Instead we create a new point pcenter
-                tr = AffineJTransform.createScaleTransform(new Point(this.center.v), -1);
+                tr = AffineJTransform.createScaleTransform(new Point(this.center.getVec().x,this.center.getVec().y), -1);
                 break;
             default:
                 tr = new AffineJTransform();//An identity transform
         }
-        this.v.copyFrom(originalPoint.v);
-        this.v.applyAffineTransform(tr);
+        this.coordinatesOfPoint.copyCoordinatesFrom(originalPoint.getVec());
+        this.coordinatesOfPoint.applyAffineTransform(tr);
         if (!isFreeMathObject()) {
-            p.v.copyFrom(v);
+            pointToShow.v.copyCoordinatesFrom(coordinatesOfPoint);
         }
     }
 

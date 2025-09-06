@@ -17,10 +17,12 @@
  */
 package com.jmathanim.Utils.Layouts;
 
-import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Enum.AnchorType;
+import com.jmathanim.Enum.BoxDirection;
+import com.jmathanim.mathobjects.AbstractMathGroup;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.Point;
 
 import java.util.ArrayList;
 import java.util.function.IntToDoubleFunction;
@@ -32,34 +34,34 @@ import java.util.function.IntToDoubleFunction;
 public class FlowLayout extends AbstractBoxLayout {
 
 	public IntToDoubleFunction rowLength;
-	BoxLayout.Direction direction;
+	BoxDirection boxDirection;
 
 	/**
 	 * Creates a new FlowLayout
 	 * @param corner
 	 * @param width
-	 * @param direction
+	 * @param boxDirection
 	 * @param inRowGap
 	 * @param inColGap
 	 */
-	public FlowLayout(Point corner, double width, BoxLayout.Direction direction, double inRowGap, double inColGap) {
+	public FlowLayout(Coordinates<?> corner, double width, BoxDirection boxDirection, double inRowGap, double inColGap) {
 		super(corner, inRowGap, inColGap);
 		rowLength = (int row) -> width;
-		this.direction = direction;
-		computeDirections(direction);
+		this.boxDirection = boxDirection;
+		computeDirections(boxDirection);
 	}
 
-	public FlowLayout(Point corner, IntToDoubleFunction widthFunction, BoxLayout.Direction direction, double inRowGap,
-			double inColGap) {
+	public FlowLayout(Coordinates<?>  corner, IntToDoubleFunction widthFunction, BoxDirection boxDirection, double inRowGap,
+					  double inColGap) {
 		super(corner, inRowGap, inColGap);
 		rowLength = widthFunction;
-		this.direction = direction;
-		computeDirections(direction);
+		this.boxDirection = boxDirection;
+		computeDirections(boxDirection);
 	}
 
-	private double getAppropiateSize(MathObject obj) {
+	private double getAppropiateSize(MathObject<?> obj) {
 		double resul = 0;
-		switch (direction) {
+		switch (boxDirection) {
 		case DOWN_LEFT:
 		case DOWN_RIGHT:
 		case UP_LEFT:
@@ -77,21 +79,39 @@ public class FlowLayout extends AbstractBoxLayout {
 	}
 
 	@Override
-	public void executeLayout(MathObjectGroup group) {
+	public void executeLayout(AbstractMathGroup<?> group) {
 		ArrayList<MathObjectGroup> rowGroups = getRowGroups(group);
 
-		rowGroups.get(0).get(0).stackTo(firstElementStack, this.corner, Anchor.Type.CENTER, 0);
+//		rowGroups.get(0).get(0).stackTo(firstElementStack, this.corner, AnchorType.CENTER, 0);
+		rowGroups.get(0).get(0).stack()
+				.withOriginAnchor(firstElementStack)
+				.withDestinyAnchor(AnchorType.CENTER)
+				.toObject(this.corner);
+
 		for (int n = 1; n < rowGroups.get(0).size(); n++) {
-			rowGroups.get(0).get(n).stackTo(rowGroups.get(0).get(n - 1), inRowStack, inRowGap);
+//			rowGroups.get(0).get(n).stackTo(rowGroups.get(0).get(n - 1), inRowStack, inRowGap);
+			rowGroups.get(0).get(n).stack()
+					.withDestinyAnchor(inRowStack)
+					.withGaps(this.inRowGap,this.inRowGap)
+					.toObject(rowGroups.get(0).get(n - 1));
 		}
 
 		for (int k = 1; k < rowGroups.size(); k++) {
-			rowGroups.get(k).get(0).stackTo(rowGroups.get(k - 1).get(0), inColStack, inColGap);
+//			rowGroups.get(k).get(0).stackTo(rowGroups.get(k - 1).get(0), inColStack, inColGap);
+			rowGroups.get(k).get(0).stack()
+					.withGaps(this.inColGap,this.inColGap)
+					.withDestinyAnchor(inColStack)
+					.toObject(rowGroups.get(k - 1).get(0));
+
 			for (int n = 1; n < rowGroups.get(k).size(); n++) {
-				rowGroups.get(k).get(n).stackTo(rowGroups.get(k).get(n - 1), inRowStack, inRowGap);
+//				rowGroups.get(k).get(n).stackTo(rowGroups.get(k).get(n - 1), inRowStack, inRowGap);
+				rowGroups.get(k).get(n).stack()
+						.withGaps(this.inRowGap,this.inRowGap)
+						.withDestinyAnchor(inRowStack)
+						.toObject(rowGroups.get(k).get(n - 1));
 			}
 			MathObject.Align align = null;
-			switch (direction) {
+			switch (boxDirection) {
 			case RIGHT_UP:
 			case RIGHT_DOWN:
 				align = MathObject.Align.LEFT;
@@ -113,16 +133,19 @@ public class FlowLayout extends AbstractBoxLayout {
 		}
 	}
 
-	public ArrayList<MathObjectGroup> getRowGroups(MathObjectGroup group) {
+	public ArrayList<MathObjectGroup> getRowGroups(AbstractMathGroup<?> group) {
 		ArrayList<MathObjectGroup> resul = new ArrayList<>();
-		MathObject firstOfTheRow = group.get(0);
+		MathObject<?> firstOfTheRow = group.get(0);
 		MathObjectGroup currentRow = MathObjectGroup.make(firstOfTheRow);
 		resul.add(currentRow);
 		int rowNumber = 0;
 		double totalWidth = getAppropiateSize(firstOfTheRow);// when this variable is greater than size, go to a new
 																// line
 		// Puts the first element in the corner point
-		firstOfTheRow.stackTo(corner, firstElementStack);
+//		firstOfTheRow.stackTo(corner, firstElementStack);
+		firstOfTheRow.stack()
+				.withDestinyAnchor(firstElementStack)
+				.toObject(corner);
 		// Now the rest
 		for (int n = 1; n < group.size(); n++) {
 			totalWidth += getAppropiateSize(group.get(n)) + inRowGap;
@@ -143,9 +166,9 @@ public class FlowLayout extends AbstractBoxLayout {
 	@Override
 	public FlowLayout copy() {
 		if (this.corner != null) {
-			return new FlowLayout(corner.copy(), this.rowLength, direction, inRowGap, inColGap);
+			return new FlowLayout(corner.copy(), this.rowLength, boxDirection, inRowGap, inColGap);
 		} else {
-			return new FlowLayout(null, this.rowLength, direction, inRowGap, inColGap);
+			return new FlowLayout(null, this.rowLength, boxDirection, inRowGap, inColGap);
 		}
 	}
 }

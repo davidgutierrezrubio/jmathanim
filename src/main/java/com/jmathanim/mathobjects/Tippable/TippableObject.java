@@ -16,26 +16,33 @@
  */
 package com.jmathanim.mathobjects.Tippable;
 
+import com.jmathanim.Enum.AnchorType;
+import com.jmathanim.Enum.ArrowType;
+import com.jmathanim.Enum.RotationType;
+import com.jmathanim.Enum.SlopeDirectionType;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
+
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
 /**
  * Convenience static constructors for some common tippable objects
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class TippableObject extends AbstractTippableObject {
+public class TippableObject extends AbstractTippableObject<TippableObject> {
 
-    //    public static AbstractTippableObject makeLabel(Shape shape, String text, Anchor.Type anchor, double location) {
-//        LaTeXMathObject tipObject = LaTeXMathObject.make(text);
+    //    public static AbstractTippableObject makeLabel(Shape shape, String text, Type anchor, double location) {
+//        LaTeXMathObject tipObject = LaTeXMathObject.makeLengthMeasure(text);
 //        Point anchorPoint = Anchor.getAnchorPoint(tipObject, anchor);
 //        AbstractTippableObject resul = new TippableObject(shape, tipObject, anchorPoint, location);
 //        return resul;
 //    }
-    protected TippableObject(Shape shape, MathObject tipObject, Point anchorPoint, double location) {
-        super(shape, tipObject, anchorPoint, location);
+    protected TippableObject(AbstractShape<?> shape, MathObject<?> tipObject, double location) {
+        super(shape, tipObject, location);
     }
 
     /**
@@ -46,52 +53,59 @@ public class TippableObject extends AbstractTippableObject {
      * @param numberOfMarks Number of marks to draw
      * @return The tippable object
      */
-    public static TippableObject equalLengthTip(Shape shape, double location, int numberOfMarks) {
+    public static TippableObject equalLengthTip(AbstractShape<?> shape, double location, int numberOfMarks) {
         MultiShapeObject parallelSign = MultiShapeObject.make();
         for (int i = 0; i < numberOfMarks; i++) {
-            parallelSign.add(Shape.segment(Point.at(0, i), Point.at(2, i)));
+            parallelSign.add(Shape.segment(Vec.to(0, i), Vec.to(2, i)));
         }
         parallelSign.setWidth(.05);
-        parallelSign.setAbsoluteSize(Anchor.Type.CENTER);
-        //(Shape shape,double location, AbstractTippableObject.slopeDirectionType dir,MathObject tipObject, Anchor.Type anchor ) {
-        TippableObject resul = TippableObject.make(shape, location, AbstractTippableObject.SlopeDirectionType.POSITIVE, parallelSign, Anchor.Type.CENTER);
+        parallelSign.setAbsoluteSize(AnchorType.CENTER);
+        //(Shape shape,double location, SlopeDirectionType dir,MathObject tipObject, Type anchor ) {
+        TippableObject resul = TippableObject.make(shape, location, SlopeDirectionType.POSITIVE, parallelSign, AnchorType.CENTER);
         return resul;
     }
 
-    public static TippableObject arrowHead(Shape shape, double location, SlopeDirectionType dir, Arrow.ArrowType type) {
+    public static TippableObject arrowHead(AbstractShape<?> shape, double location,  ArrowType type) {
         Shape arrowHead = Arrow.buildArrowHead(type);
         Renderer r = JMathAnimConfig.getConfig().getScene().getRenderer();
-//        arrowHead.setAbsoluteSize(Anchor.Type.CENTER);
+//        arrowHead.setAbsoluteSize(Type.CENTER);
 //        arrowHead.thickness(0);
         arrowHead.setWidth(r.ThicknessToMathWidth(shape.getMp().getThickness() * 5));
 //        arrowHead.
         arrowHead.fillColor(shape.getMp().getDrawColor());
         arrowHead.drawColor(shape.getMp().getDrawColor());
-        Point anchor = Anchor.getAnchorPoint(arrowHead, Anchor.Type.UPPER);
-        TippableObject resul = new TippableObject(shape, arrowHead, anchor, location); // shape,location,slopeDirectionType.POSITIVE,equalLengthTip);
+        TippableObject resul = new TippableObject(shape, arrowHead, location);
+        resul.setAnchor(AnchorType.CENTER);
+        resul.setSlopeDirection(SlopeDirectionType.POSITIVE);
+        resul.setDistanceToShape(0d);
+        resul.setRotationType(RotationType.ROTATE);
+        resul.correctionAngle=-.5*PI;
+        return resul;
+    }
+
+    public static TippableObject make(AbstractShape<?> shape, double location, SlopeDirectionType dir, MathObject<?> tipObject) {
+        return make(shape, location, dir, tipObject, AnchorType.CENTER);
+    }
+
+    public static TippableObject make(AbstractShape<?> shape, double location, SlopeDirectionType dir, MathObject<?> tipObject, AnchorType anchor) {
+//        Vec anchorPoint = Anchor.getAnchorPoint(tipObject, anchor);
+        TippableObject resul = new TippableObject(shape, tipObject,  location);
+        resul.setDistanceToShape(0d);
+        resul.setAnchor(anchor);
         resul.setSlopeDirection(dir);
         return resul;
     }
 
-    public static TippableObject make(Shape shape, double location, AbstractTippableObject.SlopeDirectionType dir, MathObject tipObject) {
-        return make(shape, location, dir, tipObject, Anchor.Type.CENTER);
-    }
-
-    public static TippableObject make(Shape shape, double location, AbstractTippableObject.SlopeDirectionType dir, MathObject tipObject, Anchor.Type anchor) {
-        Point anchorPoint = Anchor.getAnchorPoint(tipObject, anchor);
-        TippableObject resul = new TippableObject(shape, tipObject, anchorPoint, location);
-        resul.setSlopeDirection(dir);
-        return resul;
-    }
-
-    public static TippableObject make(Shape shape, MathObject tipObject, Point anchorPoint, double location) {
-        TippableObject resul = new TippableObject(shape, tipObject, anchorPoint, location);
+    public static TippableObject make(AbstractShape<?> shape, MathObject<?> tipObject, Point anchorPoint, double location) {
+        TippableObject resul = new TippableObject(shape, tipObject, location);
+        resul.setAnchorPoint(anchorPoint);
+        resul.setDistanceToShape(0d);
         return resul;
     }
 
     @Override
     public TippableObject copy() {
-        TippableObject copy = new TippableObject(shape, mathobject.copy(), pivotPointRefMathObject.copy(), locationParameterOnShape);
+        TippableObject copy = new TippableObject(shape, tipObjectRigidBox.copy(), locationParameterOnShape);
         copy.copyStateFrom(this);
         return copy;
     }

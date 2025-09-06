@@ -30,19 +30,24 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTCircleSector extends CTAbstractCircle {
+public class CTCircleSector extends CTAbstractCircle<CTCircleSector> {
 
-    private final CTPoint center;
-    private final CTPoint A;
-    private final CTPoint B;
-    private final Shape arcTODraw;
+    private final Vec A;
+    private final Vec B;
+
+    private CTCircleSector(Coordinates<?> center, Coordinates<?> A, Coordinates<?> B) {
+        super(center, Scalar.make(1));
+        setCircleCenter(center);
+        this.A = A.getVec();
+        this.B = B.getVec();
+    }
 
     /**
      * Creates a new Constructible circle sector
      *
      * @param center Center of circle sector
-     * @param A Starting point. This point also determines sector radius
-     * @param B A reference point to mark the sector angle.
+     * @param A      Starting point. This point also determines sector radius
+     * @param B      A reference point to mark the sector angle.
      * @return The created object
      */
     public static CTCircleSector make(CTPoint center, CTPoint A, CTPoint B) {
@@ -55,66 +60,46 @@ public class CTCircleSector extends CTAbstractCircle {
      * Overloaded method. Creates a new Constructible circle sector
      *
      * @param center Center of circle sector
-     * @param A Starting point. This point also determines sector radius
-     * @param B A reference point to mark the sector angle.
+     * @param A      Starting point. This point also determines sector radius
+     * @param B      A reference point to mark the sector angle.
      * @return The created object
      */
-    public static CTCircleSector make(Point center, Point A, Point B) {
-        CTCircleSector resul = new CTCircleSector(CTPoint.make(center), CTPoint.make(A), CTPoint.make(B));
+    public static CTCircleSector make(Coordinates<?> center, Coordinates<?> A, Coordinates<?> B) {
+        CTCircleSector resul = new CTCircleSector(center, A, B);
         resul.rebuildShape();
         return resul;
     }
 
-    private CTCircleSector(CTPoint center, CTPoint A, CTPoint B) {
-        this.center = center;
-        this.A = A;
-        this.B = B;
-        arcTODraw = new Shape();
-    }
-
-    @Override
-    public CTPoint getCircleCenter() {
-        return center.copy();
-    }
-
-    @Override
-    public Scalar getRadius() {
-        return Scalar.make(center.to(A).norm());
-    }
-
-    @Override
-    public Shape getMathObject() {
-        return arcTODraw;
-    }
-
     @Override
     public CTCircleSector copy() {
-        CTCircleSector copy = CTCircleSector.make(center.copy(), A.copy(), B.copy());
+        CTCircleSector copy = CTCircleSector.make(getCircleCenter().copy(), A.copy(), B.copy());
         copy.copyStateFrom(this);
         return copy;
     }
 
     @Override
-    public void copyStateFrom(MathObject obj) {
-        if (obj instanceof CTCircleSector) {
-            CTCircleSector cnst = (CTCircleSector) obj;
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof CTCircleSector)) return;
+        CTCircleSector cnst = (CTCircleSector) obj;
+        super.copyStateFrom(obj);
 //            arcTODraw.getPath().clear();
 //            Shape copyArc = cnst.getMathObject().copy();
 //            arcTODraw.getPath().jmPathPoints.addAll(copyArc.getPath().jmPathPoints);
-            this.A.copyStateFrom(cnst.A);
-            this.B.copyStateFrom(cnst.B);
-            this.center.copyStateFrom(cnst.center);
-        }
-        super.copyStateFrom(obj);
+        this.A.copyCoordinatesFrom(cnst.A);
+        this.B.copyCoordinatesFrom(cnst.B);
         rebuildShape();
     }
 
     @Override
     public void rebuildShape() {
-        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(Point.at(0, 0), Point.at(1, 0), new Point(center.v), new Point(A.v), 1);
+        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(
+                Vec.to(0, 0),
+                Vec.to(1, 0),
+                getCircleCenter(),
+                A, 1);
 
-        Vec v1 = center.to(A);
-        Vec v2 = center.to(B);
+        Vec v1 = getCircleCenter().to(A);
+        Vec v2 = getCircleCenter().to(B);
 
         if (!isFreeMathObject()) {
             double angle = v2.getAngle() - v1.getAngle();
@@ -123,30 +108,31 @@ public class CTCircleSector extends CTAbstractCircle {
             }
             Shape referenceArc = Shape.arc(angle);
 
-            referenceArc.get(0).cpEnter.v.copyFrom(referenceArc.get(0).p.v);
-            referenceArc.get(-1).cpExit.v.copyFrom(referenceArc.get(-1).p.v);
-            referenceArc.get(0).isThisSegmentVisible = true;
+            referenceArc.get(0).getvEnter().copyCoordinatesFrom(referenceArc.get(0).getV());
+            referenceArc.get(-1).getvExit().copyCoordinatesFrom(referenceArc.get(-1).getV());
+            referenceArc.get(0).setThisSegmentVisible(true);
             JMPathPoint pp = JMPathPoint.lineTo(Point.origin());
-            pp.cpEnter.v.copyFrom(pp.p.v);
-            pp.cpExit.v.copyFrom(pp.p.v);
-            referenceArc.getPath().jmPathPoints.add(0, pp);
+            pp.getvEnter().copyCoordinatesFrom(pp.getV());
+            pp.getvExit().copyCoordinatesFrom(pp.getV());
+            referenceArc.getPath().getJmPathPoints().add(0, pp);
             referenceArc.applyAffineTransform(tr);
-            arcTODraw.getPath().clear();
-            arcTODraw.getPath().jmPathPoints.addAll(referenceArc.getPath().jmPathPoints);
+            getMathObject().getPath().clear();
+            getMathObject().getPath().getJmPathPoints().addAll(referenceArc.getPath().getJmPathPoints());
         }
 
     }
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, center, A, B);
+        dependsOn(scene, getCircleCenter(), A, B);
     }
 
     @Override
     public Vec getHoldCoordinates(Vec coordinates) {
         //TODO: Implement this, for now, act as a simple circle
-        Vec v = coordinates.minus(getCircleCenter().v).normalize().mult(getRadius().value);
-        return getCircleCenter().v.add(v);
+        JMathAnimScene.logger.warn("Hold coordinates not implemented yet for CTCircleSector");
+        Vec v = coordinates.minus(getCircleCenter()).normalize().mult(getCircleRadius().getValue());
+        return getCircleCenter().add(v).getVec();
 
     }
 }

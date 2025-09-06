@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
+import com.jmathanim.mathobjects.AbstractShape;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
 
@@ -27,14 +28,15 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class SimpleShapeCreationAnimation extends AbstractCreationStrategy {
 
-    private final Shape originShape;
+    private final AbstractShape<?> originShape;
     private final Shape originShapeBase;
-    private final Shape intermediateShape;
+    private final AbstractShape<?> intermediateShape;
 
-    public SimpleShapeCreationAnimation(double runtime, Shape originShape) {
+    public SimpleShapeCreationAnimation(double runtime, AbstractShape<?> originShape) {
         super(runtime);
         this.originShape =originShape;
-        this.originShapeBase =originShape.copy();
+        this.originShapeBase =new Shape();//Generates a static Shape copy of the AbstractShape we want to show creation
+        this.originShapeBase.copyStateFrom(originShape);
         intermediateShape = new Shape();
         intermediateShape.objectLabel=originShape.objectLabel+"_intermediate";
         intermediateShape.getMp().copyFrom(originShape.getMp());

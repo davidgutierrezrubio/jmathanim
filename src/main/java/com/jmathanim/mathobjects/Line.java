@@ -19,65 +19,23 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Constructible.Lines.HasDirection;
-import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
 
 /**
  * Represents an infinite line, given by 2 points.
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Line extends Shape implements HasDirection, shouldUdpateWithCamera {
+public class Line extends AbstractShape<Line> implements HasDirection, shouldUdpateWithCamera,hasTrivialBoundingBox {
 
-    public static Line XAxis() {
-        return new Line(new Point(0, 0), new Point(1, 0));
-    }
-
-    public static Line XYBisector() {
-        return new Line(new Point(0, 0), new Point(1, 1));
-    }
-
-    public static Line YAxis() {
-        return new Line(new Point(0, 0), new Point(0, 1));
-    }
-
-    /**
-     * Creates a new Line object. Line is a Shape object with 2 points, as a
-     * Segment but it overrides the draw method so that it extends itself to all
-     * the view, to look like an infinite line.
-     *
-     * @param a First point
-     * @param b Second point
-     * @return The line object
-     */
-    public static Line make(Point a, Point b) {
-        return new Line(a, b);
-    }
-
-    public static Line make(Point a, Vec b) {
-        return new Line(a, a.add(b));
-    }
-
-    private final JMPathPoint bp1, bp2;
-    private final Point p1;
-    private final Point p2;
-    private final Shape visiblePiece;
-
-    /**
-     * Creates a line that passes through p with direction v
-     *
-     * @param p Point
-     * @param v Direction vector
-     */
-    public Line(Point p, Vec v) {
-        this(p, p.add(v));
-    }
+    private final JMPathPoint borderPoint1, borderPoint2;
+    protected final Vec p1;
+    protected final Vec p2;
+    private Point pointP1;//Visible points to be created on the fly if the user asks for them
+    private Point pointP2;
 
     /**
      * Creates a line that passes through p1 and p2
@@ -85,109 +43,137 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
      * @param p1 First point
      * @param p2 Second point
      */
-    public Line(Point p1, Point p2) {
+    public Line(Coordinates<?> p1, Coordinates<?> p2) {
         super();
-        this.p1 = p1;
-        this.p2 = p2;
-        getPath().clear(); // Super constructor adds p1, p2. Delete them
-        bp1 = new JMPathPoint(new Point(0, 0), true, JMPathPointType.VERTEX);// trivial boundary points, just to
+        this.p1 = p1.getVec();
+        this.p2 = p2.getVec();
+        borderPoint1 = new JMPathPoint(Vec.to(0, 0), true);// trivial boundary points, just to
         // initialize objects
-        bp2 = new JMPathPoint(new Point(0, 0), true, JMPathPointType.VERTEX);// trivial boundary points, just to
+        borderPoint2 = new JMPathPoint(Vec.to(0, 0), true);// trivial boundary points, just to
         // initialize objects
-        visiblePiece = new Shape();
-        visiblePiece.getPath().addJMPoint(bp1, bp2);
-        getPath().addPoint(p1, p2);
-        get(0).isThisSegmentVisible = false;
-        setCamera(JMathAnimConfig.getConfig().getCamera());//First default camera
-        computeBoundPoints(getCamera());
+        getPath().addJMPoint(borderPoint1, borderPoint2);
+        get(0).setThisSegmentVisible(false);
+        rebuildShape();
+    }
+
+    public static Line XAxis() {
+        return new Line(Vec.to(0, 0), Vec.to(1, 0));
+    }
+
+    public static Line XYBisector() {
+        return new Line(Vec.to(0, 0), Vec.to(1, 1));
+    }
+
+    public static Line YAxis() {
+        return new Line(Vec.to(0, 0), Vec.to(0, 1));
+    }
+
+    /**
+     * Creates a new Line object. Line is a Shape object with 2 points, as a Segment but it overrides the draw method so
+     * that it extends itself to all the view, to look like an infinite line.
+     *
+     * @param a First point
+     * @param b Second point
+     * @return The line object
+     */
+    public static Line make(Coordinates<?> a, Coordinates<?> b) {
+        return new Line(a, b);
+    }
+
+    public static Line makePointDir(Coordinates<?> a, Coordinates<?> b) {
+        return new Line(a, a.add(b));
     }
 
     @Override
     public Line applyAffineTransform(AffineJTransform transform) {
-        getP1().applyAffineTransform(transform);
-        getP2().applyAffineTransform(transform);
+        p1.applyAffineTransform(transform);
+        p2.applyAffineTransform(transform);
         transform.applyTransformsToDrawingProperties(this);
         return this;
     }
 
     /**
-     * Compute border points in the view area of the given renderer.This is need
-     * in order to draw an "infinite" line which always extend to the whole
-     * visible area. The border points are stored in bp1 and bp2
+     * Compute border points in the view area of the given renderer.This is need in order to draw an "infinite" line
+     * which always extend to the whole visible area. The border points are stored in bp1 and bp2
      *
-     * @param cam Camera with the view to compute bound points
      */
-    private void computeBoundPoints(Camera cam) {
-        Rect rect = cam.getMathView();
-        double[] intersectLine = rect.intersectLine(p1.v.x, p1.v.y, p2.v.x, p2.v.y);
+    public void rebuildShape() {
+        Rect rect = camera.getMathView();
+        double[] intersectLine = rect.intersectLine(p1.x, p1.y, p2.x, p2.y);
 
         if (intersectLine == null) {
             // If there are no getIntersectionPath points, take p1 and p2 (workaround)
-            bp1.p.v.x = p1.v.x;
-            bp1.p.v.y = p1.v.y;
-            bp2.p.v.x = p2.v.x;
-            bp2.p.v.y = p2.v.y;
+            borderPoint1.getV().x = p1.x;
+            borderPoint1.getV().y = p1.y;
+            borderPoint2.getV().x = p2.x;
+            borderPoint2.getV().y = p2.y;
         } else {
-            bp1.p.v.x = intersectLine[0];
-            bp1.p.v.y = intersectLine[1];
-            bp2.p.v.x = intersectLine[2];
-            bp2.p.v.y = intersectLine[3];
+            borderPoint1.getV().x = intersectLine[0];
+            borderPoint1.getV().y = intersectLine[1];
+            borderPoint2.getV().x = intersectLine[2];
+            borderPoint2.getV().y = intersectLine[3];
         }
-        bp1.cpExit.v.copyFrom(bp1.p.v);
-        bp1.cpEnter.v.copyFrom(bp1.p.v);
-        bp2.cpExit.v.copyFrom(bp2.p.v);
-        bp2.cpEnter.v.copyFrom(bp2.p.v);
-        bp1.isThisSegmentVisible = false;
+        borderPoint1.getvExit().copyCoordinatesFrom(borderPoint1.getV());
+        borderPoint1.getvEnter().copyCoordinatesFrom(borderPoint1.getV());
+        borderPoint2.getvExit().copyCoordinatesFrom(borderPoint2.getV());
+        borderPoint2.getvEnter().copyCoordinatesFrom(borderPoint2.getV());
+        borderPoint1.setThisSegmentVisible(false);
     }
 
     @Override
     public Line copy() {
         Line resul = new Line(p1.copy(), p2.copy());
-        resul.getMp().copyFrom(getMp());
+        resul.copyStateFrom(this);
         return resul;
     }
 
-    
     @Override
-    public void draw(JMathAnimScene scene, Renderer r,Camera cam) {
-        update(JMathAnimConfig.getConfig().getScene());// TODO: remove coupling
-        if (isVisible()) {
-            visiblePiece.draw(scene, r,cam);
-        }
-        scene.markAsAlreadydrawn(this);
+    public void copyStateFrom(Stateable obj) {
+        super.copyStateFrom(obj);
+        if (!(obj instanceof Line)) return;
+            Line line= (Line) obj;
+        p1.copyCoordinatesFrom(line.p1);
+        p2.copyCoordinatesFrom(line.p2);
+        rebuildShape();
+    }
+
+    @Override
+    protected Rect computeBoundingBox() {
+        //Bounding box of the visible segment
+        rebuildShape();
+        return Rect.make(borderPoint1, borderPoint2);
     }
 
     /**
-     * Returns the point of the line lying in the boundaries of the math view.
-     * From the 2 points of the boundary, this is next to p1.
+     * Returns the coordinates of the line lying in the boundaries of the math view. From the 2 points of the boundary,
+     * this is next to p1.
      *
-     * @return A referencedCopy of the boundary point
+     * @return A vector with the coordinates of the boundary point
      */
-    public Point getBorderPoint1() {
+    public Vec getBorderPoint1() {
         update(scene);
-        return bp1.p.copy();
+        return borderPoint1.getVec();
     }
 
     /**
-     * Returns the point of the line lying in the boundaries of the math view.
-     * From the 2 points of the boundary, this is next to p2.
+     * Returns the coordinates of the line lying in the boundaries of the math view. From the 2 points of the boundary,
+     * this is next to p2.
      *
-     * @return A referencedCopy of the boundary point
+     * @return A vector with the coordinates of the boundary point
      */
-    public Point getBorderPoint2() {
+    public Vec getBorderPoint2() {
         update(scene);
-        return bp2.p.copy();
+        return borderPoint2.getVec();
     }
 
     /**
-     * Returns the center of the object. As the center of an infinite line
-     * doesn't exists, return the first of the generating points instead.
+     * Returns the center of the object. As the center of an infinite line doesn't exists, return the first of the
+     * generating points instead.
      *
      * @return The first point of the generator points p1 and p2
      */
     @Override
-    public Point getCenter() {
-
+    public Vec getCenter() {
         return p1.copy();
     }
 
@@ -196,51 +182,31 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
         return p1.to(p2);
     }
 
-    @Override
-    public Stylable getMp() {
-        return visiblePiece.getMp();
+    public Vec getP1() {
+        return p1.getVec();
     }
 
-    public Point getP1() {
-        return p1;
-    }
-
-    public Point getP2() {
-        return p2;
+    public Vec getP2() {
+        return p2.getVec();
     }
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, p1,p2);
-//        scene.registerUpdateable(p1, p2);
-//        setUpdateLevel(Math.max(p1.getUpdateLevel(), p2.getUpdateLevel()) + 1);
+        dependsOn(scene, p1, p2);//You can safely pass null to this method
     }
 
-    @Override
-    public void restoreState() {
-        super.restoreState();
-        p1.restoreState();
-        p2.restoreState();
-    }
-
-    @Override
-    public void saveState() {
-        super.saveState();
-        p1.saveState();
-        p2.saveState();
-    }
 
     /**
      * Creates a finite Segment, that runs over the screen plus a percent gap
      *
-     * @param cam Camera with math view
+     * @param cam   Camera with math view
      * @param scale Scale to apply. 1 returns the visible part of the line.
      * @return A segment with the visibleFlag part of the line
      */
     public Shape toSegment(Camera cam, double scale) {
-        computeBoundPoints(cam);
-        Point a = bp1.p.copy().scale(getCenter(), scale, scale);
-        Point b = bp2.p.copy().scale(getCenter(), scale, scale);
+        rebuildShape();
+        JMPathPoint a = borderPoint1.copy().scale(getCenter(), scale, scale);
+        JMPathPoint b = borderPoint2.copy().scale(getCenter(), scale, scale);
         Shape segment = Shape.segment(a, b);
         segment.getMp().copyFrom(this.getMp());
         return segment;
@@ -253,14 +219,12 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
     @Override
     public void update(JMathAnimScene scene) {
         super.update(scene);
-        computeBoundPoints(getCamera());
+        rebuildShape();
     }
 
     @Override
     public void updateWithCamera(Camera camera) {
-        computeBoundPoints(camera);
+        rebuildShape();
     }
-    
-    
 
 }

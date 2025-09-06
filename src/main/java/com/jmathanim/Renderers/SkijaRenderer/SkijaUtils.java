@@ -67,17 +67,17 @@ class SkijaUtils {
 //        }
 
         Path path = new Path();
-        Vec prev = jmpath.jmPathPoints.get(0).p.v.copy();
+        Vec prev = jmpath.getJmPathPoints().get(0).getV().copy();
         path.moveTo((float) prev.x, (float) prev.y);
         for (int n = 1; n < jmpath.size() + 1; n++) {
-            Vec point = jmpath.jmPathPoints.get(n).p.v;
-            Vec cpoint1 = jmpath.jmPathPoints.get(n - 1).cpExit.v;
-            Vec cpoint2 = jmpath.jmPathPoints.get(n).cpEnter.v;
+            Vec point = jmpath.getJmPathPoints().get(n).getV();
+            Vec cpoint1 = jmpath.getJmPathPoints().get(n - 1).getvExit();
+            Vec cpoint2 = jmpath.getJmPathPoints().get(n).getvEnter();
 
-            if (jmpath.jmPathPoints.get(n).isThisSegmentVisible) {
-                JMPathPoint jp = jmpath.jmPathPoints.get(n);
+            if (jmpath.getJmPathPoints().get(n).isThisSegmentVisible()) {
+                JMPathPoint jp = jmpath.getJmPathPoints().get(n);
                 //Should remove this in Skija?
-                if ((!jp.isCurved) || ((isAbsEquiv(prev, cpoint1, .1)) && (isAbsEquiv(point, cpoint2, .0001)))) {
+                if ((!jp.isCurved()) || ((isAbsEquiv(prev, cpoint1, .1)) && (isAbsEquiv(point, cpoint2, .0001)))) {
                     path.lineTo((float) point.x, (float) point.y);
                 } else {
                     path.cubicTo((float) cpoint1.x, (float) cpoint1.y, (float) cpoint2.x, (float) cpoint2.y, (float) point.x, (float) point.y);
@@ -85,7 +85,7 @@ class SkijaUtils {
             } else {
                 path.moveTo((float) point.x, (float) point.y);
             }
-            prev.copyFrom(point);
+            prev.copyCoordinatesFrom(point);
         }
 //        paths.put(jmpath, path);
         return path;
@@ -102,7 +102,7 @@ class SkijaUtils {
      * @param style Shape object to get styles
      * @return
      */
-    protected Paint createDrawPaint(MathObject obj, Stylable style) {
+    protected Paint createDrawPaint(MathObject obj, DrawStyleProperties style) {
         Paint paint = new Paint();
         paint.setMode(PaintMode.STROKE);
         setColor(paint, obj, style.getDrawColor());
@@ -111,14 +111,14 @@ class SkijaUtils {
         return paint;
     }
 
-    protected Paint createFillPaint(MathObject obj, Stylable style) {
+    protected Paint createFillPaint(MathObject obj, DrawStyleProperties style) {
         Paint paint = new Paint();
         paint.setMode(PaintMode.FILL);
         setColor(paint, obj, style.getFillColor());
         return paint;
     }
 
-    protected Paint createFillAndDrawPaint(MathObject obj, Stylable style) {
+    protected Paint createFillAndDrawPaint(MathObject obj, DrawStyleProperties style) {
         Paint paint = new Paint();
         paint.setMode(PaintMode.STROKE_AND_FILL);
         setColor(paint, obj, style.getDrawColor());
@@ -136,7 +136,7 @@ class SkijaUtils {
     private void setColor(Paint paint, MathObject obj, PaintStyle color) {
         if (color instanceof JMColor) {
             JMColor jmColor = (JMColor) color;
-            paint.setColor4f(new Color4f((float) jmColor.r, (float) jmColor.g, (float) jmColor.b, (float) jmColor.getAlpha()));
+            paint.setColor4f(new Color4f((float) jmColor.getRed(), (float) jmColor.getGreen(), (float) jmColor.getBlue(), (float) jmColor.getAlpha()));
         }
         if (color instanceof JMLinearGradient) {
             paint.setShader(buildLinearGradient(obj, (JMLinearGradient) color));
@@ -154,10 +154,10 @@ class SkijaUtils {
             Rect bb=obj.getBoundingBox();
              radius = (float) Math.max(bb.getHeight(), bb.getWidth());
 
-            vCenter=bb.getCenter().v;
+            vCenter=bb.getCenter();
 
         } else {
-            vCenter=jmRadialGradient.getCenter().v;
+            vCenter=jmRadialGradient.getCenter();
             radius= (float) jmRadialGradient.getRadius();
         }
 
@@ -184,12 +184,12 @@ class SkijaUtils {
         Vec vStart, vEnd;
         if (jmLinearGradient.isRelativeToShape()) {
             Rect bb=obj.getBoundingBox();
-            vStart = bb.getRelVec(jmLinearGradient.getStart().v);
-            vEnd = bb.getRelVec(jmLinearGradient.getEnd().v);
+            vStart = bb.getRelVec(jmLinearGradient.getStart());
+            vEnd = bb.getRelVec(jmLinearGradient.getEnd());
 
         } else {
-            vStart = jmLinearGradient.getStart().v;
-            vEnd = jmLinearGradient.getEnd().v;
+            vStart = jmLinearGradient.getStart();
+            vEnd = jmLinearGradient.getEnd();
         }
         GradientStop stops = jmLinearGradient.getStops();
         int[] colors = new int[stops.size()];
@@ -212,11 +212,11 @@ class SkijaUtils {
      * @return The equivalente Skija Color4f object
      */
     public Color4f JMColorToColor4f(JMColor jmColor) {
-        return new Color4f((float) jmColor.r, (float) jmColor.g, (float) jmColor.b, (float) jmColor.getAlpha());
+        return new Color4f((float) jmColor.getRed(), (float) jmColor.getGreen(), (float) jmColor.getBlue(), (float) jmColor.getAlpha());
     }
 
     public int jmColorToInt(JMColor color) {
-        return doubleToSkijaColor(color.r, color.g, color.b, color.getAlpha());
+        return doubleToSkijaColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }
 
     private int doubleToSkijaColor(double r, double g, double b, double a) {

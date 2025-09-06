@@ -20,8 +20,10 @@ import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Constructible.Lines.CTSegment;
 import com.jmathanim.Constructible.Others.CTAngleMark;
+import com.jmathanim.Enum.LinkType;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
 
 import java.util.AbstractCollection;
 import java.util.function.DoubleUnaryOperator;
@@ -33,11 +35,7 @@ import java.util.function.DoubleUnaryOperator;
  */
 public final class LinkArguments extends Link {
 
-    public enum LinkType {
-        X, Y, VALUE, COUNT,
-        WIDTH, HEIGHT, XMIN, XMAX, YMIN, YMAX,
-        ARG0, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7, ARG8, ARG9
-    }
+
 
     public Object origin;
     public LinkType originLinkType;
@@ -74,15 +72,15 @@ public final class LinkArguments extends Link {
             if (destiny instanceof MathObject) {
                 MathObject mathObject = (MathObject) destiny;
                 Vec vshift = Vec.to(0, 0);
-                Point center = mathObject.getCenter();
+                Vec center = mathObject.getCenter();
 
                 switch (destinyLinkType) {
                     case X:
-                        vshift.x = getValue(data) - center.v.x;
+                        vshift.x = getValue(data) - center.x;
                         mathObject.shift(vshift);
                         break;
                     case Y:
-                        vshift.y = getValue(data) - center.v.y;
+                        vshift.y = getValue(data) - center.y;
                         mathObject.shift(vshift);
                         break;
                     case XMIN:
@@ -123,7 +121,7 @@ public final class LinkArguments extends Link {
                     Scalar scalar = (Scalar) destiny;
                     switch (destinyLinkType) {
                         case VALUE:
-                            scalar.setScalar(getValue(data));
+                            scalar.setValue(getValue(data));
                             break;
                     }
                 }
@@ -136,31 +134,31 @@ public final class LinkArguments extends Link {
                 double value = getValue(data);
                 switch (destinyLinkType) {
                     case ARG0:
-                        lat.getArg(0).setScalar(value);
+                        lat.getArg(0).setValue(value);
                         break;
                     case ARG1:
-                        lat.getArg(1).setScalar(value);
+                        lat.getArg(1).setValue(value);
                         break;
                     case ARG3:
-                        lat.getArg(3).setScalar(value);
+                        lat.getArg(3).setValue(value);
                         break;
                     case ARG4:
-                        lat.getArg(4).setScalar(value);
+                        lat.getArg(4).setValue(value);
                         break;
                     case ARG5:
-                        lat.getArg(5).setScalar(value);
+                        lat.getArg(5).setValue(value);
                         break;
                     case ARG6:
-                        lat.getArg(6).setScalar(value);
+                        lat.getArg(6).setValue(value);
                         break;
                     case ARG7:
-                        lat.getArg(7).setScalar(value);
+                        lat.getArg(7).setValue(value);
                         break;
                     case ARG8:
-                        lat.getArg(8).setScalar(value);
+                        lat.getArg(8).setValue(value);
                         break;
                     case ARG9:
-                        lat.getArg(9).setScalar(value);
+                        lat.getArg(9).setValue(value);
                         break;
 
                 }
@@ -278,40 +276,32 @@ public final class LinkArguments extends Link {
 
     private Double getX(Object obj) throws JLinkException {
 
-        if (obj instanceof Point) {
-            Point point = (Point) obj;
-            return point.v.x;
-        }
-        if (obj instanceof Vec) {
-            Vec vec = (Vec) obj;
-            return vec.x;
+        if (obj instanceof Coordinates) {
+            Coordinates point = (Coordinates) obj;
+            return point.getVec().x;
         }
         if (obj instanceof Double) {
             return (Double) obj;
         }
         if (obj instanceof Boxable) {
             Boxable boxable = (Boxable) obj;
-            return boxable.getBoundingBox().getCenter().v.x;
+            return boxable.getBoundingBox().getCenter().x;
         }
         throw new JLinkException();
     }
 
     private Double getY(Object obj) throws JLinkException {
 
-        if (obj instanceof Point) {
-            Point point = (Point) obj;
-            return point.v.y;
-        }
-        if (obj instanceof Vec) {
-            Vec vec = (Vec) obj;
-            return vec.y;
+        if (obj instanceof Coordinates) {
+            Coordinates point = (Coordinates) obj;
+            return point.getVec().y;
         }
         if (obj instanceof Double) {
             return (Double) obj;
         }
         if (obj instanceof Boxable) {
             Boxable boxable = (Boxable) obj;
-            return boxable.getBoundingBox().getCenter().v.y;
+            return boxable.getBoundingBox().getCenter().y;
         }
         throw new JLinkException();
     }
@@ -319,7 +309,7 @@ public final class LinkArguments extends Link {
     private Double getValue(Object obj) throws JLinkException {
         if (obj instanceof Scalar) {
             Scalar scalar = (Scalar) obj;
-            return scalar.getScalar();
+            return scalar.getValue();
         }
         if (obj instanceof Double) {
             return (Double) obj;
@@ -338,7 +328,7 @@ public final class LinkArguments extends Link {
         }
         if (obj instanceof Boxable) {
             Boxable boxable = (Boxable) obj;
-            return boxable.getBoundingBox().getCenter().v.norm();
+            return boxable.getBoundingBox().getCenter().norm();
         }
         throw new JLinkException();
     }
@@ -346,7 +336,7 @@ public final class LinkArguments extends Link {
     private Double getArg(Object obj, int n) throws JLinkException {
         if (obj instanceof hasArguments) {
             hasArguments hasArgs = (hasArguments) obj;
-            return hasArgs.getArg(n).value;
+            return hasArgs.getArg(n).getValue();
         }
         throw new JLinkException();
     }

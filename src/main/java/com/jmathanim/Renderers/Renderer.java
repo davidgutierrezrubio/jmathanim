@@ -26,8 +26,9 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.AbstractJMImage;
+import com.jmathanim.mathobjects.AbstractShape;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.MediatorMathObject;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -49,6 +50,8 @@ public abstract class Renderer {
 
     protected final JMathAnimConfig config;
     protected final JMathAnimScene scene;
+
+    private final Vec nullVector=Vec.to(0,0);
 
     public Renderer(JMathAnimScene parentScene) {
         this.scene = parentScene;
@@ -132,7 +135,11 @@ public abstract class Renderer {
     /**
      * Clear current renderer, with the background color
      */
-    abstract public void clearAndPrepareCanvasForAnotherFrame();
+    public void clearAndPrepareCanvasForAnotherFrame() {
+        for (MathObject<?> obj: scene.getMathObjects()) {
+            MediatorMathObject.setHasBeenUpdated(obj,false);
+        }
+    };
 
     /**
      * Draws the path of a JMPathObject This method will draw most of the
@@ -140,15 +147,18 @@ public abstract class Renderer {
      *
      * @param mobj The JMPathObject
      */
-    abstract public void drawPath(Shape mobj);
+    abstract protected void drawPath(AbstractShape<?> mobj);
 
-    abstract public void drawPath(Shape mobj, Camera camera);
+    public void drawPath(AbstractShape<?> mobj, Camera camera) {
+        drawPath(mobj, nullVector, camera);
+    };
+    abstract public void drawPath(AbstractShape<?> mobj, Vec shiftVector, Camera camera);
 
-    abstract public void drawAbsoluteCopy(Shape sh, Vec anchor);
+    abstract public void drawAbsoluteCopy(AbstractShape<?> sh, Vec anchor);
 
     abstract public Rect createImage(InputStream stream);
 
-    abstract public void drawImage(AbstractJMImage obj,Camera cam);
+    abstract public void drawImage(AbstractJMImage<?> obj,Camera cam);
 
     abstract public void debugText(String text, Vec loc);
 
@@ -156,7 +166,7 @@ public abstract class Renderer {
 
     abstract public double ThicknessToMathWidth(double th);
 
-    abstract public double ThicknessToMathWidth(MathObject obj);
+    abstract public double ThicknessToMathWidth(MathObject<?> obj);
 
     abstract public void addSound(SoundItem soundItem);
 }

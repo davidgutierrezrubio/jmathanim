@@ -51,10 +51,10 @@ public class CTTranslatedPoint extends CTPoint {
     @Override
     public void rebuildShape() {
         AffineJTransform tr = AffineJTransform.createTranslationTransform(translationVector.getDirection());
-        this.v.copyFrom(this.pointToTranslate.v);
-        this.v.applyAffineTransform(tr);
+        this.coordinatesOfPoint.copyCoordinatesFrom(this.pointToTranslate);
+        this.coordinatesOfPoint.applyAffineTransform(tr);
         if (!isFreeMathObject()) {
-            p.v.copyFrom(v);
+            pointToShow.v.copyCoordinatesFrom(coordinatesOfPoint);
         }
     }
 

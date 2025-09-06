@@ -24,6 +24,7 @@ import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
 
 import java.util.ArrayList;
 
@@ -47,7 +48,7 @@ public class ContourHighlight extends Animation {
      * @param objs Shapes to run the animation (varargs).
      * @return The animation ready to play with playAnim method.
      */
-    public static ContourHighlight make(double runTime, MathObject... objs) {
+    public static ContourHighlight make(double runTime, MathObject<?>... objs) {
         return new ContourHighlight(runTime, objs);
     }
 
@@ -76,7 +77,7 @@ public class ContourHighlight extends Animation {
      * @param runTime Runtime in seconds
      * @param objs Shapes to run the animation (varargs).
      */
-    public ContourHighlight(double runTime, MathObject... objs) {
+    public ContourHighlight(double runTime, MathObject<?>... objs) {
         super(runTime);
         subshapes = MultiShapeObject.make();
         this.objs = objs;
@@ -90,7 +91,7 @@ public class ContourHighlight extends Animation {
     @Override
     public boolean doInitialization() {
         super.doInitialization();
-        ArrayList<MathObject> toAnimateArrayList = new ArrayList<>();
+        ArrayList<MathObject<?>> toAnimateArrayList = new ArrayList<>();
         for (MathObject obj : objs) {
             if (obj instanceof MathObjectGroup) {
                 toAnimateArrayList.add(Shape.rectangle(obj.getBoundingBox()));

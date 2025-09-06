@@ -19,7 +19,7 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Scalar;
-import com.jmathanim.mathobjects.Text.LaTeXMathObject;
+import com.jmathanim.mathobjects.Text.LatexMathObject;
 
 /**
  * This animation execute a single command. It is used to encapsulate ceratin
@@ -35,7 +35,7 @@ public abstract class SingleCommandAnimation extends Animation {
 
     public cmdStatusType cmdStatus;
 
-    public static SingleCommandAnimation changeLaTeX(LaTeXMathObject latex, String newText) {
+    public static SingleCommandAnimation changeLaTeX(LatexMathObject latex, String newText) {
         SingleCommandAnimation sc = new SingleCommandAnimation() {
             String oldText = null;
 
@@ -61,14 +61,14 @@ public abstract class SingleCommandAnimation extends Animation {
 
             @Override
             public void command() {
-                oldValue = scalar.getScalar();
-                scalar.setScalar(value);
+                oldValue = scalar.getValue();
+                scalar.setValue(value);
             }
 
             @Override
             public void undo() {
                 if (oldValue != null) {
-                    scalar.setScalar(oldValue);
+                    scalar.setValue(oldValue);
                 }
             }
         };
@@ -81,14 +81,14 @@ public abstract class SingleCommandAnimation extends Animation {
 
             @Override
             public void command() {
-                oldValue = scalar.getScalar();
-                scalar.setScalar(oldValue+delta);
+                oldValue = scalar.getValue();
+                scalar.setValue(oldValue+delta);
             }
 
             @Override
             public void undo() {
                 if (oldValue != null) {
-                    scalar.setScalar(oldValue);
+                    scalar.setValue(oldValue);
                 }
             }
         };

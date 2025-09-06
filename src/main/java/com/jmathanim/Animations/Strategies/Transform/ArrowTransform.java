@@ -19,17 +19,16 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Commands;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Arrow;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 
 /**
- * Transfom stratregy from one arrow to another. Currently only changes
- * starting/ending points, not head transform is done
+ * Transfom stratregy from one arrow to another. Currently only changes starting/ending points, not head transform is
+ * done
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ArrowTransform extends TransformStrategy {
+public class ArrowTransform extends TransformStrategy<Arrow> {
 
     AnimationWithEffects anim;
 
@@ -43,10 +42,10 @@ public class ArrowTransform extends TransformStrategy {
     @Override
     public boolean doInitialization() {
         super.doInitialization();
-        Point a = ((Arrow) getOriginObject()).getStart().copy();
-        Point b = ((Arrow) getOriginObject()).getEnd().copy();
-        Point c = ((Arrow) getOriginObject()).getStart().copy();
-        Point d = ((Arrow) getDestinyObject()).getEnd().copy();
+        Vec a = getOriginObject().getStart().copy();
+        Vec b = getOriginObject().getEnd().copy();
+        Vec c = getDestinyObject().getStart().copy();
+        Vec d = getDestinyObject().getEnd().copy();
         getIntermediateObject().copyStateFrom(this.getOriginObject());
         anim = Commands.isomorphism(runTime, a, b, c, d, getIntermediateObject());
         this.copyEffectParametersTo(anim);
@@ -59,7 +58,12 @@ public class ArrowTransform extends TransformStrategy {
     @Override
     public void doAnim(double t) {
         super.doAnim(t);
-        anim.doAnim(t);
+        double lt = getLT(t);
+        anim.doAnim(lt);
+        if (isShouldInterpolateStyles()) {
+            getIntermediateObject().getMp().interpolateFrom(getOriginObject().getMp(), getDestinyObject().getMp(), lt);
+        }
+        getIntermediateObject().update(scene);
     }
 
     @Override
@@ -68,14 +72,10 @@ public class ArrowTransform extends TransformStrategy {
         anim.finishAnimation();
     }
 
-    @Override
-    public MathObject getIntermediateObject() {
-        return anim.getIntermediateObject();
-    }
-
-    @Override
-    public void reset() {
-        super.reset();
-        anim.reset();
-    }
+//
+//    @Override
+//    public void reset() {
+//        super.reset();
+//        anim.reset();
+//    }
 }

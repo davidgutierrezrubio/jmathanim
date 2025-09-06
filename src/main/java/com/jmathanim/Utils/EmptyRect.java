@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Utils;
 
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Coordinates;
 
 /**
  * Represents an empty rect. Should be returned and managed in special cases
@@ -61,7 +61,7 @@ public class EmptyRect extends Rect {
     }
 
     @Override
-    public Rect centerAt(Point dstCenter) {
+    public Rect centerAt(Coordinates<?> dstCenter) {
         return this;
     }
 

@@ -18,23 +18,25 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.Constructible.Lines.HasDirection;
+import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.AffineTransformable;
+import com.jmathanim.mathobjects.Coordinates;
+import com.jmathanim.mathobjects.Interpolable;
 import com.jmathanim.mathobjects.Stateable;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 
-import static com.jmathanim.jmathanim.JMathAnimScene.PI;
-import static java.lang.Math.sqrt;
+import static com.jmathanim.jmathanim.JMathAnimScene.PI2;
 
 /**
  * A vector in 3D
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Vec implements Stateable, HasDirection {
+public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<Vec>, Interpolable<Vec> {
 
     public double x, y, z;
     public double xState, yState, zState;
-    public static final double PI2 = 2 * PI;
 
     /**
      * Returns a new Vec with the given coordinates
@@ -60,6 +62,27 @@ public class Vec implements Stateable, HasDirection {
 
     }
 
+    public static Vec to(double x, double y, double z) {
+        return new Vec(x, y, z);
+    }
+
+    public static Vec to(double x, double y) {
+        return new Vec(x, y);
+    }
+
+
+    /**
+     * Static builder.Creates and returns a new point at random coordinates, inside the math view.
+     *
+     * @return The created point
+     */
+    public static Vec random() {
+        Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
+        double x = r.xmin + (r.xmax - r.xmin) * Math.random();
+        double y = r.ymin + (r.ymax - r.ymin) * Math.random();
+        return new Vec(x, y);
+    }
+
     /**
      * Computes the dot product of this vector and a given one
      *
@@ -80,97 +103,36 @@ public class Vec implements Stateable, HasDirection {
         return new Vec(this.y * b.z - this.z * b.y, this.z * b.x - this.x * b.z, this.x * b.y - this.y * b.x);
     }
 
-    /**
-     * Multiplies the vector by a scalar and stores the resul. The original
-     * vector is altered and the method returns this object.
-     *
-     * @param lambda The scalar to multiply
-     * @return This vector
-     */
-    public Vec multInSite(double lambda) {
-        x *= lambda;
-        y *= lambda;
-        z *= lambda;
-        return this;
-    }
 
-    /**
-     * Returns a new vector representing this vector scaled by a factor. The
-     * current vector is unaltered.
-     *
-     * @param lambda The factor
-     * @return The new vector
-     */
+    @Override
     public Vec mult(double lambda) {
         return this.copy().multInSite(lambda);
     }
 
-    /**
-     * Adds the given vector to this and stores the resul. The original vector
-     * is altered and the method returns this object.
-     *
-     * @param b The vector to add
-     * @return This vector
-     */
-    public Vec addInSite(Vec b) {
-        x += b.x;
-        y += b.y;
-        z += b.z;
-        return this;
+
+    public Vec minus(Coordinates<?> v2) {
+
+        return (Vec) this.copy().minusInSite(v2);
     }
 
-    /**
-     * Substracts the given vector to this and stores the resul. The original
-     * vector is altered and the method returns this object.
-     *
-     * @param b The vector to substract
-     * @return This vector
-     */
-    public Vec minusInSite(Vec b) {
-        x -= b.x;
-        y -= b.y;
-        z -= b.z;
-        return this;
-    }
 
-    /**
-     * Substracts the given vector to this and return the result. The original
-     * vector is unaltered.
-     *
-     * @param b The vector to substract
-     * @return The substraction result
-     */
-    public Vec minus(Vec b) {
-        return this.copy().minusInSite(b);
-    }
-
-    /**
-     * Add the given vector to this and return the result. The original vector
-     * is unaltered.
-     *
-     * @param b The vector to add
-     * @return The sum result
-     */
-    public Vec add(Vec b) {
-        return this.copy().addInSite(b);
-    }
-
-    public double norm() {
-        return sqrt(x * x + y * y + z * z);
+    @Override
+    public Vec add(Coordinates<?> v2) {
+        return (Vec) this.copy().addInSite(v2);
     }
 
     /**
      * Returns a new point between this and v2, given by the parameter
      *
-     * @param v2 The other point to interpolate
-     * @param alpha Parameter of interpolation. 0 gives this point. 1 gives v2.
-     * 0.5 returns the middle point. Values less than 0 and greater than 1 are
-     * allowed.
+     * @param coords2 The other point to interpolate
+     * @param alpha   Parameter of interpolation. 0 gives this point. 1 gives v2. 0.5 returns the middle point. Values
+     *                less than 0 and greater than 1 are allowed.
      * @return The interpolated point
      */
-    public Vec interpolate(Vec v2, double alpha) {
+    @Override
+    public Vec interpolate(Coordinates<?> coords2, double alpha) {
+        Vec v2 = coords2.getVec();
         return new Vec((1 - alpha) * x + alpha * v2.x, (1 - alpha) * y + alpha * v2.y, (1 - alpha) * z + alpha * v2.z);
-
     }
 
     /**
@@ -182,33 +144,6 @@ public class Vec implements Stateable, HasDirection {
         return new Vec(x, y, z);
     }
 
-    /**
-     * Copy coordinates from given vector
-     *
-     * @param v Vector to copy from
-     */
-    public void copyFrom(Vec v) {
-        if (v != null) {
-            this.x = v.x;
-            this.y = v.y;
-            this.z = v.z;
-        }
-    }
-
-    @Override
-    public void saveState() {
-        xState = x;
-        yState = y;
-        zState = z;
-    }
-
-    @Override
-    public void restoreState() {
-        x = xState;
-        y = yState;
-        z = zState;
-
-    }
 
     /**
      * Return the angle of the vector, between 0 and 2*PI (2d version)
@@ -217,13 +152,8 @@ public class Vec implements Stateable, HasDirection {
      */
     public double getAngle() {
         double angle = Math.atan2(this.y, this.x);
-
-        while (angle < 0) {
-            angle += PI2;
-        }
-        while (angle > PI2) {
-            angle -= PI2;
-        }
+        angle %= PI2;
+        if (angle < 0) angle += PI2;
         return angle;
     }
 
@@ -237,8 +167,7 @@ public class Vec implements Stateable, HasDirection {
     }
 
     /**
-     * Rotates the vector the specified angle, storing the result in the
-     * original vector (2d version)
+     * Rotates the vector the specified angle, storing the result in the original vector (2d version)
      *
      * @param angle Rotation angle
      * @return This vector
@@ -254,8 +183,23 @@ public class Vec implements Stateable, HasDirection {
     }
 
     /**
-     * Rotates the vector the specified angle, and returns the result.The
-     * original vector is unaltered (2d version).
+     * Rotates the coordinates given by the vector the specified angle around the given center, storing the result in
+     * the original vector (2d version)
+     *
+     * @param center Rotation center
+     * @param angle  Rotation angle
+     * @return This vector
+     */
+    public Vec rotate(Coordinates<?> center, double angle) {
+        Vec vCenter = center.getVec();
+        Vec rotatedVector = Vec.to(x - vCenter.x, y - vCenter.y);
+        rotatedVector.rotateInSite(angle);
+        return rotatedVector.addInSite(vCenter);
+    }
+
+
+    /**
+     * Rotates the vector the specified angle, and returns the result.The original vector is unaltered (2d version).
      *
      * @param angle Rotation angle
      * @return A new vector with the resul
@@ -264,55 +208,51 @@ public class Vec implements Stateable, HasDirection {
         return this.copy().rotateInSite(angle);
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 29 * hash + Long.hashCode(Double.doubleToLongBits(this.x));
-        hash = 29 * hash + Long.hashCode(Double.doubleToLongBits(this.y));
-        hash = 29 * hash + Long.hashCode(Double.doubleToLongBits(this.z));
-        return hash;
-    }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Vec other = (Vec) obj;
-        if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.x)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.y) != Double.doubleToLongBits(other.y)) {
-            return false;
-        }
-        return Double.doubleToLongBits(this.z) == Double.doubleToLongBits(other.z);
-    }
+//    @Override
+//    public int hashCode() {
+//        int hash = 7;
+//        hash = 29 * hash + Long.hashCode(Double.doubleToLongBits(this.x));
+//        hash = 29 * hash + Long.hashCode(Double.doubleToLongBits(this.y));
+//        hash = 29 * hash + Long.hashCode(Double.doubleToLongBits(this.z));
+//        return hash;
+//    }
+
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (this == obj) {
+//            return true;
+//        }
+//        if (obj == null) {
+//            return false;
+//        }
+//        if (getClass() != obj.getClass()) {
+//            return false;
+//        }
+//        final Vec other = (Vec) obj;
+//        if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.x)) {
+//            return false;
+//        }
+//        if (Double.doubleToLongBits(this.y) != Double.doubleToLongBits(other.y)) {
+//            return false;
+//        }
+//        return Double.doubleToLongBits(this.z) == Double.doubleToLongBits(other.z);
+//    }
 
     @Override
     public String toString() {
-        return "Vec(" + x + ", " + y + ", "+z+')';
-    }
+        if (z == 0)
+            return String.format("Vec(%.2f, %.2f)", x, y);
+        else
+            return String.format("Vec(%.2f, %.2f, %.2f)", x, y, z);
 
-    public static Vec to(double x, double y, double z) {
-        return new Vec(x, y, z);
-    }
-
-    public static Vec to(double x, double y) {
-        return new Vec(x, y);
     }
 
     /**
-     * Return the normalized vector, with modulus 1. If the vector is the null
-     * vector, does nothing. The original vector is unaltered.
+     * Return the normalized vector, with modulus 1. If the vector is the null vector, does nothing. The original vector
+     * is unaltered.
      *
-     * @return The normalized vector if the modulus is positive. The original
-     * otherwise.
+     * @return The normalized vector if the modulus is positive. The original otherwise.
      */
     public Vec normalize() {
         double norm = this.norm();
@@ -323,14 +263,6 @@ public class Vec implements Stateable, HasDirection {
         }
     }
 
-    /**
-     * Checkif any of its components is Nan
-     *
-     * @return True if x, y or z is NaN. False otherwise
-     */
-    public boolean isNaN() {
-        return (Double.isNaN(x)) || (Double.isNaN(y)) || Double.isNaN(z);
-    }
 
     @Override
     public Vec getDirection() {
@@ -338,12 +270,12 @@ public class Vec implements Stateable, HasDirection {
     }
 
     /**
-     * Applies an affine transform to the vector. the transformed vector. The
-     * original vector is altered.
+     * Applies an affine transform to the vector. the transformed vector. The original vector is altered.
      *
      * @param tr Affine transform
      * @return This object, with the transform applied
      */
+    @Override
     public Vec applyAffineTransform(AffineJTransform tr) {
         RealMatrix pRow = new Array2DRowRealMatrix(new double[][]{{1d, x, y, z}});
         RealMatrix pNew = pRow.multiply(tr.getMatrix());
@@ -354,29 +286,57 @@ public class Vec implements Stateable, HasDirection {
         return this;
     }
 
-    /**
-     * Scales the vector according to given parameters. The vector is modified.
-     *
-     * @param scx X scale
-     * @param scy Y scale
-     * @return This vector
-     */
-    public Vec scaleInSite(double scx, double scy) {
-        this.x *= scx;
-        this.y *= scy;
+
+    public boolean isEquivalentTo(Vec v2, double epsilon) {
+        boolean resul = (Math.abs(x - v2.x) <= epsilon) & (Math.abs(y - v2.y) <= epsilon) & (Math.abs(z - v2.z) <= epsilon);
+        return resul;
+    }
+
+    @Override
+    public Vec getVec() {
         return this;
     }
 
-    /**
-     * Returns a scaled version of the vector. The original vector is not
-     * modified
-     *
-     * @param scx X scale
-     * @param scy Y scale
-     * @return A copy of the vector, scaled.
-     */
-    public Vec scale(double scx, double scy) {
-        return this.copy().scaleInSite(scx, scy);
+
+    @Override
+    public Rect getBoundingBox() {
+        return new Rect(x, y, x, y);
     }
 
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
+    public int getUpdateLevel() {
+        return 0;
+    }
+
+    @Override
+    public void setUpdateLevel(int level) {
+
+    }
+
+    @Override
+    public void update(JMathAnimScene scene) {
+
+    }
+
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+
+    }
+
+    @Override
+    public void unregisterUpdateableHook(JMathAnimScene scene) {
+    }
+
+
+    @Override
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof Vec)) return;
+        Vec v = (Vec) obj;
+        copyCoordinatesFrom(v);
+    }
 }

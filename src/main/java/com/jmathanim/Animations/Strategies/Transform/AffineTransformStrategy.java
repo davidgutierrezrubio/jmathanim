@@ -18,26 +18,26 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.AbstractShape;
 
 /**
  * A general abstract affine transform strategy
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class AffineTransformStrategy extends TransformStrategy {
+public abstract class AffineTransformStrategy extends TransformStrategy<AbstractShape<?>> {
 
-    protected final Shape shDestiny;
-    protected final Shape shOrigin;
-    Point A;
-    Point B;
-    Point C;
-    Point D;
-    Point E;
-    Point F;
+    protected final AbstractShape<?> shDestiny;
+    protected final AbstractShape<?> shOrigin;
+    Vec A;
+    Vec B;
+    Vec C;
+    Vec D;
+    Vec E;
+    Vec F;
 
-    public AffineTransformStrategy(double runTime, Shape origin, Shape destiny) {
+    public AffineTransformStrategy(double runTime, AbstractShape<?> origin, AbstractShape<?> destiny) {
         super(runTime);
         this.setDestiny(destiny);
         this.setOrigin(origin);
@@ -49,16 +49,18 @@ public abstract class AffineTransformStrategy extends TransformStrategy {
     @Override
     public boolean doInitialization() {
         super.doInitialization();
-        A = shOrigin.getPoint(0).copy();
-        B = shOrigin.getPoint(1).copy();
-        C = shOrigin.getPoint(2).copy();
-        D = shDestiny.getPoint(0).copy();
-        E = shDestiny.getPoint(1).copy();
-        F = shDestiny.getPoint(2).copy();
+        A = shOrigin.getPoint(0).v;
+        B =  shOrigin.getPoint(1).v;;//shOrigin.getPoint(1).copy();
+        C =  shOrigin.getPoint(2).v;//shOrigin.getPoint(2).copy();
+        D =  shDestiny.getPoint(0).v;//shDestiny.getPoint(0).copy();
+        E = shDestiny.getPoint(1).v;//shDestiny.getPoint(1).copy();
+        F = shDestiny.getPoint(2).v;//shDestiny.getPoint(2).copy();
         saveStates(getIntermediateObject());
         AffineJTransform tr = createIntermediateTransform(1);
-        Point center = getIntermediateObject().getCenter();
-        prepareJumpPath(center, tr.getTransformedObject(center), getIntermediateObject());
+        Vec center = getIntermediateObject().getCenter();
+        AbstractShape<?> intermediateObject = getIntermediateObject();
+        prepareJumpPath(center, center.copy().applyAffineTransform(tr), intermediateObject);
+
         return true;
     }
 

@@ -46,7 +46,7 @@
 <!--                <artifactId>lwjgl-bom</artifactId>-->
 <!--                <version>${lwjgl.version}</version>-->
 <!--                <scope>import</scope>-->
-<!--                <type>pom</type>-->
+<!--                <anchorType>pom</anchorType>-->
 <!--            </dependency>-->
 <!--        </dependencies>-->
 <!--    </dependencyManagement>-->
@@ -461,6 +461,12 @@
                 <scope>test</scope>
             </dependency>
         <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.19.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>xuggle</groupId>
             <artifactId>xuggle-xuggler</artifactId>
             <version>5.4</version>
@@ -534,10 +540,9 @@
 <!--            <scope>compile</scope>-->
 <!--        </dependency>-->
         <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>3.0.24</version>
-            <type>pom</type>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>5.0.0</version>
         </dependency>
     </dependencies>
     <build>

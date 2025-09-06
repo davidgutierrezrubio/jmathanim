@@ -18,10 +18,13 @@
 package com.jmathanim.Cameras;
 
 import com.jmathanim.Utils.Boxable;
+import com.jmathanim.Utils.EmptyRect;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.hasTrivialBoundingBox;
 import com.jmathanim.mathobjects.shouldUdpateWithCamera;
 
 import java.util.ArrayList;
@@ -141,10 +144,9 @@ public class Camera implements Boxable {
 
     }
 
-    public void setCenter(MathObject obj) {
-        double xx = obj.getCenter().v.x;
-        double yy = obj.getCenter().v.y;
-        setCenter(xx, yy);
+    public void setCenter(Coordinates obj) {
+        Vec center = obj.getVec();
+        setCenter(center.x, center.y);
     }
 
     /**
@@ -169,6 +171,10 @@ public class Camera implements Boxable {
         this.ymin = ycenter - .5 * (xmax - xmin) / ratioScreen;
         updateDependentObjectsFromThisCamera();
         return this;
+    }
+
+    public double[] mathToScreenFX(Vec p) {
+        return mathToScreen(p.x, p.y);
     }
 
     public double mathToScreen(double mathScalar) {
@@ -198,9 +204,6 @@ public class Camera implements Boxable {
         return screenScalar * (xmax - xmin) / screenWidth;
     }
 
-    public double[] mathToScreenFX(Vec p) {
-        return mathToScreen(p.x, p.y);
-    }
 
     public void saveState() {
         xminB = xmin;
@@ -255,7 +258,7 @@ public class Camera implements Boxable {
      * @return This camera
      */
     public Camera adjustToRect(Rect rAdjust) {
-        Rect r = getRectThatContains(rAdjust);
+        Rect r = getMathViewThatContains(rAdjust);
         setMathXY(r.xmin, r.xmax, .5 * (r.ymax + r.ymin));
         return this;
     }
@@ -269,7 +272,7 @@ public class Camera implements Boxable {
      */
     public Camera adjustToAllObjects() {
         if (!scene.getMathObjects().isEmpty()) {
-            MathObject[] objs = scene.getMathObjects().toArray(new MathObject[0]);
+            MathObject<?>[] objs = scene.getMathObjects().toArray(new MathObject[0]);
             adjustToObjects(objs);
         }
         return this;
@@ -288,11 +291,19 @@ public class Camera implements Boxable {
         if (objs.length == 0) {
             return adjustToAllObjects();
         }
-        Rect r = getMathView();
+        Rect r = new EmptyRect();
         for (Boxable obj : objs) {
-            r = Rect.union(r, obj.getBoundingBox());
+            if (!(r instanceof hasTrivialBoundingBox)) {
+                Rect boundingBox = obj.getBoundingBox();
+                r = Rect.union(r, boundingBox);
+            }
         }
-        adjustToRect(r.addGap(hgap, hgap));
+        r.addGap(hgap, hgap);
+
+        if (getMathView().contains(r)) {
+            return this; //Do nothing
+        }
+        adjustToRect(r);
         return this;
     }
 
@@ -309,7 +320,8 @@ public class Camera implements Boxable {
         }
         Rect r = objs[0].getBoundingBox();
         for (Boxable obj : objs) {
-            r = Rect.union(r, obj.getBoundingBox());
+            if (!(r instanceof hasTrivialBoundingBox))
+                r = Rect.union(r, obj.getBoundingBox());
         }
         if (r != null) {
             shift(getMathView().getCenter().to(r.getCenter()));
@@ -343,9 +355,10 @@ public class Camera implements Boxable {
         if (objs.length == 0) {
             return zoomToAllObjects();
         }
-        Rect r = objs[0].getBoundingBox();
+        Rect r = new EmptyRect();
         for (Boxable obj : objs) {
-            r = Rect.union(r, obj.getBoundingBox());
+            if (!(r instanceof hasTrivialBoundingBox))
+                r = Rect.union(r, obj.getBoundingBox());
         }
         adjustToRect(r.addGap(hgap, vgap));
         return this;
@@ -359,7 +372,7 @@ public class Camera implements Boxable {
      */
     public Camera zoomToAllObjects() {
         if (!scene.getMathObjects().isEmpty()) {
-            MathObject[] objs = scene.getMathObjects().toArray(new MathObject[0]);
+            MathObject<?>[] objs = scene.getMathObjects().toArray(new MathObject[0]);
             zoomToObjects(objs);
         }
         return this;
@@ -382,7 +395,7 @@ public class Camera implements Boxable {
      * @param r A Rect object, rectangle to contain
      * @return The rectangle which contains r, with the screen proportions
      */
-    public Rect getRectThatContains(Rect r) {
+    public Rect getMathViewThatContains(Rect r) {
         Rect resul = new Rect(0, 0, 0, 0);
         double ratio = ((double) screenWidth) / screenHeight; // Ratio W/H
 

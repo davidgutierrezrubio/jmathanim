@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Animations.Strategies.Transform.Optimizers;
 
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.AbstractShape;
 
 /**
  * Interface to any class that implements a optimization strategy of paths prior
@@ -28,6 +28,6 @@ import com.jmathanim.mathobjects.Shape;
  */
 public interface OptimizePathsStrategy {
 
-	void optimizePaths(Shape sh1, Shape sh2);
+	void optimizePaths(AbstractShape<?> sh1, AbstractShape<?> sh2);
 
 }

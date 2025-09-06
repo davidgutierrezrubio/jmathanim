@@ -16,6 +16,8 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.Enum.LatexTokenType;
+
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
@@ -29,22 +31,7 @@ import java.util.List;
  */
 public class LatexToken {
 
-    public enum TokenType {
-        NONE, //This token will not be assigned never. It is used to always returns false when matching tokens
-        NON_MATH_CHAR,//Normal, non-mathematical text
-        CHAR,//A char token, mostly a letter
-        NUMBER, //0-9 digits, including point if used in the decimal context
-        SYMBOL, //A math symbol
-        OPERATOR, //A "big" operator like \sum, \int
-        BINARY_OPERATOR, //A simpler binary operator like +, -, \cap,\cup...
-        RELATION, // A math relation like =, \geq, \leq, etc.
-        DELIMITER, //Parenthesis, brackets...of any size
-        SQRT, // Square (or nth-) root symbol
-        FRACTION_BAR, //That is, the fraction bar :-)
-        GREEK_LETTER, //Any greek letter like \pi or \varepsilon
-        NAMED_FUNCTION, //A named function like \log or \ln
-        ARROW //An arrow
-    }
+
 
     /**
      * Secondary style flags
@@ -68,7 +55,7 @@ public class LatexToken {
     public static final int SEC_LEFTRIGHT_ARROW = 0b1000000000000000;//This token is a leftright arrow
     public static final int SEC_BOLD_FONT = 0b10000000000000000;//This token is in bold math
 
-    private TokenType type;
+    private LatexTokenType type;
     private Integer secondaryFlags;
 
     private String string;
@@ -84,7 +71,7 @@ public class LatexToken {
         return new LatexToken();
     }
 
-    public static LatexToken make(TokenType type, Integer secFlags, String name) {
+    public static LatexToken make(LatexTokenType type, Integer secFlags, String name) {
         return LatexToken.make()
                 .setType(type)
                 .setSecondaryTypeFlag(secFlags)
@@ -131,10 +118,10 @@ public class LatexToken {
     /**
      * Sets the token type
      *
-     * @param type Token type, a value of enum LatexToken.TokenType
+     * @param type Token type, a value of enum TokenType
      * @return This object
      */
-    public LatexToken setType(TokenType type) {
+    public LatexToken setType(LatexTokenType type) {
         this.type = type;
         refineToken();
         return this;
@@ -149,7 +136,7 @@ public class LatexToken {
      */
     public LatexToken setString(String string) {
         if (string != null) {
-            switch (string) {//Some special cases to make it easier
+            switch (string) {//Some special cases to makeLengthMeasure it easier
                 case ",":
                     string = "comma";
                     break;
@@ -224,31 +211,31 @@ public class LatexToken {
         switch (type) {
             case SYMBOL:
                 if (greekLetters.contains(string)) {//Check if string is in my list of greek letters
-                    type = TokenType.GREEK_LETTER;
+                    type = LatexTokenType.GREEK_LETTER;
                     break;
                 }
                 if (operators.contains(string)) {//Check if string is in my list of operators
-                    type = TokenType.OPERATOR;
+                    type = LatexTokenType.OPERATOR;
 
                     break;
                 }
                 if (binaryOperators.contains(string)) {
-                    type = TokenType.BINARY_OPERATOR;
+                    type = LatexTokenType.BINARY_OPERATOR;
 
                     break;
                 }
 
                 if (delimiters.contains(string)) {
-                    type = TokenType.DELIMITER;
+                    type = LatexTokenType.DELIMITER;
                     break;
                 }
                 if (relations.contains(string)) {
-                    type = TokenType.RELATION;
+                    type = LatexTokenType.RELATION;
                     break;
                 }
 
                 if (arrows.contains(string)) {
-                    type = TokenType.ARROW;
+                    type = LatexTokenType.ARROW;
                     String strl = string.toLowerCase();
                     if (strl.contains("leftright")) {
                         activateSecondaryFlag(SEC_LEFTRIGHT_ARROW);
@@ -266,7 +253,7 @@ public class LatexToken {
 
             case CHAR:
                 if (numbers.contains(string)) {
-                    type = TokenType.NUMBER;
+                    type = LatexTokenType.NUMBER;
                     break;
                 }
             default:
@@ -325,7 +312,7 @@ public class LatexToken {
         return secondaryFlags;
     }
 
-    public TokenType getType() {
+    public LatexTokenType getType() {
         return type;
     }
 

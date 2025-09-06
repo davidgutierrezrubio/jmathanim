@@ -17,23 +17,16 @@
  */
 package com.jmathanim.Animations;
 
-import com.jmathanim.mathobjects.MathObject;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.DoubleUnaryOperator;
-
 /**
- * Stores 2 or more animations and play them in sequential order. The total
- * runtime of this animation is the sum of runtimes of all animations played
+ * Stores 2 or more animations and play them in sequential order. The total runtime of this animation is the sum of
+ * runtimes of all animations played
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Concatenate extends Animation {
+public class Concatenate extends JoinAnimation {
 
-    private final ArrayList<Animation> animations;
-    private int currentAnim;
+
+
 
     /**
      * Creates a new Concatenate animation with the given animations
@@ -45,133 +38,20 @@ public class Concatenate extends Animation {
         return new Concatenate(anims);
     }
 
-    /**
-     * Creates a new instance, with no animations added
-     */
-    public Concatenate() {
-        this(new ArrayList<Animation>());
-    }
-
-    /**
-     * Creates a new instance of this animation, with the specified list of
-     * animations
-     *
-     * @param anims Animations to add (varargs)
-     */
-    public Concatenate(Animation... anims) {
-        this(Arrays.asList(anims));
-    }
-
-    /**
-     * Creates a new instance, with a the especified animations added to the
-     * list
-     *
-     * @param anims List object of animations to add
-     */
-    public Concatenate(List<Animation> anims) {
-        super(0);
-        this.animations = new ArrayList<>();
-        this.animations.addAll(anims);
-        currentAnim = 0;
-
-    }
-
-    /**
-     * Add the given animation to the list of animations to concatenate
-     *
-     * @param e Animation to add
-     * @return true if the collection changed as a result of this method
-     */
-    public final boolean add(Animation e) {
-        return animations.add(e);
+    protected Concatenate(Animation... anims) {
+        super(0d, anims);
+        setLambda(t -> t);
     }
 
     @Override
-    public MathObject getIntermediateObject() {
-        return animations.get(currentAnim).getIntermediateObject();
-    }
-
-     @Override
     public boolean doInitialization() {
-        super.doInitialization();
-        // Initialize the first...
-        return animations.get(0).initialize(scene);
-    }
-
-    @Override
-    public boolean processAnimation() {
-        if (currentAnim == this.animations.size()) {// If I already finished...
-            return true;
+        //First I must compute the total runtime
+        double runt = 0;
+        for (Animation animation : animations) {
+            runt += animation.getRunTime();
         }
-        boolean resul = animations.get(currentAnim).processAnimation();
-        if (resul) {
-            animations.get(currentAnim).finishAnimation();
-            currentAnim++;
-            // It is important to call the initialize of the next animation immediately,
-            // before any draws are done to the screen
-            if (currentAnim < this.animations.size()) {
-                animations.get(currentAnim).initialize(scene);
-                resul = animations.get(currentAnim).processAnimation();
-            }
-        }
-        if (currentAnim == this.animations.size() - 1) {// If I am processing the last animation...
-            return resul;
-        } else {
-            return false;
-        }
-    }
+        setRunTime(runt);
 
-    @Override
-    public void finishAnimation() {
-        super.finishAnimation();
-        // ...and finish the last one
-//        animations.get(animations.size() - 1).finishAnimation();
-        for (Animation an : animations) {
-            if (an.getStatus() == Status.NOT_INITIALIZED) {
-                an.initialize(scene);
-            }
-            if (an.getStatus() != Status.FINISHED) {
-                an.finishAnimation();
-            }
-        }
+        return super.doInitialization();
     }
-
-    @Override
-    public void doAnim(double t) {
-        super.doAnim(t);//TODO: Should do it better here!!
-    }
-
-    /**
-     * Sets the lambda function. Adjusting this will change the lambda for all
-     * animations stored in this class
-     *
-     * @param lambda
-     */
-    @Override
-    public <T extends Animation> T setLambda(DoubleUnaryOperator lambda) {
-        super.setLambda(lambda);
-        for (Animation anim : animations) {
-            anim.setLambda(lambda);
-        }
-        return (T) this;
-    }
-
-    @Override
-    public void cleanAnimationAt(double t) {
-    }
-
-    @Override
-    public void prepareForAnim(double t) {
-    }
-    
-     @Override
-    public void reset() {
-        super.reset();
-        for (Animation anim : animations) {
-            anim.reset();
-            
-        }
-    }
-
-    
 }

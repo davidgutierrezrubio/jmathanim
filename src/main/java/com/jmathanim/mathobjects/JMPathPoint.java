@@ -17,315 +17,391 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.Vec;
+import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 
 import java.text.DecimalFormat;
 
 /**
- *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class JMPathPoint extends MathObject implements Updateable, Stateable {
+public class JMPathPoint implements
+        Updateable, Boxable, Linkable,
+        Coordinates<JMPathPoint>,
+        AffineTransformable<JMPathPoint>,
+        Interpolable<JMPathPoint>,
+        Stateable {
 
-    public enum JMPathPointType {
-        VERTEX, INTERPOLATION_POINT
-    }
-
-    public final Point p; // The vertex point
-    public final Point cpExit, cpEnter; // Exit and Enter control points for Bezier curves
-    public Vec cpExitvBackup, cpEntervBackup;// Backup values, to restore after removing interpolation points
-
-    /**
-     * If false, the segment from the previous point to this one is not visible.
-     */
-    public boolean isThisSegmentVisible;
-    public boolean isCurved;
-    public JMPathPointType type; // Vertex, interpolation point, etc.
-
+    //    public final Point p; // The vertex point
+    private final Vec v; // The vertex point
+    private final Vec vExit;
+    private final Vec vEnter; // Exit and Enter control points for Bezier curves
     public int numDivisions = 0;// This number is used for convenience to store easily number of divisions when
+    private boolean isThisSegmentVisible;
+    private boolean isCurved;
+    private Point pCenter; // The vertex Point object, created on demand
     // subdiving a path
     private JMPathPoint pState;
 
+
+    public JMPathPoint(Coordinates<?> p, boolean isVisible) {
+        this.v = p.getVec();
+        if (p instanceof Point) {
+            this.pCenter = (Point) p;
+        } else {
+            this.pCenter = null;
+        }
+        vExit = getV().copy();
+        vEnter = getV().copy();
+        setCurved(false);// By default, is not curved
+        this.setThisSegmentVisible(isVisible);
+    }
+
     /**
-     * Builds a new JMPathPoint with given coordinates of vertex and control
-     * points. The result is marked as curved and visible.
+     * Builds a new JMPathPoint with given coordinates of vertex and control points. The result is marked as curved and
+     * visible.
      *
-     * @param x1 x-coordinate of vertex
-     * @param y1 y-coordinate of vertex
+     * @param x1     x-coordinate of vertex
+     * @param y1     y-coordinate of vertex
      * @param enterx x-coordinate of enter control point
      * @param entery y-coordinate of enter control point
-     * @param exitx x-coordinate of exit control point
-     * @param exity y-coordinate of exit control point
+     * @param exitx  x-coordinate of exit control point
+     * @param exity  y-coordinate of exit control point
      * @return The new jmpathpoint created
      */
     public static JMPathPoint make(double x1, double y1, double enterx, double entery, double exitx, double exity) {
-        JMPathPoint resul = curveTo(Point.at(x1, y1));
-        resul.cpEnter.v.x = enterx;
-        resul.cpEnter.v.y = entery;
-        resul.cpExit.v.x = exitx;
-        resul.cpExit.v.y = exity;
+        JMPathPoint resul = curveTo(Vec.to(x1, y1));
+        resul.getvEnter().x = enterx;
+        resul.getvEnter().y = entery;
+        resul.getvExit().x = exitx;
+        resul.getvExit().y = exity;
         return resul;
     }
 
     // Builders
     public static JMPathPoint lineTo(double x, double y) {
-        return lineTo(new Point(x, y));
+        return lineTo(Vec.to(x, y));
     }
 
-    public static JMPathPoint lineTo(Point p) {
+    public static JMPathPoint lineTo(Vec v) {
         // Default values: visibleFlag, type vertex, straight
-        JMPathPoint jmp = new JMPathPoint(p, true, JMPathPointType.VERTEX);
-        jmp.isCurved = false;
+        JMPathPoint jmp = new JMPathPoint(v, true);
+        jmp.setCurved(false);
+        return jmp;
+    }
+
+    public static JMPathPoint lineTo(Coordinates coord) {
+        Coordinates p;
+        if (coord instanceof Point) {
+            p = (Point) coord;
+        } else if (coord instanceof JMPathPoint) {
+            p = ((JMPathPoint) coord).getV();
+        } else {
+            p = coord.getVec();
+        }
+
+        // Default values: visibleFlag, type vertex, straight
+        JMPathPoint jmp = new JMPathPoint(p, true);
+        jmp.setCurved(false);
+        return jmp;
+    }
+
+    public static JMPathPoint curveTo(Vec v) {
+        // Default values: visibleFlag, type vertex, straight
+        JMPathPoint jmp = new JMPathPoint(v, true);
+        jmp.setCurved(true);
         return jmp;
     }
 
     public static JMPathPoint curveTo(Point p) {
         // Default values: visibleFlag, type vertex, straight
-        JMPathPoint jmp = new JMPathPoint(p, true, JMPathPointType.VERTEX);
-        jmp.isCurved = true;
+        JMPathPoint jmp = new JMPathPoint(p, true);
+        jmp.setCurved(true);
         return jmp;
-    }
-
-    public JMPathPoint(Point p, boolean isVisible, JMPathPointType type) {
-        super();
-        this.p = p;
-//        this.p.visibleFlag = false;
-        cpExit = p.copy();
-        cpEnter = p.copy();
-        isCurved = false;// By default, is not curved
-        this.isThisSegmentVisible = isVisible;
-        this.type = type;
     }
 
     @Override
     public JMPathPoint copy() {
-        Point pCopy = p.copy();
-        JMPathPoint resul = new JMPathPoint(pCopy, isThisSegmentVisible, type);
+        JMPathPoint resul = new JMPathPoint(getV().copy(), isThisSegmentVisible());
+        if (pCenter != null)
+            resul.pCenter = pCenter.copy();
         resul.copyStateFrom(this);
         return resul;
     }
 
-    public void copyStateFrom(JMPathPoint jp) {
-        p.copyStateFrom(jp.p);
-        cpExit.copyStateFrom(jp.cpExit);
-        cpEnter.copyStateFrom(jp.cpEnter);
-        isCurved = jp.isCurved;
-        isThisSegmentVisible = jp.isThisSegmentVisible;
-        try { // cp1vBackup and cp2vBackup may be null, so I enclose with a try-catch
-            cpExitvBackup = jp.cpExitvBackup.copy();
-            cpEntervBackup = jp.cpEntervBackup.copy();
-        } catch (NullPointerException e) {
+    @Override
+    public void copyStateFrom(Stateable obj) {
+        if (!(obj instanceof JMPathPoint)) return;
+        JMPathPoint jp = (JMPathPoint) obj;
+        getV().copyCoordinatesFrom(jp.getV());
+        getvExit().copyCoordinatesFrom(jp.getvExit());
+        getvEnter().copyCoordinatesFrom(jp.getvEnter());
+        setCurved(jp.isCurved());
+        setThisSegmentVisible(jp.isThisSegmentVisible());
+
+        if (jp.pCenter != null) {
+            if (pCenter != null) {
+                pCenter.copyStateFrom(jp.pCenter);
+            } else {
+                pCenter = jp.pCenter.copy();
+            }
         }
+
     }
 
     @Override
     public String toString() {
         String pattern = "##0.##";
         DecimalFormat decimalFormat = new DecimalFormat(pattern);
-        String labelStr;
-        if (!"".equals(objectLabel)) {
-            labelStr = "[" + objectLabel + "]";
-        } else {
-            labelStr = objectLabel;
-        }
-        String resul = labelStr + "(" + decimalFormat.format(p.v.x) + ", " + decimalFormat.format(p.v.y) + ")";
-        if (type == JMPathPointType.INTERPOLATION_POINT) {
-            resul = "I" + resul;
-        }
-        if (type == JMPathPointType.VERTEX) {
-            resul = "V" + resul;
-        }
-        if (!isThisSegmentVisible) {
+        String resul = "(" + decimalFormat.format(getV().x) + ", " + decimalFormat.format(getV().y) + ")";
+        if (!isThisSegmentVisible()) {
             resul += "*";
         }
-        if (!isCurved) {
+        if (!isCurved()) {
             resul += "-";
         }
         return resul;
     }
 
     public boolean isSegmentToThisPointVisible() {
-        return isThisSegmentVisible;
+        return isThisSegmentVisible();
     }
 
     public void setSegmentToThisPointVisible(boolean segmentToThisPointVisible) {
-        isThisSegmentVisible = segmentToThisPointVisible;
+        setThisSegmentVisible(segmentToThisPointVisible);
     }
 
-    @Override
-    public void saveState() {
-        pState = new JMPathPoint(p, isThisSegmentVisible, type);
-        p.saveState();
-        cpExit.saveState();
-        cpEnter.saveState();
-
-        try {
-            pState.cpExitvBackup.saveState();
-        } catch (NullPointerException e) {
-        }
-        try {
-            pState.cpEntervBackup.saveState();
-        } catch (NullPointerException e) {
-        }
-        pState.isThisSegmentVisible = this.isThisSegmentVisible;
-        pState.isCurved = this.isCurved;
-        pState.type = this.type;
+    public void copyControlPointsFrom(JMPathPoint jmPoint) {
+        this.getV().copyCoordinatesFrom(jmPoint.getV());
+        this.getvExit().copyCoordinatesFrom(jmPoint.getvExit());
+        this.getvEnter().copyCoordinatesFrom(jmPoint.getvEnter());
     }
 
-    public boolean isSegmentToThisPointCurved() {
-        return isCurved;
-    }
-
-    public void setSegmentToThisPointCurved(boolean curved) {
-        isCurved = curved;
-    }
-
-    @Override
-    public void restoreState() {
-        p.restoreState();
-        cpExit.restoreState();
-        cpEnter.restoreState();
-        if (pState != null) {
-            try {
-                pState.cpExitvBackup.restoreState();
-            } catch (NullPointerException e) {
-            }
-            try {
-                pState.cpEntervBackup.restoreState();
-            } catch (NullPointerException e) {
-            }
-            this.isThisSegmentVisible = pState.isThisSegmentVisible;
-            this.isCurved = pState.isCurved;
-            this.type = pState.type;
-        }
-    }
-
-    @Override
-    public Point getCenter() {
-        return p;
-    }
-
-    @Override
-    public Rect computeBoundingBox() {
-        return p.computeBoundingBox();
-    }
-
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
-        // Nothing to draw
-    }
-
-    public void copyFrom(JMPathPoint jmPoint) {
-        this.p.v.copyFrom(jmPoint.p.v);
-        this.cpExit.v.copyFrom(jmPoint.cpExit.v);
-        this.cpEnter.v.copyFrom(jmPoint.cpEnter.v);
-    }
-
-    @Override
-    public void copyStateFrom(MathObject obj) {
-        super.copyStateFrom(obj);
-        if (!(obj instanceof JMPathPoint)) {
-            return;
-        }
-
-        JMPathPoint jmp2 = (JMPathPoint) obj;
-        this.p.copyStateFrom(jmp2.p);
-        this.cpExit.copyStateFrom(jmp2.cpExit);
-        this.cpEnter.copyStateFrom(jmp2.cpEnter);
-    }
 
     public boolean isEquivalentTo(JMPathPoint p2, double epsilon) {
-        if (p2.isThisSegmentVisible != isThisSegmentVisible) {
+        if (p2.isThisSegmentVisible() != isThisSegmentVisible()) {
             return false;
         }
-        if (!p.isEquivalentTo(p2.p, epsilon)) {
+        if (!getV().isEquivalentTo(p2.getV(), epsilon)) {
             return false;
         }
-        if (!cpExit.isEquivalentTo(p2.cpExit, epsilon)) {
+        if (!getvExit().isEquivalentTo(p2.getvExit(), epsilon)) {
             return false;
         }
-        return cpEnter.isEquivalentTo(p2.cpEnter, epsilon);
+        return getvEnter().isEquivalentTo(p2.getvEnter(), epsilon);
     }
 
     @Override
-    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
-        JMPathPoint pSrc = this.copy();
-        Point pDst = tr.getTransformedObject(pSrc.p);
-        Point cp1Dst = tr.getTransformedObject(pSrc.cpExit);
-        Point cp2Dst = tr.getTransformedObject(pSrc.cpEnter);
+    public JMPathPoint applyAffineTransform(AffineJTransform tr) {
+//        JMPathPoint pSrc = this.copy();
 
-        this.p.v.copyFrom(pDst.v);
-        this.cpExit.v.copyFrom(cp1Dst.v);
-        this.cpEnter.v.copyFrom(cp2Dst.v);
+        this.getV().applyAffineTransform(tr);
+        this.getvExit().applyAffineTransform(tr);
+        this.getvEnter().applyAffineTransform(tr);
 
-        tr.applyTransformsToDrawingProperties(this);
-        return (T) this;
+        return this;
     }
 
     @Override
-    public <T extends MathObject> T rotate(Point center, double angle) {
-        p.rotate(center, angle);
-        cpEnter.rotate(center, angle);
-        cpExit.rotate(center, angle);
-        return (T) this;
+    public JMPathPoint rotate(Coordinates center, double angle) {
+        applyAffineTransform(AffineJTransform.create2DRotationTransform(center, angle));
+//        AffineJTransform tr = AffineJTransform.create2DRotationTransform(center, angle);
+//        p.applyAffineTransform(tr);
+//        cpEnter.applyAffineTransform(tr);
+//        cpExit.applyAffineTransform(tr);
+        return this;
     }
 
     @Override
-    public <T extends MathObject> T shift(Vec shiftVector) {
-        p.shift(shiftVector);
-        cpEnter.shift(shiftVector);
-        cpExit.shift(shiftVector);
-        return (T) this;
+    public JMPathPoint shift(Coordinates<?> shiftVector) {
+//        AffineJTransform tr = AffineJTransform.createTranslationTransform(shiftVector);
+        applyAffineTransform(AffineJTransform.createTranslationTransform(shiftVector));
+//        p.applyAffineTransform(tr);
+//        cpEnter.applyAffineTransform(tr);
+//        cpExit.applyAffineTransform(tr);
+        return this;
     }
 
     /**
-     * Computes an interpolated JMPathPoint between this and another one. The
-     * interpolation is not the usual linear one, but Bezier interpolation if it
-     * is curved.
+     * Computes an interpolated JMPathPoint between this and another one. The interpolation is not the usual linear one,
+     * but Bezier interpolation second point  it segment defined is curved.
      *
-     * @param q Second JMPathPoint to interpolate
-     * @param alpha Interpolation parameter. 0 returns a copy of this object. 1
-     * returns a copy of q.
+     * @param coords2 Second JMPathPoint to interpolate
+     * @param alpha   Interpolation parameter. 0 returns a copy of this object. 1 returns a copy of q.
      * @return The interpolated JMPathPoint.
      */
-    public JMPathPoint interpolate(JMPathPoint q, double alpha) {
+    public JMPathPoint interpolate(Coordinates<?> coords2, double alpha) {
+        JMPathPoint q;
+        if (coords2 instanceof JMPathPoint) {
+            q = (JMPathPoint) coords2;
+        } else {
+            q = new JMPathPoint(coords2, true);
+        }
         JMPathPoint interpolate;
-        if (q.isCurved) {
+//        if (q.isCurved())
+
+        boolean qCurvedTo = !q.getV().isEquivalentTo(q.getvEnter().getVec(), 1e-4);
+        boolean thisCurvedFrom = !getV().isEquivalentTo(getvExit().getVec(), 1e-4);
+        if (qCurvedTo || thisCurvedFrom) {
             // De Casteljau's Algorithm:
             // https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
-            Point E = this.p.interpolate(this.cpExit, alpha); // New cp1 of v1
-            Point G = q.cpEnter.interpolate(q.p, alpha); // New cp2 of v2
-            Point F = this.cpExit.interpolate(q.cpEnter, alpha);
-            Point H = E.interpolate(F, alpha);// cp2 of interpolation point
-            Point J = F.interpolate(G, alpha);// cp1 of interpolation point
-            Point K = H.interpolate(J, alpha); // Interpolation point
-            interpolate = new JMPathPoint(K, q.isThisSegmentVisible, JMPathPointType.INTERPOLATION_POINT);
-            interpolate.cpExit.v.copyFrom(J.v);
-            interpolate.cpEnter.v.copyFrom(H.v);
-
+            Vec E = this.getV().interpolate(this.getvExit(), alpha); // New cp1 of v1
+            Vec G = q.getvEnter().interpolate(q.getV(), alpha); // New cp2 of v2
+            Vec F = this.getvExit().interpolate(q.getvEnter(), alpha);
+            Vec H = E.interpolate(F, alpha);// cp2 of interpolation point
+            Vec J = F.interpolate(G, alpha);// cp1 of interpolation point
+            Vec K = H.interpolate(J, alpha); // Interpolation point
+            interpolate = new JMPathPoint(K, q.isThisSegmentVisible());
+            interpolate.getvExit().copyCoordinatesFrom(J);
+            interpolate.getvEnter().copyCoordinatesFrom(H);
         } else {
             // Straight interpolation
-            Point interP = new Point(this.p.v.interpolate(q.p.v, alpha));
+            Vec vInterp = this.getV().interpolate(q.getV(), alpha);
+            Point interP = new Point(vInterp.x, vInterp.y);
             // Interpolation point is visible iff v2 is visible
             // Control points are by default the same as v1 and v2 (straight line)
-            interpolate = new JMPathPoint(interP, q.isThisSegmentVisible, JMPathPointType.INTERPOLATION_POINT);
+            interpolate = new JMPathPoint(interP, q.isThisSegmentVisible());
         }
-        interpolate.isCurved = q.isCurved; // The new point is curved iff v2 is
+        interpolate.setCurved(q.isCurved()); // The new point is curved iff v2 is
         return interpolate;
     }
 
     @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        int m = Math.max(p.getUpdateLevel(), cpEnter.getUpdateLevel());
-        m = Math.max(m, cpExit.getUpdateLevel());
-        setUpdateLevel(m + 1);
+    public int getUpdateLevel() {
+        return 0;
+    }
 
+    @Override
+    public void setUpdateLevel(int level) {
+
+    }
+
+    @Override
+    public void update(JMathAnimScene scene) {
+
+    }
+
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+//        int m = Math.max(p.getUpdateLevel(), cpEnter.getUpdateLevel());
+//        m = Math.max(m, cpExit.getUpdateLevel());
+//        setUpdateLevel(p.getUpdateLevel());
+
+    }
+
+    @Override
+    public void unregisterUpdateableHook(JMathAnimScene scene) {
+
+    }
+
+    public Point getPoint() {
+        if (pCenter == null) {
+            return Point.at(getV());
+        } else {
+            return pCenter;
+        }
+    }
+
+    @Override
+    public Vec getVec() {
+        return getV();
+    }
+
+    @Override
+    public JMPathPoint addInSite(Coordinates<?> coords) {
+        //Add to the 3 components
+        getV().addInSite(coords);
+        getvEnter().addInSite(coords);
+        getvExit().addInSite(coords);
+        return this;
+    }
+
+    @Override
+    public JMPathPoint minusInSite(Coordinates<?> coords) {
+        //Substract from the 3 components
+        getV().minusInSite(coords);
+        getvEnter().minusInSite(coords);
+        getvExit().minusInSite(coords);
+        return this;
+    }
+
+    @Override
+    public void copyCoordinatesFrom(Coordinates<?> coords) {
+        //Copy from the 3 components
+        getV().copyCoordinatesFrom(coords);
+        getvEnter().copyCoordinatesFrom(coords);
+        getvExit().copyCoordinatesFrom(coords);
+    }
+
+    @Override
+    public JMPathPoint minus(Coordinates<?> v2) {
+        JMPathPoint copy = copy();
+        copy.getV().minusInSite(v2);
+        copy.getvEnter().minusInSite(v2);
+        copy.getvExit().minusInSite(v2);
+        return copy;
+    }
+
+    @Override
+    public JMPathPoint add(Coordinates<?> v2) {
+        JMPathPoint copy = copy();
+        //Substract from the 3 components
+        copy.getV().addInSite(v2);
+        copy.getvEnter().addInSite(v2);
+        copy.getvExit().addInSite(v2);
+        return copy;
+    }
+
+    @Override
+    public JMPathPoint mult(double lambda) {
+        JMPathPoint copy = copy();
+        //Multiply the 3 components
+        copy.getV().multInSite(lambda);
+        copy.getvEnter().multInSite(lambda);
+        copy.getvExit().multInSite(lambda);
+        return copy;
+    }
+
+    public Vec getV() {
+        return v;
+    }
+
+    public Vec getvExit() {
+        return vExit;
+    }
+
+    public Vec getvEnter() {
+        return vEnter;
+    }
+
+    /**
+     * If false, the segment from the previous point to this one is not visible.
+     */
+    public boolean isThisSegmentVisible() {
+        return isThisSegmentVisible;
+    }
+
+    public void setThisSegmentVisible(boolean thisSegmentVisible) {
+        isThisSegmentVisible = thisSegmentVisible;
+    }
+
+    public boolean isCurved() {
+        return isCurved;
+    }
+
+    public void setCurved(boolean curved) {
+        isCurved = curved;
+    }
+
+    @Override
+    public Rect getBoundingBox() {
+        return new Rect(v.x, v.y, v.x, v.y);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
     }
 
 }

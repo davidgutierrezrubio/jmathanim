@@ -1,23 +1,25 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
+import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.AbstractShape;
+import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Shape;
 
 import java.util.function.DoubleUnaryOperator;
 
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
+
 /**
- * A transformation strategy that transforms one shape into another by "twisting" it. The transformation is centered
- * around a "pivotal segment". The process involves: 1. Aligning the pivotal segment of the origin shape with the
- * corresponding segment of the destiny shape (translation, rotation, and scaling). 2. Iteratively aligning the
- * remaining segments by rotating and scaling parts of the shape that extend from the current segment's endpoint. This
- * creates an effect of the shape twisting and stretching into its final form.
+ * A transformation strategy that transforms one polygonal shape into another by "twisting" it. The transformation is
+ * centered around a "pivotal segment", which creates an effect of the shape twisting and stretching into its final
+ * form. If origin-destiny segments have the same length, measures are preserved in the intermediate steps.
  * <p>
  * The transformation can be controlled separately for the parts of the shape before and after the pivotal segment using
- * custom timing functions (lambdaForward and lambdaBackward).
+ * custom timing functions (lambdaForward and lambdaBackward). This animation doesn't work properly with curved shapes.
  */
-public class TwistTransform extends TransformShape2ShapeStrategy {
+public class TwistTransform extends TransformShape2ShapeStrategy<Shape> {
 
     /**
      * The index of the point that starts the pivotal segment.
@@ -58,13 +60,13 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
 
 
     /**
-     * A timing function to control the scaling (stretch/shrink) of the pivotal segment.
-     * If null, the default animation timing is used.
+     * A timing function to control the scaling (stretch/shrink) of the pivotal segment. If null, the default animation
+     * timing is used.
      */
     private DoubleUnaryOperator lambdaScalePivotal;
     /**
-     * A timing function to control the initial translation and rotation of the pivotal segment.
-     * If null, the default animation timing is used.
+     * A timing function to control the initial translation and rotation of the pivotal segment. If null, the default
+     * animation timing is used.
      */
     private DoubleUnaryOperator lambdaShiftPivotal;
     /**
@@ -73,8 +75,12 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
      */
     private DoubleUnaryOperator lambdaBackward;
 
+    private DoubleUnaryOperator[] auxiliaryLambdas;
+
+    private boolean isStepByStep;
+
     /**
-     * Protected constructor. Use the static `make` methods for instantiation.
+     * Protected constructor. Use the static `makeLengthMeasure` methods for instantiation.
      *
      * @param runTime           The total duration of the animation.
      * @param origin            The starting shape.
@@ -85,11 +91,13 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
         super(runTime);
         setOrigin(origin);
         setDestiny(destiny);
+        setLambda(t -> t);
         this.numPivotalSegment = numPivotalSegment;
         lambdaBackward = null;
         lambdaForward = null;
         lambdaScalePivotal = null;
         lambdaShiftPivotal = null;
+        isStepByStep = false;
         setDebugName("TwistTransform");
     }
 
@@ -128,6 +136,27 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
         return new TwistTransform(runTime, origin, destiny, origin.size() / 2);
     }
 
+    /**
+     * Returns the step by step flag. If true, segments of the transformed object will be progressively rotated in
+     * order. If false, all are rotated at the same time.
+     *
+     * @return The step flag
+     */
+    public boolean isStepByStep() {
+        return isStepByStep;
+    }
+
+    /**
+     * Sets the step by step flag. If true, segments of the transformed object will be progressively rotated in order.
+     * If false, all are rotated at the same time.
+     *
+     * @param stepByStep The step flag
+     */
+    public <T extends TwistTransform> T setStepByStep(boolean stepByStep) {
+        isStepByStep = stepByStep;
+        return (T) this;
+    }
+
     public DoubleUnaryOperator getLambdaShiftPivotal() {
         return lambdaShiftPivotal;
     }
@@ -140,31 +169,50 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
     public void setLambdaShiftPivotal(DoubleUnaryOperator lambdaShiftPivotal) {
         this.lambdaShiftPivotal = lambdaShiftPivotal;
     }
-
+    /**
+     * Returns the timing function for the pivotal segment's scaling.
+     * @return The timing function in lambda form
+     */
     public DoubleUnaryOperator getLambdaScalePivotal() {
         return lambdaScalePivotal;
     }
 
     /**
      * Sets the timing function for the pivotal segment's scaling.
+     *
      * @param lambdaScalePivotal A DoubleUnaryOperator that maps the animation time [0,1] to a custom progress value.
      */
     public void setLambdaScalePivotal(DoubleUnaryOperator lambdaScalePivotal) {
         this.lambdaScalePivotal = lambdaScalePivotal;
     }
-
+    /**
+     * Returns the timing function for the segments before the pivotal segment
+     * @return The timing function in lambda form
+     */
     public DoubleUnaryOperator getLambdaBackward() {
         return lambdaBackward;
     }
 
+    /**
+     * Sets the timing function for the segments before the pivotal segment
+     * @param lambdaBackward  The timing function in lambda form
+     */
     public void setLambdaBackward(DoubleUnaryOperator lambdaBackward) {
         this.lambdaBackward = lambdaBackward;
     }
 
+    /**
+     * Returns the timing function for the segments after the pivotal segment
+     * @return The timing function in lambda form
+     */
     public DoubleUnaryOperator getLambdaForward() {
         return lambdaForward;
     }
 
+    /**
+     * Sets the timing function for the segments after the pivotal segment
+     * @param lambdaForward  The timing function in lambda form
+     */
     public void setLambdaForward(DoubleUnaryOperator lambdaForward) {
         this.lambdaForward = lambdaForward;
     }
@@ -185,7 +233,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
 
 
         //Check that the pivotal segment number is appropiate
-        int pivotRange = getIntermediateObject().size()-1;
+        int pivotRange = getIntermediateObject().size() - 1;
         if (numPivotalSegment < 0 || numPivotalSegment >= pivotRange) {
             int oldN = numPivotalSegment;
             // The modulo operator can be negative in Java, so we add the size and take the modulo again
@@ -196,7 +244,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
 
 
         // Calculate the vector needed to shift the pivotal point of the origin to the pivotal point of the destiny.
-        vShift = getIntermediateObject().get(numPivotalSegment).p.to(getDestinyObject().get(numPivotalSegment).p);
+        vShift = getIntermediateObject().get(numPivotalSegment).getV().to(getDestinyObject().get(numPivotalSegment).getV());
         int size = getIntermediateObject().size();
         originAngles = new double[size];
         destinyAngles = new double[size];
@@ -209,9 +257,9 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
 
         // First pass: Calculate absolute angles of each segment and the ratio of lengths.
         for (int i = 0; i < size - 1; i++) {
-            Vec v1 = getIntermediateObject().get(i).p.to(getIntermediateObject().get(i + 1).p);
+            Vec v1 = getIntermediateObject().get(i).getV().to(getIntermediateObject().get(i + 1).getV());
             tempOrigAngles[i] = v1.getAngle();
-            Vec v2 = getDestinyObject().get(i).p.to(getDestinyObject().get(i + 1).p);
+            Vec v2 = getDestinyObject().get(i).getV().to(getDestinyObject().get(i + 1).getV());
             tempDestinyAngles[i] = v2.getAngle();
             // Store the relative change in length, not the absolute ratio.
             ratioLengths[i] = v2.norm() / v1.norm() - 1;
@@ -227,8 +275,24 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
 
         // Store the specific transformation parameters for the pivotal segment.
         pivotalLengthRatio = ratioLengths[numPivotalSegment];
-        pivotalAngle = tempDestinyAngles[numPivotalSegment] - tempOrigAngles[numPivotalSegment];
+        pivotalAngle = (tempDestinyAngles[numPivotalSegment] - tempOrigAngles[numPivotalSegment]);
+        while (pivotalAngle < -PI) pivotalAngle += 2 * PI;
+        while (pivotalAngle > PI) pivotalAngle -= 2 * PI;
 
+        //Compute auxiliary lambdas
+
+        auxiliaryLambdas = new DoubleUnaryOperator[size - 1];
+        for (int i = 1; i < size - 1; i++) {
+            if (i <= numPivotalSegment) {
+                int k = numPivotalSegment - i;
+                auxiliaryLambdas[i] = UsefulLambdas.allocateTo(1d * k / numPivotalSegment, 1d * (k + 1) / numPivotalSegment);
+            }
+            if (i > numPivotalSegment) {
+                int k = i - numPivotalSegment - 1;
+                int size2 = size - 1 - numPivotalSegment - 1;
+                auxiliaryLambdas[i] = UsefulLambdas.allocateTo(1d * k / size2, 1d * (k + 1) / size2);
+            }
+        }
 
         return true;
     }
@@ -245,6 +309,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
         if (angle < 0) {
             angle += twoPi;
         }
+
         return angle;
     }
 
@@ -254,26 +319,25 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
         super.doAnim(t);
         // Get the interpolated time, respecting the animation's rate function.
         double lt = getLT(t);
-        double rt;
-        rt = (t < 0 ? 0 : t);
-        rt = (rt > 1 ? 1 : rt); // Raw time, clamped to [0,1] for lambda functions
+        double rt = allocateT(t);// Raw time, clamped to [0,1], allocated with delay effect
+
+        AbstractShape<?> intermediateObject = getIntermediateObject();
+        // Restore the intermediate object to its original state (the origin shape) before applying the new frame's transformation.
+        restoreStates(intermediateObject);
 
         // Apply custom timing functions if they exist.
         double ltshiftPivotal = (lambdaShiftPivotal == null ? lt : lambdaShiftPivotal.applyAsDouble(rt));
         double ltscPivotal = (lambdaScalePivotal == null ? lt : lambdaScalePivotal.applyAsDouble(rt));
-        double ltf = (lambdaForward == null ? lt : lambdaForward.applyAsDouble(rt));
-        double ltb = (lambdaBackward == null ? lt : lambdaBackward.applyAsDouble(rt));
-
-        Shape intermediateObject = getIntermediateObject();
-        // Restore the intermediate object to its original state (the origin shape) before applying the new frame's transformation.
-        restoreStates(intermediateObject);
-
         // Apply transformations in a specific order, starting from the pivotal segment.
-        Point pivotPoint = intermediateObject.get(numPivotalSegment).p;
+        Vec pivotPoint = intermediateObject.get(numPivotalSegment).getV();
         applyPivotalAlign(pivotPoint, ltshiftPivotal);
         applyPivotalScale(pivotPoint, ltscPivotal);
-        applyTransformForwardPoints(numPivotalSegment, ltf);
-        applyTransformBackwardPoints(numPivotalSegment, ltb);
+
+
+        applyTransformForwardPoints(numPivotalSegment, rt);
+
+//        double ltb = (lambdaBackward == null ? lt : lambdaBackward.applyAsDouble(rt));
+        applyTransformBackwardPoints(numPivotalSegment, rt);
 
         // Interpolate visual properties like color and stroke width.
         if (isShouldInterpolateStyles()) {
@@ -290,8 +354,8 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
      * @param pivotPoint The point around which transformations occur.
      * @param lt         The interpolated time, from 0 to 1.
      */
-    private void applyPivotalAlign(Point pivotPoint, double lt) {
-        Shape inter = getIntermediateObject();
+    private void applyPivotalAlign(Vec pivotPoint, double lt) {
+        AbstractShape<?> inter = getIntermediateObject();
         // 1. Translate the whole shape to align the pivotal points.
         inter.shift(vShift.mult(lt));
 
@@ -301,57 +365,71 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
 
     /**
      * Applies scaling to the pivotal segment by shifting all subsequent points.
+     *
      * @param pivotPoint The point that starts the pivotal segment.
-     * @param lt The interpolated time, from 0 to 1.
+     * @param lt         The interpolated time, from 0 to 1.
      */
-    private void applyPivotalScale(Point pivotPoint, double lt) {
-        Shape inter = getIntermediateObject();
+    private void applyPivotalScale(Vec pivotPoint, double lt) {
+        AbstractShape<?> inter = getIntermediateObject();
 
         // 3. Scale the pivotal segment by shifting all subsequent points.
         // This moves the "end" of the pivotal segment, effectively stretching/shrinking it.
         if (numPivotalSegment + 1 < inter.size()) {
-            Point nextPoint = inter.get(numPivotalSegment + 1).p;
+            Vec nextPoint = inter.get(numPivotalSegment + 1).getV();
             Vec v = pivotPoint.to(nextPoint);
             Vec shiftVector = v.mult(pivotalLengthRatio * lt);
             // Apply shift only to points after the pivotal segment.
             for (int i = numPivotalSegment + 1; i < inter.size(); i++) {
-                inter.get(i).p.shift(shiftVector);
+                inter.get(i).getV().add(shiftVector);
             }
         }
     }
 
+
     /**
-     * Iteratively applies transformations to the points *after* the pivotal segment.
-     * For each vertex `i`, it applies a rotation and a scaling (as a shift) to all subsequent points `j > i`.
-     * This method has a time complexity of O(N^2) per frame, which may be slow for shapes with many points.
+     * Iteratively applies transformations to the points *after* the pivotal segment. For each vertex `i`, it applies a
+     * rotation and a scaling (as a shift) to all subsequent points `j > i`. This method has a time complexity of O(N^2)
+     * per frame, which may be slow for shapes with many points.
      *
      * @param numPivotalSegment The index of the point starting the pivotal segment.
-     * @param lt                The interpolated time, from 0 to 1.
+     * @param t                 The interpolated time, from 0 to 1.
      */
-    private void applyTransformForwardPoints(int numPivotalSegment, double lt) {
-        Shape inter = getIntermediateObject();
+    private void applyTransformForwardPoints(int numPivotalSegment, double t) {
+        AbstractShape<?> inter = getIntermediateObject();
         int size = inter.size();
         if (numPivotalSegment >= size - 1) {
             return; // No forward points to transform
         }
 
+
         for (int i = numPivotalSegment + 1; i < size - 1; i++) {
-            Point currentPivot = inter.get(i).p;
-            Point nextPoint = inter.get(i + 1).p;
+//            int k=i-numPivotalSegment-1;
+//            int size2 = size - 1 - numPivotalSegment - 1;
+//            double ltd = UsefulLambdas.allocateTo(1d*k/size2,1d*(k+1)/size2).applyAsDouble(t);
+            double ltd;
+            if (isStepByStep) {
+                double auxt = auxiliaryLambdas[i].applyAsDouble(t);
+                ltd = (lambdaForward == null ? lambda.applyAsDouble(auxt) : lambdaForward.applyAsDouble(auxt));
+            } else {
+                ltd = (lambdaForward == null ? lambda.applyAsDouble(t) : lambdaForward.applyAsDouble(t));
+            }
+
+            JMPathPoint currentPivot = inter.get(i);
+            JMPathPoint nextPoint = inter.get(i + 1);
 
             // Calculate the vector for the current segment to determine the shift direction for scaling.
-            Vec v = currentPivot.to(nextPoint);
+            Vec v = currentPivot.getV().to(nextPoint.getV());
             // The shift amount depends on the length ratio and time.
             // This effectively scales the segment (i, i+1).
-            Vec shiftVector = v.mult(ratioLengths[i] * lt);
+            Vec shiftVector = v.mult(ratioLengths[i] * ltd);
 
             // The rotation angle for the current vertex to match the destiny shape's angle.
             double ang = destinyAngles[i] - originAngles[i];
-            double rotationAngle = ang * lt;
+            double rotationAngle = ang * ltd;
 
             // Apply transformations (shift for scaling, then rotation) to all subsequent points.
             for (int j = i + 1; j < size; j++) {
-                Point pointToTransform = inter.get(j).p;
+                JMPathPoint pointToTransform = inter.get(j);
                 pointToTransform.shift(shiftVector);
                 pointToTransform.rotate(currentPivot, rotationAngle);
             }
@@ -359,41 +437,74 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
     }
 
     /**
-     * Iteratively applies transformations to the points *before* the pivotal segment.
-     * For each vertex `i`, it applies a rotation and a scaling (as a shift) to all preceding points `j < i`.
-     * This method has a time complexity of O(N^2) per frame.
+     * Iteratively applies transformations to the points *before* the pivotal segment. For each vertex `i`, it applies a
+     * rotation and a scaling (as a shift) to all preceding points `j < i`. This method has a time complexity of O(N^2)
+     * per frame.
      *
      * @param numPivotalSegment The index of the point starting the pivotal segment.
-     * @param lt                The interpolated time, from 0 to 1.
+     * @param t                The interpolated time, from 0 to 1.
      */
-    private void applyTransformBackwardPoints(int numPivotalSegment, double lt) {
-        Shape inter = getIntermediateObject();
+    private void applyTransformBackwardPoints(int numPivotalSegment, double t) {
+        AbstractShape<?> inter = getIntermediateObject();
         if (numPivotalSegment <= 0) {
             return; // No backward points to transform
         }
 
+
         for (int i = numPivotalSegment; i > 0; i--) {
-            Point currentPivot = inter.get(i).p;
-            Point prevPoint = inter.get(i - 1).p;
+//            int k = numPivotalSegment-i;
+//            double ltd = UsefulLambdas.allocateTo(1d*k/numPivotalSegment,1d*(k+1)/numPivotalSegment).applyAsDouble(lt);
+
+            double ltd;
+            if (isStepByStep) {
+                double auxt = auxiliaryLambdas[i].applyAsDouble(t);
+                ltd = (lambdaBackward == null ? lambda.applyAsDouble(auxt) : lambdaBackward.applyAsDouble(auxt));
+            } else {
+                ltd = (lambdaBackward == null ? lambda.applyAsDouble(t) : lambdaBackward.applyAsDouble(t));
+            }
+
+
+            JMPathPoint currentPivot = inter.get(i);
+            JMPathPoint prevPoint = inter.get(i - 1);
 
             // Calculate the vector for the current segment to determine the shift direction for scaling.
-            Vec v = currentPivot.to(prevPoint);
+            Vec v = currentPivot.getV().to(prevPoint.getV());
             // The shift amount depends on the length ratio of the previous segment and time.
             // This effectively scales the segment (i-1, i).
-            Vec shiftVector = v.mult(ratioLengths[i - 1] * lt);
+            Vec shiftVector = v.mult(ratioLengths[i - 1] * ltd);
 
             // The rotation angle for the current vertex.
             double ang = destinyAngles[i] - originAngles[i];
             // Note the negative sign for backward rotation, to "un-twist" in the opposite direction.
-            double rotationAngle = -ang * lt;
+            double rotationAngle = -ang * ltd;
 
             // Apply transformations (shift for scaling, then rotation) to all preceding points.
             for (int j = i - 1; j >= 0; j--) {
-                Point pointToTransform = inter.get(j).p;
+                JMPathPoint pointToTransform = inter.get(j);
                 pointToTransform.shift(shiftVector);
                 pointToTransform.rotate(currentPivot, rotationAngle);
             }
         }
     }
+
+    @Override
+    public void cleanAnimationAt(double t) {
+        double lt = Math.max(Math.max(getLT(t),
+                (lambdaBackward==null ? -1: lambdaBackward.applyAsDouble(t))),
+                (lambdaForward==null ? -1: lambdaForward.applyAsDouble(t)));
+        if (lt == 0) {
+            cleanAt0();
+            return;
+        }
+         lt = Math.min(Math.min(getLT(t),
+                        (lambdaBackward==null ? 2: lambdaBackward.applyAsDouble(t))),
+                (lambdaForward==null ? 2: lambdaForward.applyAsDouble(t)));
+        if (lt == 1) {
+            cleanAt1();
+            return;
+        }
+        cleanAtIntermediate();
+    }
+
 
 }
