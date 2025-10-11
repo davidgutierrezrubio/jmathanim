@@ -34,9 +34,12 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -52,6 +55,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
 
     private final ResourceLoader rl;
     private final URL url;
+    private final String fileName;
     private ZipFile zipFile;
     private ZipEntry zipEntry;
     private InputStream inputStream;
@@ -61,6 +65,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
     private double yCenter;
 
     private GeogebraLoader(String fileName) {
+        this.fileName=fileName;
         rl = new ResourceLoader();
         url = rl.getResource(fileName, "geogebra");
         this.cp = new GeogebraCommandParser();
@@ -78,15 +83,25 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
      */
     public static GeogebraLoader parse(String fileName) {
         GeogebraLoader resul = new GeogebraLoader(fileName);
-        resul.parseFile(fileName);
+        resul.parseFile();
         return resul;
     }
 
-    private void parseFile(String fileName) {
+    private void parseFile() {
         try {
+            File file = new File(url.getFile());
+            Path filePath = file.toPath();
+            if (!Files.exists(filePath)) {
+                JMathAnimScene.logger.error("File not found: {}", file);
+                return;
+            }
             JMathAnimScene.logger.info("Loading Geogebra file {}", fileName);
             zipFile = new ZipFile(url.getFile());
             zipEntry = zipFile.getEntry("geogebra.xml");
+            if (zipEntry == null) {
+                JMathAnimScene.logger.error("Error: Geogebra file '{}' does not contain entry 'geogebra.xml'.", fileName);
+                return;
+            }
             inputStream = this.zipFile.getInputStream(zipEntry);
             parseGeogebraContents(inputStream);
         } catch (IOException ex) {
