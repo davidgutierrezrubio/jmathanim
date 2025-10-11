@@ -93,9 +93,8 @@ public final class CTTangentPointCircle extends CTAbstractLine<CTTangentPointCir
 
         Vec v = Vec.to(xT, yT);
         v.applyAffineTransform(transform);
-        this.P2draw.copyCoordinatesFrom(v); //Tangent point
-        this.P1draw.copyCoordinatesFrom(this.getP1()); //Exterior point
-        lineToDraw.rebuildShape();
+        this.P2.copyCoordinatesFrom(v);
+        super.rebuildShape();
     }
 
 
