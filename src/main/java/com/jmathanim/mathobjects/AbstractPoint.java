@@ -248,7 +248,7 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
         this.v.copyCoordinatesFrom(p2.v);//Copy coordinates
         this.previousVecPosition.copyCoordinatesFrom(p2.previousVecPosition);//Copy coordinates
         generateDotShape();
-
+        generateStyleForDot();
         this.scene = p2.scene;
 
     }
