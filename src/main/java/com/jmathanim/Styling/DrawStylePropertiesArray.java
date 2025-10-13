@@ -48,6 +48,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
     private final MODrawPropertiesLaTeX mpRef;
     private ArrayList<DrawStyleProperties> mpArray;
     private LatexStyle latexStyle = null;
+    private boolean hasBeenChanged;
 
     /**
      * Constructs a new MODrawPropertiesArray instance by copying the properties from the provided Stylable
@@ -123,6 +124,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
      */
     public void setLatexStyle(LatexStyle latexStyle) {
         this.latexStyle = latexStyle;
+        setHasBeenChanged(true);
     }
 
 
@@ -142,6 +144,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
      */
     public void setMpArray(ArrayList<DrawStyleProperties> mpArray) {
         this.mpArray = mpArray;
+        setHasBeenChanged(true);
     }
 
     /**
@@ -151,6 +154,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
      */
     public void add(DrawStyleProperties... objs) {
         mpArray.addAll(Arrays.asList(objs));
+        setHasBeenChanged(true);
     }
 
     /**
@@ -164,6 +168,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
             obj.setVisible(visible);
         }
         mpRef.setVisible(visible);
+        setHasBeenChanged(true);
     }
 
     /**
@@ -183,6 +188,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
      * @return true if the Stylable was successfully removed; false otherwise.
      */
     public boolean remove(DrawStyleProperties o) {
+        setHasBeenChanged(true);
         return mpArray.remove(o);
     }
 
@@ -220,6 +226,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
                 mpRef.latexStyle = moDrawPropertiesLaTeX.latexStyle;
 
         }
+        setHasBeenChanged(true);
     }
 
     public void copyFrom(DrawStylePropertiesArray prop) {
@@ -231,6 +238,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
         } else {
             copyFrom(prop.mpRef);
         }
+        setHasBeenChanged(true);
     }
 
     /**
@@ -247,6 +255,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
             obj.interpolateFrom(dst, alpha);
         }
         mpRef.interpolateFrom(dst, alpha);
+        setHasBeenChanged(true);
     }
 
     /**
@@ -263,6 +272,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
             obj.interpolateFrom(a, b, alpha);
         }
         mpRef.interpolateFrom(a, b, alpha);
+        setHasBeenChanged(true);
     }
 
     /**
@@ -277,6 +287,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
 
         }
         mpRef.loadFromStyle(name);
+        setHasBeenChanged(true);
     }
 
     /**
@@ -292,6 +303,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
             obj.rawCopyFrom((MODrawProperties) mp);
         }
         mpRef.rawCopyFrom((MODrawProperties) mp);
+        setHasBeenChanged(true);
     }
 
     /**
@@ -305,6 +317,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
             obj.setDrawAlpha(alpha);
         }
         mpRef.setDrawAlpha(alpha);
+        setHasBeenChanged(true);
 
     }
 
@@ -320,6 +333,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
             obj.setFillAlpha(alpha);
         }
         mpRef.setFillAlpha(alpha);
+        setHasBeenChanged(true);
     }
 
     /**
@@ -333,6 +347,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
             obj.multDrawAlpha(mult);
         }
         mpRef.multDrawAlpha(mult);
+        setHasBeenChanged(true);
     }
 
     /**
@@ -347,6 +362,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
             obj.multFillAlpha(mult);
         }
         mpRef.multFillAlpha(mult);
+        setHasBeenChanged(true);
     }
 
     /**
@@ -370,6 +386,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
             obj.setLayer(layer);
         }
         mpRef.setLayer(layer);
+        setHasBeenChanged(true);
     }
 
     /**
@@ -392,6 +409,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
             obj.setDrawColor(drawColor);
         }
         mpRef.setDrawColor(drawColor);
+        setHasBeenChanged(true);
     }
 
     /**
@@ -416,6 +434,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
             obj.setFillColor(fillColor);
         }
         mpRef.setFillColor(fillColor);
+        setHasBeenChanged(true);
     }
 
     /**
@@ -426,6 +445,16 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
     @Override
     public MODrawPropertiesLaTeX getFirstMP() {
         return mpRef;
+    }
+
+    @Override
+    public boolean hasBeenChanged() {
+       return this.hasBeenChanged;
+    }
+
+    @Override
+    public void setHasBeenChanged(boolean hasBeenChanged) {
+        this.hasBeenChanged=hasBeenChanged;
     }
 
     /**
@@ -461,6 +490,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
             obj.setLineJoin(linejoin);
         }
         mpRef.setLineJoin(linejoin);
+        setHasBeenChanged(true);
     }
 
     /**
@@ -475,6 +505,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
             obj.setLinecap(linecap);
         }
         mpRef.setLinecap(linecap);
+        setHasBeenChanged(true);
     }
 
     /**
@@ -498,6 +529,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
             obj.setThickness(thickness);
         }
         mpRef.setThickness(thickness);
+        setHasBeenChanged(true);
     }
 
     /**
@@ -523,6 +555,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
             obj.setDotStyle(dotStyle);
         }
         mpRef.setDotStyle(dotStyle);
+        setHasBeenChanged(true);
     }
     @Override
     public DrawStyleProperties getMp() {
@@ -549,6 +582,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
             obj.setDashStyle(dashStyle);
         }
         mpRef.setDashStyle(dashStyle);
+        setHasBeenChanged(true);
     }
 
     /**
@@ -574,6 +608,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
             obj.setAbsoluteThickness(absThickness);
         }
         mpRef.setAbsoluteThickness(absThickness);
+        setHasBeenChanged(true);
     }
 
     /**
@@ -588,6 +623,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
             obj.multThickness(multT);
         }
         mpRef.multThickness(multT);
+        setHasBeenChanged(true);
     }
 
     /**
@@ -613,6 +649,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
             obj.setFaceToCamera(faceToCamera);
         }
         mpRef.setFaceToCamera(faceToCamera);
+        setHasBeenChanged(true);
     }
 
     /**
@@ -637,6 +674,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
             obj.setFaceToCameraPivot(pivot);
         }
         mpRef.setFaceToCameraPivot(pivot);
+        setHasBeenChanged(true);
     }
 
 }

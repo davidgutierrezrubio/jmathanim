@@ -75,7 +75,6 @@ public class CircularLayout extends GroupLayout {
                     break;
             }
             locationToAnchor.rotateInSite(rotationAngle);
-            System.out.println(locationToAnchor);
         }
     }
 

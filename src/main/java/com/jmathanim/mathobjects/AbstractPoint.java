@@ -65,10 +65,16 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
             return;
         }
         if (isVisible()) {
+
             if (dotShape.isEmpty()) {
                 generateDotShape();
                 dotShape.setAbsoluteSize(v);
             }
+            if (getMp().hasBeenChanged()) {
+                generateStyleForDot();
+                getMp().setHasBeenChanged(false);
+            }
+
             if (!previousVecPosition.equals(v)) {
                 dotShape.shift(v.minus(previousVecPosition));
                 previousVecPosition.copyCoordinatesFrom(v);
@@ -101,49 +107,84 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
                 dotShape.getPath().addPoint(Vec.to(-sc, sc), Vec.to(sc, -sc), Vec.to(sc, sc), Vec.to(-sc, -sc));
                 dotShape.get(0).setThisSegmentVisible(false);
                 dotShape.get(2).setThisSegmentVisible(false);
-                dotShape.shift(previousVecPosition).drawColor(getMp().getDrawColor()).thickness(.25 * th);
+                dotShape.shift(previousVecPosition);
                 break;
             case PLUS:
                 dotShape.getPath().addPoint(Vec.to(0, 1), Vec.to(0, -1), Vec.to(1, 0), Vec.to(-1, 0));
                 dotShape.get(0).setThisSegmentVisible(false);
                 dotShape.get(2).setThisSegmentVisible(false);
-                dotShape.shift(previousVecPosition).scale(.5 * st).drawColor(getMp().getDrawColor()).thickness(.25 * th);
+                dotShape.shift(previousVecPosition);
                 break;
             case TRIANGLE_DOWN_HOLLOW:
                 dotShape.getPath().addPoint(Vec.to(-sc, 0.5773502691893 * sc), Vec.to(sc, 0.5773502691893 * sc), Vec.to(0, -1.15470053838 * sc));
                 dotShape
-                        .shift(previousVecPosition)
-                        .drawColor(getMp().getDrawColor()).thickness(.25 * th);
+                        .shift(previousVecPosition);
                 break;
             case TRIANGLE_UP_HOLLOW:
                 dotShape.getPath().addPoint(Vec.to(-sc, -0.5773502691893 * sc), Vec.to(sc, -0.5773502691893 * sc), Vec.to(0, 1.15470053838 * sc));
-                dotShape.shift(v).drawColor(getMp().getDrawColor()).thickness(.25 * th);
+                dotShape.shift(v);
                 break;
             case TRIANGLE_DOWN_FILLED:
                 dotShape.getPath().addPoint(Vec.to(-sc, 0.5773502691893 * sc), Vec.to(sc, 0.5773502691893 * sc), Vec.to(0, -1.15470053838 * sc));
-                dotShape
-                        .shift(previousVecPosition)
-                        .drawColor(getMp().getDrawColor()).fillColor(getMp().getDrawColor()).thickness(.25 * th);
+                dotShape.shift(previousVecPosition);
                 break;
             case TRIANGLE_UP_FILLED:
                 dotShape.getPath().addPoint(Vec.to(-sc, -0.5773502691893 * sc), Vec.to(sc, -0.5773502691893 * sc), Vec.to(0, 1.15470053838 * sc));
-                dotShape.shift(previousVecPosition).drawColor(getMp().getDrawColor()).fillColor(getMp().getDrawColor()).thickness(.25 * th);
+                dotShape.shift(previousVecPosition);
                 break;
 
             case RING:
                 dotShape.getPath().copyStateFrom(Shape.circle().getPath());
-                dotShape.shift(previousVecPosition).scale(.5 * st).drawColor(getMp().getDrawColor())
-                        .fillColor(JMColor.NONE).thickness(.25 * th);
+                dotShape.shift(previousVecPosition).scale(.5 * st);
                 break;
             default:// Default case, includes CIRCLE
                 dotShape.getPath().copyStateFrom(Shape.circle().getPath());
-                dotShape.shift(previousVecPosition).scale(.5 * st).drawColor(getMp().getDrawColor())
+                dotShape.shift(previousVecPosition).scale(.5 * st);
+                break;
+        }
+        dotShape.getMp().setFaceToCamera(true);
+        dotShape.getMp().setFaceToCameraPivot(this.v);
+    }
+
+
+
+    private void generateStyleForDot() {
+        double st = scene.getRenderer().ThicknessToMathWidth(this);
+        double th = scene.getRenderer().MathWidthToThickness(st);
+        double sc = .5 * st;
+        switch (getMp().getDotStyle()) {
+            case CROSS:
+                dotShape.drawColor(getMp().getDrawColor()) .fillColor(JMColor.NONE).thickness(.25 * th);
+                break;
+            case PLUS:
+                dotShape.drawColor(getMp().getDrawColor()) .fillColor(JMColor.NONE).thickness(.25 * th);
+                break;
+            case TRIANGLE_DOWN_HOLLOW:
+                dotShape.drawColor(getMp().getDrawColor()) .fillColor(JMColor.NONE).thickness(.25 * th);
+                break;
+            case TRIANGLE_UP_HOLLOW:
+                dotShape.drawColor(getMp().getDrawColor()).thickness(.25 * th);
+                break;
+            case TRIANGLE_DOWN_FILLED:
+                dotShape.drawColor(getMp().getDrawColor()).fillColor(getMp().getDrawColor()).thickness(0);
+                break;
+            case TRIANGLE_UP_FILLED:
+                dotShape.drawColor(getMp().getDrawColor()).fillColor(getMp().getDrawColor()).thickness(0);
+                break;
+            case RING:
+                dotShape.drawColor(getMp().getDrawColor()).fillColor(JMColor.NONE).thickness(.25 * th);
+                break;
+            default:// Default case, includes CIRCLE
+                dotShape.drawColor(getMp().getDrawColor())
                         .fillColor(getMp().getDrawColor()).thickness(0);
                 break;
         }
         dotShape.getMp().setFaceToCamera(true);
         dotShape.getMp().setFaceToCameraPivot(this.v);
     }
+
+
+
 
     /**
      * Returns the current dot style

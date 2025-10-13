@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * A class that manages sets of MathObjects. The objectes are not added to the scene when you add this object to the
- * scene. It acts as a container to perform easily bulk-operations
+ * A class that manages sets of MathObjects. The objects are not added to the scene when you add this object to the
+ * scene. It acts as a container to easily perform bulk-operations
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -48,6 +48,20 @@ public class MathObjectGroup extends AbstractMathGroup<MathObjectGroup> {
 
     public static MathObjectGroup make(MathObject<?>... objects) {
         return new MathObjectGroup(objects);
+    }
+
+    /**
+     * Creates a MathObjectGroup with a give number of copies of a MathObject
+     * @param object MathObjet to copy
+     * @param numberOfCopies Number of copies
+     * @return The MathObjectGroup created
+     */
+    public static MathObjectGroup makeCopies(MathObject<?> object, int numberOfCopies) {
+        MathObjectGroup resul = MathObjectGroup.make();
+        for (int i = 0; i < numberOfCopies; i++) {
+            resul.add(object.copy());
+        }
+        return resul;
     }
 
     /**
