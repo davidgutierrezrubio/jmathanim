@@ -3,25 +3,31 @@ package com.jmathanim.Utils.Layouts;
 import com.jmathanim.Enum.RotationType;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.AbstractMathGroup;
-import com.jmathanim.mathobjects.AbstractShape;
+import com.jmathanim.mathobjects.JMPath;
+import com.jmathanim.mathobjects.hasPath;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
 public class PathLayout extends GroupLayout {
 
-    private final AbstractShape<?> shape;
+    private final JMPath path;
     RotationType rotationType;
     private boolean parametric;
 
 
-    protected PathLayout(AbstractShape<?> shape, RotationType rotationType, boolean parametric) {
-        this.shape = shape;
+    protected PathLayout(hasPath path, RotationType rotationType, boolean parametric) {
+        this.path = path.getPath();
         this.rotationType = rotationType;
         this.parametric = parametric;
     }
 
-    public static PathLayout make(AbstractShape<?> shape) {
-        return new PathLayout(shape, RotationType.FIXED, true);
+    /**
+     * Create a new PathLayout with the given path
+     * @param path An object that contains a path (Shape, JMpath, etc.)
+     * @return The created layout
+     */
+    public static PathLayout make(hasPath path) {
+        return new PathLayout(path.getPath(), RotationType.FIXED, true);
     }
 
     public RotationType getRotationType() {
@@ -45,18 +51,18 @@ public class PathLayout extends GroupLayout {
     @Override
     protected void executeLayout(AbstractMathGroup<?> group) {
         int size = group.size();
-        boolean isOpen = shape.get(0).isSegmentToThisPointVisible();
+        boolean isOpen = path.get(0).isSegmentToThisPointVisible();
 
         for (int i = 0; i < size; i++) {
             double t = i * 1d / (size - (isOpen ? 0 : 1));
             Vec locationToAnchor;
             double rotationAngle;
             if (parametric) {
-                locationToAnchor = shape.getParametrizedVecAt(t);
-                rotationAngle = shape.getPath().getParametrizedSlopeAt(t, true).getAngle() - PI / 2;
+                locationToAnchor = path.getParametrizedVecAt(t);
+                rotationAngle = path.getParametrizedSlopeAt(t, true).getAngle() - PI / 2;
             } else {
-                locationToAnchor = shape.getVecAt(t);
-                rotationAngle = shape.getPath().getSlopeAt(t, true).getAngle() - PI / 2;
+                locationToAnchor = path.getJMPointAt(t).getV();
+                rotationAngle = path.getSlopeAt(t, true).getAngle() - PI / 2;
             }
             group.get(i).moveTo(locationToAnchor);
             switch (rotationType) {
@@ -76,6 +82,6 @@ public class PathLayout extends GroupLayout {
 
     @Override
     public PathLayout copy() {
-        return new PathLayout(shape.copy(), rotationType, parametric);
+        return new PathLayout(path.copy(), rotationType, parametric);
     }
 }

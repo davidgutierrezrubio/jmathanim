@@ -14,12 +14,12 @@ import java.util.Objects;
 import java.util.OptionalInt;
 
 public abstract class
-        AbstractShape<T extends AbstractShape<T>>
-        extends MathObject<T> {
+AbstractShape<T extends AbstractShape<T>>
+        extends MathObject<T> implements hasPath {
     protected final JMPath jmpath;
+    private final DrawStyleProperties mpShape;
     protected boolean showDebugPoints = false;
     protected boolean isConvex = false;
-    private final DrawStyleProperties mpShape;
 
 
     protected AbstractShape() {
@@ -27,11 +27,10 @@ public abstract class
     }
 
 
-
     protected AbstractShape(JMPath jmpath) {
         super();
         this.jmpath = jmpath;
-        this.mpShape=JMathAnimConfig.getConfig().getDefaultMP();
+        this.mpShape = JMathAnimConfig.getConfig().getDefaultMP();
     }
 
     /**
@@ -40,6 +39,7 @@ public abstract class
      * @param t Position parameter, from 0 (beginning) to 1 (end)
      * @return a new Point object at the specified position of the shape.
      */
+
     public Vec getVecAt(double t) {
         return getPath().getJMPointAt(t).getV();
     }
@@ -160,6 +160,7 @@ public abstract class
      *
      * @return A JMPath object
      */
+    @Override
     public JMPath getPath() {
         return jmpath;
     }
@@ -304,8 +305,8 @@ public abstract class
     public ArrayList<ArrayList<float[]>> computePolygonalPieces() {
         return jmpath.computePolygonalPieces(scene.getCamera());
     }
-    public boolean isOpen()
-    {
+
+    public boolean isOpen() {
         return getPath().isOpen();
     }
 

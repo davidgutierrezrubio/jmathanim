@@ -37,7 +37,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.logger;
  *
  * @author David Gutiérrez davidgutierrezrubio@gmail.com
  */
-public class JMPath implements Boxable, Iterable<JMPathPoint>, AffineTransformable<JMPath> {
+public class JMPath implements Boxable, Iterable<JMPathPoint>, AffineTransformable<JMPath>,hasPath {
 
     public static final double DELTA_DERIVATIVE = .0001;
     // this way
@@ -1335,5 +1335,10 @@ public class JMPath implements Boxable, Iterable<JMPathPoint>, AffineTransformab
 
     public boolean isOpen() {
         return get(0).isThisSegmentVisible();
+    }
+
+    @Override
+    public JMPath getPath() {
+        return this;
     }
 }

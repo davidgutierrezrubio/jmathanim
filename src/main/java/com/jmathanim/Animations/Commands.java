@@ -1309,7 +1309,7 @@ public class Commands {
      */
     public static AnimationWithEffects fadeIn(double runtime, MathObject<?>... objects) {
         AnimationWithEffects anim = new AnimationWithEffects(runtime) {
-            MathObject[] mathObjects = objects;
+            MathObject<?>[] mathObjects = objects;
 
             @Override
             public boolean doInitialization() {
@@ -1318,7 +1318,7 @@ public class Commands {
                         .filter(Objects::nonNull)
                         .toArray(size -> Arrays.copyOf(objects, size));
                 saveStates(mathObjects);
-                for (MathObject obj : mathObjects) {
+                for (MathObject<?> obj : mathObjects) {
                     obj.visible(false);
                 }
                 return true;

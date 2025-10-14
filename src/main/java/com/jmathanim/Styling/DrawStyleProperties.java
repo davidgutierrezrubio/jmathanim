@@ -153,4 +153,9 @@ public interface DrawStyleProperties extends Stylable {
     void multFillAlpha(double mult);
 
     MODrawProperties getFirstMP();
+
+    boolean hasBeenChanged();
+
+    void setHasBeenChanged(boolean hasBeenChanged);
+
 }
