@@ -280,17 +280,17 @@ public class AffineJTransform  {
      *
      * @param a Origin
      * @param b Destiny
-     * @return A newAffineTransform with traslation
+     * @return A newAffineTransform with translation
      */
     public static AffineJTransform createTranslationTransform(Coordinates<?> a, Coordinates<?> b) {
         return createTranslationTransform(a.to(b));
     }
 
     /**
-     * Returns an AffineTransform that representes a traslation with vector v
+     * Returns an AffineTransform that representes a translation with vector v
      *
-     * @param v The traslation vector
-     * @return A newAffineTransform with traslation
+     * @param v The translation vector
+     * @return A newAffineTransform with translation
      */
     public static AffineJTransform createTranslationTransform(Coordinates<?> v) {
         AffineJTransform resul = new AffineJTransform();
@@ -434,7 +434,7 @@ public class AffineJTransform  {
 
     /**
      * Creates a 2D isomorphic transform in the plane (a
-     * rotation+traslation+uniform scale) which transforms the point originA into
+     * rotation+translation+uniform scale) which transforms the point originA into
      * point destinyA and originB into destinyB. There are 2 such transforms that
      * accomplish this, inverse and direct. This method returns the direct.
      *
@@ -465,7 +465,7 @@ public class AffineJTransform  {
         dotProd = (dotProd < -1 ? -1 : dotProd);
         angle = Math.acos(dotProd);
 
-        // Need to compute also cross-product in order to stablish if clockwise or
+        // Need to compute also cross-product in order to establish if clockwise or
         // counterclockwise
         if (v1.x * v2.y - v1.y * v2.x < 0) {
             angle = -angle;
@@ -476,9 +476,9 @@ public class AffineJTransform  {
         // The scale part
         AffineJTransform scale = AffineJTransform.createScaleTransform(oA, (1 - alpha) + d2 / d1 * alpha);
 
-        // The traslation part
-        AffineJTransform traslation = AffineJTransform.createTranslationTransform(v3.mult(alpha));
-        return rotation.compose(scale).compose(traslation);
+        // The translation part
+        AffineJTransform translation = AffineJTransform.createTranslationTransform(v3.mult(alpha));
+        return rotation.compose(scale).compose(translation);
     }
 
     /**
@@ -505,7 +505,7 @@ public class AffineJTransform  {
         // The rotation part
         //Compute the alpha, beta, gamma angles
 
-        //Traslation origin axes to (0,0,0)...
+        //Translation origin axes to (0,0,0)...
         AffineJTransform shift1=AffineJTransform.createTranslationTransform(A.getVec().mult(-1));
         //And the inverse one
         AffineJTransform shift2=AffineJTransform.createTranslationTransform(A);
@@ -514,15 +514,15 @@ public class AffineJTransform  {
         // The scale part
         AffineJTransform scale = AffineJTransform.createScaleTransform(A, (1 - alpha) + d * alpha);
 
-        // The traslation part
-        AffineJTransform traslation = AffineJTransform.createTranslationTransform(vShift.mult(alpha));
-        //So, move to (0,0,0), perform the rotation and scale, move back to A and the traslation to C
-        return shift1.compose(rotation).compose(scale).compose(shift2).compose(traslation);
+        // The translation part
+        AffineJTransform translation = AffineJTransform.createTranslationTransform(vShift.mult(alpha));
+        //So, move to (0,0,0), perform the rotation and scale, move back to A and the translation to C
+        return shift1.compose(rotation).compose(scale).compose(shift2).compose(translation);
     }
 
     /**
      * Creates a inverse 2D isomorphic transform in the plane (a
-     * rotation+traslation+uniform scale) which transforms the point originA into
+     * rotation+translation+uniform scale) which transforms the point originA into
      * destinyC and originB into destinyD. There are 2 such transforms that
      * accomplish this, inverse and direct. This method returns the inverse.
      *
@@ -565,8 +565,8 @@ public class AffineJTransform  {
         AffineJTransform reflection = AffineJTransform.createReflection(originA, originB, alpha);
 
         // The translation part
-        AffineJTransform traslation = AffineJTransform.createTranslationTransform(v3.mult(alpha));
-        return reflection.compose(rotation).compose(scale).compose(traslation);
+        AffineJTransform translation = AffineJTransform.createTranslationTransform(v3.mult(alpha));
+        return reflection.compose(rotation).compose(scale).compose(translation);
     }
 
     /**

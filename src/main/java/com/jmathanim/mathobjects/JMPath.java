@@ -37,7 +37,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.logger;
  *
  * @author David Gutiérrez davidgutierrezrubio@gmail.com
  */
-public class JMPath implements Boxable, Iterable<JMPathPoint>, AffineTransformable<JMPath>,hasPath {
+public class JMPath implements Boxable, Iterable<JMPathPoint>, AffineTransformable<JMPath>, hasPath {
 
     public static final double DELTA_DERIVATIVE = .0001;
     // this way
@@ -414,7 +414,7 @@ public class JMPath implements Boxable, Iterable<JMPathPoint>, AffineTransformab
      * @param t from 0 to 1, relative position inside the path
      * @return A new JMPathPoint that describes the curve at relative position alpha.
      */
-    public JMPathPoint getJMPointAt(double t) {
+    public JMPathPoint getJMPointAtOld(double t) {
         while (t > 1) {
             t -= 1;
         }
@@ -427,6 +427,44 @@ public class JMPath implements Boxable, Iterable<JMPathPoint>, AffineTransformab
         double t0 = size - k;
         JMPathPoint v1 = getJmPathPoints().get(k);
         JMPathPoint v2 = getJmPathPoints().get(k + 1);
+        resul = getJMPointBetween(v1, v2, t0);
+        return resul;
+    }
+
+    public JMPathPoint getJMPointAt(double t) {
+        while (t > 1) {
+            t -= 1;
+        }
+        while (t < 0) {
+            t += 1;
+        }
+        JMPathPoint resul;
+        int sizeVisible = Math.toIntExact(jmPathPoints.stream().filter(JMPathPoint::isThisSegmentVisible).count());
+        double size = sizeVisible * t;
+        int k = (int) Math.floor(size);
+        double t0 = size - k;
+
+        if (t==1) { //Special case, if t=1 use the last segment interpolating at t0=1;
+        k--;
+        t0=1;
+        }
+
+
+        //Look for k-th visible element
+        int count = 0;
+        int indexToUse = 0;
+        for (int i = 0; i < jmPathPoints.size()+1; i++) {
+            indexToUse = i;
+            JMPathPoint jmp = jmPathPoints.get(i + 1);
+            if (jmp.isThisSegmentVisible()) {
+                if (count == k) break;
+                count++;
+            }
+        }
+
+
+        JMPathPoint v1 = getJmPathPoints().get(indexToUse);
+        JMPathPoint v2 = getJmPathPoints().get(indexToUse + 1);
         resul = getJMPointBetween(v1, v2, t0);
         return resul;
     }

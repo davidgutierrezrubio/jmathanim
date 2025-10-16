@@ -20,10 +20,7 @@ package com.jmathanim.Animations;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.*;
 
 /**
  * This class animates an object moving it through a given path. An anchor
@@ -46,7 +43,7 @@ public class MoveAlongPath extends Animation {
      * point of the path
      *
      * @param runtime Duration in seconds
-     * @param path
+     * @param path An object with a path (implementing hasPath interface)
      * @param mobjTransformed Object to move
      * @param anchorType Anchor that determines which point of the object will
      * lie in the path
@@ -58,35 +55,13 @@ public class MoveAlongPath extends Animation {
      * segments.
      * @return The created animation
      */
-    public static MoveAlongPath make(double runtime, JMPath path, MathObject mobjTransformed, AnchorType anchorType, boolean shouldRotate, boolean parametrized) {
-        MoveAlongPath resul = new MoveAlongPath(runtime, path, mobjTransformed, anchorType, shouldRotate, parametrized);
+    public static MoveAlongPath make(double runtime, hasPath path, MathObject<?> mobjTransformed, AnchorType anchorType, boolean shouldRotate, boolean parametrized) {
+        MoveAlongPath resul = new MoveAlongPath(runtime, path.getPath(), mobjTransformed, anchorType, shouldRotate, parametrized);
         return resul;
     }
 
-    /**
-     * Creates an animation of an object moving it through a given Shape.An
-     * anchor determines what point of the object will locate at the moving
-     * point of the path
-     *
-     * @param runtime Duration in seconds
-     * @param sh Shape whose path will be the trajectory
-     * @param mobjTransformed Object to move
-     * @param anchorType Anchor that determines which point of the object will
-     * lie in the path
-     * @param shouldRotate True if object should rotate according to tangent
-     * line of path
-     * @param parametrized If true, a unit parametrization will be used, so
-     * that, with a linear lambda, object should move at constant speed along
-     * the path. If false, speeds may vary depending on the cubic Bezier
-     * segments.
-     * @return The created animation
-     */
-    public static MoveAlongPath make(double runtime, Shape sh, MathObject mobjTransformed, AnchorType anchorType, boolean shouldRotate, boolean parametrized) {
-        MoveAlongPath resul = new MoveAlongPath(runtime, sh.getPath(), mobjTransformed, anchorType, shouldRotate, parametrized);
-        return resul;
-    }
 
-    private MoveAlongPath(double runtime, JMPath path, MathObject mobjTransformed, AnchorType anchorType, boolean shouldRotate, boolean parametrized) {
+    private MoveAlongPath(double runtime, JMPath path, MathObject<?> mobjTransformed, AnchorType anchorType, boolean shouldRotate, boolean parametrized) {
         super(runtime);
         this.path = path;
         this.mobjTransformed = mobjTransformed;
@@ -129,7 +104,7 @@ public class MoveAlongPath extends Animation {
     }
 
     @Override
-    public MathObject getIntermediateObject() {
+    public MathObject<?> getIntermediateObject() {
         return mobjTransformed;
     }
 }
