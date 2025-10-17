@@ -132,7 +132,7 @@ public class PlayAnim {
 
     /**
      * Animates all the objects in the scene, setting their alpha (draw and fill) from current to 0, using default
-     * runtime {@link defaultRunTimefadeOut}. Then remove the objects to the scene. This method is mostly used as a
+     * runtime defaultRunTimefadeOut. Then remove the objects to the scene. This method is mostly used as a
      * transition between parts of a scene, as it clears the scene completely.
      */
     public void fadeOutAll() {
@@ -192,7 +192,7 @@ public class PlayAnim {
 
     /**
      * Shift the specified objects out of the math view and removes them from the scene.The duration of the animation is
-     * the value stored in {@link defaultRunTimeMoveOut}.
+     * the value stored in defaultRunTimeMoveOut.
      *
      * @param exitAnchor  Exit, given by a Anchor constant. For example Anchor.UPPER will move the objects to the upper
      *                    side of the math view.
@@ -217,7 +217,7 @@ public class PlayAnim {
 
     /**
      * Shift the specified objects from an outer point of the math view to their original position, adding them to the
-     * scene. The duration of the animation is the value stored in {@link defaultRunTimeMoveIn}.
+     * scene. The duration of the animation is the value stored in defaultRunTimeMoveIn.
      *
      * @param enterAnchor Enter point, given by a Anchor constant. For example Anchor.UPPER will move the objects from
      *                    the upper side of the math view.

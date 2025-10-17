@@ -18,7 +18,6 @@
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
 import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
 
 /**
@@ -40,7 +39,7 @@ public class LineCreationAnimation extends AbstractCreationStrategy {
     }
 
     @Override
-    public MathObject getIntermediateObject() {
+    public Shape getIntermediateObject() {
         return segment;
     }
 
@@ -97,6 +96,7 @@ public class LineCreationAnimation extends AbstractCreationStrategy {
     @Override
     public void reset() {
         super.reset();
-        anim.reset();
+        if (anim != null)
+            anim.reset();
     }
 }

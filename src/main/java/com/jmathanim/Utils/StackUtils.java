@@ -10,7 +10,7 @@ public class StackUtils<T extends MathObject<T>> {
     private final T parent;
 
     private double xGap, yGap;
-    private AnchorType anchorObject;
+    private AnchorType anchorOrigin;
     private AnchorType anchorDestiny;
     private boolean useRelativeGaps;
 
@@ -72,14 +72,14 @@ public class StackUtils<T extends MathObject<T>> {
     public StackUtils<T> withGaps(double xGap, double yGap) {
         this.xGap = xGap;
         this.yGap = yGap;
-        useRelativeGaps=false;
+        useRelativeGaps = false;
         return this;
     }
 
     public StackUtils<T> withRelativeGaps(double xGap, double yGap) {
         this.xGap = xGap;
         this.yGap = yGap;
-        useRelativeGaps=true;
+        useRelativeGaps = true;
         return this;
     }
 
@@ -104,18 +104,18 @@ public class StackUtils<T extends MathObject<T>> {
     }
 
     public StackUtils<T> withOriginAnchor(AnchorType anchorObject) {
-        this.anchorObject = anchorObject;
+        this.anchorOrigin = anchorObject;
         return this;
     }
 
     private void resetAnchor() {
         anchorDestiny = null;
-        anchorObject = null;
+        anchorOrigin = null;
     }
 
     private void prepareAnchors() {
         if (anchorDestiny == null) anchorDestiny = AnchorType.CENTER;
-        if (anchorObject == null) anchorObject = Anchor.reverseAnchorPoint(anchorDestiny);
+        if (anchorOrigin == null) anchorOrigin = Anchor.reverseAnchorPoint(anchorDestiny);
     }
 
     private Vec computeGaps() {
@@ -128,7 +128,7 @@ public class StackUtils<T extends MathObject<T>> {
     public T toPoint(Coordinates<?> coords) {
         prepareAnchors();
         Vec gaps = computeGaps();
-        Vec anchorPoint = Anchor.getAnchorPoint(parent, anchorObject, gaps.x, gaps.y, gaps.z);
+        Vec anchorPoint = Anchor.getAnchorPoint(parent, anchorOrigin, gaps.x, gaps.y, gaps.z);
         parent.shift(anchorPoint.to(coords));
         resetGaps();
         resetAnchor();
@@ -143,7 +143,7 @@ public class StackUtils<T extends MathObject<T>> {
     public T toObject(Boxable boxable) {
         prepareAnchors();
         Vec gaps = computeGaps();
-        Vec anchorPoint = Anchor.getAnchorPoint(parent, anchorObject, gaps.x, gaps.y, gaps.z);
+        Vec anchorPoint = Anchor.getAnchorPoint(parent, anchorOrigin, gaps.x, gaps.y, gaps.z);
         Vec coords = Anchor.getAnchorPoint(boxable, anchorDestiny);
         parent.shift(anchorPoint.to(coords));
         resetGaps();
@@ -152,7 +152,9 @@ public class StackUtils<T extends MathObject<T>> {
     }
 
     public T toScreen(ScreenAnchor screenAnchor) {
-        withOriginAnchor(computeAnchorOriginForAnchorScreenDestiny(screenAnchor));
+        if (anchorOrigin == null) {
+            withOriginAnchor(computeAnchorOriginForAnchorScreenDestiny(screenAnchor));
+        }
         withDestinyAnchor(AnchorType.CENTER);
         toObject(getScreenAnchorPoint(parent.getCamera(), screenAnchor));
         return parent;

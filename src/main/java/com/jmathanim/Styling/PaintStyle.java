@@ -18,11 +18,42 @@ public abstract class PaintStyle<T extends PaintStyle<T>> {
     }
 
     /**
+     * Interpolates paint styles and returns proper class. May interpolate JMColor-JMLinearGradient returning
+     * JMLinearGradient, JMColor-JMRadialGradient returning JMRadialGradient, etc.
+     *
+     * @param p1 First PaintStyle to interpolate
+     * @param p2 Second PaintStyle to interpolate
+     * @param t Interpolation parameter, a number between 0 and 1
+     * @return The interpolated paint style
+     */
+    public static PaintStyle<?> interpolatePaintStyle(PaintStyle<?> p1, PaintStyle<?> p2, double t) {
+        if (p1 instanceof JMLinearGradient) {
+            JMLinearGradient l1 = (JMLinearGradient) p1;
+            return l1.interpolate(p2, t);
+        }
+        if (p2 instanceof JMLinearGradient) {
+            JMLinearGradient l2 = (JMLinearGradient) p2;
+            return l2.interpolate(p1, 1 - t);
+        }
+
+        if (p1 instanceof JMRadialGradient) {
+            JMRadialGradient l1 = (JMRadialGradient) p1;
+            return l1.interpolate(p2, t);
+        }
+        if (p2 instanceof JMRadialGradient) {
+            JMRadialGradient l2 = (JMRadialGradient) p2;
+            return l2.interpolate(p1, 1 - t);
+        }
+        return p1.interpolate(p2, t);
+
+    }
+
+    /**
      * Copies the attributes of the specified PaintStyle object into this PaintStyle object.
      *
      * @param A The PaintStyle object from which to copy the attributes. It must not be null.
      */
-    abstract public void copyFrom(PaintStyle A);
+    abstract public void copyFrom(PaintStyle<?> A);
 
     /**
      * Returns the alpha parameter used for this paint style
@@ -38,7 +69,7 @@ public abstract class PaintStyle<T extends PaintStyle<T>> {
      *
      * @param alpha Alpha value. 0 means invisible, 1 fully opaque
      */
-    public PaintStyle setAlpha(double alpha) {
+    public PaintStyle<?> setAlpha(double alpha) {
         this.alpha = alpha;
         return this;
     }
@@ -56,6 +87,7 @@ public abstract class PaintStyle<T extends PaintStyle<T>> {
      * @param cam Camera to compute math coordinates
      * @return The Paint object to use in JavaFX
      */
+    //TODO: Separate this in an independent class
     public abstract Paint getFXPaint(JavaFXRenderer r, Camera cam);
 
     /**
@@ -78,5 +110,4 @@ public abstract class PaintStyle<T extends PaintStyle<T>> {
      * @return A new PaintStyle representing the interpolated object. The same class as the first object
      */
     public abstract T interpolate(PaintStyle<?> p, double t);
-
 }

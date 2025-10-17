@@ -17,11 +17,10 @@
  */
 package com.jmathanim.Animations;
 
-import com.jmathanim.Constructible.Constructible;
-import com.jmathanim.Constructible.Points.CTPoint;
+import com.jmathanim.Constructible.Points.CTAbstractPoint;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.Boxable;
-import com.jmathanim.Utils.Rect;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.mathobjects.*;
 import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
@@ -34,53 +33,22 @@ import java.util.ArrayList;
  */
 public class ContourHighlight extends Animation {
 
-    MathObject[] objs;
+    private final MultiShapeObject subshapes;
+    ArrayList<JMPath> paths;
     JMColor highlightColor;
     double thickness;
     double amplitude;
-    private final MultiShapeObject subshapes;
-
-    /**
-     * Static constuctor. Creates an animation that hightlights the contour of a
-     * Shape object.
-     *
-     * @param runTime Runtime in seconds
-     * @param objs Shapes to run the animation (varargs).
-     * @return The animation ready to play with playAnim method.
-     */
-    public static ContourHighlight make(double runTime, MathObject<?>... objs) {
-        return new ContourHighlight(runTime, objs);
-    }
-
-    public static ContourHighlight make(double runTime, double gap, Rect... objs) {
-//        MathObject[] toArray = Arrays.stream(objs).map(t -> Shape.rectangle(t.copy().addGap(gap, gap))).toArray(new MathObject[0]);
-        MathObject[] toArray = new MathObject[objs.length];
-        for (int i = 0; i < objs.length; i++) {
-            toArray[i]=Shape.rectangle(objs[i].copy().addGap(gap, gap));
-        }
-
-        return new ContourHighlight(runTime, toArray);
-    }
-
-    public static ContourHighlight makeBBox(double runTime, double gap, Boxable... objs) {
-//        MathObject[] toArray = Arrays.stream(objs).map(t -> Shape.rectangle(t.getBoundingBox().addGap(gap, gap))).toArray(new MathObject[0]);
-         MathObject[] toArray = new MathObject[objs.length];
-        for (int i = 0; i < objs.length; i++) {
-            toArray[i]=Shape.rectangle(objs[i].getBoundingBox().addGap(gap, gap));
-        }
-        return new ContourHighlight(runTime, toArray);
-    }
 
     /**
      * Creates an animation that hightlights the contour of a Shape object.
      *
      * @param runTime Runtime in seconds
-     * @param objs Shapes to run the animation (varargs).
+     * @param paths   Shapes to run the animation (varargs).
      */
-    public ContourHighlight(double runTime, MathObject<?>... objs) {
+    protected ContourHighlight(double runTime, ArrayList<JMPath> paths) {
         super(runTime);
         subshapes = MultiShapeObject.make();
-        this.objs = objs;
+        this.paths = paths;
         highlightColor = JMColor.parse("red");
         this.thickness = 10;
         this.amplitude = .4;
@@ -88,36 +56,87 @@ public class ContourHighlight extends Animation {
         setLambda(t -> t);
     }
 
-    @Override
-    public boolean doInitialization() {
-        super.doInitialization();
-        ArrayList<MathObject<?>> toAnimateArrayList = new ArrayList<>();
-        for (MathObject obj : objs) {
-            if (obj instanceof MathObjectGroup) {
-                toAnimateArrayList.add(Shape.rectangle(obj.getBoundingBox()));
+    /**
+     * Static constuctor. Creates an animation that hightlights the contour of a
+     * Shape object.
+     *
+     * @param runTime Runtime in seconds
+     * @param objs    Objects to run the animation (varargs).
+     * @return The animation ready to play with playAnim method.
+     */
+    public static ContourHighlight make(double runTime, MathObject<?>... objs) {
+        //process the objs array to extract possible paths
+        ArrayList<JMPath> paths = new ArrayList<>();
+
+        for (int i = 0; i < objs.length; i++) {
+            MathObject<?> obj = objs[i];
+
+            if (obj instanceof AbstractMultiShapeObject) {
+                AbstractMultiShapeObject<?, ?> abstractMultiShapeObject = (AbstractMultiShapeObject<?, ?>) obj;
+                ArrayList<AbstractShape<?>> shapes = (ArrayList<AbstractShape<?>>) abstractMultiShapeObject.getShapes();
+                for (AbstractShape<?> sh : shapes)
+                    paths.add(sh.getPath());
+            }
+            if (obj instanceof hasPath) {
+                paths.add(((hasPath) obj).getPath());
+            }
+            if (obj instanceof AbstractPoint<?>) {
+                AbstractPoint<?> p= (AbstractPoint<?>) obj;
+                    double radius = JMathAnimConfig.getConfig().getRenderer().ThicknessToMathWidth(p.getMp().getThickness()) * 1;
+                paths.add(Shape.circle().scale(radius).moveTo(p.getVec()).getPath());
             }
 
-            if (obj instanceof Constructible) {
-                if (obj instanceof CTPoint) {
-                    Point p = ((CTPoint) obj).getMathObject();
-                    double radius = scene.getRenderer().ThicknessToMathWidth(p.getMp().getThickness()) * 1;
-                    toAnimateArrayList.add(Shape.circle().scale(radius).moveTo(p));
-                } else {
-                    toAnimateArrayList.add(((Constructible) obj).getMathObject());
-                }
-            } else {
-                if (obj instanceof Point) {
-                    Point p = (Point) obj;
-                    double radius = scene.getRenderer().ThicknessToMathWidth(p.getMp().getThickness()) * 1;
-                    toAnimateArrayList.add(Shape.circle().scale(radius).moveTo(p));
-                } else {
-                    toAnimateArrayList.add(obj);
-                }
+            if (obj instanceof CTAbstractPoint<?>) {
+                CTAbstractPoint<?> p= (CTAbstractPoint<?>) obj;
+                double radius = JMathAnimConfig.getConfig().getRenderer().ThicknessToMathWidth(p.getMp().getThickness()) * 1;
+                paths.add(Shape.circle().scale(radius).moveTo(p.getVec()).getPath());
             }
 
         }
 
-        this.objs = toAnimateArrayList.toArray(new MathObject[0]);
+
+        return new ContourHighlight(runTime, paths);
+    }
+
+    public static ContourHighlight makeBBox(double runTime, double gap, Boxable... objs) {
+//        MathObject[] toArray = Arrays.stream(objs).map(t -> Shape.rectangle(t.getBoundingBox().addGap(gap, gap))).toArray(new MathObject[0]);
+        ArrayList<JMPath> paths = new ArrayList<>();
+        for (int i = 0; i < objs.length; i++) {
+            paths.add(Shape.rectangle(objs[i].getBoundingBox().addGap(gap, gap)).getPath());
+        }
+        return new ContourHighlight(runTime, paths);
+    }
+
+    @Override
+    public boolean doInitialization() {
+        super.doInitialization();
+//        ArrayList<JMPath> toAnimateArrayList = new ArrayList<>();
+//        for (JMPath obj : paths) {
+//            if (obj instanceof MathObjectGroup) {
+//                toAnimateArrayList.add(Shape.rectangle(obj.getBoundingBox()));
+//            }
+//
+//            if (obj instanceof Constructible) {
+//                if (obj instanceof CTPoint) {
+//                    Point p = ((CTPoint) obj).getMathObject();
+//                    double radius = scene.getRenderer().ThicknessToMathWidth(p.getMp().getThickness()) * 1;
+//                    toAnimateArrayList.add(Shape.circle().scale(radius).moveTo(p));
+//                } else {
+//                    toAnimateArrayList.add(((Constructible) obj).getMathObject());
+//                }
+//            } else {
+//                if (obj instanceof Point) {
+//                    Point p = (Point) obj;
+//                    double radius = scene.getRenderer().ThicknessToMathWidth(p.getMp().getThickness()) * 1;
+//                    toAnimateArrayList.add(Shape.circle().scale(radius).moveTo(p));
+//                } else {
+//                    toAnimateArrayList.add(obj);
+//                }
+//            }
+
+//        }
+
+//        this.paths = toAnimateArrayList.toArray(new MathObject[0]);
         return true;
     }
 
@@ -135,39 +154,33 @@ public class ContourHighlight extends Animation {
         }
         double b = UsefulLambdas.allocateTo(0, 1 - .5 * amplitude).applyAsDouble(lt);
         double a = UsefulLambdas.allocateTo(.5 * amplitude, 1).applyAsDouble(lt);
-        for (MathObject obj : objs) {
-            process(obj, a, b);
+        for (JMPath path : paths) {
+            process(path, a, b);
 
         }
     }
 
-    private void process(MathObject obj, double a, double b) {
-        if (obj instanceof Line) {
-            Line line = ((Line) obj);
-            addSubShapeToScene(line.toSegment(obj.getCamera()), a, b);
-            return;
-        }
-        if (obj instanceof MultiShapeObject) {
-            MultiShapeObject msh = ((MultiShapeObject) obj);
-            for (Shape sh : msh) {
-                addSubShapeToScene(sh, a, b);
-            }
-        }
-//        if (obj instanceof MathObjectGroup) {
-//            MathObjectGroup mg = ((MathObjectGroup) obj);
-//            for (MathObject subObject : mg) {
-//                process(subObject, a, b);
+    private void process(JMPath path, double a, double b) {
+//        if (path instanceof Line) {
+//            Line line = ((Line) path);
+//            addSubShapeToScene(line.toSegment(path.getCamera()), a, b);
+//            return;
+//        }
+//        if (path instanceof MultiShapeObject) {
+//            MultiShapeObject msh = ((MultiShapeObject) path);
+//            for (Shape sh : msh) {
+//                addSubShapeToScene(sh, a, b);
 //            }
 //        }
-        if (obj instanceof Shape) {
-            Shape sh = ((Shape) obj);
-            addSubShapeToScene(sh, a, b);
-        }
-
+//        if (path instanceof Shape) {
+//            Shape sh = ((Shape) path);
+//            addSubShapeToScene(sh, a, b);
+//        }
+        addSubShapeToScene(path, a, b);
     }
 
-    private void addSubShapeToScene(Shape sh, double a, double b) {
-        Shape sub = sh.getSubShape(Math.min(a, b), Math.max(a, b));
+    private void addSubShapeToScene(JMPath sh, double a, double b) {
+        Shape sub = new Shape(sh.getSubPath(Math.min(a, b), Math.max(a, b)));
         sub
                 .style("default")
                 .thickness(thickness)

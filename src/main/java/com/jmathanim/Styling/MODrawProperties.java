@@ -433,10 +433,12 @@ public class MODrawProperties implements DrawStyleProperties, Stylable {
         // not null)
         // Interpolate colors
         if (b.getDrawColor() != null) {
-            drawColor = a.getDrawColor().interpolate(b.getDrawColor(), alpha);
+//            drawColor = a.getDrawColor().interpolate(b.getDrawColor(), alpha);
+            drawColor=PaintStyle.interpolatePaintStyle(a.getDrawColor(),b.getDrawColor(),alpha);
         }
         if (b.getFillColor() != null) {
-            fillColor = a.getFillColor().interpolate(b.getFillColor(), alpha);
+//            fillColor = a.getFillColor().interpolate(b.getFillColor(), alpha);
+            fillColor=PaintStyle.interpolatePaintStyle(a.getFillColor(),b.getFillColor(),alpha);
         }
         if (b.getThickness() != null) {
             this.thickness = (1 - alpha) * a.getThickness() + alpha * b.getThickness();

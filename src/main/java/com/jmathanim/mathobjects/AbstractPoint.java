@@ -110,7 +110,7 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
                 dotShape.shift(previousVecPosition);
                 break;
             case PLUS:
-                dotShape.getPath().addPoint(Vec.to(0, 1), Vec.to(0, -1), Vec.to(1, 0), Vec.to(-1, 0));
+                dotShape.getPath().addPoint(Vec.to(0, sc), Vec.to(0, -sc), Vec.to(sc, 0), Vec.to(-sc, 0));
                 dotShape.get(0).setThisSegmentVisible(false);
                 dotShape.get(2).setThisSegmentVisible(false);
                 dotShape.shift(previousVecPosition);

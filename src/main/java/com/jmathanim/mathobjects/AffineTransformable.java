@@ -173,8 +173,7 @@ public interface AffineTransformable <T extends AffineTransformable<T>>  extends
      */
     default  T moveTo(Coordinates<?> p) {
         Vec c=getCenter();
-        Vec anchor=Anchor.getAnchorPoint(p, AnchorType.CENTER);
-        return shift(c.to(anchor));
+        return shift(c.to(p));
     }
 
     /**
