@@ -28,24 +28,25 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class SimpleShapeCreationAnimation extends AbstractCreationStrategy {
 
-    private final AbstractShape<?> originShape;
-    private final Shape originShapeBase;
+    protected final AbstractShape<?> originShape;
+    protected final Shape originShapeBase;
     private final AbstractShape<?> intermediateShape;
 
     public SimpleShapeCreationAnimation(double runtime, AbstractShape<?> originShape) {
         super(runtime);
-        this.originShape =originShape;
-        this.originShapeBase =new Shape();//Generates a static Shape copy of the AbstractShape we want to show creation
-        this.originShapeBase.copyStateFrom(originShape);
+        this.originShape = originShape;
+        this.originShapeBase = new Shape();//Generates a static Shape copy of the AbstractShape we want to show creation
+
         intermediateShape = new Shape();
-        intermediateShape.objectLabel=originShape.objectLabel+"_intermediate";
-        intermediateShape.getMp().copyFrom(originShape.getMp());
+        intermediateShape.objectLabel = originShape.objectLabel + "_intermediate";
+
     }
 
-     @Override
+    @Override
     public boolean doInitialization() {
         super.doInitialization();
-        
+        this.originShapeBase.copyStateFrom(originShape);
+        intermediateShape.getMp().copyFrom(originShape.getMp());
         return true;
 
     }

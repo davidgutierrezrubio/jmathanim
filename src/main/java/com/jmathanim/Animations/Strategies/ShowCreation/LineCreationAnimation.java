@@ -26,77 +26,44 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class LineCreationAnimation extends AbstractCreationStrategy {
+public class LineCreationAnimation extends SimpleShapeCreationAnimation {
 
-    Shape segment;
     Line line;
-    SimpleShapeCreationAnimation anim;
+
 
     public LineCreationAnimation(double runtime, Line line) {
-        super(runtime);
+        super(runtime,new Shape());
         this.line = line;
 
     }
 
     @Override
-    public Shape getIntermediateObject() {
-        return segment;
-    }
-
-    @Override
     public boolean doInitialization() {
-        super.doInitialization();
-        segment = line.toSegment(line.getCamera());
-        anim = new SimpleShapeCreationAnimation(this.runTime, segment);
-        anim.setLambda(getTotalLambda());
-        return anim.initialize(scene);
-    }
-
-    @Override
-    public boolean processAnimation() {
-        return anim.processAnimation();
-    }
-
-    @Override
-    public void doAnim(double t) {
-        super.doAnim(t);
-        anim.doAnim(t);
-    }
-
-    @Override
-    public void finishAnimation() {
-        anim.finishAnimation();
-        super.finishAnimation();
-
+        originShape.copyStateFrom(line.toSegment(line.getCamera()));
+        return super.doInitialization();
     }
 
     @Override
     public void cleanAnimationAt(double t) {
+        super.cleanAnimationAt(t);
         double lt = getLT(t);
         if (lt == 0) {//Ended at t=0, nothing remains...
-            removeObjectsFromScene(segment, line);
+            removeObjectsFromScene(originShape, line);
             return;
         }
         if (lt == 1) {//Only remains the full line
-            removeObjectsFromScene(segment);
+            removeObjectsFromScene(originShape);
             addObjectsToscene(line);
             return;
         }
         //0<t<1, only remains the created segment
         removeObjectsFromScene(line);
-        addObjectsToscene(segment);
+
     }
 
     @Override
     public void prepareForAnim(double t) {
         removeObjectsFromScene(line);
-        addObjectsToscene(segment);
-    }
-
-    @Override
-    public void reset() {
-        super.reset();
-        if (anim != null)
-            anim.reset();
+       super.prepareForAnim(t);
     }
 }
