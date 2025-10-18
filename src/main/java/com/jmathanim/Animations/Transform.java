@@ -246,7 +246,6 @@ public class Transform extends AnimationWithEffects {
                 break;
             case FLIP_TRANSFORM:
                 transformStrategy = new FlipTransform(runTime, OrientationType.BOTH, mobjTransformed, mobjDestiny);
-                transformStrategy.addRotationEffect(1);
                 JMathAnimScene.logger.debug("Transform method: Flip transform");
                 break;
 

@@ -21,6 +21,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.AbstractShape;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Shape;
 
 /**
  * Shape representing the trail drawn by a moving a point
@@ -72,6 +73,13 @@ public class Trail extends AbstractShape<Trail> {
             cutNext = false;
             getPath().addJMPoint(pa);
         }
+    }
+
+    @Override
+    public Shape toShape() {
+        Shape resul=new Shape();
+        resul.copyStateFrom(this);
+        return resul;
     }
 
     @Override

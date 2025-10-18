@@ -123,7 +123,7 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
                 generateLaTeXDocument();
                 File f = new File(compileLaTeXFile());
                 clearShapes();
-                addShapesFrom(SVGUtils.importSVG(f.toURI().toURL(),  MODrawProperties.createFromStyle("latexdefault")));
+                addShapesFrom(SVGUtils.importSVG(f.toURI().toURL(), MODrawProperties.createFromStyle("latexdefault")));
             } catch (IOException ex) {
                 if (ex.getLocalizedMessage().toUpperCase().startsWith("CANNOT RUN PROGRAM")) {
                     JMathAnimScene.logger.error("Oops, it seems JMathAnim cannot find your LaTeX executable." + " Make sure you have LaTeX installed on your system and the latex program" + " is accesible from your path");
@@ -222,12 +222,13 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
     }
 
     private void addShapesFrom(MultiShapeObject latexdefault) {
-        for (Shape sh:latexdefault) {
+        for (Shape sh : latexdefault) {
             add(shapeToLatexShape(sh));
         }
     }
+
     public LatexShape shapeToLatexShape(Shape sh) {
-        LatexShape resul=new LatexShape();
+        LatexShape resul = new LatexShape();
         resul.getPath().getJmPathPoints().addAll(sh.getPath().getJmPathPoints());
         resul.getMp().copyFrom(sh.getMp());
         return resul;
@@ -363,9 +364,6 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
     }
 
 
-
-
-
     /**
      * Static constructor
      *
@@ -405,16 +403,16 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
         AbstractLatexMathObject<?> laTeXMathObject = (AbstractLatexMathObject<?>) obj;
         super.copyStateFrom(obj);
 
-            this.text = laTeXMathObject.getText();
+        this.text = laTeXMathObject.getText();
 //            getMp().copyFrom(obj.getMp());
 //            clearShapes();
 //            for (Shape sh : obj) {
 //                final Shape copyShape = sh.copy();
 //                add(copyShape);
 //            }
-            this.absoluteSize = laTeXMathObject.absoluteSize;
-            this.modelMatrix.copyFrom(laTeXMathObject.modelMatrix);
-            this.getMp().setLatexStyle(laTeXMathObject.getMp().getLatexStyle());//TODO: Create a specialized subclass por Latex objects
+        this.absoluteSize = laTeXMathObject.absoluteSize;
+        this.modelMatrix.copyFrom(laTeXMathObject.modelMatrix);
+        this.getMp().setLatexStyle(laTeXMathObject.getMp().getLatexStyle());//TODO: Create a specialized subclass por Latex objects
     }
 
     public String getText() {
@@ -456,11 +454,15 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
 
     @Override
     protected LatexShape createEmptyShapeAt(int index) {
-        LatexShape laTeXShape=new LatexShape();
-        shapes.add(index, laTeXShape);
+        LatexShape laTeXShape = new LatexShape();
+        if (index < size()) {
+            shapes.set(index, laTeXShape);
+        } else {
+            shapes.add(index, laTeXShape);
+        }
+        mpMultiShape.add(laTeXShape);
         return laTeXShape;
     }
-
 
 
     /**

@@ -9,11 +9,12 @@ public class LatexShape extends AbstractShape<LatexShape> {
 
     @Override
     public LatexShape copy() {
-     LatexShape copy=new LatexShape();
-     copy.copyStateFrom(this);
-     return copy;
+        LatexShape copy = new LatexShape();
+        copy.copyStateFrom(this);
+        return copy;
     }
 
+    @Override
     public Shape toShape() {
         Shape resul = new Shape();
         resul.getPath().getJmPathPoints().addAll(getPath().getJmPathPoints());

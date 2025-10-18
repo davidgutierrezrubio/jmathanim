@@ -212,6 +212,11 @@ public class Line extends AbstractShape<Line> implements HasDirection, shouldUdp
         return segment;
     }
 
+    @Override
+    public Shape toShape() {
+        return toSegment(camera,1);
+    }
+
     public Shape toSegment(Camera cam) {
         return toSegment(cam, 1);
     }

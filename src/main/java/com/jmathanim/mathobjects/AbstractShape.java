@@ -33,6 +33,7 @@ AbstractShape<T extends AbstractShape<T>>
         this.mpShape = JMathAnimConfig.getConfig().getDefaultMP();
     }
 
+    public abstract Shape toShape();
     /**
      * Returns a new Point object lying in the Shape, at the given position
      *

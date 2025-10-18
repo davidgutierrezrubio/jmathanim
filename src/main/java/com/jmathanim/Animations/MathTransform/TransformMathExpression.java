@@ -25,13 +25,10 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.AbstractMultiShapeObject;
 import com.jmathanim.mathobjects.AbstractShape;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MathObjectGroup;
+import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
@@ -41,13 +38,60 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
  */
 public class TransformMathExpression extends Animation {
 
+    private final AbstractMultiShapeObject<?, ?> latexTransformedOrig;
+    private final AbstractMultiShapeObject<?, ?> latexDestiny;
+    private final MultiShapeObject latexTransformedBase;
+    private final MultiShapeObject latexDestinyBase;
+    private final AnimationGroup animations;
+    private final ArrayList<MathObject<?>> toDelete;
+    // Transformation parameters
+    private final HashMap<String, int[]> trParOrigGroups;
+    private final HashMap<String, int[]> trParDstGroups;
+    private final LinkedHashMap<String, String> trParMaps;
+    private final HashMap<String, TransformMathExpressionParameters> trParTransformParameters;
+    private final HashMap<Integer, TransformMathExpressionParameters> removeInOrigParameters;
+    private final HashMap<Integer, TransformMathExpressionParameters> addInDstParameters;
     private RemoveType defaultRemovingStyle;
     private AddType defaultAddingStyle;
-    private final AbstractMultiShapeObject<?,?> latexTransformedOrig;
-    private final AbstractMultiShapeObject<?,?> latexDestiny;
-    private final MultiShapeObject latexTransformedBase;
-    private final AnimationGroup animations;
     private boolean isOriginalAddedToScene;
+    /**
+     * Creates a new animation that transforms a math expression into another.
+     * Fine-tuning of the animation can be donde with the map, mapRange,
+     * defineDstGroup and defineOrigGroup commands.
+     *
+     * @param runTime              Time in seconds
+     * @param latexTransformedOrig Original math expression
+     * @param latexDestiny         Destiny math expression
+     */
+    protected TransformMathExpression(double runTime, AbstractMultiShapeObject<?, ?> latexTransformedOrig, AbstractMultiShapeObject<?, ?> latexDestiny) {
+        super(runTime);
+        this.latexTransformedBase = MultiShapeObject.make();
+        this.latexTransformedOrig = latexTransformedOrig;
+        this.latexDestiny = latexDestiny;
+        this.latexDestinyBase = MultiShapeObject.make();
+        animations = new AnimationGroup();
+        toDelete = new ArrayList<>();
+        trParOrigGroups = new HashMap<>();
+        trParDstGroups = new HashMap<>();
+        trParMaps = new LinkedHashMap<>();
+        trParTransformParameters = new HashMap<>();
+        removeInOrigParameters = new HashMap<>();
+        addInDstParameters = new HashMap<>();
+    }
+
+    /**
+     * Static builder. Creates a new animation that transforms a math expression
+     * into another. Fine-tuning of the animation can be donde with the map,
+     * mapRange, defineDstGroup and defineOrigGroup commands.
+     *
+     * @param runTime          Time in seconds
+     * @param latexTransformed Original math expression
+     * @param latexDestiny     Destiny math expression
+     * @return The created object
+     */
+    public static TransformMathExpression make(double runTime, AbstractMultiShapeObject<?, ?> latexTransformed, AbstractMultiShapeObject<?, ?> latexDestiny) {
+        return new TransformMathExpression(runTime, latexTransformed, latexDestiny);
+    }
 
     /**
      * Sets the default removing style. Any item that has not defined its
@@ -69,71 +113,12 @@ public class TransformMathExpression extends Animation {
         this.defaultAddingStyle = defaultAddingStyle;
     }
 
-    public enum AddType {
-        FADE_IN, GROW_IN, GROWH_IN, GROWV_IN, MOVE_IN_UP, MOVE_IN_LEFT, MOVE_IN_RIGHT, MOVE_IN_DOWN
-    }
-
-    public enum RemoveType {
-        FADE_OUT, SHRINK_OUT, SHRINKH_OUT, SHRINKV_OUT, MOVE_OUT_UP, MOVE_OUT_LEFT, MOVE_OUT_RIGHT, MOVE_OUT_DOWN
-    }
-
-    public enum TransformType {
-        INTERPOLATION, FLIP_HORIZONTALLY, FLIP_VERTICALLY, FLIP_BOTH
-    }
-
-    private final ArrayList<MathObject<?>> toDelete;
-
-    // Transformation parameters
-    private final HashMap<String, int[]> trParOrigGroups;
-    private final HashMap<String, int[]> trParDstGroups;
-    private final HashMap<String, String> trParMaps;
-    private final HashMap<String, TransformMathExpressionParameters> trParTransformParameters;
-    private final HashMap<Integer, TransformMathExpressionParameters> removeInOrigParameters;
-    private final HashMap<Integer, TransformMathExpressionParameters> addInDstParameters;
-
-    /**
-     * Static builder. Creates a new animation that transforms a math expression
-     * into another. Fine-tuning of the animation can be donde with the map,
-     * mapRange, defineDstGroup and defineOrigGroup commands.
-     *
-     * @param runTime Time in seconds
-     * @param latexTransformed Original math expression
-     * @param latexDestiny Destiny math expression
-     * @return The created object
-     */
-    public static TransformMathExpression make(double runTime, AbstractMultiShapeObject<?,?> latexTransformed, AbstractMultiShapeObject<?,?> latexDestiny) {
-        return new TransformMathExpression(runTime, latexTransformed, latexDestiny);
-    }
-
-    /**
-     * Creates a new animation that transforms a math expression into another.
-     * Fine-tuning of the animation can be donde with the map, mapRange,
-     * defineDstGroup and defineOrigGroup commands.
-     *
-     * @param runTime Time in seconds
-     * @param latexTransformedOrig Original math expression
-     * @param latexDestiny Destiny math expression
-     */
-    public TransformMathExpression(double runTime, AbstractMultiShapeObject<?,?> latexTransformedOrig, AbstractMultiShapeObject<?,?> latexDestiny) {
-        super(runTime);
-        this.latexTransformedBase = MultiShapeObject.make();
-        this.latexTransformedOrig = latexTransformedOrig;
-        this.latexDestiny = latexDestiny;
-        animations = new AnimationGroup();
-        toDelete = new ArrayList<>();
-        trParOrigGroups = new HashMap<>();
-        trParDstGroups = new HashMap<>();
-        trParMaps = new HashMap<>();
-        trParTransformParameters = new HashMap<>();
-        removeInOrigParameters = new HashMap<>();
-        addInDstParameters = new HashMap<>();
-    }
-
     @Override
     public boolean doInitialization() {
         super.doInitialization();
         isOriginalAddedToScene = scene.isInScene(latexTransformedOrig);
         this.latexTransformedBase.copyStateFrom(latexTransformedOrig);
+        this.latexDestinyBase.copyStateFrom(latexDestiny);
 
         defaultAddingStyle = AddType.GROW_IN;
         defaultRemovingStyle = RemoveType.SHRINK_OUT;
@@ -144,7 +129,7 @@ public class TransformMathExpression extends Animation {
                 removeInOrigParameters.put(n, new TransformMathExpressionParameters());
             }
         }
-        for (int n = 0; n < this.latexDestiny.size(); n++) {
+        for (int n = 0; n < this.latexDestinyBase.size(); n++) {
             if (!addInDstParameters.containsKey(n)) {
                 addInDstParameters.put(n, new TransformMathExpressionParameters());
             }
@@ -152,9 +137,8 @@ public class TransformMathExpression extends Animation {
 
         HashMap<String, int[]> or = trParOrigGroups;
         HashMap<String, int[]> dst = trParDstGroups;
-        HashMap<String, String> maps = trParMaps;
-        for (String name1 : maps.keySet()) {
-            String name2 = maps.get(name1);
+        for (String name1 : trParMaps.keySet()) {
+            String name2 = trParMaps.get(name1);
 
 //            if (false) {
 //                Shape sh1 = getShapeForGroup(or, name1, latexTransformed, removeInOrigParameters);
@@ -165,8 +149,8 @@ public class TransformMathExpression extends Animation {
 //            } else {
             // For each of the shapes of a origin group, makes a transform animation
             // The destiny will be one merged shape of all shapes of destiny group
-            ArrayList<AbstractShape<?>> listDst = getShapeListForGroup(dst, name2, latexDestiny, addInDstParameters);
-            ArrayList<AbstractShape<?>> listOrig = getShapeListForGroup(or, name1, latexTransformedBase, removeInOrigParameters);
+            ArrayList<Shape> listDst = getShapeListForGroup(dst, name2, latexDestinyBase, addInDstParameters);
+            ArrayList<Shape> listOrig = getShapeListForGroup(or, name1, latexTransformedBase, removeInOrigParameters);
 
 //            MultiShapeObject mshDst = MultiShapeObject.makeLengthMeasure();
 //
@@ -175,14 +159,11 @@ public class TransformMathExpression extends Animation {
 //            mshOrig.getShapes().addAll(listOrig);
 
 
-            MathObjectGroup mshDst = MathObjectGroup.make();
+            MultiShapeObject mshDst = MultiShapeObject.make(listDst.toArray(Shape[]::new));
+            MultiShapeObject mshOrig = MultiShapeObject.make(listOrig.toArray(Shape[]::new));
 
-            mshDst.addAll(listDst);
-            MathObjectGroup mshOrig = MathObjectGroup.make();
-            mshOrig.addAll(listOrig);
+            createTransformSubAnimation(mshOrig, mshDst, trParTransformParameters.get(name1));
 
-              createTransformSubAnimation(mshOrig, mshDst, trParTransformParameters.get(name1));
-            
         }
         for (int n : removeInOrigParameters.keySet()) {
             createRemovingSubAnimation(n, removeInOrigParameters.get(n));
@@ -230,8 +211,8 @@ public class TransformMathExpression extends Animation {
 //            } else {
             // For each of the shapes of a origin group, makes a transform animation
             // The destiny will be one merged shape of all shapes of destiny group
-            ArrayList<AbstractShape<?>> listDst = getShapeListForGroup(dst, name2, latexDestiny, addInDstParameters);
-            ArrayList<AbstractShape<?>> listOrig = getShapeListForGroup(or, name1, latexTransformedBase, removeInOrigParameters);
+            ArrayList<Shape> listDst = getShapeListForGroup(dst, name2, latexDestinyBase, addInDstParameters);
+            ArrayList<Shape> listOrig = getShapeListForGroup(or, name1, latexTransformedBase, removeInOrigParameters);
 
             int nDst = listDst.size();
             int nOrig = listOrig.size();
@@ -372,7 +353,11 @@ public class TransformMathExpression extends Animation {
                 transform = new FlipTransform(runTime, OrientationType.BOTH, sh, sh2);
                 break;
         }
-        transform.setLambda(getTotalLambda());
+        if (lambda == null) {
+            transform.setLambda(getTotalLambda());
+        } else {
+            transform.setLambda(lambda);
+        }
 //        AnimationGroup group = new AnimationGroup(transform);
 
         if (par.getJumpHeightFromJumpEffect() != 0) {
@@ -383,7 +368,7 @@ public class TransformMathExpression extends Animation {
         if (par.getNumTurns() != 0) {
 //            group.add(par.createRotateAnimation(runTime, sh));
             transform.addRotationEffect(par.getNumTurns());
-            transform.setLambda(t -> t);
+//            transform.setLambda(t -> t);
         }
         if (par.getAlphaMultFromAlphaEffect() != 1) {
 //            Animation changeAlpha = par.createAlphaMultAnimation(runTime, sh);
@@ -401,13 +386,13 @@ public class TransformMathExpression extends Animation {
         toDelete.add(sh2);
     }
 
-    private ArrayList<AbstractShape<?>> getShapeListForGroup(HashMap<String, int[]> or, String names, AbstractMultiShapeObject<?,?> lat,
-            HashMap<Integer, TransformMathExpressionParameters> listRemainders) {
-        ArrayList<AbstractShape<?>> resul = new ArrayList<>();
+    private ArrayList<Shape> getShapeListForGroup(HashMap<String, int[]> or, String names, AbstractMultiShapeObject<?, ?> lat,
+                                                  HashMap<Integer, TransformMathExpressionParameters> listRemainders) {
+        ArrayList<Shape> resul = new ArrayList<>();
         int[] gr = or.get(names);
         if (gr != null) {
             for (int n = 0; n < gr.length; n++) {
-                resul.add(lat.get(gr[n]));
+                resul.add(lat.get(gr[n]).toShape());
 //            resul.add(lat.get(gr[n]).copy());
                 listRemainders.remove(gr[n]);
             }
@@ -415,8 +400,8 @@ public class TransformMathExpression extends Animation {
         return resul;
     }
 
-    private AbstractShape<?> getShapeForGroup(HashMap<String, int[]> or, String names, AbstractMultiShapeObject<?,?> lat,
-            HashMap<Integer, TransformMathExpressionParameters> listRemainders) {
+    private AbstractShape<?> getShapeForGroup(HashMap<String, int[]> or, String names, AbstractMultiShapeObject<?, ?> lat,
+                                              HashMap<Integer, TransformMathExpressionParameters> listRemainders) {
         int[] gr = or.get(names);
         AbstractShape<?> sh = lat.get(gr[0]);
 //        AbstractShape<?> sh = lat.get(gr[0]).copy();
@@ -475,7 +460,7 @@ public class TransformMathExpression extends Animation {
      * the jth-element of destiny formula.
      *
      * @param name Name of the origin group previously defined
-     * @param j jth-element of the destiny formula.
+     * @param j    jth-element of the destiny formula.
      * @return Associated transform parameter, to add effects.
      */
     public TransformMathExpressionParameters map(String name, int j) {
@@ -487,8 +472,8 @@ public class TransformMathExpression extends Animation {
      * TransformMathExpressionParametersArray to add uniformly the same effects
      * to all maps created
      *
-     * @param start First origin index to map (included)
-     * @param end Last origin index to map (included)
+     * @param start   First origin index to map (included)
+     * @param end     Last origin index to map (included)
      * @param destiny First destiny index to map
      * @return Associated array transform parameter, to add effects.
      */
@@ -517,7 +502,7 @@ public class TransformMathExpression extends Animation {
      * Overloaded method. Maps the origin group defined with the given name to
      * the jth-element of destiny formula.
      *
-     * @param i ith-element of original formula
+     * @param i    ith-element of original formula
      * @param name Name of the destiny group previously defined
      * @return Associated transform parameter, to add effects.
      */
@@ -530,7 +515,7 @@ public class TransformMathExpression extends Animation {
      * the specified destiny group.
      *
      * @param origName Name of the origin group previously defined
-     * @param dstName Name of the destiny group previously defined
+     * @param dstName  Name of the destiny group previously defined
      * @return Associated transform parameter, to add effects.
      */
     public TransformMathExpressionParameters map(String origName, String dstName) {
@@ -544,8 +529,8 @@ public class TransformMathExpression extends Animation {
      * Sets the removing style for the specified origin indices marked for
      * removal
      *
-     * @param type One of the enum RemoveType: FADE_OUT, SHRINK_OUT,
-     * MOVE_OUT_UP, MOVE_OUT_LEFT, MOVE_OUT_RIGHT, MOVE_OUT_DOWN
+     * @param type    One of the enum RemoveType: FADE_OUT, SHRINK_OUT,
+     *                MOVE_OUT_UP, MOVE_OUT_LEFT, MOVE_OUT_RIGHT, MOVE_OUT_DOWN
      * @param indices varargs origin indices
      * @return Array of transform parameters
      */
@@ -564,8 +549,8 @@ public class TransformMathExpression extends Animation {
     /**
      * Sets the adding style for the specified destiny indices marked for adding
      *
-     * @param type One of the enum AddTyp: FADE_IN, GROW_IN, MOVE_IN_UP,
-     * MOVE_IN_LEFT, MOVE_IN_RIGHT, MOVE_IN_DOWN
+     * @param type    One of the enum AddTyp: FADE_IN, GROW_IN, MOVE_IN_UP,
+     *                MOVE_IN_LEFT, MOVE_IN_RIGHT, MOVE_IN_DOWN
      * @param indices varargs origin indices
      * @return Array of transform parameters
      */
@@ -584,7 +569,7 @@ public class TransformMathExpression extends Animation {
     /**
      * Define a group of origin indices
      *
-     * @param name Name of the group
+     * @param name    Name of the group
      * @param indices varargs of origin indices
      * @return The name of the group created
      */
@@ -623,7 +608,7 @@ public class TransformMathExpression extends Animation {
     /**
      * Define a group of destiny indices
      *
-     * @param name Name of the group
+     * @param name    Name of the group
      * @param indices varargs of destiny indices
      * @return The name of the group created
      */
@@ -703,5 +688,22 @@ public class TransformMathExpression extends Animation {
     public void reset() {
         super.reset();
         animations.reset();
+    }
+
+    public TransformMathExpression addDelayEffect(double delayPercentage) {
+        animations.addDelayEffect(delayPercentage);
+        return this;
+    }
+
+    public enum AddType {
+        FADE_IN, GROW_IN, GROWH_IN, GROWV_IN, MOVE_IN_UP, MOVE_IN_LEFT, MOVE_IN_RIGHT, MOVE_IN_DOWN
+    }
+
+    public enum RemoveType {
+        FADE_OUT, SHRINK_OUT, SHRINKH_OUT, SHRINKV_OUT, MOVE_OUT_UP, MOVE_OUT_LEFT, MOVE_OUT_RIGHT, MOVE_OUT_DOWN
+    }
+
+    public enum TransformType {
+        INTERPOLATION, FLIP_HORIZONTALLY, FLIP_VERTICALLY, FLIP_BOTH
     }
 }

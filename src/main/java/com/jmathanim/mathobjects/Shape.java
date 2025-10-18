@@ -49,7 +49,10 @@ public class Shape extends AbstractShape<Shape> {
         return obj;
     }
 
-
+    @Override
+    public Shape toShape() {
+        return this;
+    }
 
     public static Shape square(Point A, double side) {
         return Shape.rectangle(A, A.add(new Vec(side, side)));

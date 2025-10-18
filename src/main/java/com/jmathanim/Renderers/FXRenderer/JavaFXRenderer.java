@@ -551,6 +551,7 @@ public class JavaFXRenderer extends Renderer {
         Rectangle rectangle = new Rectangle(b.getMinX() - gap, b.getMinY() - gap, b.getWidth() + gap,
                 b.getHeight() + gap);
         rectangle.setFill(Color.LIGHTBLUE);
+        rectangle.setOpacity(.7);
         rectangle.setStroke(Color.DARKBLUE);
 
         debugFXnodes.add(rectangle);

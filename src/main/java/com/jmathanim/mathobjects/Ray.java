@@ -242,6 +242,11 @@ public class Ray extends AbstractShape<Ray> implements HasDirection {
         return segment;
     }
 
+    @Override
+    public Shape toShape() {
+        return toSegment(camera, 1);
+    }
+
     public Shape toSegment(Camera cam) {
         return toSegment(cam, 1);
     }

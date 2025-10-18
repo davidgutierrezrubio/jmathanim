@@ -209,19 +209,23 @@ public abstract class AbstractMultiShapeObject<
     public S slice(boolean delete, int... indices) {
         List<Integer> list = Arrays.stream(indices).boxed().collect(Collectors.toList());//Arrays.asList(indices);
         S resul = (S) this.copy();
+        resul.clearShapes();
+        int size=size();
         //Populate the new MultiShape with n empty shapes
-        for (int n = 0; n < resul.size(); n++) {
-            resul.createEmptyShapeAt(n);
-        }
-        for (int n = 0; n < this.shapes.size(); n++) {
+//        for (int n = 0; n < size; n++) {
+//            resul.createEmptyShapeAt(n);
+//        }
+        for (int n = 0; n < size; n++) {
             if (list.contains(n)) {
                 final T copy = this.get(n).copy();
-                resul.setShapeAt(n, copy);
+                resul.add(copy);
                 if (delete) {// if this index is marked for extraction...
                     this.mpMultiShape.remove(this.get(n));
-                    resul.createEmptyShapeAt(n);
+                    this.createEmptyShapeAt(n);
                 }
-
+            }else
+            {
+                resul.createEmptyShapeAt(n);
             }
         }
 

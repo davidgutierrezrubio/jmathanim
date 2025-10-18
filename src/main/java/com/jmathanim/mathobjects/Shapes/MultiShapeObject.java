@@ -36,9 +36,10 @@ public class MultiShapeObject extends AbstractMultiShapeObject<MultiShapeObject,
 
 
     protected MultiShapeObject(List<Shape> shapes) {
-        super(Shape.class,shapes);
+        super(Shape.class, shapes);
 
     }
+
     public static MultiShapeObject make(Shape... shapes) {
         return new MultiShapeObject(Arrays.asList(shapes));
     }
@@ -54,7 +55,12 @@ public class MultiShapeObject extends AbstractMultiShapeObject<MultiShapeObject,
     @Override
     protected Shape createEmptyShapeAt(int index) {
         Shape sh = new Shape();
-        shapes.add(index, sh);
+        if (index < size()) {
+            shapes.set(index, sh);
+        } else {
+            shapes.add(index, sh);
+        }
+        mpMultiShape.add(sh);
         return sh;
     }
 

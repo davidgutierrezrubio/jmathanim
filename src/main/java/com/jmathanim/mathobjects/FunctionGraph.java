@@ -409,5 +409,10 @@ public class FunctionGraph extends AbstractShape<FunctionGraph> implements hasSc
         this.dynamicRange = dynamicRange;
     }
 
-
+    @Override
+    public Shape toShape() {
+        Shape resul=new Shape();
+        resul.copyStateFrom(this);
+        return resul;
+    }
 }
