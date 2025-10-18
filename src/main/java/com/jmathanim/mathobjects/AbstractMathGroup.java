@@ -7,6 +7,7 @@ import com.jmathanim.Enum.LayoutType;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
 import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.EmptyRect;
 import com.jmathanim.Utils.Layouts.GroupLayout;
 import com.jmathanim.Utils.Rect;
@@ -356,11 +357,11 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
         return setLayout(null, layoutType, gap, gap);
     }
 
-    public T setLayout(Coordinates<?> corner, LayoutType layoutType, double gap) {
+    public T setLayout(Boxable corner, LayoutType layoutType, double gap) {
         return setLayout(corner, layoutType, gap,gap);
     }
 
-    public T setLayout(Coordinates<?> corner, LayoutType layoutType, double hGap, double vGap) {
+    public T setLayout(Boxable corner, LayoutType layoutType, double hGap, double vGap) {
         AnchorType anchor = AnchorType.CENTER;
 
         switch (layoutType) {

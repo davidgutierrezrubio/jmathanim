@@ -1444,24 +1444,23 @@ public class Commands {
      * @param group      MathObjectGroup instance to apply the layout
      * @return Animation to run with playAnim method
      */
-    public static ShiftAnimation setLayout(double runtime, Coordinates<?> corner, LayoutType layoutType, double gap,
+    public static ShiftAnimation setLayout(double runtime, Boxable corner, LayoutType layoutType, double gap,
                                            MathObjectGroup group) {
         //Create a simple group with rectangles
         Shape[] shapes = group.getObjects().stream().map(t -> Shape.rectangle(t.getBoundingBox())).toArray(Shape[]::new);
         MathObjectGroup groupCopy = MathObjectGroup.make(shapes);
         groupCopy.setLayout(corner, layoutType, gap);
         HashMap<MathObject<?>, Vec> centers = new HashMap<>();
-        int n = 0;
-        for (MathObject<?> ob : groupCopy) {
-            centers.put(ob, ob.getCenter());// The destination centers of the objects of the group
-            n++;
-        }
-        MathObject<?>[] mathobjects = group.getObjects().toArray(new MathObject[group.size()]);
+            for (int i = 0; i < group.size(); i++) {
+                MathObject<?> ob=group.get(i);
+                centers.put(group.get(i),groupCopy.get(i).getCenter().getVec());
+            }
 
-        return getShiftAnimation(runtime, mathobjects, centers);
+        return getShiftAnimation(runtime, centers);
     }
 
-    private static ShiftAnimation getShiftAnimation(double runtime, MathObject<?>[] mathobjects, HashMap<MathObject<?>, Vec> centers) {
+    private static ShiftAnimation getShiftAnimation(double runtime, HashMap<MathObject<?>, Vec> centers) {
+        MathObject<?>[] mathobjects = centers.keySet().toArray(MathObject<?>[]::new);
         ShiftAnimation resul = new ShiftAnimation(runtime, mathobjects) {
             @Override
             public boolean doInitialization() {

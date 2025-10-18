@@ -338,10 +338,20 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
      *                   animation.
      * @return This object
      */
-    public <T extends ShiftAnimation> T addAlphaScaleEffect(AffineTransformable<?> obj, double alphaScale) {
+    public <T extends ShiftAnimation> T addAlphaEffect(AffineTransformable<?> obj, double alphaScale) {
         effects.get(obj).addAlphaEffect(alphaScale);
         return (T) this;
     }
+
+
+    @Override
+    public <T extends AnimationWithEffects> T addAlphaEffect(double alphaScale) {
+        for (AffineTransformable<?> obj : objectsToShift) {
+            addAlphaEffect(obj, alphaScale);
+        }
+        return (T) this;
+    }
+
 
     /**
      * Sets the delay percentage. A number between 0 and 1 that controls the time gap between consecutive objects when
