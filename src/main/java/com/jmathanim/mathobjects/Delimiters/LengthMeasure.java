@@ -125,7 +125,7 @@ public class LengthMeasure extends Delimiter {
         }
         delimiterShapeToDraw.fillAlpha(0);
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(AA, BB, A, B, 1);
-//        tr.applyTransform(groupElementsToBeDrawn);
+        tr.applyTransform(groupElementsToBeDrawn);
     }
 
     public enum TYPE {
