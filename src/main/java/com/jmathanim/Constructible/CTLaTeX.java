@@ -17,9 +17,12 @@
  */
 package com.jmathanim.Constructible;
 
+import com.jmathanim.Constructible.Points.CTAbstractPoint;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Enum.AnchorType;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.Text.LatexMathObject;
 
 /**
@@ -43,18 +46,18 @@ public class CTLaTeX extends Constructible<CTLaTeX> {
      * @param gap Gap between anchor and text
      * @return The created object
      */
-    public static CTLaTeX make(String text, CTPoint anchor, AnchorType anchorType, double gap) {
+    public static CTLaTeX make(String text, Coordinates<?> anchor, AnchorType anchorType, double gap) {
         CTLaTeX resul = new CTLaTeX(text, anchor, anchorType, gap);
         return resul;
     }
-    private final CTPoint anchor;
+    private final Vec anchor;
     private boolean visible;
 
-    private CTLaTeX(String text, CTPoint anchor, AnchorType anchorType, double gap) {
+    private CTLaTeX(String text, Coordinates<?> anchor, AnchorType anchorType, double gap) {
         tex = LatexMathObject.make(text);
         this.gap = gap;
         this.anchorType = anchorType;
-        this.anchor = anchor;
+        this.anchor = anchor.getVec();
         this.visible = true;
     }
 
@@ -75,8 +78,7 @@ public class CTLaTeX extends Constructible<CTLaTeX> {
                 tex.visible(true);
 //                tex.stackTo(anchorType, anchor, AnchorType.CENTER, this.gap);
                 tex.stack()
-                        .withOriginAnchor(anchorType)
-                        .withDestinyAnchor(AnchorType.CENTER)
+                        .withDestinyAnchor(anchorType)
                         .withGaps(this.gap, this.gap)
                         .toObject(anchor);
 

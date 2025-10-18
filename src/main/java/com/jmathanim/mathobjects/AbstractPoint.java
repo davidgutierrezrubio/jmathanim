@@ -105,14 +105,14 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
         switch (getMp().getDotStyle()) {
             case CROSS:
                 dotShape.getPath().addPoint(Vec.to(-sc, sc), Vec.to(sc, -sc), Vec.to(sc, sc), Vec.to(-sc, -sc));
-                dotShape.get(0).setThisSegmentVisible(false);
-                dotShape.get(2).setThisSegmentVisible(false);
+                dotShape.get(0).setSegmentToThisPointVisible(false);
+                dotShape.get(2).setSegmentToThisPointVisible(false);
                 dotShape.shift(previousVecPosition);
                 break;
             case PLUS:
                 dotShape.getPath().addPoint(Vec.to(0, sc), Vec.to(0, -sc), Vec.to(sc, 0), Vec.to(-sc, 0));
-                dotShape.get(0).setThisSegmentVisible(false);
-                dotShape.get(2).setThisSegmentVisible(false);
+                dotShape.get(0).setSegmentToThisPointVisible(false);
+                dotShape.get(2).setSegmentToThisPointVisible(false);
                 dotShape.shift(previousVecPosition);
                 break;
             case TRIANGLE_DOWN_HOLLOW:

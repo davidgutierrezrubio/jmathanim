@@ -65,7 +65,7 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy<Ab
         optimizeStrategy.optimizePaths(shIntermediate, shDestiny);
         // Mark all points as curved during transformation
         for (JMPathPoint jmp : shIntermediate.getPath().getJmPathPoints()) {
-            jmp.setCurved(true);
+            jmp.setSegmentToThisPointCurved(true);
         }
         originBase = getIntermediateObject().copy();
 
@@ -89,14 +89,14 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy<Ab
             interPoint.getV().z = (1 - lt) * basePoint.getV().z + lt * dstPoint.getV().z;
 
             // Interpolate control point 1
-            interPoint.getvExit().x = (1 - lt) * basePoint.getvExit().x + lt * dstPoint.getvExit().x;
-            interPoint.getvExit().y = (1 - lt) * basePoint.getvExit().y + lt * dstPoint.getvExit().y;
-            interPoint.getvExit().z = (1 - lt) * basePoint.getvExit().z + lt * dstPoint.getvExit().z;
+            interPoint.getVExit().x = (1 - lt) * basePoint.getVExit().x + lt * dstPoint.getVExit().x;
+            interPoint.getVExit().y = (1 - lt) * basePoint.getVExit().y + lt * dstPoint.getVExit().y;
+            interPoint.getVExit().z = (1 - lt) * basePoint.getVExit().z + lt * dstPoint.getVExit().z;
 
             // Interpolate control point 2
-            interPoint.getvEnter().x = (1 - lt) * basePoint.getvEnter().x + lt * dstPoint.getvEnter().x;
-            interPoint.getvEnter().y = (1 - lt) * basePoint.getvEnter().y + lt * dstPoint.getvEnter().y;
-            interPoint.getvEnter().z = (1 - lt) * basePoint.getvEnter().z + lt * dstPoint.getvEnter().z;
+            interPoint.getVEnter().x = (1 - lt) * basePoint.getVEnter().x + lt * dstPoint.getVEnter().x;
+            interPoint.getVEnter().y = (1 - lt) * basePoint.getVEnter().y + lt * dstPoint.getVEnter().y;
+            interPoint.getVEnter().z = (1 - lt) * basePoint.getVEnter().z + lt * dstPoint.getVEnter().z;
         }
         if (isShouldInterpolateStyles()) {
             // Style interpolation

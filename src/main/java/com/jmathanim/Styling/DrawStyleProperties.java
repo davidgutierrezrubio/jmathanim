@@ -77,47 +77,47 @@ public interface DrawStyleProperties extends Stylable {
      */
     void rawCopyFrom(MODrawProperties mp);
 
-    void setDrawAlpha(double alpha);
+    DrawStyleProperties setDrawAlpha(double alpha);
 
-    void setFillAlpha(double alpha);
+    DrawStyleProperties setFillAlpha(double alpha);
 
     Integer getLayer();
 
-    void setLayer(int layer);
+    DrawStyleProperties setLayer(int layer);
 
     PaintStyle getDrawColor();
 
-    void setDrawColor(PaintStyle drawColor);
+    DrawStyleProperties setDrawColor(PaintStyle drawColor);
 
     PaintStyle getFillColor();
 
-    void setFillColor(PaintStyle fillColor);
+    DrawStyleProperties setFillColor(PaintStyle fillColor);
 
     StrokeLineCap getLineCap();
 
     StrokeLineJoin getLineJoin();
 
-    void setLineJoin(StrokeLineJoin linejoin);
+    DrawStyleProperties setLineJoin(StrokeLineJoin linejoin);
 
-    void setLinecap(StrokeLineCap linecap);
+    DrawStyleProperties setLinecap(StrokeLineCap linecap);
 
     Double getThickness();
 
-    void setThickness(Double thickness);
+    DrawStyleProperties setThickness(Double thickness);
 
     DotStyle getDotStyle();
 
-    void setDotStyle(DotStyle dotStyle);
+    DrawStyleProperties setDotStyle(DotStyle dotStyle);
 
     DashStyle getDashStyle();
 
-    void setDashStyle(DashStyle dashStyle);
+    DrawStyleProperties setDashStyle(DashStyle dashStyle);
 
     Boolean isAbsoluteThickness();
 
-    void setAbsoluteThickness(Boolean absThickness);
+    DrawStyleProperties setAbsoluteThickness(Boolean absThickness);
 
-    void setVisible(Boolean absThickness);
+    DrawStyleProperties setVisible(Boolean absThickness);
 
     Boolean isVisible();
 
@@ -125,9 +125,9 @@ public interface DrawStyleProperties extends Stylable {
 
     Vec getFaceToCameraPivot();
 
-    void setFaceToCameraPivot(Vec pivot);
+    DrawStyleProperties setFaceToCameraPivot(Vec pivot);
 
-    void setFaceToCamera(Boolean faceToCamera);
+    DrawStyleProperties setFaceToCamera(Boolean faceToCamera);
 
 //    T getSubMP(int n);
 
@@ -135,22 +135,25 @@ public interface DrawStyleProperties extends Stylable {
      * Multiplies the current thickness by given factor
      *
      * @param multT Factor
+     * @return
      */
-    void multThickness(double multT);
+    DrawStyleProperties multThickness(double multT);
 
     /**
      * Multiplies the current draw alpha by given factor
      *
      * @param mult Factor
+     * @return
      */
-    void multDrawAlpha(double mult);
+    DrawStyleProperties multDrawAlpha(double mult);
 
     /**
      * Multiplies the current fill alpha by given factor
      *
      * @param mult Factor
+     * @return
      */
-    void multFillAlpha(double mult);
+    DrawStyleProperties multFillAlpha(double mult);
 
     MODrawProperties getFirstMP();
 

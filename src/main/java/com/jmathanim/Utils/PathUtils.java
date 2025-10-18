@@ -22,10 +22,7 @@ import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.*;
 
 import java.util.ArrayList;
 
@@ -62,7 +59,7 @@ public class PathUtils {
     public static void generateControlPointsBySimpleSlopes(JMPath path, double tension) // For now, only one method
     {
         for (JMPathPoint jMPathPoint : path) {
-            jMPathPoint.setCurved(true);
+            jMPathPoint.setSegmentToThisPointCurved(true);
         }
 
         int numPoints = path.getJmPathPoints().size();
@@ -101,12 +98,12 @@ public class PathUtils {
             double cx2 = x3 - mod23 / mod42 * (1 - tension) * (x4 - x2);
             double cy2 = y3 - mod23 / mod42 * (1 - tension) * (y4 - y2);
             double cz2 = z3 - mod23 / mod42 * (1 - tension) * (z4 - z2);
-            p2.getvExit().x = cx1;
-            p2.getvExit().y = cy1;
-            p2.getvExit().z = cz1;
-            p3.getvEnter().x = cx2;
-            p3.getvEnter().y = cy2;
-            p3.getvEnter().z = cz2;
+            p2.getVExit().x = cx1;
+            p2.getVExit().y = cy1;
+            p2.getVExit().z = cz1;
+            p3.getVEnter().x = cx2;
+            p3.getVEnter().y = cy2;
+            p3.getVEnter().z = cz2;
 //            } else {
 //                // If this path is straight, control points becomes vertices. Although this is
 //                // not used
@@ -121,31 +118,31 @@ public class PathUtils {
         Vec v;
         // Compute cp1 and cp2 from first and last points
         jp0 = path.getJmPathPoints().get(0);
-        if (!jp0.isThisSegmentVisible()) {
+        if (!jp0.isSegmentToThisPointVisible()) {
             jp1 = path.getJmPathPoints().get(1);
-            v = jp1.getvEnter().minus(jp0.getV()).multInSite(PathUtils.DEFAULT_TENSION);
-            jp0.getvExit().copyCoordinatesFrom(jp0.getV().add(v));
+            v = jp1.getVEnter().minus(jp0.getV()).multInSite(PathUtils.DEFAULT_TENSION);
+            jp0.getVExit().copyCoordinatesFrom(jp0.getV().add(v));
 
             jp1 = path.getJmPathPoints().get(numPoints - 2);
             jp0 = path.getJmPathPoints().get(numPoints - 1);
 //            if (jp0.isCurved) {
-            v = jp1.getvExit().minus(jp0.getV()).multInSite(PathUtils.DEFAULT_TENSION);
-            jp0.getvEnter().copyCoordinatesFrom(jp0.getV().add(v));
+            v = jp1.getVExit().minus(jp0.getV()).multInSite(PathUtils.DEFAULT_TENSION);
+            jp0.getVEnter().copyCoordinatesFrom(jp0.getV().add(v));
 //            }
         }
     }
 
-    public static void addJMPathPointsToScene(JMPath path, JMathAnimScene scene) {
-        for (int i = 0; i < path.size(); i++) {
-            addJMPathPointToScene(path.get(i), scene);
+    public static void addJMPathPointsToScene(hasPath path, JMathAnimScene scene) {
+        for (int i = 0; i < path.getPath().size(); i++) {
+            addJMPathPointToScene(path.getPath().get(i), scene);
         }
     }
 
     private static void addJMPathPointToScene(JMPathPoint p, JMathAnimScene scene) {
         scene.add(p.getPoint().drawColor("green"));//Point of the curve
-        Point pointCPEnter = Point.at(p.getvEnter()).dotStyle(DotStyle.CROSS).drawColor("blue");
+        Point pointCPEnter = Point.at(p.getVEnter()).dotStyle(DotStyle.CROSS).drawColor("blue");
         scene.add(pointCPEnter);//Control point that "enters" into the point
-        Point pointCPExit = Point.at(p.getvExit()).dotStyle(DotStyle.PLUS).drawColor("red");
+        Point pointCPExit = Point.at(p.getVExit()).dotStyle(DotStyle.PLUS).drawColor("red");
         scene.add(pointCPExit);//Control point that "exits" from the point
         scene.add(Shape.segment(p.getPoint(), pointCPExit)
                 .dashStyle(DashStyle.DASHED)
@@ -170,9 +167,9 @@ public class PathUtils {
      */
     public static void rectifyPath(JMPath path) {
         for (JMPathPoint jmp : path) {
-            jmp.setCurved(false);
-            jmp.getvEnter().copyCoordinatesFrom(jmp.getV());
-            jmp.getvExit().copyCoordinatesFrom(jmp.getV());
+            jmp.setSegmentToThisPointCurved(false);
+            jmp.getVEnter().copyCoordinatesFrom(jmp.getV());
+            jmp.getVExit().copyCoordinatesFrom(jmp.getV());
         }
     }
 
@@ -184,7 +181,7 @@ public class PathUtils {
         //First point
         Vec p = Vec.to(0,0);
         resul.getPath().addPoint(p);
-        resul.get(0).setThisSegmentVisible(false);
+        resul.get(0).setSegmentToThisPointVisible(false);
         for (int i = 1; i < sh2.getPath().size(); i++) {
             double dist = sh2.getPoint(i - 1).to(sh2.getPoint(i)).norm();
             p = p.copy().add(dist, 0);
@@ -236,7 +233,7 @@ public class PathUtils {
         for (int n = 0; n < path.size(); n++) {
             JMPathPoint p1 = jmPathPoints.get(n);
             JMPathPoint p2 = jmPathPoints.get(n + 1);
-            p2.setCurved(!((p1.getV().minus(p1.getvExit()).norm() < .0001) && (p2.getV().minus(p2.getvEnter()).norm() < .0001)));
+            p2.setSegmentToThisPointCurved(!((p1.getV().minus(p1.getVExit()).norm() < .0001) && (p2.getV().minus(p2.getVEnter()).norm() < .0001)));
         }
     }
 
@@ -264,7 +261,7 @@ public class PathUtils {
             JMPathPoint p = jmPathPoints.get(n);
             JMPathPoint q = jmPathPoints.get(n + 1);
 
-            if (q.isThisSegmentVisible()) {
+            if (q.isSegmentToThisPointVisible()) {
                 computeStraightenedPoints(connectedSegments, p, q, cam);
 //                connectedSegments.addAll(seg);
             } else {
@@ -282,7 +279,7 @@ public class PathUtils {
         if (connectedSegments.isEmpty()) {
             connectedSegments.add(p.getV());
         }
-        if (q.isCurved()) {
+        if (q.isSegmentToThisPointCurved()) {
             int num = appropiateSubdivisionNumber(p.getV(), q.getV(), cam);
             for (int n = 1; n < num; n++) {
                 connectedSegments.add(p.interpolate(q, n * 1d / num).getV());

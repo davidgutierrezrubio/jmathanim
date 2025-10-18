@@ -170,7 +170,7 @@ public class Shape extends AbstractShape<Shape> {
     public static Shape polyLine(Coordinates... points) {
         Shape obj = polygon(points);
         obj.objectLabel = "polyLine";
-        obj.get(0).setThisSegmentVisible(false);
+        obj.get(0).setSegmentToThisPointVisible(false);
         return obj;
     }
 
@@ -238,9 +238,9 @@ public class Shape extends AbstractShape<Shape> {
         for (int k = 0; k < numSegments; k++) {
             path.addJMPoint(jmp.copy().rotate(Point.origin(), k * step));
         }
-        path.get(0).setThisSegmentVisible(false);
-        path.get(0).getvEnter().copyCoordinatesFrom(path.get(0).getV());
-        path.get(-1).getvExit().copyCoordinatesFrom(path.get(-1).getV());
+        path.get(0).setSegmentToThisPointVisible(false);
+        path.get(0).getVEnter().copyCoordinatesFrom(path.get(0).getV());
+        path.get(-1).getVExit().copyCoordinatesFrom(path.get(-1).getV());
         Shape obj = new Shape(path);
         obj.objectLabel = "circle";
         return obj;

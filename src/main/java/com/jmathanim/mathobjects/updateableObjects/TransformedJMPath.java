@@ -56,12 +56,12 @@ public class TransformedJMPath extends Shape {
             JMPathPoint jmPDst = get(n);
 
             jmPDst.getV().copyCoordinatesFrom(jmPDst.getV());
-            jmPDst.getvExit().copyCoordinatesFrom(jmPDst.getvExit());
-            jmPDst.getvEnter().copyCoordinatesFrom(jmPDst.getvEnter());
+            jmPDst.getVExit().copyCoordinatesFrom(jmPDst.getVExit());
+            jmPDst.getVEnter().copyCoordinatesFrom(jmPDst.getVEnter());
 
             jmPDst.getV().applyAffineTransform(transform);
-            jmPDst.getvExit().applyAffineTransform(transform);
-            jmPDst.getvEnter().applyAffineTransform(transform);
+            jmPDst.getVExit().applyAffineTransform(transform);
+            jmPDst.getVEnter().applyAffineTransform(transform);
 
         }
     }

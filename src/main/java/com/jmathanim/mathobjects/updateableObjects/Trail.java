@@ -54,7 +54,7 @@ public class Trail extends AbstractShape<Trail> {
     public Trail(MathObject<?> marker) {
         this.marker = marker;
         getPath().addPoint(marker.getCenter());
-        get(0).setThisSegmentVisible(false);
+        get(0).setSegmentToThisPointVisible(false);
     }
 
 
@@ -69,7 +69,7 @@ public class Trail extends AbstractShape<Trail> {
         super.update(scene);
         if (draw) {
             JMPathPoint pa = JMPathPoint.lineTo(marker.getCenter());
-            pa.setThisSegmentVisible(!cutNext);
+            pa.setSegmentToThisPointVisible(!cutNext);
             cutNext = false;
             getPath().addJMPoint(pa);
         }

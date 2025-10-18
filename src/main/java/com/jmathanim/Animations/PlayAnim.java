@@ -258,7 +258,7 @@ public class PlayAnim {
      * @param scaleFactor Scale factor
      * @param objs        Mathobjects to animate (varargs)
      */
-    public void scale(double runTime, Point center, double scaleFactor, MathObject<?>... objs) {
+    public void scale(double runTime, Point center, double scaleFactor, AffineTransformable<?>... objs) {
         scale(runTime, center, scaleFactor, scaleFactor, scaleFactor, objs);
     }
 
@@ -271,7 +271,7 @@ public class PlayAnim {
      * @param scaleFactor Scale factor
      * @param objs        Mathobjects to animate (varargs)
      */
-    public void scale(double runTime, double scaleFactor, MathObject<?>... objs) {
+    public void scale(double runTime, double scaleFactor, AffineTransformable<?>... objs) {
         scale(runTime, scaleFactor, scaleFactor, scaleFactor, objs);
     }
 
@@ -285,7 +285,7 @@ public class PlayAnim {
      * @param scy     y scale factor
      * @param objs    Mathobjects to animate (varargs)
      */
-    public void scale(double runTime, double scx, double scy, MathObject<?>... objs) {
+    public void scale(double runTime, double scx, double scy, AffineTransformable<?>... objs) {
         scale(runTime, scx, scy, 1, objs);
     }
 
@@ -300,9 +300,9 @@ public class PlayAnim {
      * @param scz     z scale factor
      * @param objs    Mathobjects to animate (varargs)
      */
-    public void scale(double runTime, double scx, double scy, double scz, MathObject<?>... objs) {
+    public void scale(double runTime, double scx, double scy, double scz, AffineTransformable<?>... objs) {
         Rect r = objs[0].getBoundingBox();
-        for (MathObject obj : objs) {
+        for (AffineTransformable<?> obj : objs) {
             r = Rect.union(r, obj.getBoundingBox());
         }
         scene.playAnimation(Commands.scale(runTime, r.getCenter(), scx, scy, scz, objs));
@@ -317,7 +317,7 @@ public class PlayAnim {
      * @param scy     y-scale
      * @param objs    Mathobjects to animate (varargs)
      */
-    public void scale(double runTime, Point center, double scx, double scy, MathObject<?>... objs) {
+    public void scale(double runTime, Point center, double scx, double scy, AffineTransformable<?>... objs) {
         scene.playAnimation(Commands.scale(runTime, center, scx, scy, 1, objs));
     }
 
@@ -332,7 +332,7 @@ public class PlayAnim {
      * @param scz     z-scale
      * @param objs    Mathobjects to animate (varargs)
      */
-    public void scale(double runTime, Point center, double scx, double scy, double scz, MathObject<?>... objs) {
+    public void scale(double runTime, Point center, double scx, double scy, double scz, AffineTransformable<?>... objs) {
         scene.playAnimation(Commands.scale(runTime, center, scx, scy, scz, objs));
     }
 
@@ -344,11 +344,11 @@ public class PlayAnim {
      * @param angle   Rotation angle, in radians
      * @param objs    Mathobjects to animate (varargs)
      */
-    public void rotate(double runTime, double angle, MathObject<?>... objs) {
+    public void rotate(double runTime, double angle, AffineTransformable<?>... objs) {
         Vec center;
         if (objs.length > 1) {
             Rect r = objs[0].getBoundingBox();
-            for (MathObject obj : objs) {
+            for (AffineTransformable<?> obj : objs) {
                 r = Rect.union(r, obj.getBoundingBox());
             }
             center = r.getCenter();
@@ -367,7 +367,7 @@ public class PlayAnim {
      * @param angle   Rotation angle, in radians
      * @param objs    Mathobjects to animate (varargs)
      */
-    public void rotate(double runTime, Point center, double angle, MathObject<?>... objs) {
+    public void rotate(double runTime, Point center, double angle, AffineTransformable<?>... objs) {
         scene.playAnimation(Commands.rotate(runTime, center, angle, objs));
     }
 

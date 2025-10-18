@@ -233,9 +233,10 @@ public class MODrawProperties implements DrawStyleProperties, Stylable {
     }
 
     @Override
-    public void setAbsoluteThickness(Boolean absThickness) {
+    public DrawStyleProperties setAbsoluteThickness(Boolean absThickness) {
         this.absoluteThickness = absThickness;
         setHasBeenChanged(true);
+        return this;
     }
 
     @Override
@@ -244,9 +245,10 @@ public class MODrawProperties implements DrawStyleProperties, Stylable {
     }
 
     @Override
-    public void setDashStyle(DashStyle dashStyle) {
+    public DrawStyleProperties setDashStyle(DashStyle dashStyle) {
         this.dashStyle = dashStyle;
         setHasBeenChanged(true);
+        return this;
     }
 
     @Override
@@ -255,15 +257,17 @@ public class MODrawProperties implements DrawStyleProperties, Stylable {
     }
 
     @Override
-    public void setDotStyle(DotStyle dotStyle) {
+    public DrawStyleProperties setDotStyle(DotStyle dotStyle) {
         this.dotStyle = dotStyle;
         setHasBeenChanged(true);
+        return this;
     }
 
     @Override
-    public void setDrawAlpha(double alpha) {
+    public DrawStyleProperties setDrawAlpha(double alpha) {
         this.drawColor.setAlpha(alpha);
         setHasBeenChanged(true);
+        return this;
     }
 
     @Override
@@ -272,9 +276,9 @@ public class MODrawProperties implements DrawStyleProperties, Stylable {
     }
 
     @Override
-    public void setDrawColor(PaintStyle drawColor) {
+    public DrawStyleProperties setDrawColor(PaintStyle drawColor) {
         if (drawColor == null) {
-            return;
+            return this;
         }
         if (this.drawColor != drawColor) {
             this.drawColor = drawColor.copy();
@@ -283,29 +287,31 @@ public class MODrawProperties implements DrawStyleProperties, Stylable {
 //            }
         }
         setHasBeenChanged(true);
+        return this;
     }
 
     @Override
-    public void multDrawAlpha(double mult) {
+    public DrawStyleProperties multDrawAlpha(double mult) {
         if (getDrawColor() != null)
             setDrawAlpha(getDrawColor().getAlpha() * mult);
+        return this;
     }
 
     @Override
-    public void multFillAlpha(double mult) {
+    public DrawStyleProperties multFillAlpha(double mult) {
         if (getFillColor() != null)
             setFillAlpha(getFillColor().getAlpha() * mult);
+        return this;
     }
 
     @Override
-    public void setFillAlpha(double alpha) {
+    public DrawStyleProperties setFillAlpha(double alpha) {
         if (this.fillColor.getAlpha() != alpha) {
             this.fillColor.setAlpha(alpha);
-//            if (parent != null) {
-//                parent.on_setFillAlpha(alpha);
-//            }
+            setHasBeenChanged(true);
         }
-        setHasBeenChanged(true);
+
+        return this;
     }
 
     @Override
@@ -314,9 +320,9 @@ public class MODrawProperties implements DrawStyleProperties, Stylable {
     }
 
     @Override
-    public void setFillColor(PaintStyle fillColor) {
+    public DrawStyleProperties setFillColor(PaintStyle fillColor) {
         if (fillColor == null) {
-            return;
+            return this;
         }
         if (this.fillColor != fillColor) {
             this.fillColor = fillColor.copy();
@@ -325,6 +331,7 @@ public class MODrawProperties implements DrawStyleProperties, Stylable {
 //            }
         }
         setHasBeenChanged(true);
+        return this;
     }
 
     @Override
@@ -339,7 +346,7 @@ public class MODrawProperties implements DrawStyleProperties, Stylable {
 
     @Override
     public void setHasBeenChanged(boolean hasBeenChanged) {
-        this.hasBeenChanged=hasBeenChanged;
+        this.hasBeenChanged = hasBeenChanged;
     }
 
 
@@ -352,9 +359,11 @@ public class MODrawProperties implements DrawStyleProperties, Stylable {
     }
 
     @Override
-    public void setLayer(int layer) {
+    public DrawStyleProperties setLayer(int layer) {
         this.layer = layer;
         setHasBeenChanged(true);
+        return this;
+
     }
 
     @Override
@@ -367,9 +376,9 @@ public class MODrawProperties implements DrawStyleProperties, Stylable {
         return this.linejoin;
     }
 
-    public void setLineJoin(StrokeLineJoin linejoin) {
+    public DrawStyleProperties setLineJoin(StrokeLineJoin linejoin) {
         if (linejoin == null) {
-            return;
+            setHasBeenChanged(true);;
         }
         if (this.linejoin != linejoin) {
             this.linejoin = linejoin;
@@ -378,12 +387,13 @@ public class MODrawProperties implements DrawStyleProperties, Stylable {
 //            }
         }
         setHasBeenChanged(true);
+        return this;
     }
 
     @Override
-    public void setLinecap(StrokeLineCap linecap) {
+    public DrawStyleProperties setLinecap(StrokeLineCap linecap) {
         if (linecap == null) {
-            return;
+            setHasBeenChanged(true);;
         }
         if (this.linecap != linecap) {
             this.linecap = linecap;
@@ -392,6 +402,7 @@ public class MODrawProperties implements DrawStyleProperties, Stylable {
 //            }
         }
         setHasBeenChanged(true);
+        return this;
     }
 
     @Override
@@ -400,7 +411,7 @@ public class MODrawProperties implements DrawStyleProperties, Stylable {
     }
 
     @Override
-    public void setThickness(Double thickness) {
+    public DrawStyleProperties setThickness(Double thickness) {
         if (!Objects.equals(this.thickness, thickness)) {
             this.thickness = thickness;
 //            if (parent != null) {
@@ -408,10 +419,11 @@ public class MODrawProperties implements DrawStyleProperties, Stylable {
 //            }
         }
         setHasBeenChanged(true);
+        return this;
     }
 
     @Override
-    public void setVisible(Boolean visible) {
+    public DrawStyleProperties setVisible(Boolean visible) {
         if (!Objects.equals(this.visible, visible)) {
             this.visible = visible;
 //            if (parent != null) {
@@ -419,6 +431,7 @@ public class MODrawProperties implements DrawStyleProperties, Stylable {
 //            }
         }
         setHasBeenChanged(true);
+        return this;
     }
 
     @Override
@@ -434,11 +447,11 @@ public class MODrawProperties implements DrawStyleProperties, Stylable {
         // Interpolate colors
         if (b.getDrawColor() != null) {
 //            drawColor = a.getDrawColor().interpolate(b.getDrawColor(), alpha);
-            drawColor=PaintStyle.interpolatePaintStyle(a.getDrawColor(),b.getDrawColor(),alpha);
+            drawColor = PaintStyle.interpolatePaintStyle(a.getDrawColor(), b.getDrawColor(), alpha);
         }
         if (b.getFillColor() != null) {
 //            fillColor = a.getFillColor().interpolate(b.getFillColor(), alpha);
-            fillColor=PaintStyle.interpolatePaintStyle(a.getFillColor(),b.getFillColor(),alpha);
+            fillColor = PaintStyle.interpolatePaintStyle(a.getFillColor(), b.getFillColor(), alpha);
         }
         if (b.getThickness() != null) {
             this.thickness = (1 - alpha) * a.getThickness() + alpha * b.getThickness();
@@ -483,10 +496,11 @@ public class MODrawProperties implements DrawStyleProperties, Stylable {
     }
 
     @Override
-    public void multThickness(double multT) {
+    public DrawStyleProperties multThickness(double multT) {
         if (getThickness() != null)
             setThickness(getThickness() * multT);
         setHasBeenChanged(true);
+        return this;
     }
 
 
@@ -496,9 +510,10 @@ public class MODrawProperties implements DrawStyleProperties, Stylable {
     }
 
     @Override
-    public void setFaceToCamera(Boolean faceToCamera) {
+    public DrawStyleProperties setFaceToCamera(Boolean faceToCamera) {
         this.faceToCamera = faceToCamera;
         setHasBeenChanged(true);
+        return this;
     }
 
     @Override
@@ -507,9 +522,10 @@ public class MODrawProperties implements DrawStyleProperties, Stylable {
     }
 
     @Override
-    public void setFaceToCameraPivot(Vec pivot) {
+    public DrawStyleProperties setFaceToCameraPivot(Vec pivot) {
         this.faceToCameraPivot = pivot;
         setHasBeenChanged(true);
+        return this;
     }
 
     @Override

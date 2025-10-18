@@ -52,7 +52,7 @@ public class Line extends AbstractShape<Line> implements HasDirection, shouldUdp
         borderPoint2 = new JMPathPoint(Vec.to(0, 0), true);// trivial boundary points, just to
         // initialize objects
         getPath().addJMPoint(borderPoint1, borderPoint2);
-        get(0).setThisSegmentVisible(false);
+        get(0).setSegmentToThisPointVisible(false);
         rebuildShape();
     }
 
@@ -113,11 +113,11 @@ public class Line extends AbstractShape<Line> implements HasDirection, shouldUdp
             borderPoint2.getV().x = intersectLine[2];
             borderPoint2.getV().y = intersectLine[3];
         }
-        borderPoint1.getvExit().copyCoordinatesFrom(borderPoint1.getV());
-        borderPoint1.getvEnter().copyCoordinatesFrom(borderPoint1.getV());
-        borderPoint2.getvExit().copyCoordinatesFrom(borderPoint2.getV());
-        borderPoint2.getvEnter().copyCoordinatesFrom(borderPoint2.getV());
-        borderPoint1.setThisSegmentVisible(false);
+        borderPoint1.getVExit().copyCoordinatesFrom(borderPoint1.getV());
+        borderPoint1.getVEnter().copyCoordinatesFrom(borderPoint1.getV());
+        borderPoint2.getVExit().copyCoordinatesFrom(borderPoint2.getV());
+        borderPoint2.getVEnter().copyCoordinatesFrom(borderPoint2.getV());
+        borderPoint1.setSegmentToThisPointVisible(false);
     }
 
     @Override

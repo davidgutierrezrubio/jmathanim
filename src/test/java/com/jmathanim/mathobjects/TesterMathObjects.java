@@ -21,8 +21,8 @@ public class TesterMathObjects {
     public static void assertJMpathPointEquals(JMPathPoint jmp1, JMPathPoint jmp2, String errorMessage) {
         assertAll("JMPathPoint equals",
                 () -> assertVecEquals(jmp1.getV(), jmp2.getV(), " in path V->" + errorMessage),
-                () -> assertVecEquals(jmp1.getvEnter(), jmp2.getvEnter(), "in path vEnter->" + errorMessage),
-                () -> assertVecEquals(jmp1.getvExit(), jmp2.getvExit(), " in path vExit->" + errorMessage)
+                () -> assertVecEquals(jmp1.getVEnter(), jmp2.getVEnter(), "in path vEnter->" + errorMessage),
+                () -> assertVecEquals(jmp1.getVExit(), jmp2.getVExit(), " in path vExit->" + errorMessage)
         );
 
     }

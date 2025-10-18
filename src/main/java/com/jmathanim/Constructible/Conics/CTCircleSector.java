@@ -108,12 +108,12 @@ public class CTCircleSector extends CTAbstractCircle<CTCircleSector> {
             }
             Shape referenceArc = Shape.arc(angle);
 
-            referenceArc.get(0).getvEnter().copyCoordinatesFrom(referenceArc.get(0).getV());
-            referenceArc.get(-1).getvExit().copyCoordinatesFrom(referenceArc.get(-1).getV());
-            referenceArc.get(0).setThisSegmentVisible(true);
+            referenceArc.get(0).getVEnter().copyCoordinatesFrom(referenceArc.get(0).getV());
+            referenceArc.get(-1).getVExit().copyCoordinatesFrom(referenceArc.get(-1).getV());
+            referenceArc.get(0).setSegmentToThisPointVisible(true);
             JMPathPoint pp = JMPathPoint.lineTo(Point.origin());
-            pp.getvEnter().copyCoordinatesFrom(pp.getV());
-            pp.getvExit().copyCoordinatesFrom(pp.getV());
+            pp.getVEnter().copyCoordinatesFrom(pp.getV());
+            pp.getVExit().copyCoordinatesFrom(pp.getV());
             referenceArc.getPath().getJmPathPoints().add(0, pp);
             referenceArc.applyAffineTransform(tr);
             getMathObject().getPath().clear();

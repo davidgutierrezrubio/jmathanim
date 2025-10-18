@@ -230,7 +230,7 @@ public class ParametricCurve extends Shape implements hasScalarParameter {
             this.getPath().addJMPoint(jmp);
 
         }
-        this.get(0).setThisSegmentVisible(this.getPoint(0).isEquivalentTo(this.getPoint(-1), 0.0000001));
+        this.get(0).setSegmentToThisPointVisible(this.getPoint(0).isEquivalentTo(this.getPoint(-1), 0.0000001));
 
         generateControlPoints();
     }
@@ -247,13 +247,13 @@ public class ParametricCurve extends Shape implements hasScalarParameter {
                 Vec tv = getTangentVector(t, 1);
                 final double delta = .3 * (tPoints.get(n + 1) - t);
                 Vec v = tv.mult(delta);
-                jmp.getvExit().copyCoordinatesFrom(jmp.getV().add(v));
+                jmp.getVExit().copyCoordinatesFrom(jmp.getV().add(v));
             }
             if (n > 0) {
                 Vec tv = getTangentVector(t, -1);
                 final double delta = .3 * (tPoints.get(n - 1) - t);
                 Vec v = tv.mult(delta);
-                jmp.getvEnter().copyCoordinatesFrom(jmp.getV().add(v));
+                jmp.getVEnter().copyCoordinatesFrom(jmp.getV().add(v));
             }
 
         }

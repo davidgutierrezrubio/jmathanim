@@ -185,7 +185,7 @@ public class FunctionGraph extends AbstractShape<FunctionGraph> implements hasSc
             final JMPathPoint jmp = JMPathPoint.curveTo(Vec.to(x,y));
             getPath().addJMPoint(jmp);
             if (n == 0) {
-                jmp.setThisSegmentVisible(false);
+                jmp.setSegmentToThisPointVisible(false);
             }
         }
 
@@ -248,15 +248,15 @@ public class FunctionGraph extends AbstractShape<FunctionGraph> implements hasSc
                     slope = 0;
                 }
                 Vec v = new Vec(deltaX, slope * deltaX);
-                jmp.getvExit().copyCoordinatesFrom(jmp.getV().add(v));
+                jmp.getVExit().copyCoordinatesFrom(jmp.getV().add(v));
             }
             if (n > 0) {
                 final double deltaX = .3 * (xPoints.get(n - 1) - x);
                 Vec v = new Vec(deltaX, getSlope(x, -1) * deltaX);
-                jmp.getvEnter().copyCoordinatesFrom(jmp.getV().add(v));
+                jmp.getVEnter().copyCoordinatesFrom(jmp.getV().add(v));
                 double h = x - xPoints.get(n - 1);
                 double deriv = (getFunctionValue(x, this.w) - getFunctionValue(xPoints.get(n - 1), this.w)) / h;
-                jmp.setThisSegmentVisible((Math.abs(deriv) < CONTINUUM_THRESHOLD));
+                jmp.setSegmentToThisPointVisible((Math.abs(deriv) < CONTINUUM_THRESHOLD));
             }
 
         }
@@ -370,7 +370,7 @@ public class FunctionGraph extends AbstractShape<FunctionGraph> implements hasSc
         funcAux.generateControlPoints();
         JMPath areaPath = funcAux.getPath();
         areaPath.addPoint(Vec.to(mb, 0), Vec.to(ma, 0));
-        areaPath.getJmPathPoints().get(0).setThisSegmentVisible(true);
+        areaPath.getJmPathPoints().get(0).setSegmentToThisPointVisible(true);
         return new Shape(areaPath);
     }
 

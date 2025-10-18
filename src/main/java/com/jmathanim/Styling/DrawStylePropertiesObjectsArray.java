@@ -153,14 +153,16 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties, Sty
      * Sets the visibility of the current object and all associated mathematical objects.
      *
      * @param visible Indicates whether the objects should be visible (true) or invisible (false).
+     * @return
      */
     @Override
-    public void setVisible(Boolean visible) {
+    public DrawStyleProperties setVisible(Boolean visible) {
         for (MathObject<?> obj : objects) {
             obj.getMp().setVisible(visible);
         }
         mpRef.setVisible(visible);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -303,14 +305,16 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties, Sty
      * Sets the drawing alpha value for all associated mathematical objects and the main drawing properties reference.
      *
      * @param alpha The alpha value to set for drawing, which controls the transparency level.
+     * @return
      */
     @Override
-    public void setDrawAlpha(double alpha) {
+    public DrawStyleProperties setDrawAlpha(double alpha) {
         for (MathObject obj : objects) {
             obj.getMp().setDrawAlpha(alpha);
         }
         mpRef.setDrawAlpha(alpha);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -319,28 +323,32 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties, Sty
      *
      * @param alpha The alpha value to set for the fill property. This represents the
      *              opacity level, where 0 is fully transparent and 1 is fully opaque.
+     * @return
      */
     @Override
-    public void setFillAlpha(double alpha) {
+    public DrawStyleProperties setFillAlpha(double alpha) {
         for (MathObject obj : objects) {
             obj.getMp().setFillAlpha(alpha);
         }
         mpRef.setFillAlpha(alpha);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
      * Multiplies the draw alpha value for all contained MathObjects and a reference MODrawProperties instance.
      *
      * @param mult The multiplier to apply to the draw alpha value.
+     * @return
      */
     @Override
-    public void multDrawAlpha(double mult) {
+    public DrawStyleProperties multDrawAlpha(double mult) {
         for (MathObject obj : objects) {
             obj.getMp().multDrawAlpha(mult);
         }
         mpRef.multDrawAlpha(mult);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -348,14 +356,16 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties, Sty
      * to the MODrawProperties by the specified multiplier.
      *
      * @param mult The multiplier to apply to the fill alpha values.
+     * @return
      */
     @Override
-    public void multFillAlpha(double mult) {
+    public DrawStyleProperties multFillAlpha(double mult) {
         for (MathObject obj : objects) {
             obj.getMp().multFillAlpha(mult);
         }
         mpRef.multFillAlpha(mult);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -372,14 +382,16 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties, Sty
      * Sets the layer for all MathObject instances in the list and updates the reference object's layer.
      *
      * @param layer The layer value to be set for each MathObject and the reference object.
+     * @return
      */
     @Override
-    public void setLayer(int layer) {
+    public DrawStyleProperties setLayer(int layer) {
         for (MathObject obj : objects) {
             obj.getMp().setLayer(layer);
         }
         mpRef.setLayer(layer);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -395,14 +407,16 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties, Sty
      * Sets the draw color of the current object and all its sub-objects.
      *
      * @param drawColor The {@link PaintStyle} instance representing the desired draw color.
+     * @return
      */
     @Override
-    public void setDrawColor(PaintStyle drawColor) {
+    public DrawStyleProperties setDrawColor(PaintStyle drawColor) {
         for (MathObject obj : objects) {
             obj.getMp().setDrawColor(drawColor);
         }
         mpRef.setDrawColor(drawColor);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -421,14 +435,16 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties, Sty
      *
      * @param fillColor The {@link PaintStyle} instance representing the fill color
      *                  to be applied.
+     * @return
      */
     @Override
-    public void setFillColor(PaintStyle fillColor) {
+    public DrawStyleProperties setFillColor(PaintStyle fillColor) {
         for (MathObject obj : objects) {
             obj.getMp().setFillColor(fillColor);
         }
         mpRef.setFillColor(fillColor);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -477,28 +493,32 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties, Sty
      * Sets the style of the line join for all contained MathObject instances and the reference drawing properties.
      *
      * @param linejoin the {@link StrokeLineJoin} style to be applied to configure the way lines in shapes are joined.
+     * @return
      */
     @Override
-    public void setLineJoin(StrokeLineJoin linejoin) {
+    public DrawStyleProperties setLineJoin(StrokeLineJoin linejoin) {
         for (MathObject obj : objects) {
             obj.getMp().setLineJoin(linejoin);
         }
         mpRef.setLineJoin(linejoin);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
      * Sets the line cap style for the stroke in all objects within the array and the reference object.
      *
      * @param linecap The {@link StrokeLineCap} style to be applied. Determines the shape used at the ends of open paths when stroked.
+     * @return
      */
     @Override
-    public void setLinecap(StrokeLineCap linecap) {
+    public DrawStyleProperties setLinecap(StrokeLineCap linecap) {
         for (MathObject obj : objects) {
             obj.getMp().setLinecap(linecap);
         }
         mpRef.setLinecap(linecap);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -515,14 +535,16 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties, Sty
      * Sets the thickness for all associated MathObjects and the reference MathObject properties.
      *
      * @param thickness The thickness value to be applied to the MathObjects and the reference property.
+     * @return
      */
     @Override
-    public void setThickness(Double thickness) {
+    public DrawStyleProperties setThickness(Double thickness) {
         for (MathObject obj : objects) {
             obj.getMp().setThickness(thickness);
         }
         mpRef.setThickness(thickness);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -539,14 +561,16 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties, Sty
      * Sets the dot style of all MathObject instances in the collection as well as the referenced MODrawProperties object.
      *
      * @param dotStyle The dot style to apply. This parameter is of type Point.DotStyle, which determines the style of dots to be set.
+     * @return
      */
     @Override
-    public void setDotStyle(DotStyle dotStyle) {
+    public DrawStyleProperties setDotStyle(DotStyle dotStyle) {
         for (MathObject obj : objects) {
             obj.getMp().setDotStyle(dotStyle);
         }
         mpRef.setDotStyle(dotStyle);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -563,14 +587,16 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties, Sty
      * Sets the dash style for all associated objects and the main properties reference.
      *
      * @param dashStyle The dash style to apply. This defines the pattern of dashes for drawing lines.
+     * @return
      */
     @Override
-    public void setDashStyle(DashStyle dashStyle) {
+    public DrawStyleProperties setDashStyle(DashStyle dashStyle) {
         for (MathObject obj : objects) {
             obj.getMp().setDashStyle(dashStyle);
         }
         mpRef.setDashStyle(dashStyle);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -588,14 +614,16 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties, Sty
      * The absolute thickness determines whether the thickness of the objects is absolute or relative.
      *
      * @param absThickness A Boolean value indicating whether the thickness should be treated as absolute (true) or not (false).
+     * @return
      */
     @Override
-    public void setAbsoluteThickness(Boolean absThickness) {
+    public DrawStyleProperties setAbsoluteThickness(Boolean absThickness) {
         for (MathObject obj : objects) {
             obj.getMp().setAbsoluteThickness(absThickness);
         }
         mpRef.setAbsoluteThickness(absThickness);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -603,14 +631,16 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties, Sty
      * as well as the referenced MODrawProperties by the specified factor.
      *
      * @param multT The factor by which to multiply the thickness of the objects.
+     * @return
      */
     @Override
-    public void multThickness(double multT) {
+    public DrawStyleProperties multThickness(double multT) {
         for (MathObject obj : objects) {
             obj.getMp().multThickness(multT);
         }
         mpRef.multThickness(multT);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -630,14 +660,16 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties, Sty
      *
      * @param faceToCamera A {@code Boolean} value indicating whether the objects should face the camera.
      *                     If {@code true}, the objects will face the camera; otherwise, they won't.
+     * @return
      */
     @Override
-    public void setFaceToCamera(Boolean faceToCamera) {
+    public DrawStyleProperties setFaceToCamera(Boolean faceToCamera) {
         for (MathObject obj : objects) {
             obj.getMp().setFaceToCamera(faceToCamera);
         }
         mpRef.setFaceToCamera(faceToCamera);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -655,14 +687,16 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties, Sty
      * The pivot point determines the reference point around which the object will face the camera.
      *
      * @param pivot The {@code Vec} instance representing the pivot point.
+     * @return
      */
     @Override
-    public void setFaceToCameraPivot(Vec pivot) {
+    public DrawStyleProperties setFaceToCameraPivot(Vec pivot) {
         for (MathObject obj : objects) {
             obj.getMp().setFaceToCameraPivot(pivot);
         }
         mpRef.setFaceToCameraPivot(pivot);
         setHasBeenChanged(true);
+        return this;
     }
 
 }

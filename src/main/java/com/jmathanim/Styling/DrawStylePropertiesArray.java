@@ -161,14 +161,16 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
      * Sets the visibility of the current object and all associated mathematical objects.
      *
      * @param visible Indicates whether the objects should be visible (true) or invisible (false).
+     * @return
      */
     @Override
-    public void setVisible(Boolean visible) {
+    public DrawStyleProperties setVisible(Boolean visible) {
         for (DrawStyleProperties obj : mpArray) {
             obj.setVisible(visible);
         }
         mpRef.setVisible(visible);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -310,15 +312,16 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
      * Sets the drawing alpha value for all associated mathematical objects and the main drawing properties reference.
      *
      * @param alpha The alpha value to set for drawing, which controls the transparency level.
+     * @return
      */
     @Override
-    public void setDrawAlpha(double alpha) {
+    public DrawStyleProperties setDrawAlpha(double alpha) {
         for (DrawStyleProperties obj : mpArray) {
             obj.setDrawAlpha(alpha);
         }
         mpRef.setDrawAlpha(alpha);
         setHasBeenChanged(true);
-
+        return this;
     }
 
     /**
@@ -326,28 +329,32 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
      *
      * @param alpha The alpha value to set for the fill property. This represents the opacity level, where 0 is fully
      *              transparent and 1 is fully opaque.
+     * @return
      */
     @Override
-    public void setFillAlpha(double alpha) {
+    public DrawStyleProperties setFillAlpha(double alpha) {
         for (DrawStyleProperties obj : mpArray) {
             obj.setFillAlpha(alpha);
         }
         mpRef.setFillAlpha(alpha);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
      * Multiplies the draw alpha value for all contained MODrawPropertiess and a reference Stylable instance.
      *
      * @param mult The multiplier to apply to the draw alpha value.
+     * @return
      */
     @Override
-    public void multDrawAlpha(double mult) {
+    public DrawStyleProperties multDrawAlpha(double mult) {
         for (DrawStyleProperties obj : mpArray) {
             obj.multDrawAlpha(mult);
         }
         mpRef.multDrawAlpha(mult);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -355,14 +362,16 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
      * multiplier.
      *
      * @param mult The multiplier to apply to the fill alpha values.
+     * @return
      */
     @Override
-    public void multFillAlpha(double mult) {
+    public DrawStyleProperties multFillAlpha(double mult) {
         for (DrawStyleProperties obj : mpArray) {
             obj.multFillAlpha(mult);
         }
         mpRef.multFillAlpha(mult);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -379,14 +388,16 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
      * Sets the layer for all Stylable instances in the list and updates the reference object's layer.
      *
      * @param layer The layer value to be set for each Stylable and the reference object.
+     * @return
      */
     @Override
-    public void setLayer(int layer) {
+    public DrawStyleProperties setLayer(int layer) {
         for (DrawStyleProperties obj : mpArray) {
             obj.setLayer(layer);
         }
         mpRef.setLayer(layer);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -402,14 +413,16 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
      * Sets the draw color of the current object and all its sub-objects.
      *
      * @param drawColor The {@link PaintStyle} instance representing the desired draw color.
+     * @return
      */
     @Override
-    public void setDrawColor(PaintStyle drawColor) {
+    public DrawStyleProperties setDrawColor(PaintStyle drawColor) {
         for (DrawStyleProperties obj : mpArray) {
             obj.setDrawColor(drawColor);
         }
         mpRef.setDrawColor(drawColor);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -427,14 +440,16 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
      * {@link DrawStyleProperties}.
      *
      * @param fillColor The {@link PaintStyle} instance representing the fill color to be applied.
+     * @return
      */
     @Override
-    public void setFillColor(PaintStyle fillColor) {
+    public DrawStyleProperties setFillColor(PaintStyle fillColor) {
         for (DrawStyleProperties obj : mpArray) {
             obj.setFillColor(fillColor);
         }
         mpRef.setFillColor(fillColor);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -483,14 +498,16 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
      * properties.
      *
      * @param linejoin the {@link StrokeLineJoin} style to be applied to configure the way lines in shapes are joined.
+     * @return
      */
     @Override
-    public void setLineJoin(StrokeLineJoin linejoin) {
+    public DrawStyleProperties setLineJoin(StrokeLineJoin linejoin) {
         for (DrawStyleProperties obj : mpArray) {
             obj.setLineJoin(linejoin);
         }
         mpRef.setLineJoin(linejoin);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -498,14 +515,16 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
      *
      * @param linecap The {@link StrokeLineCap} style to be applied. Determines the shape used at the ends of open paths
      *                when stroked.
+     * @return
      */
     @Override
-    public void setLinecap(StrokeLineCap linecap) {
+    public DrawStyleProperties setLinecap(StrokeLineCap linecap) {
         for (DrawStyleProperties obj : mpArray) {
             obj.setLinecap(linecap);
         }
         mpRef.setLinecap(linecap);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -522,14 +541,16 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
      * Sets the thickness for all associated MODrawPropertiess and the reference Stylable properties.
      *
      * @param thickness The thickness value to be applied to the MODrawPropertiess and the reference property.
+     * @return
      */
     @Override
-    public void setThickness(Double thickness) {
+    public DrawStyleProperties setThickness(Double thickness) {
         for (DrawStyleProperties obj : mpArray) {
             obj.setThickness(thickness);
         }
         mpRef.setThickness(thickness);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -548,15 +569,18 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
      *
      * @param dotStyle The dot style to apply. This parameter is of type Point.DotStyle, which determines the style of
      *                 dots to be set.
+     * @return
      */
     @Override
-    public void setDotStyle(DotStyle dotStyle) {
+    public DrawStyleProperties setDotStyle(DotStyle dotStyle) {
         for (DrawStyleProperties obj : mpArray) {
             obj.setDotStyle(dotStyle);
         }
         mpRef.setDotStyle(dotStyle);
         setHasBeenChanged(true);
+        return this;
     }
+
     @Override
     public DrawStyleProperties getMp() {
         return this;
@@ -575,14 +599,16 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
      * Sets the dash style for all associated objects and the main properties reference.
      *
      * @param dashStyle The dash style to apply. This defines the pattern of dashes for drawing lines.
+     * @return
      */
     @Override
-    public void setDashStyle(DashStyle dashStyle) {
+    public DrawStyleProperties setDashStyle(DashStyle dashStyle) {
         for (DrawStyleProperties obj : mpArray) {
             obj.setDashStyle(dashStyle);
         }
         mpRef.setDashStyle(dashStyle);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -601,14 +627,16 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
      *
      * @param absThickness A Boolean value indicating whether the thickness should be treated as absolute (true) or not
      *                     (false).
+     * @return
      */
     @Override
-    public void setAbsoluteThickness(Boolean absThickness) {
+    public DrawStyleProperties setAbsoluteThickness(Boolean absThickness) {
         for (DrawStyleProperties obj : mpArray) {
             obj.setAbsoluteThickness(absThickness);
         }
         mpRef.setAbsoluteThickness(absThickness);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -616,14 +644,16 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
      * Stylable by the specified factor.
      *
      * @param multT The factor by which to multiply the thickness of the objects.
+     * @return
      */
     @Override
-    public void multThickness(double multT) {
+    public DrawStyleProperties multThickness(double multT) {
         for (DrawStyleProperties obj : mpArray) {
             obj.multThickness(multT);
         }
         mpRef.multThickness(multT);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -642,14 +672,16 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
      *
      * @param faceToCamera A {@code Boolean} value indicating whether the objects should face the camera. If
      *                     {@code true}, the objects will face the camera; otherwise, they won't.
+     * @return
      */
     @Override
-    public void setFaceToCamera(Boolean faceToCamera) {
+    public DrawStyleProperties setFaceToCamera(Boolean faceToCamera) {
         for (DrawStyleProperties obj : mpArray) {
             obj.setFaceToCamera(faceToCamera);
         }
         mpRef.setFaceToCamera(faceToCamera);
         setHasBeenChanged(true);
+        return this;
     }
 
     /**
@@ -667,14 +699,16 @@ public class DrawStylePropertiesArray implements DrawStyleProperties, Stylable {
      * point determines the reference point around which the object will face the camera.
      *
      * @param pivot The {@code Vec} instance representing the pivot point.
+     * @return
      */
     @Override
-    public void setFaceToCameraPivot(Vec pivot) {
+    public DrawStyleProperties setFaceToCameraPivot(Vec pivot) {
         for (DrawStyleProperties obj : mpArray) {
             obj.setFaceToCameraPivot(pivot);
         }
         mpRef.setFaceToCameraPivot(pivot);
         setHasBeenChanged(true);
+        return this;
     }
 
 }

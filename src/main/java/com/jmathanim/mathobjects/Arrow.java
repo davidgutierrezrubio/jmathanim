@@ -294,12 +294,12 @@ public class Arrow extends Constructible<Arrow> {
             labelArcUpside.getPath().clear();
             labelArcUpside.getPath().addPoint(h1A.get(0).copy());
             labelArcUpside.getPath().addPoint(h1B.get(-1).copy());
-            labelArcUpside.get(0).setThisSegmentVisible(false);
+            labelArcUpside.get(0).setSegmentToThisPointVisible(false);
 
             labelArcDownside.getPath().clear();
             labelArcDownside.getPath().addPoint(h1A.get(-1).copy());
             labelArcDownside.getPath().addPoint(h1B.get(0).copy());
-            labelArcDownside.get(0).setThisSegmentVisible(false);
+            labelArcDownside.get(0).setSegmentToThisPointVisible(false);
 
         } else {
 

@@ -60,7 +60,7 @@ public class Ray extends AbstractShape<Ray> implements HasDirection {
         boundaryPoint2 = new JMPathPoint(new Point(0, 0), true);// trivial boundary points, just to
         // initialize objects
         getPath().addJMPoint(boundaryPoint1, boundaryPoint2);
-        get(0).setThisSegmentVisible(false);
+        get(0).setSegmentToThisPointVisible(false);
         rebuildShape();
     }
 
@@ -138,10 +138,10 @@ public class Ray extends AbstractShape<Ray> implements HasDirection {
             boundaryPoint2.getV().x = intersectLine[2];
             boundaryPoint2.getV().y = intersectLine[3];
         }
-        boundaryPoint2.getvExit().x = boundaryPoint2.getV().x;
-        boundaryPoint2.getvExit().y = boundaryPoint2.getV().y;
-        boundaryPoint2.getvEnter().x = boundaryPoint2.getV().x;
-        boundaryPoint2.getvEnter().y = boundaryPoint2.getV().y;
+        boundaryPoint2.getVExit().x = boundaryPoint2.getV().x;
+        boundaryPoint2.getVExit().y = boundaryPoint2.getV().y;
+        boundaryPoint2.getVEnter().x = boundaryPoint2.getV().x;
+        boundaryPoint2.getVEnter().y = boundaryPoint2.getV().y;
 
     }
 

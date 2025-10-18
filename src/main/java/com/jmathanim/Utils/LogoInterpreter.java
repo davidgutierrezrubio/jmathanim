@@ -85,7 +85,7 @@ public class LogoInterpreter {
         visibleFlag = true;
         path = new JMPath();
         JMPathPoint p = JMPathPoint.lineTo(x, y);
-        p.setThisSegmentVisible(false);
+        p.setSegmentToThisPointVisible(false);
         path.addJMPoint(p);
     }
 
@@ -200,7 +200,7 @@ public class LogoInterpreter {
         x += amount * Math.cos(currentAngle);
         y += amount * Math.sin(currentAngle);
         JMPathPoint p = JMPathPoint.lineTo(x, y);
-        p.setThisSegmentVisible(visibleFlag);
+        p.setSegmentToThisPointVisible(visibleFlag);
         path.addJMPoint(p);
     }
 }

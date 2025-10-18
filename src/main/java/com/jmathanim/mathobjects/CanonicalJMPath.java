@@ -155,7 +155,7 @@ public class CanonicalJMPath {
             if (alpha > 0 && alpha < 1) {
                 // Interpolate
                 JMPathPoint interp = resul.interpolateBetweenTwoPoints(k, alpha);
-                interp.setThisSegmentVisible(true);
+                interp.setSegmentToThisPointVisible(true);
             }
 
             ArrayList<JMPathPoint> subList = new ArrayList<>();
