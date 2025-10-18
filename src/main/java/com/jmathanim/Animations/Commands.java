@@ -1604,7 +1604,9 @@ public class Commands {
                     else
                         camera = obj.getCamera();
 
-                    double gap = -rend.ThicknessToMathWidth(obj) * 2;
+                    Vec cg=camera.getGaps();
+                    double g = Math.max(cg.x, cg.y);
+                    double gap =rend.ThicknessToMathWidth(obj) * 2+g;
                     Vec objAnchor;
                     Vec screenAnchor = Anchor.getScreenAnchorPoint(camera, exitAnchor, -gap,-gap);
                     switch (exitAnchor) {
@@ -1615,6 +1617,7 @@ public class Commands {
                         case UPPER:
                             objAnchor = Anchor.getAnchorPoint(obj, AnchorType.LOWER);
                             screenAnchor.x = objAnchor.x;
+                            break;
                         case LOWER:
                             objAnchor = Anchor.getAnchorPoint(obj, AnchorType.UPPER);
                             screenAnchor.x = objAnchor.x;
@@ -1700,43 +1703,44 @@ public class Commands {
                     else
                         camera = obj.getCamera();
 
+                    Vec cg=camera.getGaps();
+                    double g = Math.max(cg.x, cg.y);
+                    double gap =rend.ThicknessToMathWidth(obj) * 2+g;
 
-                    double gap = -rend.ThicknessToMathWidth(obj) * 2;
-
-                    Vec q = Anchor.getScreenAnchorPoint(camera, enterAnchor, 0, 0);
-                    Vec p;
+                    Vec screenAnchor = Anchor.getScreenAnchorPoint(camera, enterAnchor, 0, 0);
+                    Vec objAnchor;
                     switch (enterAnchor) {
                         case RIGHT:
-                            p = Anchor.getAnchorPoint(obj, AnchorType.LEFT,gap,gap,gap);
-                            q.y = p.y;
+                            objAnchor = Anchor.getAnchorPoint(obj, AnchorType.LEFT,gap,gap,gap);
+                            screenAnchor.y = objAnchor.y;
                             break;
                         case UPPER:
-                            p = Anchor.getAnchorPoint(obj, AnchorType.LOWER,gap,gap,gap);
-                            q.x = p.x;
+                            objAnchor = Anchor.getAnchorPoint(obj, AnchorType.LOWER,gap,gap,gap);
+                            screenAnchor.x = objAnchor.x;
                             break;
                         case LOWER:
-                            p = Anchor.getAnchorPoint(obj, AnchorType.UPPER,gap,gap,gap);
-                            q.x = p.x;
+                            objAnchor = Anchor.getAnchorPoint(obj, AnchorType.UPPER,gap,gap,gap);
+                            screenAnchor.x = objAnchor.x;
                             break;
                         case UPPER_LEFT:
-                            p = Anchor.getAnchorPoint(obj, AnchorType.DIAG4,gap,gap,gap);
+                            objAnchor = Anchor.getAnchorPoint(obj, AnchorType.DIAG4,gap,gap,gap);
                             break;
                         case UPPER_RIGHT:
-                            p = Anchor.getAnchorPoint(obj, AnchorType.DIAG3,gap,gap,gap);
+                            objAnchor = Anchor.getAnchorPoint(obj, AnchorType.DIAG3,gap,gap,gap);
                             break;
                         case LOWER_LEFT:
-                            p = Anchor.getAnchorPoint(obj, AnchorType.DIAG1,gap,gap,gap);
+                            objAnchor = Anchor.getAnchorPoint(obj, AnchorType.DIAG1,gap,gap,gap);
                             break;
                         case LOWER_RIGHT:
-                            p = Anchor.getAnchorPoint(obj, AnchorType.DIAG2,gap,gap,gap);
+                            objAnchor = Anchor.getAnchorPoint(obj, AnchorType.DIAG2,gap,gap,gap);
                             break;
                         default:
                             //case LEFT:
-                            p = Anchor.getAnchorPoint(obj, AnchorType.RIGHT,gap,gap,gap);
-                            q.y = p.y;
+                            objAnchor = Anchor.getAnchorPoint(obj, AnchorType.RIGHT,gap,gap,gap);
+                            screenAnchor.y = objAnchor.y;
                     }
-                    obj.shift(p.to(q));
-                    this.setShiftVector(obj, q.to(p));
+                    obj.shift(objAnchor.to(screenAnchor));
+                    this.setShiftVector(obj, screenAnchor.to(objAnchor));
                 }
                 saveStates(toAnimateArray);
                 return true;

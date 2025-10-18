@@ -249,7 +249,8 @@ public class Anchor {
         }
         Vec resul = Vec.to(0,0);
         Vec gaps = camera.getGaps();
-        Rect mathViewWithGap = camera.getMathView().addGap(-xMargin - gaps.x, -yMargin - gaps.y);
+        Rect bb = camera.getMathView();
+        Rect mathViewWithGap = bb.addGap(-xMargin - gaps.x, -yMargin - gaps.y);
         switch (anchor) {
             case CENTER:
                 resul = mathViewWithGap.getCenter();
