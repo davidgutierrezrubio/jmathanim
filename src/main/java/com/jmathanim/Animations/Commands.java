@@ -1447,8 +1447,12 @@ public class Commands {
     public static ShiftAnimation setLayout(double runtime, Boxable corner, LayoutType layoutType, double gap,
                                            MathObjectGroup group) {
         //Create a simple group with rectangles
-        Shape[] shapes = group.getObjects().stream().map(t -> Shape.rectangle(t.getBoundingBox())).toArray(Shape[]::new);
-        MathObjectGroup groupCopy = MathObjectGroup.make(shapes);
+        MathObjectGroup groupCopy = MathObjectGroup.make();
+        for (int i = 0; i < group.size(); i++) {
+            MathObject<?> ob=group.get(i);
+            groupCopy.add(Shape.rectangle(ob.getBoundingBox()));
+        }
+
         groupCopy.setLayout(corner, layoutType, gap);
         HashMap<MathObject<?>, Vec> centers = new HashMap<>();
             for (int i = 0; i < group.size(); i++) {
@@ -1456,17 +1460,16 @@ public class Commands {
                 centers.put(group.get(i),groupCopy.get(i).getCenter().getVec());
             }
 
-        return getShiftAnimation(runtime, centers);
+        return getShiftAnimation(runtime, group,centers);
     }
 
-    private static ShiftAnimation getShiftAnimation(double runtime, HashMap<MathObject<?>, Vec> centers) {
-        MathObject<?>[] mathobjects = centers.keySet().toArray(MathObject<?>[]::new);
-        ShiftAnimation resul = new ShiftAnimation(runtime, mathobjects) {
+    private static ShiftAnimation getShiftAnimation(double runtime,  MathObjectGroup group,HashMap<MathObject<?>, Vec> centers) {
+        ShiftAnimation resul = new ShiftAnimation(runtime, group.toArray()) {
             @Override
             public boolean doInitialization() {
                 super.doInitialization();
                 JMathAnimScene.logger.debug("Initialized setLayout animation");
-                for (MathObject obj : mathobjects) {
+                for (MathObject obj :group ) {
                     Vec dst = centers.get(obj);
                     setShiftVector(obj, obj.getCenter().to(dst));
                 }

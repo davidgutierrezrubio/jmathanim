@@ -33,14 +33,14 @@ import java.util.HashMap;
  */
 public abstract class ShiftAnimation extends AnimationWithEffects {
 
-    private final AffineTransformable<?>[] objectsToShift;
-    private final HashMap<AffineTransformable<?>, Vec> shiftVectors;
-    private final HashMap<AffineTransformable<?>, AnimationEffect> effects;
-    private final HashMap<AffineTransformable<?>, Double> beginningTimes;
-    private final HashMap<AffineTransformable<?>, Double> rotationAngles;
+    protected final AffineTransformable<?>[] objectsToShift;
+    protected final HashMap<AffineTransformable<?>, Vec> shiftVectors;
+    protected final HashMap<AffineTransformable<?>, AnimationEffect> effects;
+    protected final HashMap<AffineTransformable<?>, Double> beginningTimes;
+    protected final HashMap<AffineTransformable<?>, Double> rotationAngles;
     protected boolean[] shouldBeAdded;
-    private double delayPercentage;
-    private MathObjectGroup intermediateObject;
+    protected double delayPercentage;
+    protected MathObjectGroup intermediateObject;
 
     public ShiftAnimation(double runTime, AffineTransformable<?>[] objectsToShift) {
         super(runTime);
