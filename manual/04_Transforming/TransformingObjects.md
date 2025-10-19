@@ -27,7 +27,7 @@ Shape r=Shape.regularPolygon(5).moveTo(3,3);//A pentagon, with its bounding box 
 ```
 
 ## StackTo
-The `StackTo` command allows us to position an object relative to another one. For example, the following code creates 4 circles and stacks them into a square in different ways:
+The stack() command allows us to position an object relative to another one. For example, the following code creates 4 circles and stacks them into a square in different ways:
 
 ``` java
 Shape c1 = Shape.circle().fillColor("orange").fillAlpha(.3);
@@ -35,10 +35,24 @@ Shape c2 = c1.copy().fillColor("violet").fillAlpha(.6);
 Shape c3 = c1.copy().fillColor("darkgreen").fillAlpha(.5);
 Shape c4 = c1.copy().fillColor("darkblue").fillAlpha(.5);
 Shape sq = Shape.square().fillColor("darkred").fillAlpha(.3);
-c1.stackTo(sq, Anchor.Type.LEFT, .1);//Stacks circle to the left of the square, with a gap of .1 units
-c2.stackTo(sq, Anchor.Type.RIGHT, .1);//Stacks circle to the right of the square, with a gap of .1 units
-c3.stackTo(sq, Anchor.Type.UPPER);//Stacks circle to the upper side of the square, with no gap
-c4.stackTo(sq, Anchor.Type.CENTER);//Stacks circle center-to-center with the square
+
+c1.stack()//Stack this object...
+    .withGaps(.1)//with a gap of .1 units...
+    .withDestinyAnchor(AnchorType.LEFT) //to the left of...
+    .toObject(sq);//the square sq
+
+c2.stack()//Stack this object...
+    .withGaps(.1)//with a gap of .1 units...
+    .withDestinyAnchor(AnchorType.RIGHT)//to the right of...
+    .toObject(sq);//the square sq
+
+c3.stack()//Stack this object...
+    .withDestinyAnchor(AnchorType.UPPER)//to the upper side of...
+    .toObject(sq);//the square sq
+
+c4.stack()//Stack using default parameters (center-to-center) to...
+    .toObject(sq);//the square sq
+
 add(c1, c2, c3, c4, sq);//Add everything to the scene
 camera.adjustToAllObjects(); //Adjust camera, so that everyone gets into the photo
 waitSeconds(5);//That is, smile for the screenshot!
@@ -48,17 +62,50 @@ which produces the following image:
 
 <img src="02_stackToExample.png" alt="02 stackToExample" style="zoom:50%;" />
 
-You’ll notice two new methods here: The `copy()` method returns a copy of the object, and the `camera.adjustToAllObjects()` does as it says, rescales the camera so that everything fits into view, but it doesn't zoom in.  The `fillColor` and `fillAlpha` sets the filling of the object. 
 
-Note that the `.moveTo(p)`method is equivalent to `.stackTo(p, Anchor.Type.CENTER)`.
+
+As you can see, the `stack()` command returns an instance of `StackUtils<?>` class that allows concatenating additional parameters. These are the allowed methods to define how do you want to stack something to something:
+
+```java
+.stack() //Start the stacking sequence
+
+withOriginAnchor(AnchorType anchorOrigin) //Specifies origin anchor (LEFT, RIGHT, etc.). If not defined, reverse destiny anchor will be used (LEFT-RIGHT,etc.)
+withDestinyAnchor(AnchorType anchorDestiny) //Specifies destiny anchor (LEFT, RIGHT, etc.). If not defined, CENTER anchor will be used
+
+withGaps(double hGap, double vGap) //Specifies horizontal and vertical gaps to apply when stacking the object
+withGaps(double gap) //Overloaded method, equivalent to withGaps(gap,gap)
+withRelativeGaps(double hGap, double vGap) //Similar to the previous method, but gaps are scaled according to the width and height of the origin object (here, widht and height are referred to that of its bounding box).
+withRelativeGaps(double gap) //Overloaded method, equivalent to withRelativeGaps(gap,gap)
+
+ 
+    
+//These methods apply the stacking and return the origin object:
+toPoint(Coordinates<?> coords) //Applies the stacking taking destiny as the given coordinates, and returns the origin object
+toObject(Boxable boxable) //Applies the stacking taking destiny as given object and returns the origin object. The destiny can be a MathObject or a Rect object.
+toScreen(ScreenAnchor anchor)//Applies the stacking taking destiny as camera view, using the given screenAnchor object. Any previous withDestinyAnchor method is ignored.
+```
+
+
+
+Also, you’ll notice two new methods here: The `copy()` method returns a copy of the object, and the `camera.adjustToAllObjects()` does as it says, rescales the camera so that everything fits into view, but it doesn't zoom in.  The `fillColor` and `fillAlpha` sets the filling of the object. 
+
+Note that the `.moveTo(p)`method is equivalent to `.stack().toPoint(p)`
 
 With the `stackTo` command you can easily generate aligned objects:
 
 ``` java
-Shape previousPol = Shape.regularPolygon(3).fillColor(JMColor.random()).thickness(8);//First polygon, with random fill color
+Shape previousPol = Shape.regularPolygon(3)
+    .fillColor(JMColor.random())
+    .thickness(20);//First polygon, with random fill color
 add(previousPol);
 for (int n = 4; n < 10; n++) {
-    Shape pol = Shape.regularPolygon(n).fillColor(JMColor.random()).thickness(8).stackTo(previousPol, Anchor.Type.RIGHT);
+    Shape pol = Shape.regularPolygon(n)
+        .setHeight(previousPol.getHeight())//Scale to have same height as previousPol
+        .fillColor(JMColor.random())//Random fill color
+        .thickness(20)
+        .stack() //Stack this object...
+        .withDestinyAnchor(AnchorType.RIGHT)//to the RIGHT anchor of..
+        .toObject(previousPol);//the object previouspol
     add(pol);
     previousPol = pol;//New polygon becomes previous in the next iteration
 }
@@ -70,19 +117,22 @@ Which produces this regular polygons pattern. Note that all polygons are vertica
 
 ![02b stackToExample2](02b_stackToExample2.png)
 
-You can change the `Anchor` to other values to see how these anchors work. Apart from `UPPER`, `LOWER`, `LEFT`, `RIGHT` and `CENTER` there are also `UR` (up-right), `UL` (up-left), `DR` (down-right) and `DL` (down-left).
+You can change the `Anchor` to other values to see how these anchors work. Apart from `UPPER`, `LOWER`, `LEFT`, `RIGHT` and `CENTER` there are also `RIGHT_AND_ALIGNED_LOWER, RIGHT_AND_ALIGNED_UPPER, LEFT_AND_ALIGNED_UPPER`, etc.
 
-By default, the `stackTo` method takes the appropriate origin anchor point to align with the destination anchor point. For example, `stackTo(obj,Anchor.Type.RIGHT)` will move the object so that its `LEFT` anchor (the reverse of `RIGHT`) matches the `RIGHT` anchor of the destination object. You can specify the origin and destiny anchors too. For example, this code will place a square so that its center matches the right side of a circle:
+By default, the `stack()` method takes the appropriate origin anchor point to align with the destination anchor point. For example, `.stack().withDestinyAnchor(AnchorType.RIGHT).toObject(obj)`, as no origin anchor is set, will move the object so that its `LEFT` anchor (the reverse of `RIGHT`) matches the `RIGHT` anchor of the destination object. You can specify the origin and destiny anchors too. For example, this code will place a square so that its center matches the right side of a circle:
 
 ```java
 Shape sq = Shape.square().scale(.5, .5).fillColor("orange").fillAlpha(.5).thickness(8);
-Shape c = Shape.circle().scale(.5).fillColor("yellow").fillAlpha(.5).thickness(8);
+Shape c = Shape.circle().scale(.5).fillColor("firebrick").fillAlpha(.5).thickness(8);
 add(c, sq);
-sq.stackTo(Anchor.Type.CENTER, c, Anchor.Type.RIGHT, 0);//Center of sq goes to RIGHT of c
+sq.stack()
+    .withOriginAnchor(AnchorType.CENTER) //Center of the square sq...
+    .withDestinyAnchor(AnchorType.RIGHT) //goes to the right of...
+    .toObject(c); //the circle c
 waitSeconds(3);
 ```
 
-![image-20210128172514664](04_StackToScreenExample3.png)
+<img src="04_StackToScreenExample3.png" alt="image-20210128172514664" style="zoom:50%;" />
 
 
 
@@ -91,17 +141,28 @@ waitSeconds(3);
 This methods is similar to `stackTo`, but it positions the object relative to the current view.
 
 ``` java
-Shape sq=Shape.square().scale(.5).style("solidblue");
+Shape square1 = Shape.square().scale(.5).style("solidblue");
+Shape square2 = Shape.square().scale(.5).style("solidgreen");
+Shape circle1 = Shape.circle().style("solidred").scale(.25);
+Shape circle2 = Shape.circle().style("solidorange").scale(.25);
 
-//Stack square to the left of the screen, with no gaps
-add(sq.stackToScreen(Anchor.Type.LEFT));
+square1.stack()//Stack this object...
+    .toScreen(ScreenAnchor.LEFT);//to the left of the screen, with no gaps
 
-//Stack a copy of square to the left of the screen,with gaps of .3 horizontal and .1 vertical (here only horizontal one is used)
-add(sq.copy().style("solidgreen").stackToScreen(Anchor.Type.RIGHT,.3,.1));
+square2.stack() //Stack this object...
+    .withGaps(.3)//with gaps .3...
+    .toScreen(ScreenAnchor.RIGHT);//to the right of the screen
 
-//Stack a unit circle to the upper left corner of the screen, with no gaps
-add(Shape.circle().style("solidred").scale(.25).stackToScreen(Anchor.Type.ULEFT));
+circle1.stack()//Stack this object...
+    .withOriginAnchor(AnchorType.CENTER)//so that its center...
+    .toScreen(ScreenAnchor.UPPER_LEFT);//matchs the upper left corner of the screen
 
+circle2.stack()//Stack this object...
+    .withOriginAnchor(AnchorType.LOWER)//so that its lower anchor...
+    .toScreen(ScreenAnchor.LOWER_RIGHT);//matchs the upper left corner of the screen
+
+//Add everything to the scene
+add(square1, square2, circle1,circle2);
 waitSeconds(5);
 ```
 You obtain objects stacked to the borders of the actual screen view:
@@ -112,7 +173,7 @@ You obtain objects stacked to the borders of the actual screen view:
 
 
 
-There is shortcut method if you want to simply put the object at the center screen. The method `.center()` is equivalent to `.stackToScreen(Anchor.Type.CENTER)`.
+There is shortcut method if you want to simply put the object at the center screen. The method `.center()` is equivalent to `.stack().toScreen(ScreenAnchor.CENTER)`.
 
 ## Aligning objects
 
@@ -214,11 +275,19 @@ The `createDirect2DIsomorphic(Point A, Point B, Point C, Point D, double alpha)`
 Look at the following example:
 
 ``` java
-Shape sq = Shape.square().shift(-1.5, -1).fillColor("darkgreen").fillAlpha(.3);//Square, fill color dark green, and opacity 30%
-Point A = sq.getPoint(0).drawColor("darkblue");//First vertex of the square (lower-left corner), dark blue color
-Point B = sq.getPoint(1).drawColor("darkblue");//First vertex of the square (lower-right corner), dark blue color
-Point C = Point.at(1.5, -1).drawColor("darkred");//Destiny point of A, dark red color
-Point D = Point.at(1.7, .5).drawColor("darkred");//Destiny point of B, dark red color
+Shape sq = Shape.square()
+    .shift(-1.5, -1)
+    .fillColor("darkgreen")
+    .fillAlpha(.3);//Square, fill color dark green, and opacity 30%
+Point A = sq.getPoint(0)
+    .drawColor("darkblue");//First vertex of the square (lower-left corner), dark blue color
+Point B = sq.getPoint(1)
+    .drawColor("darkblue");//First vertex of the square (lower-right corner), dark blue color
+Point C = Point.at(1.5, -1)
+    .drawColor("darkred");//Destiny point of A, dark red color
+Point D = Point.at(1.7, .5)
+    .drawColor("darkred");//Destiny point of B, dark red color
+
 add(A, B, C, D);
 for (double alpha = 0; alpha <= 1; alpha += .2) {
     AffineJTransform transform = AffineJTransform.createDirect2DIsomorphic(A, B, C, D, alpha);
@@ -232,8 +301,6 @@ Produces the following sequence of interpolated transforms from one square to an
 
 
 <img src="06_homothecy1.png" alt="Direct Isomorphic transform example" style="zoom:50%;" />
-
-> **WARNING**: You should be careful, when defining the parameters of a transformation like `createDirect2DIsomorphic(A, B, C, D, alpha)` if the points `A, B, C, D` are going to be actually modified by the transformation itself (for example, A is an instance of a point of the shape you are transforming). The safe approach in this case should be using copies of the points as parameters, with the `.copy()` method.
 
 Since version 0.9.9-SNAPSHOT, the `createInverse2DIsomorphic` method is implemented too, that returns the (only) inverse isomorphic transform that maps A into C and B into D.
 

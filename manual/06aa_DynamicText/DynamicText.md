@@ -20,10 +20,10 @@ Animation anim = Commands.rotate(5, Point.origin(), 2 * PI, A);
 
 //The LEFT parameter says that, when changing text, the new text should be
 //stacked to the left part of the old text (the default value is CENTER)
-LaTeXMathObject text = LaTeXMathObject.make("$(1,0)$",Anchor.Type.LEFT);
+LatexMathObject text = LatexMathObject.make("$(1,0)$",AnchorType.LEFT);
 
 //Put the text in the upper left screen corner
-text.stackToScreen(Anchor.Type.ULEFT);
+text.stack().toScreen(ScreenAnchor.UPPER_LEFT);
 add(text);
 
 anim.initialize(this);
@@ -49,26 +49,26 @@ A link is a method that is called immediately after the objects have been update
 We illustrate this with an example:
 
 ```java
- Point A = Point.at(1, 0).thickness(30).drawColor("red");
+Point A = Point.at(1, 0).thickness(30).drawColor("red");
 //The LEFT parameter says that, when changing text, the new text should be
 //stacked to the left part of the old text (the default value is CENTER)
-LaTeXMathObject text = LaTeXMathObject.make("$({#0},{#1})$", Anchor.Type.LEFT);
+LatexMathObject text = LatexMathObject.make("$({#0},{#1})$", AnchorType.LEFT);
 
 registerLink(A, //From object A...
-             LinkArguments.LinkType.X, //...take the X coordinate...
+             LinkType.X, //...take the X coordinate...
              text, //and put it in the object text...
-             LinkArguments.LinkType.ARG0 //in its first argument
+             LinkType.ARG0 //in its first argument
             );
 
 registerLink(A, //From object A...
-             LinkArguments.LinkType.Y, //...take the Y coordinate...
+             LinkType.Y, //...take the Y coordinate...
              text, //and put it in the object text...
-             LinkArguments.LinkType.ARG1 //in its second argument
+             LinkType.ARG1 //in its second argument
             );
 
 
 //Put the text in the upper left screen corner
-text.stackToScreen(Anchor.Type.ULEFT);
+text.stack().toScreen(ScreenAnchor.UPPER_LEFT);
 add(text);
 
 play.rotate(5, Point.origin(), 2 * PI, A);
@@ -77,18 +77,18 @@ play.rotate(5, Point.origin(), 2 * PI, A);
 If you execute this code you will get the same result as before. Lets see what code we used. Look at the LaTeX code in the `LatexMathObject`:
 
 ```java
- LaTeXMathObject text = LaTeXMathObject.make("$({#0},{#1})$", Anchor.Type.LEFT);
+ LatexMathObject text = LatexMathObject.make("$({#0},{#1})$", Anchor.Type.LEFT);
 ```
 
-The coordinates are now replaced by the strings '`{#0}` and `{#1}`. These are special scape strings that tell JMathAnim to replace whenever there is a value for the first, and second argument, respectively. Actually, a `LatexMathObject`can hold up to 10 arguments, name `{#0}` to `{#9}`.
+The coordinates have now been replaced by the strings `{#0}` and `{#1}`. These are special escape strings that instruct JMathAnim to replace them with the values of the first and second arguments, respectively. In fact, a `LatexMathObject` can hold up to ten arguments, named `{#0}` to `{#9}`.
 
 The set of this argument is done via the linking process. To do so, we must create and register a link in the scene flow. This is done with this command:
 
 ```java
 registerLink(A, //From object A...
-             LinkArguments.LinkType.X, //...take the X coordinate...
+             LinkType.X, //...take the X coordinate...
              text, //and put it in the object text...
-             LinkArguments.LinkType.ARG0 //in its first argument
+             LinkType.ARG0 //in its first argument
             );
 ```
 

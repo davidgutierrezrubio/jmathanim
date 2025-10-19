@@ -5,7 +5,7 @@
 The easy way to colorize some parts of a mathematical expression is shown in this example:
 
 ```java
-LaTeXMathObject formula=LaTeXMathObject.make("$${-b\\pm\\sqrt{b^2-4ac}\\over 2a}$$");
+LatexMathObject formula=LatexMathObject.make("$${-b\\pm\\sqrt{b^2-4ac}\\over 2a}$$");
 LatexStyle latexStyle=LatexStyle.make();//Creates a latex style class that holds several "instructions"
 latexStyle.setColorToChar("a", "red"); //All "a" glyphs should be red
 latexStyle.setColorToChar("b", "green");//All "b" glyphs should be green
@@ -30,7 +30,7 @@ This is the simplest use of the colouring capabilities, but there are many more,
 As we have seen, LaTeX formulas are compiled and imported into Shape objects, usually one per glyph (in some cases a glyph is composed of more than one glyph). If we generate the formulas using the `JLaTeXMath` library (the default option), additional information about the specific glyph a shape represents is stored in the `LatexMathObject`. This is done using the `LatexParser` class, accessible through the `getLatexParser()` method, which relies heavily on the parsing capabilities of the `JLaTeXMath` library. Let's have a look at an example that generates a simple and beautiful mathematical formula:
 
 ```java
-LaTeXMathObject eulerFormula=LaTeXMathObject.make("$e^{i\\pi}+1=0$");
+LatexMathObject eulerFormula=LatexMathObject.make("$e^{i\\pi}+1=0$");
 for (int i = 0; i < eulerFormula.getLatexParser().size(); i++) {
     LatexToken token = eulerFormula.getLatexParser().get(i);//Gets the i-th identified token
     System.out.println("Token number "+i + ": " + token);
@@ -103,7 +103,7 @@ The `getSecondaryFlags()` method gets some bit flags to add additional classific
  We can use this to fine-tune our coloring in the formula. For example, if you want to color all the subscripts in a formula, you can do this with the following code:
 
 ```java
-LaTeXMathObject formula = LaTeXMathObject.make("$$\\overline{X}={X_1+X_2+\\cdots+X_n\\over n}$$");
+LatexMathObject formula = LatexMathObject.make("$$\\overline{X}={X_1+X_2+\\cdots+X_n\\over n}$$");
 LatexStyle latexStyle = LatexStyle.make();//Creates a latex style class that holds several "instructions"
 latexStyle.setColorToChar("X", "steelblue"); //All "X" glyphs should be steelblue color
 
@@ -128,7 +128,7 @@ You will get the following colored formula:
 Of course, you can use `LatexToken` objects to select precise Shapes of the LatexMathObject. For example, adding the following lines to the previous code right before the `waitSeconds` method will twist and scale the subscript to draw attention to them:
 
 ```java
-MultiShapeObject subscriptPart = formula.getShapesWith(subscriptToken);//Select all Shape object in subscript
+LatexMathObject subscriptPart = formula.getShapesWith(subscriptToken);//Select all Shape object in subscript
 play.twistAndScale(subscriptPart.toArray());//Uses to toArray() method to treat each Shape as a separate argument
 ```
 
@@ -154,8 +154,8 @@ It is important to note that "match" or "differ" means to match/differ in all it
 With the next example we can see the flexibility of this method: Suppose we want to show a 3x3 matrix, and assign different colors to row and column indices. Both are numbers in a subscript style. Using the `previousTokenMustMatchTo` and `nextTokenMustMatchTo` we can infer if they are the first or second subscript, with a code like this:
 
 ```java
-LaTeXMathObject formula = 
-    LaTeXMathObject.make("$$\\left("
+LatexMathObject formula = 
+    LatexMathObject.make("$$\\left("
                          + "\\begin{array}{ccc}"
                          + "a_{1,1} & a_{1,2} & a_{1,3} \\\\"
                          + "a_{2,1} & a_{2,2} & a_{2,3} \\\\"
@@ -172,7 +172,7 @@ LatexStyle latexStyle = LatexStyle.make();
 LatexStyleItem rowSubscriptStyle = LatexStyleItem.make("slateblue");
 rowSubscriptStyle.mustMatchTo(//Must be a number and a subscript
     LatexToken.make()
-    .setType(LatexToken.TokenType.NUMBER)
+    .setType(LatexTokenType.NUMBER)
     .activateSecondaryFlag(LatexToken.SEC_SUBSCRIPT)
 );
 rowSubscriptStyle.nextTokenMustMatchTo(//The next token must be a comma
@@ -262,8 +262,8 @@ You can achieve the same effect saving this file under your `resources/config` d
 //You can parse config files with styles
 //in the runSketch() method at any time
 config.parseFile("matrixColor.xml");
-LaTeXMathObject formula = 
-    LaTeXMathObject.make("$$\\left("
+LatexMathObject formula = 
+    LatexMathObject.make("$$\\left("
                          + "\\begin{array}{ccc}"
                          + "a_{1,1} & a_{1,2} & a_{1,3} \\\\"
                          + "a_{2,1} & a_{2,2} & a_{2,3} \\\\"

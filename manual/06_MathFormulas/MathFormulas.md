@@ -5,7 +5,7 @@ As we have seen, math formulas are created with the `LaTexMathObject` class. Sin
 For example, if we generate a math expression with the command
 
 ```java
-LaTeXMathObject sum=LaTeXMathObject.make("$2+2=4$");
+LatexMathObject sum=LatexMathObject.make("$2+2=4$");
 ```
 
 It will generate 5 shapes, that we can access via the `get` method. Thus, the command `sum.get(0)` will return the first shape (the "2" glyph), `sum.get(1)` will return the "+" glyph, etc. These indices will be important to specify exactly how we want the animation from one expression to another to be done.
@@ -13,8 +13,8 @@ It will generate 5 shapes, that we can access via the `get` method. Thus, the co
 The major drawback of this approach is that it is not always clear which glyph of the formula corresponds to a given index. For that, we have the method `formulaHelper` that takes a varargs of `LatexMathObject` objects, or `String` with the LaTeX code, overlays the shape number for each one, stacks the formulas vertically, zooms and adds them to the scene. For example:
 
 ```java
-LaTeXMathObject t1 = LaTeXMathObject.make("$e^{i\\pi}+1=0$");
-LaTeXMathObject t2 = LaTeXMathObject.make("$\\sqrt{a+b}\\leq\\sqrt{a}+\\sqrt{b}$");
+LatexMathObject t1 = LatexMathObject.make("$e^{i\\pi}+1=0$");
+LatexMathObject t2 = LatexMathObject.make("$\\sqrt{a+b}\\leq\\sqrt{a}+\\sqrt{b}$");
 formulaHelper(t1, t2);
 waitSeconds(5);
 ```
@@ -27,13 +27,13 @@ It is recommended, before doing any animation that involves math formulas, to ru
 
 ## Setting color to specific parts of a math expression
 
-If you want to apply colors to some parts of a math expression, you can use the `\color` commands of LaTeX or you can use the `setColor`method and specify the indexes to apply the color. For example:
+If you want to apply colors to some parts of a math expression, you can use the `\color` commands of LaTeX or you can use the `setColorToIndices`method and specify the indexes to apply the color. For example:
 
 ```java
-LaTeXMathObject formula=LaTeXMathObject.make("$(a+b)^2=a^2+b^2+2ab$").center();
+LatexMathObject formula=LatexMathObject.make("$(a+b)^2=a^2+b^2+2ab$").center();
 camera.adjustToAllObjects();
-formula.setColor(JMColor.parse("darkred"),1,7,14);//Color dark red to indexes 1, 7 and 14
-formula.setColor(JMColor.parse("darkgreen"),3,10,15);//Color dark green to indexes 3,10 and 15
+formula.setColorsToIndices(JMColor.parse("darkred"),1,7,14);//Color dark red to indexes 1, 7 and 14
+formula.setColorsToIndices(JMColor.parse("darkgreen"),3,10,15);//Color dark green to indexes 3,10 and 15
 add(formula);
 waitSeconds(5);
 ```
@@ -49,46 +49,110 @@ Note that the method changes both draw and fill colors. Since version 0.9.11 the
 Sometimes you may need to separate a formula into parts so you can animate them separately. The `slice` method extracts a subformula with the given indexes and removes the extracted shapes from the original formula. For example, suppose we have the formula `$A=b\cdot h$` and want to initially show the "b" and "h" glyphs in a rectangle before putting them in their original place:
 
 ```java
-Shape rectangle = Shape.square().scale(2,1).center().fillColor("chocolate");
-LaTeXMathObject formula = LaTeXMathObject.make("$A=b\\cdot h$")
-    .stackToScreen(Anchor.Type.UPPER, .1, .1)
-    .layer(1);
-formula.setColor("steelblue",2);
-formula.setColor("crimson",4);
+  Shape rectangle = Shape.square().scale(2,1).center().fillColor("chocolate");
+        LatexMathObject formula = LatexMathObject.make("$A=b\\cdot h$")
+                .layer(1)
+                .stack()
+                .withGaps(.1)
+                .toScreen(ScreenAnchor.UPPER);
 
-LaTeXMathObject sliceBase=formula.slice(2);//Extracts the "b" from the formula
-LaTeXMathObject sliceHeight=formula.slice(4);//Extracts the "h from the formula
+        formula.setColorsToIndices("steelblue",2);
+        formula.setColorsToIndices("crimson",4);
 
-Point sliceBaseCenter=sliceBase.getCenter();//Save the centers into these points
-Point sliceHeightCenter=sliceHeight.getCenter();
+        LatexMathObject sliceBase=formula.slice(2);//Extracts the "b" from the formula
+        LatexMathObject sliceHeight=formula.slice(4);//Extracts the "h from the formula
+
+        Vec sliceBaseCenter=sliceBase.getCenter();//Save the centers into these variables
+        Vec sliceHeightCenter=sliceHeight.getCenter();
 
 //Position the sliced parts in the rectangle
-sliceBase.stackTo(rectangle, Anchor.Type.LOWER,.1);
-sliceHeight.stackTo(rectangle, Anchor.Type.RIGHT,.1);
+        sliceBase
+                .stack()
+                .withDestinyAnchor(AnchorType.LOWER)
+                .withGaps(.1)
+                .toObject(rectangle);
+        
+        sliceHeight
+                .stack()
+                .withDestinyAnchor(AnchorType.RIGHT)
+                .withGaps(.1)
+                .toObject(rectangle);
 
-play.showCreation(rectangle, sliceBase,sliceHeight);
-play.showCreation(formula);//Draws the formula, except "b" and "h"
-ShiftAnimation anim1 = Commands.moveTo(3, sliceBaseCenter, sliceBase);
-ShiftAnimation anim2 = Commands.moveTo(3, sliceHeightCenter, sliceHeight);
-playAnimation(anim1,anim2);//Restores the slices to their original positions
-waitSeconds(2);
+        play.showCreation(rectangle, sliceBase,sliceHeight);
+        play.showCreation(formula);//Draws the formula, except "b" and "h"
+        scene.waitSeconds(1);
+        ShiftAnimation anim1 = Commands.moveTo(3, sliceBaseCenter, sliceBase);
+        ShiftAnimation anim2 = Commands.moveTo(3, sliceHeightCenter, sliceHeight);
+        playAnimation(anim1,anim2);//Restores the slices to their original positions
+        waitSeconds(2);
 ```
 
 ![equationSlice](equationSlice.gif)
 
-Note that, although the sliced formula has only one element, the indexes remain the same. So, if the "b" glyph was in position 2 in the original formula, it is still in position 2 in the sliced formula, so that `sliceBase.get(2)` returns the "b" shape. The other indexes store empty shapes.
+Note that, although the sliced formula has only one element, the indexes remain the same. So, if the "b" glyph was in position 2 in the original formula, it is still in position 2 in the sliced formula. Consequently, the method `sliceBase.get(2)` returns the "b" shape. The other indexes store empty shapes.
 
-There is another version of the method, with a boolean flag that controls if the sliced shapes are removed from the original math expression or not. In the preceding example, `LaTeXMathObject sliceBase=formula.slice(false,2)` will generate a slice of the "b" glyph without changing the original formula.
+There is another version of the method, with a boolean flag that controls if the sliced shapes are removed from the original math expression or not. In the preceding example, `LatexMathObject sliceBase=formula.slice(false,2)` will generate a slice of the "b" glyph without changing the original formula.
 
-The `slice`method can be a powerful tool if you want to operate on parts of complex math expressions. If you want to progressively show a complex formula, the easiest option is to slice it into the different parts you will be showing at a concrete point in the animation.
+The `slice`method can be a powerful tool if you want to operate on parts of complex math expressions. If you want to progressively show a complex formula, the easiest option is to slice it into the different parts you will be showing at a concrete point in the animation. For example, suppose we want to progressively show the first terms of the Taylor expansion of sin(x). We have the following LaTeX code:
+
+```java
+ String taylorLatexCode="$$\\sin x = x - " +
+               "\\frac{x^3}{3!} + " +
+               "\\frac{x^5}{5!} - " +
+               "\\frac{x^7}{7!} +" +
+               " \\frac{x^9}{9!} " +
+               "-\\frac{x^{11}}{11!} \\cos(\\xi), \\qquad \\xi \\in (0, x)$$";
+```
+
+The method `formulaHelper(taylorLatexCode)`shows in screen the indexes of the formula. You can save it to a file with the `saveImage`method or just have the program to wait with `waitSeconds`time enough to make a screenshot and have the following:
+
+![equationTaylor01](equationTaylor01.png)
+
+
+
+As you can see, the formula has 52 elements. We are interested in the start and end indexes of the terms, and using the `slice`method we will separate the formula in parts:
+
+```java
+String taylorLatexCode="$$\\sin x = x - " +
+    "\\frac{x^3}{3!} + " +
+    "\\frac{x^5}{5!} - " +
+    "\\frac{x^7}{7!} +" +
+    " \\frac{x^9}{9!}" +
+    "-\\frac{x^{11}}{11!} \\cos(\\xi), \\qquad \\xi \\in (0, x)$$";
+LatexMathObject taylor = LatexMathObject.make(taylorLatexCode);
+camera.adjustToObjects(taylor);//Ensure that the camera captures all
+
+ArrayList<LatexMathObject> formulaParts = new ArrayList<>();
+
+//Note that IntStream.range(0,5).toArray() is equivalent to 0, 1, 2, 3, 4
+formulaParts.add(taylor.slice(IntStream.range(0,5).toArray()));//The "sin(x)=" part
+formulaParts.add(taylor.slice(5));//The first term ("x")
+formulaParts.add(taylor.slice(IntStream.range(6,12).toArray()));//The second term ("+x^2/2!")
+formulaParts.add(taylor.slice(IntStream.range(12,18).toArray()));//The third term
+formulaParts.add(taylor.slice(IntStream.range(18,24).toArray()));//The fourth term
+formulaParts.add(taylor.slice(IntStream.range(24,30).toArray()));//The fifth term
+formulaParts.add(taylor.slice(IntStream.range(30,45).toArray()));//The remainder term, part 1
+formulaParts.add(taylor.slice(IntStream.range(45,52).toArray()));//The remainder term, part 2
+
+//Now we can work on each term individually
+for (LatexMathObject t:formulaParts) {
+    play.showCreation(t);
+    scene.waitSeconds(1);
+}
+scene.waitSeconds(3);
+```
+
+![equationTaylor02](equationTaylor02.gif)
+
+
 
 ## Animating transforms between equations
 
 Suppose we are planning to perform an animation that solves a simple equation x+2=0. We define the two math expressions:
 
 ```java
-LaTeXMathObject t1=LaTeXMathObject.make("$x+2=0$");
-LaTeXMathObject t2=LaTeXMathObject.make("$x=-2$");
+LatexMathObject t1=LatexMathObject.make("$x+2=0$");
+LatexMathObject t2=LatexMathObject.make("$x=-2$");
 ```
 
 and we want to define a precise, self-explanatory animation, that transforms the first equation into the second.
@@ -146,6 +210,19 @@ tr.map(3,1);//Transforms orig-shape 3 to dst-shape 1
 
 What about shape 4 (the "0" sign)? If we don't specify a destination, this shape is marked for removal, with a `fadeOut` animation by default. If we play this animation with the `playAnimation` method we have:
 
+```java
+LatexMathObject t1=LatexMathObject.make("$x+2=0$");
+LatexMathObject t2=LatexMathObject.make("$x=-2$");
+TransformMathExpression tr=new TransformMathExpression(5, t1, t2);
+tr.map(0,0);//Transforms orig-shape 0 to dst-shape 0
+tr.map(1,2);//Transforms orig-shape 1 to dst-shape 2
+tr.map(2,3);
+tr.map(3,1);//Transforms orig-shape 3 to dst-shape 1
+playAnimation(tr);
+```
+
+
+
 ![equation03](equation03.gif)
 
 Ok, this is better, but there is still something that looks odd. When manipulating equations, it's always desirable to mark the "=" sign as a pivotal point. We can achieve this by forcing that the origin and destiny formulas are aligned by the "=" sign. This sign is at position 3 in the origin formula and at position 1 in destiny. With the command
@@ -167,8 +244,8 @@ The `.map` method returns a `TransformMathExpressionParameters` object, which al
 Note: The `INTERPOLATION` method uses the `Transform` class to do the work, so, depending on the origin and destination shapes, it may actually perform a point-to-point interpolation, or, if applicable, an isomorphism or a more general affine transform. For example, if you use an `INTERPOLATION` type transform to map a "2" character to another "2", it will use an isomorphism, since these 2 characters are the same except for scale.
 
 ```java
-LaTeXMathObject t1 = LaTeXMathObject.make("$a^2=a\\cdot a$");
-LaTeXMathObject t2 = LaTeXMathObject.make("$3^2=3\\cdot 3$");
+LatexMathObject t1 = LatexMathObject.make("$a^2=a\\cdot a$");
+LatexMathObject t2 = LatexMathObject.make("$3^2=3\\cdot 3$");
 t1.alignCenter(2, t2, 2);//Move t1 so its equal sign (glyph 2) matches the t2 equal sign (glyph 2)
 camera.zoomToObjects(t1, t2);
 TransformMathExpression tr = new TransformMathExpression(5, t1, t2);
@@ -209,8 +286,8 @@ Or, if you have two formulas with the same number of glyphs and one-to-one corre
 Suppose we have the following two arithmetic expressions
 
 ```java
-LaTeXMathObject t1 = LaTeXMathObject.make("$(1+98)+(2+97)+\\cdots+(49+50)$");
-LaTeXMathObject t2 = LaTeXMathObject.make("$99+99+\\cdots+99$");
+LatexMathObject t1 = LatexMathObject.make("$(1+98)+(2+97)+\\cdots+(49+50)$");
+LatexMathObject t2 = LatexMathObject.make("$99+99+\\cdots+99$");
 ```
 
  and we want to animate how these sums change all into 99. We want to perform a transform for each one of the sums into their simplified form. Our dear friend `formulaHelper` helps us to elaborate a plan:
@@ -222,8 +299,8 @@ LaTeXMathObject t2 = LaTeXMathObject.make("$99+99+\\cdots+99$");
 We are interested in mapping 0-5 origin indices to 0,1 destiny indices, 7-12 to 3,4 and 18-24 to 10,11. But in all these cases this means mapping 6 indices to 2. The `map` method only maps one index to another. To achieve this, we can define source and destination groups. We will use the 3 transform methods to show you the effect:
 
 ```java
-LaTeXMathObject t1 = LaTeXMathObject.make("$(1+98)+(2+97)+\\cdots+(49+50)$");
-LaTeXMathObject t2 = LaTeXMathObject.make("$99+99+\\cdots+99$");
+LatexMathObject t1 = LatexMathObject.make("$(1+98)+(2+97)+\\cdots+(49+50)$");
+LatexMathObject t2 = LatexMathObject.make("$99+99+\\cdots+99$");
 TransformMathExpression tr=TransformMathExpression.make(10, t1, t2);
 
 //Define groups of first sum. You can use any string as name of the group, as long as it doesn't start with "_"
@@ -257,11 +334,11 @@ Here is the gif of the generated video. As you can see, grouping allows a bunch 
 Each mapping from one shape (or group) to another can be decorated with some effects. These can be added right after the `map` command with the following methods. Let's show them with an example. Suppose we want to animate the commutative property of the sum. Define the 2 `LaTexMathObject` objects and make an animation:
 
 ```java
-LaTeXMathObject t1=LaTeXMathObject.make("$a+b$");
-LaTeXMathObject t2=LaTeXMathObject.make("$b+a$");
+LatexMathObject t1=LatexMathObject.make("$a+b$");
+LatexMathObject t2=LatexMathObject.make("$b+a$");
 t2.alignCenter(1, t1, 1);//Align both expressions in the "=" sign
 camera.zoomToObjects(t1,t2);
-TransformMathExpression tr=new TransformMathExpression(5, t1, t2);
+TransformMathExpression tr=TransformMathExpression.make(5, t1, t2);
 tr.map(1,1);//= into =
 tr.map(0,2);//a into b
 tr.map(2,0);//b into a
@@ -312,8 +389,8 @@ tr.map(2,0).addJumpEffect(1);//Note that this "jump" is downward
 By default, the shape of the jump is a semicircle, so that only the sign of the parameter is relevant. Other jump types can be specified since version 0.9.0, defined in the enum `AnimationEffect.JumpType`: `SEMICIRCLE, PARABOLICAL, ELLIPTICAL, TRIANGULAR, SINUSOIDAL, SINUSOIDAL2, CRANE`. These are explained in detail in the animation effects chapter. For example, you can set it so that the "a" glyph moves like a crane grabs it, and that the "b" glyph follows a path resembling a triangular roof, with the following code:
 
 ```java
-tr.map(0, 2).addJumpEffect(t1.getHeight(), AnimationEffect.JumpType.CRANE);
-tr.map(2, 0).addJumpEffect(t1.getHeight(), AnimationEffect.JumpType.TRIANGULAR);//Note that this "jump" is downward
+tr.map(0, 2).addJumpEffect(t1.getHeight(), JumpType.CRANE);
+tr.map(2, 0).addJumpEffect(t1.getHeight(), JumpType.TRIANGULAR);//Note that this "jump" is downward
 ```
 
 ![equation11a](equation11a.gif)
@@ -342,11 +419,11 @@ By default, `FADE_OUT` and `FADE_IN` are chosen for removing and adding. With th
 We'll show all of this in one single, beautiful, self-explicative, dizzying animation:
 
 ```java
-LaTeXMathObject t1 = LaTeXMathObject.make("ABCDEF").center();
-LaTeXMathObject t2 = LaTeXMathObject.make("123456").center();
+LatexMathObject t1 = LatexMathObject.make("ABCDEF").center();
+LatexMathObject t2 = LatexMathObject.make("123456").center();
 camera.zoomToObjects(t1, t2);
 camera.scale(2);
-TransformMathExpression tr = new TransformMathExpression(10, t1, t2);
+TransformMathExpression tr = TransformMathExpression.make(10, t1, t2);
 //If we don't map anything, all origin shapes are marked for removal and 
 //all destiny shapes are marked for adding.
 
@@ -373,17 +450,17 @@ waitSeconds(3);
 And finally, we show how the initial animation will look applying colors, mapping, and effects (again, this is not the optimal way from the didactic point of view):
 
 ````java
-LaTeXMathObject t1 = LaTeXMathObject.make("$x+2=0$");
-LaTeXMathObject t2 = LaTeXMathObject.make("$x=-2$");
+LatexMathObject t1 = LatexMathObject.make("$x+2=0$");
+LatexMathObject t2 = LatexMathObject.make("$x=-2$");
 //Add some colors
-t1.setColor(JMColor.parse("darkolivegreen"), 0);
-t2.setColor(JMColor.parse("darkolivegreen"), 0);
-t1.setColor(JMColor.parse("maroon"), 2);
-t2.setColor(JMColor.parse("maroon"), 2, 3);
+t1.setColorsToIndices("darkolivegreen", 0);
+t2.setColorsToIndices("darkolivegreen", 0);
+t1.setColorsToIndices("maroon", 2);
+t2.setColorsToIndices("maroon", 2, 3);
 
 t2.alignCenter(1, t1, 3);//Align centers
 camera.zoomToObjects(t1, t2);
-TransformMathExpression tr = new TransformMathExpression(5, t1, t2);
+TransformMathExpression tr = TransformMathExpression.make(5, t1, t2);
 tr.map(0, 0);//Transforms orig-shape 0 to dst-shape 0
 tr.map(1, 2)
     .addJumpEffect(t1.getHeight())
@@ -403,7 +480,7 @@ waitSeconds(3);
 Since version 0.9.5, JMathAnim includes another animation that can be handy for manipulating equations called `CrossOutMathElements`. These animations, as their name suggests, cross out parts of a mathematical formula. Let's see with a simple example:
 
 ```java
-LaTeXMathObject formula = LaTeXMathObject.make("$2\\over 2$");
+LatexMathObject formula = LatexMathObject.make("$2\\over 2$");
 add(formula);
 camera.zoomToAllObjects();
 CrossOutMathElements anim=CrossOutMathElements.make(1, formula, 0,2);//Cross out glyphs 0 and 2
@@ -417,16 +494,17 @@ Here is a GIF from the movie generated:
 
 You can define which elements to cross out as usual, specifying the indices. There are 2 ways:
 
-`.addSmallCrosses(int...indices)` generates one cross out for each individual glyph given by the index. This is the default behaviour for the static builder. So, another way to get the same result as before should be:
+`.addSmallCrosses(int...indices)` generates one cross out for each individual glyph given by the index. This is the default behaviour for the static builder, so, another way to get the same result as before should be:
 
 ```java
-CrossOutMathElements anim=CrossOutMathElements.make(1, formula).addSmallCrosses(0,2);//Cross out glyphs 0 and 2
+CrossOutMathElements anim=CrossOutMathElements.make(1, formula);
+anim.addSmallCrosses(0,2);//Cross out glyphs 0 and 2
 ```
 
 `.addBigCross(int...indices)` generates only one cross out that extends over all specified glyphs. For example:
 
 ```java
-LaTeXMathObject formula = LaTeXMathObject.make("$x-y+2y-y$");
+LatexMathObject formula = LatexMathObject.make("$x-y+2y-y$");
 add(formula);
 camera.zoomToAllObjects();
 CrossOutMathElements anim=CrossOutMathElements.make(1, formula);
@@ -457,9 +535,10 @@ Another example, where we use 2 `CrossOutMathElements` animations, one with a di
 
 We want to perform a simplification, crossing out the exponent of the 3 in the numerator, with the 3 in the denominator, and later the 5 glyphs on both sides, and finally perform a transform to the simplified formula, removing all crossed out components. That's what we do in the following code: 
 ```java
-LaTeXMathObject eq1 = LaTeXMathObject.make("$3^2\\cdot 5\\cdot 7\\over 3\\cdot 5\\cdot 11$").center();
-LaTeXMathObject eq2 = LaTeXMathObject.make("$3\\cdot 7\\over 11$").center();
-camera.zoomToObjects(eq1, eq2);
+LatexMathObject eq1 = LatexMathObject.make("$3^2\\cdot 5\\cdot 7\\over 3\\cdot 5\\cdot 11$").center();
+LatexMathObject eq2 = LatexMathObject.make("$3\\cdot 7\\over 11$").center();
+eq1.scale(4);
+eq2.scale(4);
 add(eq1);
 waitSeconds(1);
 

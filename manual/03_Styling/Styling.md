@@ -105,18 +105,29 @@ The `dashStyle` method sets the dash used to draw the outline, chosen from the e
 
 ```java
 Shape r1 = Shape.regularPolygon(5).thickness(10);
-Shape r2 = r1.copy().stackTo(r1, Anchor.Type.RIGHT, .1);
-Shape r3 = r1.copy().stackTo(r2, Anchor.Type.RIGHT, .1);
-Shape r4 = r1.copy().stackTo(r3, Anchor.Type.RIGHT, .1);
+Shape r2 = r1.copy().stack()
+    .withDestinyAnchor(AnchorType.RIGHT)
+    .withGaps(.1)
+    .toObject(r1);
+Shape r3 = r1.copy().stack()
+    .withDestinyAnchor(AnchorType.RIGHT)
+    .withGaps(.1)
+    .toObject(r2);
+Shape r4 = r1.copy().stack()
+    .withDestinyAnchor(AnchorType.RIGHT)
+    .withGaps(.1)
+    .toObject(r3);
+
 r1.dashStyle(DashStyle.SOLID);
 r2.dashStyle(DashStyle.DASHED);
 r3.dashStyle(DashStyle.DOTTED);
-r4.dashStyle(DashStyle.DASHDOTTED);//Note: this style is available from 0.9.4-SNAPSHOT version
-add(LaTeXMathObject.make("{\\tt SOLID}").stackTo(r1, Anchor.Type.CENTER));
-add(LaTeXMathObject.make("{\\tt DASHED}").stackTo(r2, Anchor.Type.CENTER));
-add(LaTeXMathObject.make("{\\tt DOTTED}").stackTo(r3, Anchor.Type.CENTER));
-add(LaTeXMathObject.make("{\\tt DASHDOTTED}").stackTo(r4, Anchor.Type.CENTER));
-add(r1, r2, r3,r4);
+r4.dashStyle(DashStyle.DASHDOTTED);
+
+add(LatexMathObject.make("{\\tt SOLID}").stack().toObject(r1));
+add(LatexMathObject.make("{\\tt DASHED}").stack().toObject(r2));
+add(LatexMathObject.make("{\\tt DOTTED}").stack().toObject(r3));
+add(LatexMathObject.make("{\\tt DASHDOTTED}").stack().toObject(r4));
+add(r1, r2, r3, r4);
 camera.centerAtAllObjects();
 waitSeconds(5);
 ```
@@ -360,11 +371,6 @@ The `<include>` tag that appears at the beginning loads other config files. In t
 ```xml
 <JMathAnimConfig>  
     <styles>
-        <style name="dotRedCircle">
-            <drawColor>RED</drawColor>
-            <fillColor>TRANSPARENT</fillColor>
-            <<JMathAnimConfig>  
-    <styles>
         <style name="redCircle">
             <drawColor>RED</drawColor>
             <thickness>30</thickness>
@@ -397,7 +403,7 @@ Inside this tag, we may have:
 
   * The `<size/>`tag  with attributes `width`, `height` and `fps`. For example `<size width="1066" height="600" fps="30"/>`.
   * The `<createMovie>` tag with a boolean value, to determine if actually create a movie file or not. For example `<createMovie>false</createMovie>`.
-  * (Since version 0.9.3-SNAPSHOT) The `<saveToPNG>` tag with a boolean value, if each frame should be saved in a separate, autonumbered png file.  For example `<saveToPNG>false</saveToPNG>`. 
+  * The `<saveToPNG>` tag with a boolean value, if each frame should be saved in a separate, autonumbered png file.  For example `<saveToPNG>false</saveToPNG>`. 
   * The `<showPreviewWindow>` to show or not the previsualization window. For example `<showPreviewWindow>true</showPreviewWindow>`.
   * The `<outputDir>` tag specifies the folder where to save the movie, if created. If this tag is not found, by default the generated movie will save on `ROOT_PROJECT_DIR/media` folder. For example `<outputDir>c:/my_generated_movies</outputDir>`.
   * The `<outputFileName>`tag sets part of the file name of the generated movie. A suffix with the media height is always added to the name. If this is tag is not found, by default the name will be the class name you are using as a subclass for `Scene2D`.

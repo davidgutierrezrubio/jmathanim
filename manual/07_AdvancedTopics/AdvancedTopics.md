@@ -34,7 +34,7 @@ The `setUpdateLevel` does as its name suggests. It sets the update level of the 
 
 Every MathObjects implements the interface `Updateable` , and is registered when added to the scene.
 
-The methods `registerUpdateableHook` and `unregisterUpdateableHook` are called when the object is registered in the scene update queue. This is where, normally, the update level should be set.
+The methods `registerUpdateableHook` and `unregisterUpdateableHook` are called when the object is registered in the scene update queue. This is where normally the update level should be set.
 
 When creating a new `MathObject` subclass which depends on other objects, you should override the method `registerUpdateableHookand sets `the update level there.
 

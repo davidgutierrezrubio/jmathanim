@@ -8,8 +8,8 @@ A constructible object is a `MathObject`,that is built in a similar way as const
 For example, the following code:
 
 ```java
-CTPoint A = CTPoint.make(Point.at(0, 0)).dotStyle(Point.DotSyle.CROSS).drawColor("blue");
-CTPoint B = CTPoint.make(Point.at(1, 1)).dotStyle(Point.DotSyle.CROSS).drawColor("blue");;
+CTPoint A = CTPoint.make(Point.at(0, 0)).dotStyle(DotStyle.CROSS).drawColor("blue");
+CTPoint B = CTPoint.make(Point.at(1, 1)).dotStyle(DotStyle.CROSS).drawColor("blue");;
 CTSegment segment = CTSegment.make(A, B).drawColor("red").thickness(10);
 CTPerpBisector perpBisector = CTPerpBisector.make(segment).drawColor("darkgreen").thickness(10);
 CTCircle circle=CTCircle.makeCenterPoint(A, B).dashStyle(DashStyle.DASHED).drawColor("gray");
@@ -20,9 +20,9 @@ waitSeconds(3);
 
 Will give an animation like this:
 
-<img src="../06a_DealingWithPaths/01_basicExample.gif" alt="01_basicExample" style="zoom:67%;" />
+<img src="01_basicExample.gif" alt="01_basicExample" style="zoom:67%;" />
 
-In this example, we have created 2 `CTPoint` objects. These are almost identical to the classic `Pointobject`. The `CTSegment` object represents a segment between 2 `CTPoint` objects. Note that this object is not a `Shape` in the sense that you can transform it into another `Shape` for example, but it always remains as a segment. These objects are more rigid, but they allow for richer properties depending on the context.
+In this example, we have created 2 `CTPoint` objects. These are almost identical to the classic `Point`object. The `CTSegment` object represents a segment between 2 `CTPoint` objects. Note that this object is not a `Shape` in the sense that you can transform it into another `Shape` for example, but it always remains as a segment. These objects are more rigid, but they allow for richer properties depending on the context.
 
 The `CTPerpBisector` does as its name suggests, constructs the perpendicular bisector of the given segment.
 
@@ -34,7 +34,7 @@ Each `Constructible` object has its own static constructor method with several p
 
 ## Constructible lines
 
-The class `CTLine` has several subclasses such as `CTRay`, `CTSegment`, `CTAngleBisector`, `CTLineOrthogonal`, `CTPerpBisector`, or `CTVector`. These are fairly self-explanatory, but one thing they have in common is that they all implement the interface `hasDirection` means that this object has an inherent direction (not oriented). So, we can use any of these objects as a parameter that admits a direction. For example, we can build a orthogonal line that passes through a `CTPoint` and is perpendicular to a `CTLine`, `CTSegment`, or `CTVector`. Other non-constructible objects, like `Line`, `Ray` or `Arrow2D` also implement this interface.
+The class `CTAbstractLine` has several subclasses such as `CTLine`, `CTRay`, `CTSegment`, `CTAngleBisector`, `CTLineOrthogonal`, `CTPerpBisector`, or `CTVector`. These are fairly self-explanatory, but one thing they have in common is that they all implement the interface `hasDirection` means that this object has an inherent direction (not oriented). So, we can use any of these objects as a parameter that admits a direction. For example, we can build a orthogonal line that passes through a `CTPoint` and is perpendicular to a `CTLine`, `CTSegment`, or `CTVector`. Other non-constructible objects, like `Line`, `Ray` or `Arrow2D` also implement this interface.
 
 ## CTLaTeX
 
@@ -53,18 +53,18 @@ Where `ct1` and `ct2` can be `CTLine`, `CTSegment`, `CTRay` and `CTCircle`. In t
 For example, the following code:
 
 ```java
-CTPoint A = CTPoint.at(.3, .0).drawColor("blue");
+CTPoint A = CTPoint.at(.3, .0).drawCCTPoint A = CTPoint.at(.3, .0).drawColor("blue");
 CTPoint B = CTPoint.at(-.5, -.1).drawColor("red");
 CTLine toIntersect = CTLine.make(A, B);
 CTCircle circle = CTCircle.makeCenterRadius(Point.origin(), 1);
-CTIntersectionPoint inter1 = CTIntersectionPoint.make(circle, toIntersect, 1).drawColor("green");
-CTIntersectionPoint inter2 = CTIntersectionPoint.make(circle, toIntersect, 2).drawColor("yellow");
+CTIntersectionPoint inter1 = CTIntersectionPoint.make(circle, toIntersect, 0).drawColor("green");
+CTIntersectionPoint inter2 = CTIntersectionPoint.make(circle, toIntersect, 1).drawColor("yellow");
 add(A, B, toIntersect, circle, inter1, inter2);
 add(//Let's add some labels
-    CTLaTeX.make("$A$", A, Anchor.Type.DL, .02).scale(.5),
-    CTLaTeX.make("$B$", B, Anchor.Type.DL, .02).scale(.5),
-    CTLaTeX.make("$1$", inter1, Anchor.Type.DL, .02).scale(.5),
-    CTLaTeX.make("$2$", inter2, Anchor.Type.DL, .02).scale(.5)
+    CTLaTeX.make("$A$", A, AnchorType.DIAG4, .02).scale(.5),
+    CTLaTeX.make("$B$", B, AnchorType.DIAG4, .02).scale(.5),
+    CTLaTeX.make("$1$", inter1, AnchorType.DIAG1, .02).scale(.5),
+    CTLaTeX.make("$2$", inter2, AnchorType.DIAG1, .02).scale(.5)
 );
 waitSeconds(3);
 ```
@@ -157,17 +157,21 @@ gl.get("A");
 Now, let's add some animations to the creation of this scene to make it cooler!
 
 ```java
-GeogebraLoader gl = GeogebraLoader.parse("test.ggb");
-camera.setViewFrom(gl);
-playAnimation(
-    Commands.moveIn(1,Anchor.Type.LEFT, gl.get("A")),
-    Commands.moveIn(1,Anchor.Type.UPPER, gl.get("B")),
-    Commands.moveIn(1,Anchor.Type.RIGHT, gl.get("C"))
-);
-play.showCreation(gl.get("t1"));
-play.showCreation(gl.get("f"),gl.get("g"),gl.get("h"));
-play.moveIn(Anchor.Type.UPPER, gl.get("D"));
-waitSeconds(3);
+  //With this command we parse the file resources/geogebra/test.gbb
+        GeogebraLoader gl = GeogebraLoader.parse("test.ggb");
+        camera.setViewFrom(gl);
+        playAnimation(
+                Commands.moveIn(1,ScreenAnchor.LEFT, gl.get("A")),
+                Commands.moveIn(1,ScreenAnchor.UPPER, gl.get("B")),
+                Commands.moveIn(1,ScreenAnchor.RIGHT, gl.get("C"))
+        );
+        play.showCreation(gl.get("t1"));
+        play.showCreation(gl.get("f"),gl.get("g"),gl.get("h"));
+        play.moveIn(ScreenAnchor.UPPER, gl.get("D"));
+        play.showCreation(gl.get("d"));
+        waitSeconds(1);
+        play.contourHighlight(gl.get("D"));
+        waitSeconds(3);
 ```
 
 ![03GeogebraCreation](03GeogebraCreation.gif)

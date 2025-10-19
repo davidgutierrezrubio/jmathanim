@@ -1,55 +1,20 @@
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
 
 # Dealing with paths
-Shapes are the most fundamental objects in JMathAnim. Almost anything that is drawn on the screen is ultimately a Shape (in fact, the `Renderer` class only admits the core methods `drawShape` and `drawImage`). A `Shape`object contains, apart from styling parameters, a `JMPath`object that stores the path that will be drawn. In this chapter, we will see its structure and how to deal with its elements to create more complex objects.
+Shapes are the most fundamental objects in JMathAnim. Almost anything that is drawn on the screen is ultimately a Shape (in fact, the `Renderer` class only admits the core methods `drawShape` and `drawImage`). A `Shape`object contains, apart from styling parameters, a `JMPath`object that stores the path that will be drawn. In this chapter, we will see its structure and how to deal with its elements to create more complex objects. The utility class `PathUtils` has a method to show the control points of a path in the scene.
 
 If we run the following code:
 
 ```java
-@Override
-public void setupSketch() {
-    config.parseFile("#light.xml");
-    config.parseFile("#preview.xml");
-}
-
-@Override
-public void runSketch() throws Exception {
-    Shape ellipse=Shape.circle().scale(1,.5);
-    for (JMPathPoint p:ellipse.getPath()){
-        addJMPathPointToScene(p);
-    }
-    add(ellipse.thickness(8)));
-    waitSeconds(5);//Time for a screenshot
-}
-
-private void addJMPathPointToScene(JMPathPoint p) {
-    add(p.p.drawColor("green"));//Point of the curve
-    add(p.cpEnter.drawColor("blue"));//Control point that "enters" into the point
-    add(p.cpExit.drawColor("red"));//Control point that "exits" from the point
-    add(Shape.segment(p.p, p.cpExit)
-        .dashStyle(MODrawProperties.DashStyle.DASHED)
-        .drawColor("gray"));
-    add(Shape.segment(p.p, p.cpEnter)
-        .dashStyle(MODrawProperties.DashStyle.DASHED)
-        .drawColor("gray"));
-}
+Shape ellipse=Shape.circle().scale(1,.5);
+PathUtils.addJMPathPointsToScene(ellipse,this);
+add(ellipse);
+waitSeconds(5);//Time for a screenshot
 ```
 
 you will obtain the following image for 5 seconds:
 
 <img src="01_Ellipse.png" alt="Ellipse with control points" style="zoom:50%;" />
-
-Here we have drawn `Shape`object with name `ellipse`. The method `ellipse.getPath()` returns the `JMPath`object of `ellipse`, and the method
-
-```java
- for (JMPathPoint p:ellipse.getPath()){...}
-```
-
-iterates over all the elements of the path. Each element of a `JMPath` is a `JMpathPoint`class that stores 3 important `Point`objects:
-
-* The `.p` object that stores the actual point of the shape (in the picture, in green color).
-* The `.cpEnter`object that stores a control point that controls how the curve should approach to the point (in the picture, in blue color).
-* The `.cpExit`object that stores a control point that controls how the curve should get away from the point (in the picture, in red color).
 
 Each `JMPathPoint` has information about the precise shape of the curve at this point. When passing this information to the renderer, a cubic Bézier curve is drawn using the parameters of 2 consecutive jmpathpoints.
 
@@ -59,7 +24,7 @@ If you set the flag to show debug points with the command `ellipse.setShowDebugP
 
 <img src="01b_EllipseDebug.png" alt="01b_EllipseDebug" style="zoom:50%;" />
 
- Each `JMPathPoint` is a subclass of the`MathObject` so you can apply the usual transformations like `rotate`, `scale`, `shift` or any affine transformation. JMathAnim will transform the shape point and the control points accordingly. 
+The `JMPathPoint` implements the `AffineTransformable` interface so you can apply the usual transformations like `rotate`, `scale`, `shift` or any affine transformation. JMathAnim will transform the shape point and the control points accordingly. 
 
 You can also apply these transforms to individual jmpathpoints. For example, if we add the 3 lines right before the `waitSeconds` command:
 
@@ -78,7 +43,7 @@ Each `JMPathPoint` has 2 public boolean variables, `isCurved` and `isThisSegment
 For example, if we add the following line after the creation of an `ellipse`object:
 
 ```java
-ellipse.get(1).isThisSegmentVisible=false;
+ellipse.get(1).setSegmentToThisPointVisible(false);
 ```
 
 The piece of curve that goes from point 0 to 1 will not be drawn:
@@ -90,7 +55,7 @@ The piece of curve that goes from point 0 to 1 will not be drawn:
 This way, if you have an open curve and you want to close it, you just have to add the command:
 
 ```java
-myOpenShape.get(0).isThisSegmentVisible=true;
+myOpenShape.get(0).setSegmentToThisPointVisible=true;
 ```
 
 
@@ -100,20 +65,20 @@ myOpenShape.get(0).isThisSegmentVisible=true;
 if we add this line instead:
 
 ```java
-ellipse.get(1).isCurved=false;
+ellipse.get(1).setSegmentToThisPointCurved(false)
 ```
 The piece of curve that goes from 0 to 1 is drawn in a straight line:
 
 <img src="03a_pieceStraight.png" alt="A straight piece" style="zoom:50%;" />
 
-You can also make a Bézier curve straight with the code:
+You can also make a Bézier curve straight manipulating the control points, accesible through methods `getV(), getVEnter()` and `getVExit()`. In this case, the exit control point from point 0 and enter control point from point 1 should have the same coordinates as their respective points.
 
 ```java
 //make coordinates of control point exit of point 0 equals to that point
-ellipse.get(0).cpExit.copyFrom(ellipse.get(0).p);
+ellipse.get(0).getVExit().copyCoordinatesFrom(ellipse.get(0).getV());
 
 //make coordinates of control point enter of point 1 equals to that point
-ellipse.get(1).cpEnter.copyFrom(ellipse.get(1).p);
+ellipse.get(1).getVEnter().copyCoordinatesFrom(ellipse.get(1).getV());
 ```
 
 You will have the same effect, with the control points altered:
@@ -141,8 +106,8 @@ Sometimes we are interested in getting where a precise point should be in the pa
 
 ```java
 Shape c=Shape.circle();
-Point interpP=c.getPointAt(.2); //Computes the interpolated point at alpha=.2;
-JMPathPoint interpJmp = pol.getPath().getJMPointAt(.2);//Interpolated JMPathPoint
+Vec interpP=c.getVecAt(.2); //Computes the interpolated coordinates at alpha=.2;
+JMPathPoint interpJmp = c.getPath().getJMPointAt(.2);//Interpolated JMPathPoint
 ```
 
 Note that this parameter does not run in "constant velocity". For example, in a path with 3 elements like the figure:
@@ -158,23 +123,27 @@ If you want to insert an interpolated JMPathPoint into a path, it is not enough 
 For example, the following code draws an annulus and a copy with 3 new JMPathPoints inserted:
 
 ```java
-Shape c = Shape.annulus(.5, 1);
-c.setShowDebugPoints(true);
-Shape c2 = c.copy().stackTo(c, Anchor.Type.RIGHT, .25);
+Shape c = Shape.annulus(.5, 1).fillColor("pink");
+MediatorMathObject.setShowDebugPoints(c,true);
+Shape c2 = c.copy()
+    .stack()
+    .withGaps(.25)
+    .withDestinyAnchor(AnchorType.RIGHT)
+    .toObject(c);
+add(c, c2);
+
 
 JMPathPoint newJmp1 = c2.getPath().insertJMPointAt(1, .5);
 JMPathPoint newJmp2 = c2.getPath().insertJMPointAt(3, .25);
 JMPathPoint newJmp3 = c2.getPath().insertJMPointAt(9, .9);
 
-//Note that we add the Point (.p) object, NOT the JMPathPoint!
-//The JMPathPoints don't have a draw() method so
-//they will not appear on the screen
+//We create new Point objects to show the location of the new JMPathPoints
 add(
-    newJmp1.p.thickness(20).drawColor("red"),
-    newJmp2.p.thickness(20).drawColor("green"),
-    newJmp3.p.thickness(20).drawColor("blue")
+    Point.at(newJmp1.getV()).thickness(150).drawColor("red"),
+    Point.at(newJmp2.getV()).thickness(150).drawColor("green"),
+    Point.at(newJmp3.getV()).thickness(150).drawColor("blue")
 );
-add(c, c2);
+
 camera.centerAtAllObjects();
 waitSeconds(3);
 ```
@@ -194,19 +163,33 @@ Note how the indices change (the index 0 is hidden by the indices 4 and 7 respec
 JMathAnim allows boolean operations union, intersection and substract for `Shape`objects. These methods relay on the boolean methods of the JavaFX library.
 
 ```java
-Shape A = Shape.circle().thickness(8);
-Shape B = A.copy().shift(1, 0);
-Shape C = A.copy().shift(.5, -1);
-Shape intersect = A.copy().intersect(B).intersect(C).style("solidRed");
-add(A, B, C, intersect);
-add(
-    LaTeXMathObject.make("$A$").stackTo(A, Anchor.Type.LEFT, .1),
-    LaTeXMathObject.make("$B$").stackTo(B, Anchor.Type.RIGHT, .1),
-    LaTeXMathObject.make("$C$").stackTo(C, Anchor.Type.LOWER, .1),
-    LaTeXMathObject.make("$A\\cap B\\cap C$").stackTo(intersect, Anchor.Type.CENTER)
-);
-camera.centerAtAllObjects();
-waitSeconds(5);//Smile, you're being screenshot!
+  Shape A = Shape.circle().thickness(8);
+        Shape B = A.copy().shift(.8, 0);
+        Shape C = A.copy().shift(.4, -.8);
+        Shape intersect = A.copy().intersect(B).intersect(C).style("solidRed");
+        add(A, B, C, intersect);
+        add(
+                LatexMathObject.make("$A$")
+                        .stack()
+                        .withGaps(.1)
+                        .withDestinyAnchor(AnchorType.LEFT)
+                        .toObject(A),
+                LatexMathObject.make("$B$")
+                        .stack()
+                        .withGaps(.1)
+                        .withDestinyAnchor(AnchorType.RIGHT)
+                        .toObject(B),
+                LatexMathObject.make("$C$")
+                        .stack()
+                        .withGaps(.1)
+                        .withDestinyAnchor(AnchorType.LOWER)
+                        .toObject(C),
+                LatexMathObject.make("$A\\cap B\\cap C$")
+                        .stack()
+                        .toObject(intersect)
+        );
+        camera.centerAtAllObjects();
+        waitSeconds(5);//Smile, you're being screenshot!
 ```
 
 Gives the following image:
@@ -259,11 +242,11 @@ The `JMPath`command `.subpath(double a, double b)` returns the subpath that goes
 You can directly extract the subshape with the `Shape` method `getSubShape(double a, double b)` that works in a similar way. A new shape with the same styling parameters will be created. For example:
 
 ```java
-Shape F = LaTeXMathObject.make("F").get(0).center().setHeight(2);
+LatexShape F = LatexMathObject.make("F").get(0).center().setHeight(2);
 Shape partialF=F.getSubShape(.2, .76);
 F.fillColor("violet").fillAlpha(.5);
 partialF.style("default").thickness(8).drawColor("olive");//Load default style to clear the style latexdefault
-add(c,c2);
+add(F,partialF);
 waitSeconds(3);
 ```
 
@@ -285,7 +268,7 @@ ps[2] = Point.at(0, -.25);
 ps[3] = Point.at(1, .25);
 ps[4] = Point.at(1, -.25);
 for (Point p : ps) {
-    p.dotStyle(Point.DotSyle.CROSS);
+    p.dotStyle(DotSyle.CROSS);
     p.drawColor("blue").thickness(60);//Points are blue crosses
 }
 Shape pol = Shape.polyLine(ps).thickness(10).drawColor("tomato");

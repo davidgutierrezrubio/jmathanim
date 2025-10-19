@@ -142,9 +142,11 @@ Most of these commands can be called by omitting the runtime parameter and using
 You can change the values of these variables as you need. Here is a demo animation with its source code:
 
 ``` java
-LaTeXMathObject text;
-Shape sq = Shape.square().fillColor("#87556f").center();//
-text = LaTeXMathObject.make("{\\tt play.fadeIn(sq)}").stackToScreen(Anchor.Type.LOWER, .1, .1);
+Shape sq = Shape.square().fillColor("#87556f").center();
+LatexMathObject text = LatexMathObject.make("{\\tt play.fadeIn(sq)}")
+    .stack()
+    .withGaps(.1)
+    .toScreen(ScreenAnchor.LOWER);
 add(text);
 play.fadeIn(sq);
 waitSeconds(1);
@@ -175,12 +177,20 @@ We see all of them with this example:
 ```java
 Shape sq = Shape.square().center().scale(1);
 Point importantPoint1 = sq.getPoint(1).drawColor("red");
-LaTeXMathObject importantLabel1 = LaTeXMathObject.make("A").
-    stackTo(importantPoint1, Anchor.Type.RIGHT, .1);
+LatexMathObject importantLabel1 = LatexMathObject.make("A")
+    .stack()
+    .withDestinyAnchor(AnchorType.RIGHT)
+    .withGaps(.1)
+    .toPoint(importantPoint1);
+
 
 Point importantPoint2 = sq.getPoint(3).drawColor("blue");
-LaTeXMathObject importantLabel2 = LaTeXMathObject.make("B").
-    stackTo(importantPoint2, Anchor.Type.LEFT, .1);
+LatexMathObject importantLabel2 = LatexMathObject.make("B")
+    .stack()
+    .withDestinyAnchor(AnchorType.LEFT)
+    .withGaps(.1)
+    .toPoint(importantPoint2);
+
 
 add(sq,
     importantPoint1,
@@ -228,7 +238,7 @@ waitSeconds(2);
 You can also make a contour highlight of the bounding box of an object, which can be more clear in some cases. Just use the `makeBBox` constructor:
 
 ```java
-LaTeXMathObject obj = LaTeXMathObject.make("Look here!").center().scale(2);
+LatexMathObject obj = LatexMathObject.make("Look here!").center().scale(2);
 add(obj);
 
 //This animation is not very clear, because the shape is complex
@@ -250,13 +260,37 @@ waitSeconds(2);
 
 
 
+You can pass `Point` objects (or the constructible version,` CTPoint`, which we will see in the next chapters), and a circle with a radius equal to its thickness will be drawn.
 
+```java
+Point P1 = Point.at(-.5, 0)
+    .dotStyle(DotStyle.CROSS)
+    .thickness(30)
+    .drawColor("blue");
+Point P2 = Point.at(0, 0)
+    .dotStyle(DotStyle.TRIANGLE_UP_FILLED)
+    .thickness(50)
+    .drawColor("tomato");
+Point P3 = Point.at(.5, 0)
+    .dotStyle(DotStyle.CIRCLE)
+    .thickness(30)
+    .drawColor("black");
+add(P1, P2, P3);
+
+ContourHighlight anim1 = ContourHighlight.make(2, P1).setColor("gold");
+ContourHighlight anim2 = ContourHighlight.make(2, P2).setColor("blue");
+ContourHighlight anim3 = ContourHighlight.make(2, P3).setColor("green");
+playAnimation(anim1, anim2, anim3);
+scene.waitSeconds(1);
+```
+
+![ContourHighlight3](ContourHighlight3.gif)
 
 
 
 ## Stacking and aligning
 
-The `stackTo` method also has an animated version. A variable number of objects can be animated in the same animation. In this case, the second object will be stacked to the first, and so on. To illustrate this, we create 4 arrays of circles with random colors and stack them to a central square:
+The `stack()` method also has an animated version. A variable number of objects can be animated in the same animation. In this case, the second object will be stacked to the first, and so on. To illustrate this, we create 4 arrays of circles with random colors and stack them to a central square:
 
 ```java
 Shape[] circles1 = new Shape[5];
@@ -304,12 +338,12 @@ The same effect can be easily achieved using the `MathObjectGroup` class and the
 The `Commands.align` animation works in a similar way than the method `Mathobject.align`
 
 ```java
-LaTeXMathObject upper=LaTeXMathObject.make("upper");
-LaTeXMathObject lower=LaTeXMathObject.make("lower");
-LaTeXMathObject left=LaTeXMathObject.make("left");
-LaTeXMathObject right=LaTeXMathObject.make("right");
-LaTeXMathObject hcenter=LaTeXMathObject.make("hcenter");
-LaTeXMathObject vcenter=LaTeXMathObject.make("vcenter");
+LatexMathObject upper=LatexMathObject.make("upper");
+LatexMathObject lower=LatexMathObject.make("lower");
+LatexMathObject left=LatexMathObject.make("left");
+LatexMathObject right=LatexMathObject.make("right");
+LatexMathObject hcenter=LatexMathObject.make("hcenter");
+LatexMathObject vcenter=LatexMathObject.make("vcenter");
 Shape center = Shape.square().scale(3).fillColor("lightblue");
 add(center);
 camera.adjustToAllObjects();
@@ -372,7 +406,7 @@ In the case of a simple shape like this, the `SIMPLE_SHAPE_CREATION` strategy is
 Another example: This time, we will show the creation of an equation, which is a `MultiShapeObject`. Note that all shapes are not created at the same time, but a small delay is added:
 
 ``` java
-LaTeXMathObject text=LaTeXMathObject.make("$a^2+b^2=c^2$").center().scale(3);
+LatexMathObject text=LatexMathObject.make("$a^2+b^2=c^2$").center().scale(3);
 play.showCreation(2,text);
 waitSeconds(1);
 ```
@@ -412,17 +446,21 @@ Shape pentagon = Shape.regularPolygon(5)
     .drawColor("blue")
     .fillColor("violet")
     .thickness(20);
-//Stack the pentagon to the right, 5 units apart
-pentagon.stackTo(triangle, Anchor.Type.RIGHT, 5);
+//Stack the pentagon to the right of  the triangle, 5 units apart
+pentagon
+    .stack()
+    .withDestinyAnchor(AnchorType.RIGHT)
+    .withGaps(5)
+    .toObject(triangle);
 
-//Make sure everything is correctly centered at screen
+//Make sure everything is correctly centered at screen, adjusting the camera
 camera.centerAtObjects(triangle, pentagon);
 camera.zoomToObjects(triangle, pentagon);
 
 //Create an animation that transforms the triangle into the pentagon
 Transform anim = Transform.make(2, triangle, pentagon);
 
-//This ensures the animation has constant velocity
+//This makes sure that the animation has constant velocity
 anim.setLambda(t -> t);
 anim.initialize(this);
 int num = 6; //Number of intermediate steps to show
@@ -435,9 +473,12 @@ for (int i = 0; i < num; i++) {
     //The getIntermediateObject gives us the intermediate object used in the animation
     MathObject intermediate = anim.getIntermediateObject().copy();
 
-    //Generate a beautiful text, located below the intermediate object
-    LaTeXMathObject lat = LaTeXMathObject.make("{\\tt t=" + t + "}")
-        .stackTo(intermediate, Anchor.Type.LOWER, .2);
+    //Generate a descriptive text, located below the intermediate object
+    LatexMathObject lat = LatexMathObject.make("{\\tt t=" + t + "}")
+        .stack()
+        .withDestinyAnchor(AnchorType.LOWER)
+        .withRelativeGaps(0,.5)
+        .toObject(intermediate);
 
     //Add both elements to the scene
     add(intermediate, lat);
@@ -456,8 +497,15 @@ Gives an image like this:
 The precise method of transform depends on the type of source and destination objects. In the previous example, a point-by-point interpolation was used. However, if both shapes are regular polygons with the same number of sides, an isomorphic transform is chosen. We will show another example, not using the "long" form given by the `play` object:
 
 ``` java
-Shape pentagon = Shape.regularPolygon(5).scale(.5).shift(-1,-1);
-Shape pentagonDst = Shape.regularPolygon(5).scale(.8).shift(.5,-.5).rotate(45*DEGREES);
+Shape pentagon = Shape.regularPolygon(5)
+    .scale(.5)
+    .shift(-1,-1)
+    .style("solidOrange");
+Shape pentagonDst = Shape.regularPolygon(5)
+    .scale(.8)
+    .shift(.5,-.5)
+    .rotate(45*DEGREES)
+    .style("solidBlue");
 Transform tr = new Transform(3, pentagon, pentagonDst);
 playAnimation(tr);
 waitSeconds(1);
@@ -476,15 +524,15 @@ Currently, the following strategies are implemented:
 3. `ISOMORPHIC_TRANSFORM` A direct isomorphism is created to transform the original shape into the destiny shape. The isomorphism is created so that the 2 first points of the origin shape transform into the 2 first points of the destiny shape.
 4. `ROTATE_AND_SCALEXY_TRANSFORM` Similar to isomorphism , but scaling is not homogeneous. This animation is used to transform any rectangle into another one, to prevent distortions.
 5. `FUNCTION_INTERPOLATION` The name says it! Used  to transform one function to another, interpolating x-to-x
-6. `MULTISHAPE_TRANSFORM` For transforming Multishape objects (like LaTeXMathObject)
+6. `MULTISHAPE_TRANSFORM` For transforming Multishape objects (like LatexMathObject)
 7. `GENERAL_AFFINE_TRANSFORM` Like the isomorphic transform, but admits a more general affine transform. The 3 first points of origin go to the 3 first points of destiny.
 8. `ARROW_TRANSFORM` A specialized class that transforms arrows, delegating into a isomorphic transform and properly handling arrow heads.
 
 To see the difference between one type or another, consider this code, where we transform one square into a rotated rectangle, forcing a `GENERAL_AFFINE_TRANSFORM` method:
 
 ```java
-Shape sq = Shape.square().center().style("solidorange");
-Shape sq2 = Shape.square().scale(.25,1).style("solidorange").rotate(45 * DEGREES).moveTo(Point.at(1,0));
+Shape sq = Shape.square().center().style("solidRed");
+Shape sq2 = Shape.square().scale(.25,1).style("solidGreen").rotate(45 * DEGREES).moveTo(Point.at(1,0));
 Transform tr = new Transform(10, sq, sq2);//10 seconds so that you can see the details
 tr.setTransformMethod(Transform.TransformMethod.GENERAL_AFFINE_TRANSFORM);
 playAnimation(tr);
@@ -504,20 +552,21 @@ Notice anything strange? The transform is done, but the intermediate steps are n
 A simpler transform animation which works on any `MathObject` instance is `FlipTransform`. This animation scales the first object to 0 horizontally or vertically (or both) and then scales the second object from 0 to 1, giving the effect of flipping. The flip can be `HORIZONTAL`, `VERTICAL` or `BOTH`.
 
 ```java
-LaTeXMathObject text = LaTeXMathObject.make("JMathAnim");
-OrientationType[] flips = new FlipTransform.FlipType[]{OrientationType.HORIZONTAL, OrientationType.VERTICAL, OrientationType.BOTH};
+LatexMathObject text = LatexMathObject.make("JMathAnim");
+OrientationType[] flips = new OrientationType[]{OrientationType.HORIZONTAL, OrientationType.VERTICAL, OrientationType.BOTH};
 
 //The MultiShapeObject and all its subclasses implement the iterable interface,
 //which allows to easily iterate over all the shapes this way:
-for (Shape s : text) {
+for (LatexShape s : text) {
     s.center();//Center all the shape glyphs on the screen
 }
 camera.zoomToObjects(text);
-Shape previous = null;
+LatexShape previous = null;
 int index = 0;
-for (Shape s : text) {
+for (LatexShape s : text) {
     if (previous != null) {
-        playAnimation(new FlipTransform(2, flips[index], previous, s));
+        FlipTransform flipTransform = new FlipTransform(2, flips[index], previous, s);
+        playAnimation(flipTransform);
         index = (index + 1) % 3;
     }
     previous = s;
@@ -597,7 +646,7 @@ for (int i = -5; i < 5; i++) {
     grid.add(Line.YAxis().shift(.5 * i, 0).thickness(i % 2 == 0 ? 4 : 2));
 }
 //Creates a B glyph, center it, make it height 1
-LaTeXMathObject bigB = LaTeXMathObject.make("B").center().setHeight(1).style("solidorange").fillAlpha(.5);
+LatexMathObject bigB = LatexMathObject.make("B").center().setHeight(1).style("solidorange").fillAlpha(.5);
 //Animate the creation of the grid and the B shape
 play.showCreation(grid, bigB);
 waitSeconds(1);
@@ -635,7 +684,7 @@ Shape reg = Shape.regularPolygon(5)
     .center()
     .fillColor("steelblue");
 //A text
-MathObject text = LaTeXMathObject.make("Pentagon")
+MathObject text = LatexMathObject.make("Pentagon")
     .center().setHeight(.5)
     .style("solidorange").fillAlpha(.5)
     .layer(1);
@@ -771,5 +820,5 @@ We obtain the following animation:
 
 # Transforming math expressions
 
-LaTeX math expressions  admit a specialized animation called `TransformMathExpression` which allows to fine tune a transformation between one `LaTeXMathObject` and another. We will see how it works in the math expressions chapter.
+LaTeX math expressions  admit a specialized animation called `TransformMathExpression` which allows to fine tune a transformation between one `LatexMathObject` and another. We will see how it works in the math expressions chapter.
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
