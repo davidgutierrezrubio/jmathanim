@@ -21,6 +21,15 @@ Manual
 What's new?
 ===========
 
+Version 0.9.13-SNAPSHOT (19/10/2025)
+
+* Big rewriting of code to improve efficiency.
+* Changed class structure to use generics.
+* Several syntax changes, which may get incompatibility with previous versions.
+  * Commands `stackTo` have been replaced by most intuitive `stack()` series of commands.
+  * `LaTeXMathObject` has been renamed to more Java oriented syntax `LatexMathObject`
+* Improved Geogebra import.
+
 Version 0.9.12 (09/08/2025) 
 
 * Project moved from OSSRH to Maven Central. See [here](manual/00_Installing/Installing.html) to update your maven file
