@@ -28,14 +28,14 @@
             <thickness>1</thickness>
         </style>
         <style name="gridPrimaryDefault">
-             <drawColor>black</drawColor>
+             <drawColor>#666666</drawColor>
             <fillColor>TRANSPARENT</fillColor>
-            <thickness>8</thickness>
+            <thickness>10</thickness>
         </style>
          <style name="gridSecondaryDefault">
-             <drawColor>#A0A0A0</drawColor>
+             <drawColor>#999999</drawColor>
             <fillColor>TRANSPARENT</fillColor>
-            <thickness>6</thickness>
+            <thickness>7</thickness>
         </style>
     </styles>
 </JMathAnimConfig>

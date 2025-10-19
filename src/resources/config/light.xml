@@ -29,12 +29,7 @@
             <scaleArrowHead1>1</scaleArrowHead1>
             <scaleArrowHead2>1</scaleArrowHead2>
         </style>
-          <style name="gridPrimaryDefault">
-            <drawColor>black</drawColor>
-            <fillColor>NONE</fillColor>
-            <thickness>2</thickness>
-        </style>
-        <style name="solidRed">
+              <style name="solidRed">
             <drawColor>black</drawColor>
             <fillColor>#f55652</fillColor>
             <thickness>15</thickness>

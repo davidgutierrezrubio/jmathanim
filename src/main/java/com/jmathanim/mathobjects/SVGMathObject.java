@@ -35,7 +35,7 @@ public class SVGMathObject extends AbstractMultiShapeObject<SVGMathObject,Shape>
 //    private JMColor currentDrawColor;
 //    private double currentStrokeSize = .5d;
 //
-//  public static SVGMathObject makeLengthMeasure(String filename) {
+//  public static SVGMathObject make(String filename) {
 //      ResourceLoader rl=new ResourceLoader();
 //        URL url = rl.getResource(filename, "images");
 //        return makeLengthMeasure(url);

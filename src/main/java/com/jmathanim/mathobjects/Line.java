@@ -89,6 +89,7 @@ public class Line extends AbstractShape<Line> implements HasDirection, shouldUdp
         p1.applyAffineTransform(transform);
         p2.applyAffineTransform(transform);
         transform.applyTransformsToDrawingProperties(this);
+        rebuildShape();
         return this;
     }
 

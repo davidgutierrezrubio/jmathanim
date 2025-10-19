@@ -71,7 +71,7 @@ public class CartesianGrid extends MathObject<CartesianGrid> implements shouldUd
 
     /**
      * Creates a new cartesian grid located at a given reference point with given horizontal and vertical spaces between
-     * lines. Grid with be drawn using the style gridPrimaryDefault, if available.
+     * lines. Grid will be drawn using the style gridPrimaryDefault style, if available.
      *
      * @param centerX            x coordinate of reference point
      * @param centerY            y coordinate of reference point
@@ -80,7 +80,7 @@ public class CartesianGrid extends MathObject<CartesianGrid> implements shouldUd
      * @return The created grid
      */
     public static CartesianGrid make(double centerX, double centerY, int secondaryXDivision, int secondaryYDivision) {
-        CartesianGrid resul = new CartesianGrid(centerX, centerY, secondaryXDivision, secondaryYDivision, 0, 0);
+        CartesianGrid resul = new CartesianGrid(centerX, centerY,1,1, secondaryXDivision, secondaryYDivision);
         //Default camera
         resul.setCamera(JMathAnimConfig.getConfig().getCamera());
         resul.getPrimaryGridStyle().loadFromStyle("gridPrimaryDefault");
@@ -149,7 +149,8 @@ public class CartesianGrid extends MathObject<CartesianGrid> implements shouldUd
 
         for (int n = -nw+1; n < nw; n++) {
             for (int i = 1; i < secondaryYDivision; i++) {
-                addVerticalLine((1d*i/secondaryYDivision+n)*steps.x, false);
+                double xCoordinate = (1d * i / secondaryYDivision + n) * steps.x;
+                addVerticalLine(xCoordinate, false);
             }
             addVerticalLine(n*steps.x, true);
         }
@@ -188,7 +189,9 @@ public class CartesianGrid extends MathObject<CartesianGrid> implements shouldUd
             getPrimaryGridStyle().add(line);
             allLines.add(line);
         } else {
-            Line line = Line.YAxis().shift(this.center.x+ xCoordinate, this.center.y).setObjectLabel("grid_v_s");
+            Line line = Line.YAxis();
+            line.shift(this.center.x+ xCoordinate, this.center.y).setObjectLabel("grid_v_s");
+            line.shift(1,0);
             verticalSecondaryLines.add(line);
             getSecondaryGridStyle().add(line);
             allLines.add(line);
@@ -293,9 +296,10 @@ public class CartesianGrid extends MathObject<CartesianGrid> implements shouldUd
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r, Camera camera) {
-        horizontalPrimaryLines.forEach(t -> t.draw(scene, r, camera));
-        verticalPrimaryLines.forEach(t -> t.draw(scene, r, camera));
         horizontalSecondaryLines.forEach(t -> t.draw(scene, r, camera));
         verticalSecondaryLines.forEach(t -> t.draw(scene, r, camera));
+        horizontalPrimaryLines.forEach(t -> t.draw(scene, r, camera));
+        verticalPrimaryLines.forEach(t -> t.draw(scene, r, camera));
+
     }
 }

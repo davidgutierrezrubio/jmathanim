@@ -87,7 +87,7 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
      * @return The LabelTip object created
      */
     public static LabelTip makeLabelTip(AbstractShape<?> shape, double locationParameter, String latexText) {
-        return makeLabelTip(shape, locationParameter, latexText, true);
+        return makeLabelTip(shape, locationParameter, latexText, false);
     }
 
 

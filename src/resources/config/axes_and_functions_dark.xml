@@ -27,14 +27,14 @@
             <fillColor>#eff8ff</fillColor>
             <thickness>1</thickness>
         </style>
-         <style name="gridPrimaryDefault">
-             <drawColor>#3407fa</drawColor>
-            <fillColor>TRANSPARENT</fillColor>
+        <style name="gridPrimaryDefault">
+            <drawColor>#83b1bf</drawColor>
+            <fillColor>NONE</fillColor>
             <thickness>10</thickness>
         </style>
          <style name="gridSecondaryDefault">
-             <drawColor>#0298bd</drawColor>
-            <fillColor>TRANSPARENT</fillColor>
+             <drawColor>#57767f</drawColor>
+            <fillColor>NONE</fillColor>
             <thickness>7</thickness>
         </style>
     </styles>

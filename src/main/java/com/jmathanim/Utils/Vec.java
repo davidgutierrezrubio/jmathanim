@@ -19,7 +19,6 @@ package com.jmathanim.Utils;
 
 import com.jmathanim.Constructible.Lines.HasDirection;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.jmathanim.LogUtils;
 import com.jmathanim.mathobjects.AffineTransformable;
 import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.Interpolable;
@@ -242,12 +241,17 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
 
     @Override
     public String toString() {
+//        return String.format(
+//                        LogUtils.PURPLE+"%s"+LogUtils.RESET+"[" +
+//                        LogUtils.BLUE+"%.2f" +LogUtils.RESET+
+//                        ", " +
+//                        LogUtils.BLUE+"%.2f" +LogUtils.RESET+
+//                        "]",
+//                getClass().getSimpleName(),
+//                x,
+//                y);
         return String.format(
-                        LogUtils.PURPLE+"%s"+LogUtils.RESET+"[" +
-                        LogUtils.BLUE+"%.2f" +LogUtils.RESET+
-                        ", " +
-                        LogUtils.BLUE+"%.2f" +LogUtils.RESET+
-                        "]",
+                "%s[%.2f, %.2f]",
                 getClass().getSimpleName(),
                 x,
                 y);
