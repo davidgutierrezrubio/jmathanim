@@ -240,51 +240,39 @@ waitSeconds(5);//Time for a screenshot!
 The name says it all!
 ```java
 //A grid with reference point (0.0) and 
-//steps of 0.5 between both vertical and horizontal lines
-CartesianGrid grid = CartesianGrid.make(0, 0, .5, .5);
-grid.thickness(7).drawColor("gray");
+//2 subdivisions for secondary grid
+CartesianGrid grid = CartesianGrid.make(0, 0, //Center of grid, usually (0,0)
+                                        2, //Number of horizontal divisions for the secondary grid
+                                        2//Number of vertical divisions for the secondary grid
+                                       );
 add(
     grid,
     Shape.circle() //A circle
-    .drawColor("blue") //drawn in blue
-    .fillColor("blue") //filled also in blue
-    .fillAlpha(.5) //with opacity 50%
+        .drawColor("blue") //drawn in blue
+        .fillColor("blue") //filled also in blue
+        .fillAlpha(.5) //with opacity 50%
 );
 waitSeconds(3);
 ```
 
 <img src="cartesianGrid.png" alt="image-20220920180537862" style="zoom:50%;" />
 
-You can specify a second pair of parameters to include a secondary grid, in this case, returns a `MathObjectGroup` including 2 cartesian grids, the primary and secondary. In this case, the `make` method will return a `MathObjectGroup` containing 2 `CartesianGrid` objects:
-
-```java
-MathObjectGroup grid = CartesianGrid.make(0, 0, .5, .5, .25, .25);
-add(
-    grid,
-    Shape.circle().drawColor("firebrick").fillColor("firebrick").fillAlpha(.5)
-);
-waitSeconds(3);
-```
-
-
-
-<img src="grid02.png" alt="grid2" style="zoom: 67%;" />
-
 By default, grids are drawn using the `gridPrimaryDefault` and  `gridSecondaryDefault` styles. You can read more about styles in the next chapters.
-
-## The `Arrow2D` class
-> **WARNING**: Since v0.9.10-SNAPSHOT this class is deprecated and is replaced by the better implemented `Arrow`class. You should consider using it instead.
 
 ## The `Arrow` class
 Since v0.9.10-SNAPSHOT this class replaces the old `Arrow2D`class and provides a better and more flexible implementation.
 ```java
 Point A = Point.at(0, 0);
 Point B = Point.at(1, 0);
-Arrow ar = Arrow.make(A, B, Arrow.ArrowType.ARROW1);
-Arrow ar2 = Arrow.make(A.copy(), B.copy(), ArrowType.ARROW2).stackTo(ar, Anchor.Type.LOWER, .1);
-Arrow ar3 = Arrow.make(A.copy(), B.copy(), ArrowType.ARROW3).stackTo(ar2, Anchor.Type.LOWER, .1);
-Arrow ar4 = Arrow.makeDouble(A.copy(), B.copy(), ArrowType.ARROW2, ArrowType.ARROW3).stackTo(ar3, Anchor.Type.LOWER, .1);
-Arrow ar5 = Arrow.makeDouble(A.copy(), B.copy(), ArrowType.SQUARE, ArrowType.SQUARE).stackTo(ar4, Anchor.Type.LOWER, .1);
+Arrow ar = Arrow.make(A, B, ArrowType.ARROW1);
+Arrow ar2 = Arrow.make(A.copy(), B.copy(), ArrowType.ARROW2)
+    .stack().withGaps(.1).withDestinyAnchor(AnchorType.LOWER).toObject(ar);
+Arrow ar3 = Arrow.make(A.copy(), B.copy(), ArrowType.ARROW3)
+    .stack().withGaps(.1).withDestinyAnchor(AnchorType.LOWER).toObject(ar2);
+Arrow ar4 = Arrow.makeDouble(A.copy(), B.copy(), ArrowType.ARROW2, ArrowType.ARROW3)
+    .stack().withGaps(.1).withDestinyAnchor(AnchorType.LOWER).toObject(ar3);
+Arrow ar5 = Arrow.makeDouble(A.copy(), B.copy(), ArrowType.SQUARE, ArrowType.SQUARE)
+    .stack().withGaps(.1).withDestinyAnchor(AnchorType.LOWER).toObject(ar4);
 add(ar, ar2, ar3, ar4, ar5);
 camera.zoomToAllObjects();
 waitSeconds(4);
@@ -297,7 +285,7 @@ Produces the following image:
 ```java
 Point A = Point.at(0, 0);
 Point B = Point.at(1, 0);
-Arrow ar = Arrow.make(A, B, Arrow.ArrowType.ARROW1);
+Arrow ar = Arrow.make(A, B, ArrowType.ARROW1);
 ar.setCurvature(60 * DEGREES);
 add(ar);
 camera.zoomToAllObjects();
@@ -312,7 +300,7 @@ You can set individual scales for start and ending parts with the `setStartScale
 //Points A,B are added to the scene in red color
 Point A = Point.at(0, 0).layer(1).drawColor("red");
 Point B = Point.at(2, 0).layer(1).drawColor("red");
-Arrow ar1 = Arrow.make(A, B, Arrow.ArrowType.ARROW2);
+Arrow ar1 = Arrow.make(A, B, ArrowType.ARROW2);
 ar1.setArrowThickness(100);
 ar1.setCurvature(-45 * DEGREES);
 ar1.setStartScale(5);//Start is 5x the end
@@ -343,12 +331,12 @@ Here you can see an example with delimiters:
 Shape sq = Shape.square().center().style("solidBlue");
 
 //A red brace with a x legend
-Delimiter delim1 = Delimiter.make(sq.getPoint(2), sq.getPoint(1), Delimiter.Type.BRACE, .05);
+Delimiter delim1 = Delimiter.make(sq.getPoint(2), sq.getPoint(1), DelimiterType.BRACE, .05);
 delim1.setLabel("$x$", .1);
 delim1.fillColor("#d35d6e");//This will set the color both to label and delimiter
 
 //A green bracket with a yellow triangle as a legend. This triangle will rotate with the delimiter
-Delimiter delim2 = Delimiter.make(sq.getPoint(1), sq.getPoint(0), Delimiter.Type.BRACKET, .05);
+Delimiter delim2 = Delimiter.make(sq.getPoint(1), sq.getPoint(0), DelimiterType.BRACKET, .05);
 delim2.setLabel(Shape.regularPolygon(3).scale(.1), .1);
 delim2.fillColor("#5aa469");//This will set the fill color both to label and delimiter
 delim2.getLabel().fillColor("yellow").thickness(6);//Change style of label only
@@ -356,10 +344,10 @@ delim2.getLabel().fillColor("yellow").thickness(6);//Change style of label only
 //FIXED: Label doesn't rotate.
 //ROTATE: Label rotates with the delimiter
 //SMART: Label rotates trying not to get "upside-down" (default value)
-delim2.setRotationType(Delimiter.Rotation.FIXED);
+delim2.setRotationType(RotationType.FIXED);
 
 //An orange parenthesis
-Delimiter delim3 = Delimiter.make(sq.getPoint(0), sq.getPoint(3), Delimiter.Type.PARENTHESIS, .05);
+Delimiter delim3 = Delimiter.make(sq.getPoint(0), sq.getPoint(3), DelimiterType.PARENTHESIS, .05);
 delim3.style("solidorange");
 delim3.setDelimiterScale(3);//Make a 3x bigger parenthesis
 delim3.setLabel("3", .2);//Note that style solidorange will not be applied to this label!
@@ -384,22 +372,21 @@ A tippable object is a MathObject that marks a specified point of a `Shape`. Any
 Shape reg = Shape.regularPolygon(6).center().style("solidblue");
 
 //A black type 1 arrow head at the middle of one side
-TippableObject tip1 = TippableObject.arrowHead(reg, .5 / 6,
-	TippableObject.SlopeDirectionType.POSITIVE,
-    Arrow.ArrowType.Arrow1
-    ).layer(1);
+TippableObject tip1 = TippableObject.arrowHead(reg, .5 / 6,ArrowType.ARROW1)
+    .setSlopeDirection(SlopeDirectionType.POSITIVE)//Locate it to the left side of the contour
+    .layer(1);
 
 //A LaTeX expression, color darkslateblue, at the middle of one side
 //this expression rotates with the side, and the mark point is visible
 LabelTip tip2 = LabelTip.makeLabelTip(reg, 1.5 / 6, "$a+b$")
-    .visibleMarkPoint(true)//Mark point is visible.
+    //                .setSlopeDirection(SlopeDirectionType.NEGATIVE)//Locate it to the right side of the contour
     .color("darkslateblue")
     .layer(1);
 
 //A LaTeX expression, color firebrick, attached to a side, that does not rotate with the shape
 LabelTip tip3 = LabelTip.makeLabelTip(reg, 2.5 / 6, "$x$")
-    .visibleMarkPoint(false) //The mark point is not visible
-    .fixedAngle(true) //The text shows with a fixed angle (doesn't align with the slope of the Shape)
+    //                .setSlopeDirection(SlopeDirectionType.NEGATIVE)//Locate it to the right side of the contour
+    .setRotationType(RotationType.FIXED) //The text shows with a fixed angle (doesn't align with the slope of the Shape)
     .color("firebrick")
     .layer(1);
 
@@ -408,16 +395,16 @@ TippableObject tip4 = TippableObject.equalLengthTip(reg, 3.5 / 6, 2).layer(1);
 
 //A solid orange circle
 TippableObject tip5 = TippableObject.make(reg, 4.5 / 6,
-	TippableObject.SlopeDirectionType.POSITIVE,
-    Shape.circle().scale(.05).style("solidOrange")
-    ).layer(1);
+                                          SlopeDirectionType.POSITIVE,//Align it through the contour
+                                          Shape.circle().scale(.05).style("solidOrange")
+                                         ).layer(1);
 
 //A solid red square, aligned to the left of the shape point
 TippableObject tip6 = TippableObject.make(reg, 5.5 / 6,
-	TippableObject.SlopeDirectionType.POSITIVE,
-    Shape.square().scale(.1).style("solidRed")
+                                          SlopeDirectionType.NEGATIVE,
+                                          Shape.square().scale(.1).style("solidRed")
                                          );
-tip6.setAnchor(Anchor.Type.LEFT).layer(1);
+tip6.setAnchor(AnchorType.LEFT).layer(1);
 
 add(reg, tip1, tip2, tip3, tip4, tip5, tip6);
 
@@ -439,8 +426,9 @@ JMathAnim can import and transform all bitmap images supported by JavaFX, like p
 
 ````java
 JMImage img=JMImage.make("euler.jpg").center().rotate(-5*DEGREES);
-LatexMathObject text=LatexMathObject.make("All hail the great Euler!").stackTo(img, Anchor.Type.LOWER);
-Animation anim = Commands.moveIn(2, Anchor.Type.LEFT, img);
+LatexMathObject text = LatexMathObject.make("All hail the great Euler!")
+    .stack().withDestinyAnchor(AnchorType.LOWER).toObject(img);
+Animation anim = Commands.moveIn(2, ScreenAnchor.LEFT, img);
 playAnimation(anim,new ShowCreation(2 ,text));
 waitSeconds(3);
 ````
@@ -458,7 +446,7 @@ public void setupSketch() {
 
     @Override
 public void runSketch() throws Exception {
-	SVGMathObject svg=SVGMathObject.make("donaldKnuth.svg");
+    MultiShapeObject svg= SVGUtils.importSVG("donaldKnuth.svg");
     svg.setHeight(2).center();
     play.showCreation(svg);//Plays an animation drawing the svg object
     waitSeconds(3);
@@ -534,15 +522,15 @@ r.ymax;//The most upper y-coordinate of the Rect
 r.getWidth();//Returns the width of the Rect
 r.getHeight();//Returns the height of the Rect
 r.addGap(.1, .2);//Creates a new Rect increased by .1 in x (left and right) and .2 in y (upper and lower)
-r.getCenter();//Gets a Point lying in the center of the Rect
-r.getUL();//Gets a Point lying the Upper-Left corner
-r.getUR();//Gets a Point lying the Upper-Right corner
-r.getDL();//Gets a Point lying the Lower-Left corner
-r.getDL();//Gets a Point lying the Lower-Right corner
+r.getCenter();//Gets a Vec lying in the center of the Rect
+r.getUpperLeft();//Gets a Vec lying the Upper-Left corner
+r.getUpperRight();//Gets a Vec lying the Upper-Right corner
+r.getLowerLeft();//Gets a Vec lying the Lower-Left corner
+r.getLowerRight();//Gets a Vec lying the Lower-Right corner
 r.centerAt(dst);//Moves the Rect so that its center lies in dst
 r.getRotatedRect(45*DEGREES);//Returns the smallest Rect that contains the original rotated 45 degrees
-r.getRelPoint(.25, .25);//Returns a Point located at the relative coordinates (.25,.25) of the Rect
-r.getRelPoint(.5,.5);//This is the same as r.getCenter()
+r.getRelCoordinates(.25, .25);//Returns a Vec located at the relative coordinates (.25,.25) of the Rect
+r.getRelCoordinates(.5,.5);//This is the same as r.getCenter()
 ```
 
 Apart from bounding boxes, the `Rect` class is used to represent the mathview. The method `getMathView()` returns a `Rect `will represent all the visible area that is currently being drawn.
@@ -551,15 +539,19 @@ Thus, for example, the following code will draw some dots at key points of the s
 
 ```java
 Rect mathView = getMathView();
-Point center = mathView.getCenter().dotStyle(Point.DotSyle.PLUS);//A black point with a plus sign at the center
-Point UL = mathView.getUL();//Black point at upper-left corner of the screen
-Point UR = mathView.getUR();//Black point at upper-right corner of the screen
-Point DL = mathView.getDL();//Black point at lower-left corner of the screen
-Point DR = mathView.getDR();//Black point at lower-right corner of the screen
-Point Q1 = mathView.getRelPoint(.25, .25).drawColor("red");//Red point at (25%,25%) of the screen
-Point Q2 = mathView.getRelPoint(.75, .25).drawColor("green");//Green point at (75%,25%) of the screen
-Point Q3 = mathView.getRelPoint(.75, .75).drawColor("yellow");//Yellow point at (75%,75%) of the screen
-Point Q4 = mathView.getRelPoint(.25, .75).drawColor("blue");//Blue point at (25%,75%) of the screen
+
+//Note that these Rect methods return a Vec object
+//and we must wrap them into a Point object in order
+//to add them to the scene
+Point center = Point.at(mathView.getCenter()).dotStyle(DotStyle.PLUS);//A black point with a plus sign at the center
+Point UL = Point.at(mathView.getUpperLeft());//Black point at upper-left corner of the screen
+Point UR = Point.at(mathView.getUpperRight());//Black point at upper-right corner of the screen
+Point DL = Point.at(mathView.getLowerLeft());//Black point at lower-left corner of the screen
+Point DR = Point.at(mathView.getLowerRight());//Black point at lower-right corner of the screen
+Point Q1 = Point.at(mathView.getRelCoordinates(.25, .25)).drawColor("red");//Red point at (25%,25%) of the screen
+Point Q2 = Point.at(mathView.getRelCoordinates(.75, .25)).drawColor("green");//Green point at (75%,25%) of the screen
+Point Q3 = Point.at(mathView.getRelCoordinates(.75, .75)).drawColor("yellow");//Yellow point at (75%,75%) of the screen
+Point Q4 = Point.at(mathView.getRelCoordinates(.25, .75)).drawColor("blue");//Blue point at (25%,75%) of the screen
 add(center, UL, UR, DL, DR, Q1, Q2, Q3, Q4);
 add(Shape.rectangle(getMathView()).scale(.9));//add a rectangle with size 90% of the screen
 waitSeconds(5);
