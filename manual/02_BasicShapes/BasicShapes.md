@@ -246,7 +246,7 @@ grid.thickness(7).drawColor("gray");
 add(
     grid,
     Shape.circle() //A circle
-    .drawColor("blue") //drawed in blue
+    .drawColor("blue") //drawn in blue
     .fillColor("blue") //filled also in blue
     .fillAlpha(.5) //with opacity 50%
 );
