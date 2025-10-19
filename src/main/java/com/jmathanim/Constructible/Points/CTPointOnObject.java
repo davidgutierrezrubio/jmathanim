@@ -21,28 +21,23 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.PointOwner;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Point;
 
 /**
  *
  * @author David
  */
-public class CTPointOnObject extends CTPoint {
+public class CTPointOnObject extends CTAbstractPoint<CTPointOnObject> {
 
     private final PointOwner owner;
 
-    public static CTPointOnObject make(PointOwner owner, Point p) {
-        CTPointOnObject resul = new CTPointOnObject(owner, p);
+    public static CTPointOnObject make(PointOwner owner) {
+        CTPointOnObject resul = new CTPointOnObject(owner);
         resul.rebuildShape();
         return resul;
     }
 
-    public static CTPointOnObject make(PointOwner owner) {
-        return make(owner, Point.origin());
-    }
-
-    private CTPointOnObject(PointOwner owner, Point p) {
-        super(p);
+    private CTPointOnObject(PointOwner owner) {
+        super(Vec.to(0,0));
         this.owner = owner;
     }
 

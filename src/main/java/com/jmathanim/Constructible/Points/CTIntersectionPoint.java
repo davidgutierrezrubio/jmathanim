@@ -37,7 +37,7 @@ import com.jmathanim.mathobjects.Line;
 public class CTIntersectionPoint extends CTAbstractPoint<CTIntersectionPoint> {
 
     private enum IntersectionType {
-        LINEAR, LINE_CIRCLE, CIRCLE_CIRCLE, CIRCLE_CONIC
+        LINE_LINE, LINE_CIRCLE, CIRCLE_CIRCLE, CIRCLE_CONIC
     }
     private IntersectionType intersectionType;
     private CTAbstractLine<?> ctline1, ctline2;
@@ -97,7 +97,7 @@ public class CTIntersectionPoint extends CTAbstractPoint<CTIntersectionPoint> {
             ctline2 = (CTAbstractLine<?>) c2;
             ctcircle1 = null;
             ctcircle2 = null;
-            intersectionType = IntersectionType.LINEAR;
+            intersectionType = IntersectionType.LINE_LINE;
         } else if ((c1 instanceof CTAbstractLine) && (c2 instanceof CTAbstractCircle)) {
             ctline1 = (CTAbstractLine<?>) c1;
             ctline2 = null;
@@ -141,7 +141,7 @@ public class CTIntersectionPoint extends CTAbstractPoint<CTIntersectionPoint> {
         //Circle
         double x1, x2, x3, x4, y1, y2, y3, y4;
         switch (intersectionType) {
-            case LINEAR:
+            case LINE_LINE:
                 x1 = ctline1.getP1().getVec().x;
                 x2 = ctline1.getP2().getVec().x;
                 x3 = ctline2.getP1().getVec().x;
@@ -285,7 +285,7 @@ public class CTIntersectionPoint extends CTAbstractPoint<CTIntersectionPoint> {
                 //Not implemented yet...
                 setUpdateLevel(0);
                 break;
-            case LINEAR:
+            case LINE_LINE:
                 dependsOn(scene, ctline1, ctline2);
                 break;
             case LINE_CIRCLE:

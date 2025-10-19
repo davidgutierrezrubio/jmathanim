@@ -68,9 +68,9 @@ public class CTPoint extends CTAbstractPoint<CTPoint> {
         return copy;
     }
 
-    @Override
-    public String toString() {
-        return this.getObjectLabel() + ":" + String.format("CTPoint[%.2f, %.2f]", this.coordinatesOfPoint.x, this.coordinatesOfPoint.y);
-    }
+//    @Override
+//    public String toString() {
+//        return this.getObjectLabel() + ":" + String.format("CTPoint[%.2f, %.2f]", this.coordinatesOfPoint.x, this.coordinatesOfPoint.y);
+//    }
 
 }

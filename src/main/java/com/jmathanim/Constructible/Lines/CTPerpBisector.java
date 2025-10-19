@@ -27,12 +27,16 @@ import com.jmathanim.mathobjects.Coordinates;
  */
 public class CTPerpBisector extends CTAbstractLine<CTPerpBisector> {
 
-    private Vec A, B;
+    private Coordinates<?> A, B;
+    private Vec Av, Bv;
 
     private CTPerpBisector(Coordinates<?> A, Coordinates<?> B) {
         super(Vec.to(0,0),Vec.to(1,0));
-        this.A = A.getVec();
-        this.B = B.getVec();
+        this.Av = A.getVec();
+        this.Bv = B.getVec();
+        this.A = A;
+        this.B = B;
+
         rebuildShape();
     }
 
@@ -57,13 +61,21 @@ public class CTPerpBisector extends CTAbstractLine<CTPerpBisector> {
     @Override
     public void rebuildShape() {
 
-            Vec midPoint=A.getVec().interpolate(B, .5);
-            Vec v = A.to(B);
+            Vec midPoint= Av.getVec().interpolate(Bv, .5);
+            Vec v = Av.to(Bv);
 //        getP2().copyCoordinatesFrom(Vec.to(getP1().x - v.y, getP1().y + v.x));
             Vec vOrthogonal = Vec.to(midPoint.x - v.y, midPoint.y + v.x);
             P1.copyCoordinatesFrom(midPoint);
             P2.copyCoordinatesFrom(vOrthogonal);
             super.rebuildShape();
+    }
 
+    @Override
+    public String toString() {
+        return String.format("'%s' %s of  %s and %s",
+                getObjectLabel(),
+                getClass().getSimpleName(),
+                A.toString(),
+                B.toString());
     }
 }

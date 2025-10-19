@@ -19,14 +19,12 @@ package com.jmathanim.Constructible.Transforms;
 
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Lines.CTAbstractLine;
-import com.jmathanim.Constructible.Lines.CTLine;
-import com.jmathanim.Constructible.Lines.CTRay;
 import com.jmathanim.Constructible.Lines.CTSegment;
+import com.jmathanim.Constructible.Points.CTAbstractPoint;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Coordinates;
-import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.Point;
 
 /**
@@ -45,45 +43,45 @@ public class CTMirrorPoint extends CTPoint {
     }
 
     private MirrorType mirrorType;
+//
+//    public static CTMirrorPoint make(Coordinates<?> orig, CTAbstractLine<?> axis) {
+//        CTMirrorPoint resul = new CTMirrorPoint(orig, axis, null);
+//        resul.rebuildShape();
+//        resul.mirrorType = MirrorType.AXIAL;
+//        return resul;
+//    }
 
-    public static CTMirrorPoint make(Point orig, Line axis) {
-        CTMirrorPoint resul = new CTMirrorPoint(CTPoint.make(orig), CTLine.make(axis), null);
-        resul.rebuildShape();
-        resul.mirrorType = MirrorType.AXIAL;
-        return resul;
-    }
-
-    public static CTMirrorPoint make(Coordinates orig, Coordinates A, Coordinates B) {
+    public static CTMirrorPoint make(Coordinates<?> orig, Coordinates<?> A, Coordinates<?> B) {
         CTMirrorPoint resul = new CTMirrorPoint(CTPoint.make(orig), CTSegment.make(A, B), null);
         resul.rebuildShape();
         resul.mirrorType = MirrorType.AXIAL;
         return resul;
     }
 
-    public static CTMirrorPoint make(CTPoint orig, Constructible axis) {
+    public static CTMirrorPoint make(CTAbstractPoint<?> orig, Constructible<?> axis) {
         if (axis instanceof CTAbstractLine) {
-            CTMirrorPoint resul = new CTMirrorPoint(orig, (CTAbstractLine) axis, null);
+            CTMirrorPoint resul = new CTMirrorPoint(orig, (CTAbstractLine<?>) axis, null);
             resul.mirrorType = MirrorType.AXIAL;
             resul.rebuildShape();
             return resul;
         }
-        if (axis instanceof CTSegment) {
-            CTSegment segment = (CTSegment) axis;
-            CTLine line = CTLine.make(segment.getP1(), segment.getP1());
-            CTMirrorPoint resul = new CTMirrorPoint(orig, line, null);
-            resul.mirrorType = MirrorType.AXIAL;
-            resul.rebuildShape();
-            return resul;
-        }
-        if (axis instanceof CTRay) {
-            CTRay ray = (CTRay) axis;
-            CTLine line = CTLine.make(ray.getP1(), ray.getP1());
-            CTMirrorPoint resul = new CTMirrorPoint(orig, line, null);
-            resul.mirrorType = MirrorType.AXIAL;
-            resul.rebuildShape();
-            return resul;
-        }
-        if (axis instanceof CTPoint) {
+//        if (axis instanceof CTSegment) {
+//            CTSegment segment = (CTSegment) axis;
+//            CTLine line = CTLine.make(segment.getP1(), segment.getP1());
+//            CTMirrorPoint resul = new CTMirrorPoint(orig, line, null);
+//            resul.mirrorType = MirrorType.AXIAL;
+//            resul.rebuildShape();
+//            return resul;
+//        }
+//        if (axis instanceof CTRay) {
+//            CTRay ray = (CTRay) axis;
+//            CTLine line = CTLine.make(ray.getP1(), ray.getP1());
+//            CTMirrorPoint resul = new CTMirrorPoint(orig, line, null);
+//            resul.mirrorType = MirrorType.AXIAL;
+//            resul.rebuildShape();
+//            return resul;
+//        }
+        if (axis instanceof CTAbstractPoint<?>) {
             CTPoint cp = (CTPoint) axis;
             CTMirrorPoint resul = new CTMirrorPoint(orig, null, cp);
             resul.mirrorType = MirrorType.CENTRAL;
@@ -94,7 +92,7 @@ public class CTMirrorPoint extends CTPoint {
         return null;
     }
 
-    private CTMirrorPoint(CTPoint orig, CTAbstractLine axis, CTPoint center) {
+    private CTMirrorPoint(CTAbstractPoint<?> orig, CTAbstractLine<?> axis, CTPoint center) {
         super();
         this.originalPoint = orig;
         this.axis = axis;

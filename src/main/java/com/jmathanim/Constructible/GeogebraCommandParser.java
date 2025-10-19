@@ -40,7 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -51,22 +51,21 @@ import java.util.zip.ZipFile;
  */
 class GeogebraCommandParser {
 
-    protected final HashMap<String, Constructible> geogebraElements;
-    protected final HashMap<String, String> expressions;
+    protected final LinkedHashMap<String, Constructible> geogebraElements;
+    protected final LinkedHashMap<String, String> expressions;
 
     public GeogebraCommandParser() {
-        this.geogebraElements = new HashMap<>();
-        this.expressions = new HashMap<>();
+        this.geogebraElements = new LinkedHashMap<>();
+        this.expressions = new LinkedHashMap<>();
     }
 
     /**
-     * Process a geogebra argument. May be a name of an existing object, a point
-     * or a scalar
+     * Process a geogebra argument. May be a name of an existing object, a point or a scalar
      *
      * @param argument String with the argument
      * @return The MathObject generated
      */
-    private MathObject parseArgument(String argument) {
+    private Constructible<?> parseArgument(String argument) {
         if (geogebraElements.containsKey(argument)) {
             return geogebraElements.get(argument);
         }
@@ -77,7 +76,7 @@ class GeogebraCommandParser {
             // Nothing to do here, pass to the next guess
         }
 
-        // Try if it is a point expressed in (a,b) form (an anoynimous point)
+        // Try if it is a point expressed in (a,b) form (an anonymous point)
         Pattern patternPoint = Pattern.compile("\\((.*),(.*)\\)");
         Matcher matcher = patternPoint.matcher(argument);
         if (matcher.find()) {
@@ -171,7 +170,7 @@ class GeogebraCommandParser {
         // Line style. Only thickness
         Element lineStyle = firstElementWithTag(el, "lineStyle");
         if (lineStyle != null) {
-            double thickness = Double.valueOf(lineStyle.getAttribute("thickness"));
+            double thickness = Double.valueOf(lineStyle.getAttribute("thickness"))*4d;
             resul.setThickness(thickness);
             //Dash Style
             //0 :         DashStyle.SOLID
@@ -283,7 +282,7 @@ class GeogebraCommandParser {
         resul.dotStyle(dotStyle);
         resul.objectLabel = label;
         registerGeogebraElement(label, resul);
-        JMathAnimScene.logger.debug("Imported Geogebra point {}", label);
+        JMathAnimScene.logger.debug("Imported Geogebra "+ resul);
     }
 
     void processImageElement(Element el, ZipFile zipFile) {
@@ -295,9 +294,9 @@ class GeogebraCommandParser {
             InputStream fileStream = zipFile.getInputStream(entry);
             JMImage img = new JMImage(fileStream);
             Element elStartPoint1 = (Element) el.getElementsByTagName("startPoint").item(0);
-            CTPoint A = (CTPoint) geogebraElements.get(elStartPoint1.getAttribute("exp"));
+            CTAbstractPoint<?> A = (CTAbstractPoint<?>) geogebraElements.get(elStartPoint1.getAttribute("exp"));
             Element elStartPoint2 = (Element) el.getElementsByTagName("startPoint").item(1);
-            CTPoint B = (CTPoint) geogebraElements.get(elStartPoint2.getAttribute("exp"));
+            CTAbstractPoint<?> B = (CTAbstractPoint<?>) geogebraElements.get(elStartPoint2.getAttribute("exp"));
             registerGeogebraElement(label, CTImage.make(A, B, img));
 
         } catch (IOException ex) {
@@ -340,11 +339,12 @@ class GeogebraCommandParser {
         if (fontElement != null) {
             //TODO: Adjust import scale. Guess correct size
             size = Double.parseDouble(fontElement.getAttribute("size")) / 36;
+            if (size==0) size=5d/36;//This is approximate!
         } else {
             size = 5d / 36;//Assume size is "small"
         }
 
-        CTLaTeX cTLaTeX = CTLaTeX.make(text, anchorPoint, AnchorType.LEFT_AND_ALIGNED_UPPER, 0).scale(size);
+        CTLaTeX cTLaTeX = CTLaTeX.make(text, anchorPoint, AnchorType.RIGHT_AND_ALIGNED_UPPER, 0).scale(size);
         registerGeogebraElement(label, cTLaTeX);
     }
 
@@ -425,16 +425,20 @@ class GeogebraCommandParser {
     void processPerpBisector(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] params = getArrayOfParameters(el);
+        CTPerpBisector resul=null;
         if (params.length == 2) {// 2 points
             CTAbstractPoint<?> A = (CTAbstractPoint<?>) params[0];
             CTAbstractPoint<?> B = (CTAbstractPoint<?>) params[1];
-            registerGeogebraElement(label, CTPerpBisector.make(A, B));
+            resul = CTPerpBisector.make(A, B);
+            registerGeogebraElement(label, resul);
         }
         //TODO: Implement this. A perpendicular from a segment
         if (params.length == 1) {// 1 segment
             CTSegment seg = (CTSegment) params[0];
-            registerGeogebraElement(label, CTPerpBisector.make(seg));
+            resul=CTPerpBisector.make(seg);
+            registerGeogebraElement(label, resul);
         }
+        JMathAnimScene.logger.debug("Imported Geogebra " + resul);
     }
 
     protected void processAngleBisector(Element el) {
@@ -526,7 +530,7 @@ class GeogebraCommandParser {
             CTAbstractPoint<?> arg0 = (CTAbstractPoint<?>) parseArgument(str0);
             CTAbstractPoint<?> arg1 = (CTAbstractPoint<?>) parseArgument(str1);
             CTAbstractPoint<?> arg2 = (CTAbstractPoint<?>) parseArgument(str2);
-            Constructible resul = CTCircle.make3Points(arg0, arg1, arg2);
+            CTCircle resul = CTCircle.make3Points(arg0, arg1, arg2);
             registerGeogebraElement(label, resul);
             JMathAnimScene.logger.debug("Imported Geogebra Circle " + label + " by 3 points: " + arg0 + ", " + arg1 + ",  " + arg2);
             return;
@@ -541,18 +545,18 @@ class GeogebraCommandParser {
             MathObject arg1 = parseArgument(str1);
 
             // A circle with center a point and another one in the perimeter
-            if ((arg0 instanceof CTPoint) && (arg1 instanceof CTPoint)) {
-                CTPoint p0 = (CTPoint) arg0;
-                CTPoint p1 = (CTPoint) arg1;
-                Constructible resul = CTCircle.makeCenterPoint(p0, p1);
+            if ((arg0 instanceof CTAbstractPoint) && (arg1 instanceof CTAbstractPoint)) {
+                CTAbstractPoint<?> p0 = (CTAbstractPoint<?>) arg0;
+                CTAbstractPoint<?> p1 = (CTAbstractPoint<?>) arg1;
+                CTCircle resul = CTCircle.makeCenterPoint(p0, p1);
                 registerGeogebraElement(label, resul);
                 JMathAnimScene.logger.debug("Imported Geogebra Circle " + label + ", center " + p0 + ", point " + p1);
                 return;
             }
-            if ((arg0 instanceof CTPoint) && (arg1 instanceof Scalar)) {
-                CTPoint p0 = (CTPoint) arg0;
+            if ((arg0 instanceof CTAbstractPoint<?>) && (arg1 instanceof Scalar)) {
+                CTAbstractPoint<?> p0 = (CTAbstractPoint<?>) arg0;
                 Scalar sc0 = (Scalar) arg1;
-                Constructible resul = CTCircle.makeCenterRadius(p0, sc0);
+                CTCircle resul = CTCircle.makeCenterRadius(p0, sc0);
                 registerGeogebraElement(label, resul);
                 JMathAnimScene.logger.debug("Imported Geogebra Circle " + label + ", center " + p0 + ", radius " + sc0);
             }
@@ -568,16 +572,16 @@ class GeogebraCommandParser {
         //If Point-Circle: 2 tangent lines
         //If Circle-Circle: 4 tangent lines (exterior and interior ones)
 
-        if (ob1 instanceof CTPoint) {
-            CTPoint point = (CTPoint) ob1;
-            CTAbstractCircle circle = (CTAbstractCircle) ob2;
+        if (ob1 instanceof CTAbstractPoint) {
+            CTAbstractPoint<?> point = (CTAbstractPoint<?>) ob1;
+            CTAbstractCircle<?> circle = (CTAbstractCircle<?>) ob2;
             registerGeogebraElement(label, CTTangentPointCircle.make(point, circle, 0));
             registerGeogebraElement(getOutputArgument(el, 1), CTTangentPointCircle.make(point, circle, 1));
         }
 
         if ((ob1 instanceof CTAbstractCircle) && (ob2 instanceof CTAbstractCircle)) {
-            CTAbstractCircle c1 = (CTAbstractCircle) ob1;
-            CTAbstractCircle c2 = (CTAbstractCircle) ob2;
+            CTAbstractCircle<?> c1 = (CTAbstractCircle<?>) ob1;
+            CTAbstractCircle<?> c2 = (CTAbstractCircle<?>) ob2;
             registerGeogebraElement(label, CTTangentCircleCircle.make(c1, c2, 0));
             registerGeogebraElement(getOutputArgument(el, 1), CTTangentCircleCircle.make(c1, c2, 1));
             registerGeogebraElement(getOutputArgument(el, 2), CTTangentCircleCircle.make(c1, c2, 2));
@@ -592,25 +596,32 @@ class GeogebraCommandParser {
         MathObject[] objs = getArrayOfParameters(el);
 
         long nonNullArgs = Arrays.stream(objs).filter(obj -> obj != null).count();
-
-        Constructible<?> ob1 = (Constructible<?> ) objs[0];
-        Constructible<?>  ob2 = (Constructible<?> ) objs[1];
+        CTIntersectionPoint resul1 = null;
+        CTIntersectionPoint resul2 = null;
+        Constructible<?> ob1 = (Constructible<?>) objs[0];
+        Constructible<?> ob2 = (Constructible<?>) objs[1];
         if (nonNullArgs > 2) {//Third parameter, intersection number
             //if a2="n" it computes only the n-th intersection point
             //For line(A,B)-circle, "1" stands for closest point to A, "2" for farthest
             numPoint = (int) ((Scalar) objs[2]).getValue();
-            registerGeogebraElement(label, CTIntersectionPoint.make(ob1, ob2, numPoint - 1));
+            resul1 = CTIntersectionPoint.make(ob1, ob2, numPoint - 1);
+            registerGeogebraElement(label, resul1);
         }
         if (nonNullArgs == 2) {
-            if ((ob1 instanceof CTCircle) || (ob2 instanceof CTCircle)) {
-                registerGeogebraElement(label, CTIntersectionPoint.make(ob1, ob2, 0));
-                registerGeogebraElement(getOutputArgument(el, 1), CTIntersectionPoint.make(ob1, ob2, 1));
+            if ((ob1 instanceof CTAbstractCircle<?>) || (ob2 instanceof CTAbstractCircle<?>)) {
+                resul1 = CTIntersectionPoint.make(ob1, ob2, 0);
+                registerGeogebraElement(label, resul1);
+                resul2 = CTIntersectionPoint.make(ob1, ob2, 1);
+                registerGeogebraElement(getOutputArgument(el, 1), resul2);
             } else {
-                registerGeogebraElement(label, CTIntersectionPoint.make(ob1, ob2, 0));
+                resul1 = CTIntersectionPoint.make(ob1, ob2, 0);
+                registerGeogebraElement(label, resul1);
             }
         }
 
-        JMathAnimScene.logger.debug("Imported Geogebra intersection point " + label + " of " + objs[0] + " and " + objs[1]);
+        JMathAnimScene.logger.debug("Imported Geogebra " + resul1);
+        if (resul2 != null)
+            JMathAnimScene.logger.debug("Imported Geogebra " + resul2);
     }
 
     void processPointOnObject(Element el) {
@@ -621,7 +632,6 @@ class GeogebraCommandParser {
             PointOwner ob1 = (PointOwner) objs[0];
             final CTPointOnObject p = CTPointOnObject.make(ob1);
             registerGeogebraElement(label, p);
-            JMathAnimScene.logger.debug("Imported Geogebra point " + label + " on object " + objs[0]);
         } catch (ClassCastException e) {
             JMathAnimScene.logger.warn("Object type " + objs[0].getClass().getName() + " not implement yet to hold a point on object, sorry");
         }
@@ -637,9 +647,9 @@ class GeogebraCommandParser {
             String str1 = elInput.getAttribute("a1");
             String str2 = elInput.getAttribute("a2");
 
-            CTPoint focus1 = (CTPoint) parseArgument(str0);
-            CTPoint focus2 = (CTPoint) parseArgument(str1);
-            CTPoint A = (CTPoint) parseArgument(str2);
+            CTAbstractPoint<?> focus1 = (CTAbstractPoint<?>) parseArgument(str0);
+            CTAbstractPoint<?> focus2 = (CTAbstractPoint<?>) parseArgument(str1);
+            CTAbstractPoint<?> A = (CTAbstractPoint<?>) parseArgument(str2);
             CTEllipse resul = CTEllipse.make(focus1, focus2, A);
             registerGeogebraElement(label, resul);
             JMathAnimScene.logger.debug("Imported Geogebra Ellipse" + label + " by 3 points: " + focus1 + ", " + focus2 + ",  " + A);
@@ -651,22 +661,22 @@ class GeogebraCommandParser {
         MathObject[] objs = getArrayOfParameters(el);
         //TODO: An image (CTImage) can also be mirrored for example.
         //Trying to import a mirrored image leads a to cast exception
-        if (objs[0] instanceof CTPoint) {
-            CTPoint pointToMirror = (CTPoint) objs[0];
-            Constructible mirrorAxis = (Constructible) objs[1];
+        if (objs[0] instanceof CTAbstractPoint<?>) {
+            CTAbstractPoint<?> pointToMirror = (CTAbstractPoint<?>) objs[0];
+            Constructible<?> mirrorAxis = (Constructible<?>) objs[1];
             registerGeogebraElement(label, CTMirrorPoint.make(pointToMirror, mirrorAxis));
             JMathAnimScene.logger.debug("Imported Geogebra mirror point " + label + " of " + objs[0] + " with axis " + objs[1]);
         }
-        if (objs[0] instanceof CTLine) {
-            CTLine lineToMirror = (CTLine) objs[0];
-            Constructible mirrorAxis = (Constructible) objs[1];
-            if (mirrorAxis instanceof CTLine) {
-                Constructible resul = CTTransformedLine.makeAxisReflectionLine(lineToMirror, (CTLine) mirrorAxis);
+        if (objs[0] instanceof CTAbstractLine<?>) {
+            CTAbstractLine<?> lineToMirror = (CTAbstractLine<?>) objs[0];
+            Constructible<?> mirrorAxis = (Constructible<?>) objs[1];
+            if (mirrorAxis instanceof CTAbstractLine<?>) {
+                Constructible<?> resul = CTTransformedLine.makeAxisReflectionLine((CTAbstractLine<?>) lineToMirror, (CTAbstractLine<?>) mirrorAxis);
                 registerGeogebraElement(label, resul);
                 JMathAnimScene.logger.debug("Imported Geogebra xis mirror line " + label + " of " + objs[0] + " with axis " + objs[1]);
             }
-            if (mirrorAxis instanceof CTPoint) {
-                Constructible resul = CTTransformedLine.makePointReflectionLine(lineToMirror, (CTPoint) mirrorAxis);
+            if (mirrorAxis instanceof CTAbstractPoint<?>) {
+                Constructible<?> resul = CTTransformedLine.makePointReflectionLine(lineToMirror, (CTAbstractPoint<?>) mirrorAxis);
                 registerGeogebraElement(label, resul);
                 JMathAnimScene.logger.debug("Imported Geogebra central mirror of line " + label + " of " + objs[0] + " with axis " + objs[1]);
             }
@@ -678,14 +688,14 @@ class GeogebraCommandParser {
     void processTranslate(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
-        if (objs[0] instanceof CTPoint) {
-            CTPoint pointToTranslate = (CTPoint) objs[0];
+        if (objs[0] instanceof CTAbstractPoint<?>) {
+            CTAbstractPoint<?> pointToTranslate = (CTAbstractPoint<?>) objs[0];
             CTVector translateVector = (CTVector) objs[1];
             registerGeogebraElement(label, CTTranslatedPoint.make(pointToTranslate, translateVector));
             JMathAnimScene.logger.debug("Imported Geogebra translate point " + label + " of " + objs[0] + " with vector " + objs[1]);
         }
-        if (objs[0] instanceof CTLine) {
-            CTLine cTLineToTranslate = (CTLine) objs[0];
+        if (objs[0] instanceof CTAbstractLine<?>) {
+            CTAbstractLine<?> cTLineToTranslate = (CTAbstractLine<?>) objs[0];
             CTVector translateVector = (CTVector) objs[1];
             registerGeogebraElement(label, CTTransformedLine.makeTranslatedLine(cTLineToTranslate, translateVector));
             JMathAnimScene.logger.debug("Imported Geogebra translated line " + label + " of " + objs[0] + " with vector " + objs[1]);
@@ -697,24 +707,24 @@ class GeogebraCommandParser {
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
         MathObject aa = objs[0];
-        if (objs[0] instanceof CTPoint) {
-            CTPoint pointToRotate = (CTPoint) objs[0];
+        if (objs[0] instanceof CTAbstractPoint<?>) {
+            CTAbstractPoint<?> pointToRotate = (CTAbstractPoint<?>) objs[0];
             Scalar angle = (Scalar) objs[1];
-            CTPoint rotationCenter = (CTPoint) objs[2];
+            CTAbstractPoint<?> rotationCenter = (CTAbstractPoint<?>) objs[2];
             registerGeogebraElement(label, CTRotatedPoint.make(pointToRotate, rotationCenter, angle));
             JMathAnimScene.logger.debug("Imported Geogebra rotated point " + label + " of " + objs[0] + " with angle " + objs[1]);
         }
-        if (objs[0] instanceof CTLine) {
-            CTLine lineToRotate = (CTLine) objs[0];
+        if (objs[0] instanceof CTAbstractLine<?>) {
+            CTAbstractLine<?> lineToRotate = (CTAbstractLine<?>) objs[0];
             Scalar angle = (Scalar) objs[1];
-            CTPoint rotationCenter = (CTPoint) objs[2];
+            CTAbstractPoint<?> rotationCenter = (CTAbstractPoint<?>) objs[2];
             registerGeogebraElement(label, CTTransformedLine.makeRotatedLine(lineToRotate, rotationCenter, angle));
             JMathAnimScene.logger.debug("Imported Geogebra rotated point " + label + " of " + objs[0] + " with angle " + objs[1]);
         }
-        if (aa instanceof CTCircle) {
-            CTCircle circleToRotate = (CTCircle) objs[0];
+        if (aa instanceof CTAbstractCircle<?>) {
+            CTAbstractCircle<?> circleToRotate = (CTAbstractCircle<?>) objs[0];
             Scalar angle = (Scalar) objs[1];
-            CTPoint rotationCenter = (CTPoint) objs[2];
+            CTAbstractPoint<?> rotationCenter = (CTAbstractPoint<?>) objs[2];
             registerGeogebraElement(label, CTTransformedCircle.makeRotatedCircle(circleToRotate, rotationCenter, angle));
             JMathAnimScene.logger.debug("Imported Geogebra rotated point " + label + " of " + objs[0] + " with angle " + objs[1]);
         }
@@ -726,8 +736,8 @@ class GeogebraCommandParser {
         MathObject[] objs = getArrayOfParameters(el);
         //If there are 2 elements, they must be 2 points
         if (objs.length == 2) {
-            CTPoint A = (CTPoint) objs[0];
-            CTPoint B = (CTPoint) objs[1];
+            CTAbstractPoint<?> A = (CTAbstractPoint<?>) objs[0];
+            CTAbstractPoint<?> B = (CTAbstractPoint<?>) objs[1];
             registerGeogebraElement(label, CTMidPoint.make(A, B));
         }
         if (objs.length == 1) {//It must be a segment
@@ -748,26 +758,26 @@ class GeogebraCommandParser {
     void processSemicircle(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
-        CTPoint A = (CTPoint) objs[0];
-        CTPoint B = (CTPoint) objs[1];
+        CTAbstractPoint<?> A = (CTAbstractPoint<?>) objs[0];
+        CTAbstractPoint<?> B = (CTAbstractPoint<?>) objs[1];
         registerGeogebraElement(label, CTSemiCircle.make(A, B));
     }
 
     void processCircleArc(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
-        CTPoint A = (CTPoint) objs[0];
-        CTPoint B = (CTPoint) objs[1];
-        CTPoint C = (CTPoint) objs[2];
+        CTAbstractPoint<?> A = (CTAbstractPoint<?>) objs[0];
+        CTAbstractPoint<?> B = (CTAbstractPoint<?>) objs[1];
+        CTAbstractPoint<?> C = (CTAbstractPoint<?>) objs[2];
         registerGeogebraElement(label, CTCircleArc.make(A, B, C));
     }
 
     void processCircleSector(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
-        CTPoint A = (CTPoint) objs[0];
-        CTPoint B = (CTPoint) objs[1];
-        CTPoint C = (CTPoint) objs[2];
+        CTAbstractPoint<?> A = (CTAbstractPoint<?>) objs[0];
+        CTAbstractPoint<?> B = (CTAbstractPoint<?>) objs[1];
+        CTAbstractPoint<?> C = (CTAbstractPoint<?>) objs[2];
         registerGeogebraElement(label, CTCircleSector.make(A, B, C));
     }
 }

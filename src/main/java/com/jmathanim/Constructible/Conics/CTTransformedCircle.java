@@ -17,9 +17,9 @@
  */
 package com.jmathanim.Constructible.Conics;
 
-import com.jmathanim.Constructible.Lines.CTLine;
+import com.jmathanim.Constructible.Lines.CTAbstractLine;
 import com.jmathanim.Constructible.Lines.CTVector;
-import com.jmathanim.Constructible.Points.CTPoint;
+import com.jmathanim.Constructible.Points.CTAbstractPoint;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -31,9 +31,9 @@ import com.jmathanim.mathobjects.Scalar;
  */
 public class CTTransformedCircle extends CTAbstractCircle<CTTransformedCircle> {
 
-    private final CTCircle circleToTransform;
-    private final CTLine axis;
-    private final CTPoint center;
+    private final CTAbstractCircle<?> circleToTransform;
+    private final CTAbstractLine<?> axis;
+    private final CTAbstractPoint<?> center;
     private final CTVector translation;
     private final Scalar angle;
 
@@ -56,7 +56,7 @@ public class CTTransformedCircle extends CTAbstractCircle<CTTransformedCircle> {
      * @param axis Mirror axis
      * @return The created object
      */
-    public static CTTransformedCircle makeAxisReflectionCircle(CTCircle circleToTransform, CTLine axis) {
+    public static CTTransformedCircle makeAxisReflectionCircle(CTAbstractCircle<?> circleToTransform, CTAbstractLine<?> axis) {
         CTTransformedCircle resul = new CTTransformedCircle(circleToTransform, axis, null, null, null);
         resul.transType = transformType.AXISMIRROR;
         return resul;
@@ -69,7 +69,7 @@ public class CTTransformedCircle extends CTAbstractCircle<CTTransformedCircle> {
      * @param center Mirror center
      * @return The created object
      */
-    public static CTTransformedCircle makePointReflectionCircle(CTCircle circleToTransform, CTPoint center) {
+    public static CTTransformedCircle makePointReflectionCircle(CTAbstractCircle<?> circleToTransform, CTAbstractPoint<?> center) {
         CTTransformedCircle resul = new CTTransformedCircle(circleToTransform, null, center, null, null);
         resul.transType = transformType.CENTRALMIRROR;
         return resul;
@@ -82,7 +82,7 @@ public class CTTransformedCircle extends CTAbstractCircle<CTTransformedCircle> {
      * @param vector Translation vector
      * @return The created object
      */
-    public static CTTransformedCircle makeTranslatedCircle(CTCircle circleToTransform, CTVector vector) {
+    public static CTTransformedCircle makeTranslatedCircle(CTAbstractCircle<?> circleToTransform, CTVector vector) {
         CTTransformedCircle resul = new CTTransformedCircle(circleToTransform, null, null, vector, null);
         resul.transType = transformType.TRANSLATION;
         return resul;
@@ -95,13 +95,13 @@ public class CTTransformedCircle extends CTAbstractCircle<CTTransformedCircle> {
      * @param angle Rotation angle
      * @return The created object
      */
-    public static CTTransformedCircle makeRotatedCircle(CTCircle circleToTransform, CTPoint center, Scalar angle) {
+    public static CTTransformedCircle makeRotatedCircle(CTAbstractCircle<?> circleToTransform, CTAbstractPoint<?> center, Scalar angle) {
         CTTransformedCircle resul = new CTTransformedCircle(circleToTransform, null, center, null, angle);
         resul.transType = transformType.ROTATION;
         return resul;
     }
 
-    private CTTransformedCircle(CTCircle circleToTransform, CTLine axis, CTPoint center, CTVector translation, Scalar angle) {
+    private CTTransformedCircle(CTAbstractCircle<?> circleToTransform, CTAbstractLine<?> axis, CTAbstractPoint<?> center, CTVector translation, Scalar angle) {
         super(Vec.to(0,0), Scalar.make(0));
         this.circleToTransform = circleToTransform;
         this.axis = axis;

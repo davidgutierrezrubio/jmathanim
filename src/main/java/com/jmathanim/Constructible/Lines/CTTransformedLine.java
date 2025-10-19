@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Constructible.Lines;
 
-import com.jmathanim.Constructible.Points.CTPoint;
+import com.jmathanim.Constructible.Points.CTAbstractPoint;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -30,9 +30,9 @@ import com.jmathanim.mathobjects.Scalar;
  */
 public class CTTransformedLine extends CTAbstractLine<CTTransformedLine> {
 
-    private final CTLine lineToTransform;
-    private final CTLine axis;
-    private final CTPoint center;
+    private final CTAbstractLine<?> lineToTransform;
+    private final CTAbstractLine<?> axis;
+    private final CTAbstractPoint<?> center;
     private final CTVector translation;
     private final Scalar angle;
 
@@ -43,31 +43,31 @@ public class CTTransformedLine extends CTAbstractLine<CTTransformedLine> {
     private transformType transType;
     private final Line lineToDraw;
 
-    public static CTTransformedLine makeAxisReflectionLine(CTLine lineToTransform, CTLine axis) {
+    public static CTTransformedLine makeAxisReflectionLine(CTAbstractLine<?> lineToTransform, CTAbstractLine<?> axis) {
         CTTransformedLine resul = new CTTransformedLine(lineToTransform, axis, null, null, null);
         resul.transType = transformType.AXISMIRROR;
         return resul;
     }
 
-    public static CTTransformedLine makePointReflectionLine(CTLine lineToTransform, CTPoint center) {
+    public static CTTransformedLine makePointReflectionLine(CTAbstractLine<?> lineToTransform, CTAbstractPoint<?> center) {
         CTTransformedLine resul = new CTTransformedLine(lineToTransform, null, center, null, null);
         resul.transType = transformType.CENTRALMIRROR;
         return resul;
     }
 
-    public static CTTransformedLine makeTranslatedLine(CTLine lineToTransform, CTVector vector) {
+    public static CTTransformedLine makeTranslatedLine(CTAbstractLine<?> lineToTransform, CTVector vector) {
         CTTransformedLine resul = new CTTransformedLine(lineToTransform, null, null, vector, null);
         resul.transType = transformType.TRANSLATION;
         return resul;
     }
 
-    public static CTTransformedLine makeRotatedLine(CTLine lineToTransform, CTPoint center, Scalar angle) {
+    public static CTTransformedLine makeRotatedLine(CTAbstractLine<?> lineToTransform, CTAbstractPoint<?> center, Scalar angle) {
         CTTransformedLine resul = new CTTransformedLine(lineToTransform, null, center, null, angle);
         resul.transType = transformType.ROTATION;
         return resul;
     }
 
-    private CTTransformedLine(CTLine lineToTransform, CTLine axis, CTPoint center, CTVector translation, Scalar angle) {
+    private CTTransformedLine(CTAbstractLine<?> lineToTransform, CTAbstractLine<?> axis, CTAbstractPoint<?> center, CTVector translation, Scalar angle) {
         super(Vec.to(0,0), Vec.to(1,0));//Trivial line
         this.lineToTransform = lineToTransform;
         this.axis = axis;

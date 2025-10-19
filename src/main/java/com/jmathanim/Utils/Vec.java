@@ -19,6 +19,7 @@ package com.jmathanim.Utils;
 
 import com.jmathanim.Constructible.Lines.HasDirection;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.jmathanim.LogUtils;
 import com.jmathanim.mathobjects.AffineTransformable;
 import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.Interpolable;
@@ -122,7 +123,7 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
     }
 
     /**
-     * Returns a new point between this and v2, given by the parameter
+     * Returns a new interpolated vector between this and v2, given by the parameter. The original vector is unaltered
      *
      * @param coords2 The other point to interpolate
      * @param alpha   Parameter of interpolation. 0 gives this point. 1 gives v2. 0.5 returns the middle point. Values
@@ -241,10 +242,15 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
 
     @Override
     public String toString() {
-        if (z == 0)
-            return String.format("Vec(%.2f, %.2f)", x, y);
-        else
-            return String.format("Vec(%.2f, %.2f, %.2f)", x, y, z);
+        return String.format(
+                        LogUtils.PURPLE+"%s"+LogUtils.RESET+"[" +
+                        LogUtils.BLUE+"%.2f" +LogUtils.RESET+
+                        ", " +
+                        LogUtils.BLUE+"%.2f" +LogUtils.RESET+
+                        "]",
+                getClass().getSimpleName(),
+                x,
+                y);
 
     }
 

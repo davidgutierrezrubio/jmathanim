@@ -4,6 +4,7 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.LogUtils;
 import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.Interpolable;
 import com.jmathanim.mathobjects.Point;
@@ -98,7 +99,27 @@ public abstract class CTAbstractPoint<T extends CTAbstractPoint<T>> extends Cons
 
     @Override
     public String toString() {
-        return getClass().getSimpleName()+"["+coordinatesOfPoint.x+", "+coordinatesOfPoint.y+"]";
-
+        if ("".equals(getObjectLabel())) {
+            return String.format(
+                            LogUtils.PURPLE+"%s"+LogUtils.RESET+"[" +
+                            LogUtils.BLUE+"%.2f" +LogUtils.RESET+
+                            ", " +
+                            LogUtils.BLUE+"%.2f" +LogUtils.RESET+
+                            "]",
+                    getClass().getSimpleName(),
+                    coordinatesOfPoint.x,
+                    coordinatesOfPoint.y);
+        }
+        else
+        return String.format(LogUtils.GREEN+"%s"+LogUtils.RESET+" = " +
+                        LogUtils.PURPLE+"%s"+LogUtils.RESET+"[" +
+                        LogUtils.BLUE+"%.2f" +LogUtils.RESET+
+                        ", " +
+                        LogUtils.BLUE+"%.2f" +LogUtils.RESET+
+                        "]",
+                getObjectLabel(),
+                getClass().getSimpleName(),
+                coordinatesOfPoint.x,
+                coordinatesOfPoint.y);
     }
 }

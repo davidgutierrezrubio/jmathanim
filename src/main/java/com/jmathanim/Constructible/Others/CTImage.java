@@ -18,7 +18,7 @@
 package com.jmathanim.Constructible.Others;
 
 import com.jmathanim.Constructible.Constructible;
-import com.jmathanim.Constructible.Points.CTPoint;
+import com.jmathanim.Constructible.Points.CTAbstractPoint;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMImage;
 import com.jmathanim.mathobjects.MathObject;
@@ -30,14 +30,14 @@ import com.jmathanim.mathobjects.MathObject;
 public class CTImage extends Constructible<CTImage> {
 
     private final JMImage image;
-    private final CTPoint A;
-    private final CTPoint B;
+    private final CTAbstractPoint<?> A;
+    private final CTAbstractPoint<?> B;
 
-    public static CTImage make(CTPoint A, CTPoint B, JMImage image) {
+    public static CTImage make(CTAbstractPoint<?> A, CTAbstractPoint<?> B, JMImage image) {
         return new CTImage(A, B, image);
     }
 
-    private CTImage(CTPoint A, CTPoint B, JMImage image) {
+    private CTImage(CTAbstractPoint<?> A, CTAbstractPoint<?> B, JMImage image) {
         this.image = image;
         this.A = A;
         this.B = B;

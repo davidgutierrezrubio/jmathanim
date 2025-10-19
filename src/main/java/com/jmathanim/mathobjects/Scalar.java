@@ -30,7 +30,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Scalar extends Constructible implements hasScalarParameter{
+public class Scalar extends Constructible<Scalar> implements hasScalarParameter{
 
     protected double value;
 
@@ -84,7 +84,7 @@ public class Scalar extends Constructible implements hasScalarParameter{
     }
 
     @Override
-    public Constructible applyAffineTransform(AffineJTransform transform) {
+    public Scalar applyAffineTransform(AffineJTransform transform) {
         return this;
     }
 

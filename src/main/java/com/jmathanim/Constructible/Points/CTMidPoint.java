@@ -20,6 +20,7 @@ package com.jmathanim.Constructible.Points;
 import com.jmathanim.Constructible.Lines.CTSegment;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.Point;
 
 /**
@@ -34,8 +35,8 @@ public class CTMidPoint extends CTAbstractPoint<CTMidPoint> {
     }
 
     MidPointType midPointType;
-    private final CTPoint A;
-    private final CTPoint B;
+    private final Coordinates<?> A;
+    private final Coordinates<?> B;
     private final CTSegment segment;
 
     /**
@@ -45,20 +46,8 @@ public class CTMidPoint extends CTAbstractPoint<CTMidPoint> {
      * @param B Second point
      * @return The object created
      */
-    public static CTMidPoint make(CTPoint A, CTPoint B) {
+    public static CTMidPoint make(Coordinates<?> A, Coordinates<?> B) {
         CTMidPoint resul = new CTMidPoint(MidPointType.TWO_POINTS, A, B, null);
-        return resul;
-    }
-
-    /**
-     * Creates the middle point from 2 given points
-     *
-     * @param A First point
-     * @param B Second point
-     * @return The object created
-     */
-    public static CTMidPoint make(Point A, Point B) {
-        CTMidPoint resul = new CTMidPoint(MidPointType.TWO_POINTS, CTPoint.make(A), CTPoint.make(B), null);
         return resul;
     }
 
@@ -73,7 +62,7 @@ public class CTMidPoint extends CTAbstractPoint<CTMidPoint> {
         return resul;
     }
 
-    private CTMidPoint(MidPointType midPointType, CTPoint A, CTPoint B, CTSegment segment) {
+    private CTMidPoint(MidPointType midPointType, Coordinates<?> A, Coordinates<?> B, CTSegment segment) {
         super();
         this.midPointType = midPointType;
         this.A = A;
@@ -108,9 +97,7 @@ public class CTMidPoint extends CTAbstractPoint<CTMidPoint> {
                 coordinatesOfPoint.z = .5 * (p1.z + p2.z);
                 break;
             case TWO_POINTS:
-                coordinatesOfPoint.x = .5 * (A.coordinatesOfPoint.x + B.coordinatesOfPoint.x);
-                coordinatesOfPoint.y = .5 * (A.coordinatesOfPoint.y + B.coordinatesOfPoint.y);
-                coordinatesOfPoint.z = .5 * (A.coordinatesOfPoint.z + B.coordinatesOfPoint.z);
+                coordinatesOfPoint.copyCoordinatesFrom(A.getVec().interpolate(B.getVec(), .5));
                 break;
         }
         if (!isFreeMathObject()) {

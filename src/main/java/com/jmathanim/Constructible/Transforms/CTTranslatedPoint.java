@@ -18,11 +18,10 @@
 package com.jmathanim.Constructible.Transforms;
 
 import com.jmathanim.Constructible.Lines.CTVector;
+import com.jmathanim.Constructible.Points.CTAbstractPoint;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Point;
 
 /**
  *
@@ -31,19 +30,15 @@ import com.jmathanim.mathobjects.Point;
 public class CTTranslatedPoint extends CTPoint {
 
     private final CTVector translationVector;
-    private final CTPoint pointToTranslate;
+    private final CTAbstractPoint<?> pointToTranslate;
 
-    public static CTTranslatedPoint make(Point originalPoint, Vec translationVector) {
-        return make(CTPoint.make(originalPoint), CTVector.makeVector(translationVector));
-    }
-
-    public static CTTranslatedPoint make(CTPoint originalPoint, CTVector translationVector) {
+    public static CTTranslatedPoint make(CTAbstractPoint<?> originalPoint, CTVector translationVector) {
         CTTranslatedPoint resul = new CTTranslatedPoint(originalPoint, translationVector);
         resul.rebuildShape();
         return resul;
     }
 
-    private CTTranslatedPoint(CTPoint originalPoint, CTVector translationVector) {
+    private CTTranslatedPoint(CTAbstractPoint<?> originalPoint, CTVector translationVector) {
         this.translationVector = translationVector;
         this.pointToTranslate = originalPoint;
     }
