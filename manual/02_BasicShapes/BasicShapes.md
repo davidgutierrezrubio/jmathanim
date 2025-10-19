@@ -140,9 +140,9 @@ PENDOWN or PD
 
 A full reference of these commands can be found for example [here](https://glinsklogoprogramming.weebly.com/logo-commands.html).
 
-Apart from these the `CLO` command is added to close the generated path.
+Apart from these the `CLO` (or `CLOSE`) command is added to close the generated path. Commands are case -insensitive so you can use "FD" or "fd".
 
-The `Shape` class is one of the most important and the most likely to be animated. Several other classes depend on it.
+The `Shape` inherits from the `AbstractShape`class and is one of the most important and the most likely to be animated. Several other classes depend on it.
 
 ### Other methods
 
@@ -151,12 +151,12 @@ Each `Shape` object has a `JMPath` object which stores and manages the path repr
 
 In the `Shape` objects, apart from the  `.getCenter()`method, which returns the center of its bounding box, there is also the `.getCentroid()`method which computes the centroid of the shape, defined by the average point of all its vertices. This method effectively returns the geometrical center of a regular polygon for example, instead of the `.getCenter()`method.
 
-## The `LaTeXMathObject` class
+## The `LatexMathObject` class
 
 If you want to include mathematical expressions in any work, the best software to use is `LaTeX`. This class renders a mathematical expression written in LaTeX and imports it so you can draw it and animate it in several ways. So, if you put the following code in the `runSketch()` method:
 
 ``` java
-LaTeXMathObject text = LaTeXMathObject.make("Look mom, I'm \\LaTeX!");
+LatexMathObject text = LatexMathObject.make("Look mom, I'm \\LaTeX!");
 add(text);
 waitSeconds(5);
 ```
@@ -173,7 +173,7 @@ $$\int_0^\infty e^{-x}\,dx=1$$
 You’ll have to replace every single backslash "\\" with a double one "\\\\":
 
 ``` java
-LaTeXMathObject formula = LaTeXMathObject.make("$$\\int_0^\\infty e^{-x}\\,dx=1$$");
+LatexMathObject formula = LatexMathObject.make("$$\\int_0^\\infty e^{-x}\\,dx=1$$");
 add(formula);
 waitSeconds(5);
 ```
@@ -185,7 +185,7 @@ By default, LaTeX formulas are placed at the center of the screen.
 Some commands, like `\begin{verbatim}` for example, are not supported by JLaTeXMath, so another method can be used. If you have a working LaTeX system installed in your computer you can specify that JMathAnim uses it to compile the text, by passing an optional argument:
 
 ```java
-LaTeXMathObject formula=LaTeXMathObject.make(text, LaTeXMathObject.CompileMode.CompileFile);
+LatexMathObject formula=LatexMathObject.make(text, LatexMathObject.CompileMode.CompileFile);
 ```
 
 This method will compile to a `.dvi` file, convert it to `.svg` and import it into a `MultiShapeObject`. If the `.svg` file was already generated in previous runs, JMathAnim will reuse it.
@@ -218,7 +218,7 @@ Similarly, the `Ray` class allows us to represent rays in a similar way to`Line`
 
 ## The `Axes` class
 
-The `Axes` class represents a cartesian axis. Well, actually it is just a container for a couple of `Line` objects (the x-axis and y-axis), `Shape` objects (the ticks), and `LaTeXMathObject` (the legends of the ticks).
+The `Axes` class represents a cartesian axis. Well, actually it is just a container for a couple of `Line` objects (the x-axis and y-axis), `Shape` objects (the ticks), and `LatexMathObject` (the legends of the ticks).
 
 By default, axes without ticks are created. You can add them with the methods `generatePrimaryXTicks` and `generatePrimaryYTicks`. If you want to fine-tune the ticks, you can add individual ticks with latex expressions:
 
@@ -333,7 +333,7 @@ waitSeconds(3);
 
 The `Delimiter` is a extensible sign that adjust to 2 given control points A,B, may be brackets, braces, or parenthesis.  The precise form of the delimiter is recalculated every frame, so if you animate the control points, the delimiter will automatically adjust to them. Note that the delimiter always draws to the "left" of segment AB, if you are looking from A to B. The last parameter of the builder is the gap you want to apply between the control point and the delimiter.
 
-With the method `setLabel(obj,gap)` (from v0.9.4-SNAPSHOT) we can stack any `MathObject`as a label, with the given gap between both. The method admits the overloaded version with a `String`that will generate a `LaTeXMathObject` automatically. There is also the `addLengthLabel` method that creates a label that automatically updates its contents to the current length of the delimiter.
+With the method `setLabel(obj,gap)` (from v0.9.4-SNAPSHOT) we can stack any `MathObject`as a label, with the given gap between both. The method admits the overloaded version with a `String`that will generate a `LatexMathObject` automatically. There is also the `addLengthLabel` method that creates a label that automatically updates its contents to the current length of the delimiter.
 
 Also, from this version there are 2 new delimiters, LENGTH_ARROW and LENGTH_BRACKET.
 
@@ -439,7 +439,7 @@ JMathAnim can import and transform all bitmap images supported by JavaFX, like p
 
 ````java
 JMImage img=JMImage.make("euler.jpg").center().rotate(-5*DEGREES);
-LaTeXMathObject text=LaTeXMathObject.make("All hail the great Euler!").stackTo(img, Anchor.Type.LOWER);
+LatexMathObject text=LatexMathObject.make("All hail the great Euler!").stackTo(img, Anchor.Type.LOWER);
 Animation anim = Commands.moveIn(2, Anchor.Type.LEFT, img);
 playAnimation(anim,new ShowCreation(2 ,text));
 waitSeconds(3);
