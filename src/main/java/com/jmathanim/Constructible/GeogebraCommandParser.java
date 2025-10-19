@@ -51,6 +51,7 @@ import java.util.zip.ZipFile;
  */
 class GeogebraCommandParser {
 
+    public static final int SCALING_FACTOR_THICKNESS_POINT = 10;
     protected final LinkedHashMap<String, Constructible> geogebraElements;
     protected final LinkedHashMap<String, String> expressions;
 
@@ -201,7 +202,7 @@ class GeogebraCommandParser {
         // Point size
         Element pointSize = firstElementWithTag(el, "pointSize");
         if (pointSize != null) {
-            double thickness = Double.valueOf(pointSize.getAttribute("val")) * 6;// Scaling factor guessed...
+            double thickness = Double.valueOf(pointSize.getAttribute("val")) * SCALING_FACTOR_THICKNESS_POINT;// Scaling factor guessed...
             resul.setThickness(thickness);
         }
 
@@ -261,7 +262,7 @@ class GeogebraCommandParser {
             resul.moveTo(x, y);
         }
         Element pointSize = firstElementWithTag(el, "pointSize");
-        double th = Double.valueOf(pointSize.getAttribute("val")) * 30;
+        double th = Double.valueOf(pointSize.getAttribute("val")) * SCALING_FACTOR_THICKNESS_POINT;
         // TODO: Add a z value here
 
         resul.thickness(th);
@@ -280,6 +281,7 @@ class GeogebraCommandParser {
                 dotStyle = DotStyle.CIRCLE;
         }
         resul.dotStyle(dotStyle);
+
         resul.objectLabel = label;
         registerGeogebraElement(label, resul);
         JMathAnimScene.logger.debug("Imported Geogebra "+ resul);

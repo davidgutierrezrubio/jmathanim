@@ -122,4 +122,5 @@ public abstract class CTAbstractPoint<T extends CTAbstractPoint<T>> extends Cons
                 coordinatesOfPoint.x,
                 coordinatesOfPoint.y);
     }
+
 }
