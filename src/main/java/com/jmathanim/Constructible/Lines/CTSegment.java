@@ -94,6 +94,7 @@ public class CTSegment extends CTAbstractLine<CTSegment> implements hasScalarPar
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
+        super.registerUpdateableHook(scene);
         dependsOn(scene, getP1(), getP2());
     }
 

@@ -127,7 +127,7 @@ class GeogebraCommandParser {
 
     public void registerGeogebraElement(String label, Constructible resul) {
         if (resul != null) {
-            resul.setLabel(label);
+            resul.setObjectLabel(label);
             geogebraElements.put(label, resul);
         }
     }
@@ -411,7 +411,7 @@ class GeogebraCommandParser {
             B = (CTAbstractPoint<?>) params[0];
         }
 
-        registerGeogebraElement(label, CTVector.makeVector(A, B));
+        registerGeogebraElement(label, CTVector.make(A, B));
     }
 
     protected void processOrthogonalLine(Element el) {

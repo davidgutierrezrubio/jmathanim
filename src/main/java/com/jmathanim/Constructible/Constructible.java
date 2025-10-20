@@ -159,10 +159,6 @@ public abstract class Constructible<T extends Constructible<T>> extends MathObje
         return label;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
     @Override
     public RendererEffects getRendererEffects() {
         return getMathObject().getRendererEffects();

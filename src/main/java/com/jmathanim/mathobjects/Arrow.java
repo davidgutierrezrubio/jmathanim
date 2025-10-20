@@ -341,7 +341,7 @@ public class Arrow extends Constructible<Arrow> {
             labelArcUpside.getPath().copyStateFrom(shArc1.getPath());
             labelArcDownside.getPath().clear();
             labelArcDownside.getPath().copyStateFrom(shArc2.getPath());
-            labelArcDownside.getPath().reverse();
+            labelArcUpside.getPath().reverse();
 
             //Build the shape, adding h1c and merging with h2cF
             shapeToDraw.getPath().addJMPointsFrom(h1A.getPath());
@@ -648,6 +648,8 @@ public class Arrow extends Constructible<Arrow> {
         arrowLabel = labelTip;
         labelType = labelTypeEnum.NORMAL;
         mpArrow.add(arrowLabel);
+        groupElementsToBeDrawn.clear();
+        groupElementsToBeDrawn.add(shapeToDraw, arrowLabel);
         return (T) this;
     }
 
@@ -673,8 +675,7 @@ public class Arrow extends Constructible<Arrow> {
 
         AbstractLatexMathObject<?> t = arrowLabel.getLaTeXObject();
         t.setArgumentsFormat(format);
-        groupElementsToBeDrawn.clear();
-        groupElementsToBeDrawn.add(shapeToDraw, arrowLabel);
+
 
         t.registerUpdater(new Updater() {
 //            @Override
@@ -723,8 +724,6 @@ public class Arrow extends Constructible<Arrow> {
             }
         });
 
-        groupElementsToBeDrawn.clear();
-        groupElementsToBeDrawn.add(shapeToDraw, arrowLabel);
         return label;
 //        return (LaTeXMathObject) arrowLabel.getRefMathObject();
     }

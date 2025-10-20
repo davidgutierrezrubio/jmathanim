@@ -82,6 +82,7 @@ public class CTTangentCircleCircle extends CTAbstractLine<CTTangentCircleCircle>
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
+        super.registerUpdateableHook(scene);
         dependsOn(scene, c1, c2);
     }
 

@@ -17,7 +17,6 @@
  */
 package com.jmathanim.Constructible.Lines;
 
-import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Enum.ArrowType;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Arrow;
@@ -32,18 +31,6 @@ public class CTVector extends CTAbstractLine<CTVector> {
 
     protected final Arrow arrowToDraw;
 
-    /**
-     * Creates a new CTVector from a Vec object. The created vector is located
-     * at (0,0).
-     *
-     * @param vector The Vec object that determines the CTVector
-     * @return The created object
-     */
-    public static CTVector makeVector(Vec vector) {
-        CTVector resul = new CTVector(CTPoint.at(0,0), CTPoint.at(vector.x, vector.y));
-        resul.rebuildShape();
-        return resul;
-    }
 
     /**
      * Creates a new CTVector from A to B.
@@ -52,7 +39,7 @@ public class CTVector extends CTAbstractLine<CTVector> {
      * @param B Destiny
      * @return The created object
      */
-    public static CTVector makeVector(Coordinates<?> A, Coordinates<?>  B) {
+    public static CTVector make(Coordinates<?> A, Coordinates<?>  B) {
         CTVector resul = new CTVector(A, B);
         resul.rebuildShape();
         return resul;
@@ -66,7 +53,7 @@ public class CTVector extends CTAbstractLine<CTVector> {
 
     @Override
     public CTVector copy() {
-        CTVector copy = CTVector.makeVector(this.getP1().copy(), this.getP2().copy());
+        CTVector copy = CTVector.make(this.getP1().copy(), this.getP2().copy());
         copy.copyStateFrom(this);
         return copy;
     }
