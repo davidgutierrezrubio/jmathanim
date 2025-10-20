@@ -18,6 +18,7 @@ package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Conics.CTAbstractCircle;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
@@ -77,6 +78,11 @@ public class CTTangentCircleCircle extends CTAbstractLine<CTTangentCircleCircle>
         this.P2.copyCoordinatesFrom(ct.getP2());
         super.rebuildShape();
 
+    }
+
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        dependsOn(scene, c1, c2);
     }
 
 }

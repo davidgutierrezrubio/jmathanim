@@ -54,7 +54,7 @@ public class CTCircleArc extends CTAbstractCircle<CTCircleArc> {
      * @return The created arc
      */
     public static CTCircleArc make(Coordinates<?> center, Coordinates<?> A, Coordinates<?> B) {
-        CTCircleArc resul = new CTCircleArc(CTPoint.make(center), CTPoint.make(A), CTPoint.make(B));
+        CTCircleArc resul = new CTCircleArc(CTPoint.at(center), CTPoint.at(A), CTPoint.at(B));
         resul.rebuildShape();
         return resul;
     }

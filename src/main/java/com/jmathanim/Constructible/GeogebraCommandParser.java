@@ -82,7 +82,7 @@ class GeogebraCommandParser {
         Matcher matcher = patternPoint.matcher(argument);
         if (matcher.find()) {
             try {
-                return CTPoint.make(Point.at(Double.parseDouble(matcher.group(1)), Double.parseDouble(matcher.group(2))));
+                return CTPoint.at(Point.at(Double.parseDouble(matcher.group(1)), Double.parseDouble(matcher.group(2))));
             } catch (NumberFormatException numberFormatException) {
                 JMathAnimScene.logger.warn("Unrecognized number in point coordinates at geogebra import: " + argument + ". Returning (0,0) instead!");
                 return CTPoint.at(0, 0);
@@ -256,7 +256,7 @@ class GeogebraCommandParser {
         double x = Double.valueOf(elCoords.getAttribute("x"));
         double y = Double.valueOf(elCoords.getAttribute("y"));
         if (!geogebraElements.containsKey(label)) {
-            resul = CTPoint.make(Vec.to(x, y));
+            resul = CTPoint.at(Vec.to(x, y));
         } else {
             resul = (CTAbstractPoint<?>) geogebraElements.get(label);
             resul.moveTo(x, y);
@@ -329,12 +329,12 @@ class GeogebraCommandParser {
             if ("".equals(labelAnchorPoint)) {//Point doesn't exist, create a new one
                 double x = Double.parseDouble(startPointElement.getAttribute("x"));
                 double y = Double.parseDouble(startPointElement.getAttribute("y"));
-                anchorPoint = CTPoint.make(Vec.to(x, y));
+                anchorPoint = CTPoint.at(Vec.to(x, y));
             } else {
                 anchorPoint = (CTPoint) geogebraElements.get(labelAnchorPoint);
             }
         } else {
-            anchorPoint = CTPoint.make(Point.random());
+            anchorPoint = CTPoint.at(Point.random());
         }
         //Size
         Element fontElement = firstElementWithTag(el, "font");
@@ -407,7 +407,7 @@ class GeogebraCommandParser {
             A = (CTAbstractPoint<?>) params[0];
             B = (CTAbstractPoint<?>) params[1];
         } else {
-            A = CTPoint.make(Point.origin());
+            A = CTPoint.at(Point.origin());
             B = (CTAbstractPoint<?>) params[0];
         }
 
@@ -491,7 +491,7 @@ class GeogebraCommandParser {
         final double dSides = ((Scalar) objs[2]).getValue();
         int sides = (int) dSides;
         ArrayList<CTSegment> segments = new ArrayList<>();
-        ArrayList<Coordinates<?>> vertices = new ArrayList<>();
+        ArrayList<CTAbstractPoint<?>> vertices = new ArrayList<>();
         //For a regular polygon of n sides, there are 1+n+n-2 (from 0 to 2n-2) outputs:
         //0 output name
         //1...n name of sides (CTSegment)
@@ -502,7 +502,7 @@ class GeogebraCommandParser {
         vertices.add((CTAbstractPoint<?>) objs[0]);
         vertices.add((CTAbstractPoint<?>) objs[1]);
         for (int k = sides + 1; k <= 2 * sides - 2; k++) {
-            CTAbstractPoint<?> P = CTPoint.make(new Point());//Should be computed in the constructor
+            CTAbstractPoint<?> P = CTPoint.at(new Point());//Should be computed in the constructor
             vertices.add(P);
             registerGeogebraElement(outputs[k], P);
             JMathAnimScene.logger.debug("Generated Point {}", outputs[k]);

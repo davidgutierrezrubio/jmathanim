@@ -168,13 +168,13 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
 
     @Override
     protected boolean isHasBeenUpdated() {
-        return super.isHasBeenUpdated() && MediatorMathObject.isHasBeenUpdated(laTeXMathObject);
+        return super.isHasBeenUpdated() && DebugTools.isHasBeenUpdated(laTeXMathObject);
     }
 
     @Override
     protected void setHasBeenUpdated(boolean hasBeenUpdated) {
         super.setHasBeenUpdated(hasBeenUpdated);
-        if (!hasBeenUpdated) MediatorMathObject.setHasBeenUpdated(laTeXMathObject,hasBeenUpdated);
+        if (!hasBeenUpdated) DebugTools.setHasBeenUpdated(laTeXMathObject,hasBeenUpdated);
     }
 
 

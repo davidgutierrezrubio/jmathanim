@@ -66,7 +66,7 @@ public abstract class MathObject<T extends MathObject<T>> implements
     private double leftGap, upperGap, rightGap, lowerGap;
 
     public MathObject() {
-        this.updateLevel = -1;
+        this.updateLevel = 0;
         JMathAnimConfig config = JMathAnimConfig.getConfig();
         if (config.getRenderer() != null) {
             rendererEffects = config.getRenderer().buildRendererEffects();
@@ -497,12 +497,12 @@ public abstract class MathObject<T extends MathObject<T>> implements
 
     @Override
     public final int getUpdateLevel() {
-        if (updateLevel == -1) {//-1 means no update level has been defined yet
-            registerUpdateableHook(scene);
-            if (updateLevel == -1) {//If it is still undefined, makeLengthMeasure it 0, to avoid infinite recursion
-                updateLevel = 0;
-            }
-        }
+//        if (updateLevel == -1) {//-1 means no update level has been defined yet
+//            registerUpdateableHook(scene);
+//            if (updateLevel == -1) {//If it is still undefined, makeLengthMeasure it 0, to avoid infinite recursion
+//                updateLevel = 0;
+//            }
+//        }
         return updateLevel;
     }
 
@@ -709,8 +709,9 @@ public abstract class MathObject<T extends MathObject<T>> implements
         scene.registerUpdateable(objs);
 
         //Sets the update level the max of objs +1
+        int currentUpdateLevel=getUpdateLevel();
         int maxUpdateLevel = Arrays.stream(objs).filter(Objects::nonNull).mapToInt(Updateable::getUpdateLevel).max().orElse(-1);
-        setUpdateLevel(maxUpdateLevel + 1);
+        setUpdateLevel(Math.max(currentUpdateLevel,maxUpdateLevel + 1));
 
 
         //TODO: Implement this

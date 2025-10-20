@@ -19,6 +19,7 @@ package com.jmathanim.Constructible.Lines;
 import com.jmathanim.Constructible.Conics.CTAbstractCircle;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Coordinates;
 
 /**
@@ -97,5 +98,10 @@ public final class CTTangentPointCircle extends CTAbstractLine<CTTangentPointCir
         super.rebuildShape();
     }
 
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        super.registerUpdateableHook(scene);
+        dependsOn(scene, C);
+    }
 
 }

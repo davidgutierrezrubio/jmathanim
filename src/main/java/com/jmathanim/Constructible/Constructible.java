@@ -26,7 +26,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.MediatorMathObject;
+import com.jmathanim.mathobjects.DebugTools;
 import com.jmathanim.mathobjects.Stateable;
 
 /**
@@ -171,13 +171,13 @@ public abstract class Constructible<T extends Constructible<T>> extends MathObje
     @Override
     protected void addToSceneHook(JMathAnimScene scene) {
         super.addToSceneHook(scene);
-        MediatorMathObject.addToSceneHook(getMathObject(), scene);
+        DebugTools.addToSceneHook(getMathObject(), scene);
     }
 
     @Override
     protected void removedFromSceneHook(JMathAnimScene scene) {
         super.removedFromSceneHook(scene);
-        MediatorMathObject.removedFromSceneHook(getMathObject(), scene);
+        DebugTools.removedFromSceneHook(getMathObject(), scene);
     }
 
 }

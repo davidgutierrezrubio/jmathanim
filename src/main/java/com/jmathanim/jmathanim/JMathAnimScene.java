@@ -338,7 +338,7 @@ public abstract class JMathAnimScene {
                     }
                 }
                 registerUpdateable(obj);
-                MediatorMathObject.addToSceneHook(obj, this);
+                DebugTools.addToSceneHook(obj, this);
                 Camera cam = (obj.getCamera() == null ? renderer.getCamera() : obj.getCamera());
                 if (obj instanceof shouldUdpateWithCamera) {
                     cam.registerUpdateable((shouldUdpateWithCamera) obj);
@@ -387,7 +387,7 @@ public abstract class JMathAnimScene {
 
                 sceneObjects.remove(obj);
 
-                MediatorMathObject.removedFromSceneHook(obj, this);
+                DebugTools.removedFromSceneHook(obj, this);
                 unregisterUpdateable(obj);
             }
             if (obj instanceof shouldUdpateWithCamera) {
@@ -681,7 +681,7 @@ public abstract class JMathAnimScene {
         for (LatexMathObject lat : texes) {
             int k = 0;
             for (LatexShape sh : lat) {
-                MediatorMathObject.setDebugText(sh, "" + k);
+                DebugTools.setDebugText(sh, "" + k);
                 k++;
             }
             group.add(lat);

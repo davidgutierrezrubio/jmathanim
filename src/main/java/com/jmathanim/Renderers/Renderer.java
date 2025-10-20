@@ -28,7 +28,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.AbstractJMImage;
 import com.jmathanim.mathobjects.AbstractShape;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MediatorMathObject;
+import com.jmathanim.mathobjects.DebugTools;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -137,7 +137,7 @@ public abstract class Renderer {
      */
     public void clearAndPrepareCanvasForAnotherFrame() {
         for (MathObject<?> obj: scene.getMathObjects()) {
-            MediatorMathObject.setHasBeenUpdated(obj,false);
+            DebugTools.setHasBeenUpdated(obj,false);
         }
     };
 

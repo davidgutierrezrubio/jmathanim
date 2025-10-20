@@ -58,7 +58,7 @@ public class Arrow extends Constructible<Arrow> {
     private double baseRealHeight2;
     private double headStartMultiplier, headEndMultiplier;
     private double gapA, gapB;
-    private Coordinates<?> A, B;
+    private final Coordinates<?> A, B;
     private double baseDist1, baseDist2;
     private double arrowThickness;
     private ArrowType typeA, typeB;
@@ -189,11 +189,6 @@ public class Arrow extends Constructible<Arrow> {
             JMathAnimScene.logger.error(e.getMessage());
             typeA = ArrowType.NONE_BUTT;
             typeB = ArrowType.NONE_BUTT;
-            try {
-                loadModels();
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
         }
     }
 
@@ -592,15 +587,6 @@ public class Arrow extends Constructible<Arrow> {
         return A;
     }
 
-    /**
-     * Sets the starting point
-     *
-     * @param A Starting point
-     */
-    public void setStart(Coordinates<?> A) {
-        this.A = A;
-        rebuildShape();
-    }
 
     /**
      * Returns the ending point
@@ -611,15 +597,6 @@ public class Arrow extends Constructible<Arrow> {
         return B;
     }
 
-    /**
-     * Sets the ending point
-     *
-     * @param B Ending point
-     */
-    public void setEnd(Coordinates<?> B) {
-        this.B = B;
-        rebuildShape();
-    }
 
     /**
      * Returns the head start scale. This value scales the start of the arrow.
@@ -751,12 +728,11 @@ public class Arrow extends Constructible<Arrow> {
         return label;
 //        return (LaTeXMathObject) arrowLabel.getRefMathObject();
     }
-
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
-        super.draw(scene, r, cam);
-
-    }
+//
+//    @Override
+//    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
+//        super.draw(scene, r, cam);
+//    }
 
     /**
      * Returns the arrow label if defined
@@ -810,9 +786,7 @@ public class Arrow extends Constructible<Arrow> {
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
         super.registerUpdateableHook(scene);
-        scene.registerUpdateable(A);
-        scene.registerUpdateable(B);
-        setUpdateLevel(Math.max(A.getUpdateLevel(),B.getUpdateLevel())+1);
+        dependsOn(scene, A,B);
     }
 
     private enum labelTypeEnum {NORMAL, DISTANCE, COORDS}

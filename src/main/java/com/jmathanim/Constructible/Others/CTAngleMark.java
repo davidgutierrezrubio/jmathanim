@@ -68,7 +68,7 @@ public class CTAngleMark extends Constructible<CTAngleMark> {
      * @return The CTAngle created
      */
     public static CTAngleMark make(Point center, Point startingPoint, Point endingPoint) {
-        return CTAngleMark.make(CTPoint.make(center), CTPoint.make(startingPoint), CTPoint.make(endingPoint));
+        return CTAngleMark.make(CTPoint.at(center), CTPoint.at(startingPoint), CTPoint.at(endingPoint));
     }
 
     @Override

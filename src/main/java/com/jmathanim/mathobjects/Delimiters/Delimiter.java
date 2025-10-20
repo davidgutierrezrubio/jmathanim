@@ -381,8 +381,6 @@ public abstract class Delimiter extends Constructible<Delimiter> {
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
         super.registerUpdateableHook(scene);
-        scene.registerUpdateable(A);
-        scene.registerUpdateable(B);
-        setUpdateLevel(Math.max(A.getUpdateLevel(),B.getUpdateLevel())+1);
+        dependsOn(scene, A,B);
     }
 }

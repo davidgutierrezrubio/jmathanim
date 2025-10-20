@@ -20,6 +20,7 @@ package com.jmathanim.Constructible.Lines;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.PointOwner;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
@@ -35,6 +36,7 @@ public abstract class CTAbstractLine<T extends CTAbstractLine<T>> extends Constr
     protected final Coordinates<?> P2;
     protected final Line lineToDraw;
     protected LineType lineType;
+
     public CTAbstractLine(Coordinates<?> P1, Coordinates<?> P2) {
         this.P1draw = P1.getVec().copy();
         this.P2draw = P2.getVec().copy();
@@ -76,8 +78,13 @@ public abstract class CTAbstractLine<T extends CTAbstractLine<T>> extends Constr
         return getP1().add(v1.mult(v1.dot(v2))).getVec();
     }
 
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        super.registerUpdateableHook(scene);
+        dependsOn(scene, P1, P2);
+    }
+
     protected enum LineType {
         POINT_POINT, POINT_DIRECTION
     }
-
 }

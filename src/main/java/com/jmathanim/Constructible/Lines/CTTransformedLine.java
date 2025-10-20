@@ -132,6 +132,7 @@ public class CTTransformedLine extends CTAbstractLine<CTTransformedLine> {
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
+        super.registerUpdateableHook(scene);
         switch (transType) {
             case AXISMIRROR:
                 dependsOn(scene, this.lineToTransform, this.axis);

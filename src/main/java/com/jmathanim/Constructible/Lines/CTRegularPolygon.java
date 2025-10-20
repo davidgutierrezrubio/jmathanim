@@ -18,6 +18,7 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Constructible.Points.CTAbstractPoint;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -39,7 +40,7 @@ public class CTRegularPolygon extends Constructible<CTRegularPolygon> {
     private final Coordinates<?> A;
     private final Shape poligonToView;
     private final Shape origPolygon;
-    private final ArrayList<Coordinates<?>> generatedPoints;
+    private final ArrayList<CTAbstractPoint<?>> generatedPoints;
 
     /**
      * Creates a new regular polygon from an ArrayList of CTPoints. All but the
@@ -48,7 +49,7 @@ public class CTRegularPolygon extends Constructible<CTRegularPolygon> {
      * @param generatedPoints ArrayList of generated CTPoints.
      * @return The generated polygon
      */
-    public static CTRegularPolygon makeFromPointList(ArrayList<Coordinates<?>> generatedPoints) {
+    public static CTRegularPolygon makeFromPointList(ArrayList<CTAbstractPoint<?>> generatedPoints) {
         CTRegularPolygon resul = new CTRegularPolygon(generatedPoints);
         resul.rebuildShape();
         return resul;
@@ -64,11 +65,11 @@ public class CTRegularPolygon extends Constructible<CTRegularPolygon> {
      * @return The created object
      */
     public static CTRegularPolygon make(Coordinates<?> A, Coordinates<?> B, int nSides) {
-        ArrayList<Coordinates<?>> vertices = new ArrayList<>();
-        vertices.add(A);
-        vertices.add(B);
+        ArrayList<CTAbstractPoint<?>> vertices = new ArrayList<>();
+        vertices.add(CTPoint.at(A.getVec()));
+        vertices.add(CTPoint.at(B.getVec()));
         for (int i = 0; i < nSides - 2; i++) {
-            vertices.add(CTPoint.make(new Point()));
+            vertices.add(CTPoint.at(new Point()));
         }
         CTRegularPolygon resul = makeFromPointList(vertices);
         resul.rebuildShape();
@@ -76,7 +77,7 @@ public class CTRegularPolygon extends Constructible<CTRegularPolygon> {
     }
 
 
-    private CTRegularPolygon(ArrayList<Coordinates<?>> generatedPoints) {
+    private CTRegularPolygon(ArrayList<CTAbstractPoint<?>> generatedPoints) {
         super();
         this.generatedPoints = generatedPoints;
         this.nSides = generatedPoints.size();

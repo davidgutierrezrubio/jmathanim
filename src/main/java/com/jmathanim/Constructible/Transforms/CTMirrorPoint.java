@@ -52,7 +52,7 @@ public class CTMirrorPoint extends CTPoint {
 //    }
 
     public static CTMirrorPoint make(Coordinates<?> orig, Coordinates<?> A, Coordinates<?> B) {
-        CTMirrorPoint resul = new CTMirrorPoint(CTPoint.make(orig), CTSegment.make(A, B), null);
+        CTMirrorPoint resul = new CTMirrorPoint(CTPoint.at(orig), CTSegment.make(A, B), null);
         resul.rebuildShape();
         resul.mirrorType = MirrorType.AXIAL;
         return resul;

@@ -63,7 +63,7 @@ public class CTEllipse extends Constructible<CTEllipse> {
      * @return The created constructible ellipse
      */
     public static CTEllipse make(Coordinates<?> focus1, Coordinates<?> focus2, Coordinates<?> A) {
-        CTEllipse resul = new CTEllipse(CTPoint.make(focus1), CTPoint.make(focus2), CTPoint.make(A));
+        CTEllipse resul = new CTEllipse(CTPoint.at(focus1), CTPoint.at(focus2), CTPoint.at(A));
         resul.rebuildShape();
         return resul;
     }

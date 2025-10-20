@@ -355,7 +355,7 @@ public class JavaFXRenderer extends Renderer {
             path.setClip(new Rectangle(cam.upperLeftX, cam.upperLeftY, cam.screenWidth, cam.screenHeight));
             fxnodes.add(path);
         }
-        String debugText = MediatorMathObject.getDebugText(mobj);
+        String debugText = DebugTools.getDebugText(mobj);
         if (!"".equals(debugText)) {
             debugText(debugText, mobj.getCenter());
         }

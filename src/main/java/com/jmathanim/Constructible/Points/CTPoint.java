@@ -33,7 +33,7 @@ public class CTPoint extends CTAbstractPoint<CTPoint> {
      * @param A Point object to wrap into
      * @return The created object
      */
-    public static CTPoint make(Coordinates<?> A) {
+    public static CTPoint at(Coordinates<?> A) {
         Point buildPoint;
         if (A instanceof Point) {
             buildPoint = (Point) A;
@@ -61,7 +61,7 @@ public class CTPoint extends CTAbstractPoint<CTPoint> {
 
     @Override
     public CTPoint copy() {
-        CTPoint copy = make(new Point(this.coordinatesOfPoint.x,this.coordinatesOfPoint.y));
+        CTPoint copy = at(new Point(this.coordinatesOfPoint.x,this.coordinatesOfPoint.y));
         copy.setFreeMathObject(this.isFreeMathObject());
         copy.getMathObject().copyStateFrom(this.getMathObject());
         copy.getMp().copyFrom(this.getMp());

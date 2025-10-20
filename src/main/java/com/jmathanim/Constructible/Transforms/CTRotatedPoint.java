@@ -32,7 +32,7 @@ import com.jmathanim.mathobjects.Scalar;
 public class CTRotatedPoint extends CTAbstractPoint<CTRotatedPoint> {
 
     public static CTRotatedPoint make(Coordinates<?> pointToRotate, double angle, Coordinates<?> rotationCenter) {
-        return make(CTPoint.make(pointToRotate), CTPoint.make(rotationCenter), Scalar.make(angle));
+        return make(CTPoint.at(pointToRotate), CTPoint.at(rotationCenter), Scalar.make(angle));
     }
 
     public static CTRotatedPoint make(Coordinates<?> pointToRotate, Coordinates<?> rotationCenter, Scalar angle) {

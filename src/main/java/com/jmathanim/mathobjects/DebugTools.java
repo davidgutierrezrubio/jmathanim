@@ -6,7 +6,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 /**
  * This class encpasulates several internal methods of MathObject
  */
-public class MediatorMathObject {
+public class DebugTools {
     public static void setHasBeenUpdated(MathObject<?> obj, boolean hasBeenUpdated) {
         obj.setHasBeenUpdated(hasBeenUpdated);
     }
