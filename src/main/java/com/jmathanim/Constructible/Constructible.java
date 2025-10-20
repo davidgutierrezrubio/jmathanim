@@ -42,6 +42,7 @@ public abstract class Constructible<T extends Constructible<T>> extends MathObje
     private String label = "";
 
     protected Constructible() {
+        super();
         isMathObjectFree = false;
     }
 

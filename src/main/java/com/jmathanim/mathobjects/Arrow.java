@@ -58,7 +58,7 @@ public class Arrow extends Constructible<Arrow> {
     private double baseRealHeight2;
     private double headStartMultiplier, headEndMultiplier;
     private double gapA, gapB;
-    private Vec A, B;
+    private Coordinates<?> A, B;
     private double baseDist1, baseDist2;
     private double arrowThickness;
     private ArrowType typeA, typeB;
@@ -67,8 +67,8 @@ public class Arrow extends Constructible<Arrow> {
     private String stringFormat;
 
     private Arrow(Coordinates<?> A, Coordinates<?> B) {
-        this.A = A.getVec();
-        this.B = B.getVec();
+        this.A = A;
+        this.B = B;
         labelType = labelTypeEnum.NORMAL;
         this.labelArcUpside = new Shape();
         this.labelArcDownside = new Shape();
@@ -80,8 +80,8 @@ public class Arrow extends Constructible<Arrow> {
         headStartMultiplier = 1d;
         headEndMultiplier = 1d;
         shapeToDraw = new Shape();
-        Acopy = this.A.copy();
-        Bcopy = this.B.copy();
+        Acopy = this.A.getVec().copy();
+        Bcopy = this.B.getVec().copy();
         mpArrow = new DrawStylePropertiesObjectsArray();
         mpArrow.add(shapeToDraw);
         groupElementsToBeDrawn = MathObjectGroup.make(shapeToDraw);
@@ -244,7 +244,7 @@ public class Arrow extends Constructible<Arrow> {
         //The distScale manages which scale should be the arrow drawn. It is used mostly by ShowCreation animation
 
         Acopy.copyCoordinatesFrom(A);
-        Bcopy.copyCoordinatesFrom(A.interpolate(B, getAmplitudeScale()));
+        Bcopy.copyCoordinatesFrom(A.getVec().interpolate(B, getAmplitudeScale()));
         Shape h1A = head1.copy();
         Shape h1B = head2.copy();
         double dist = Acopy.to(Bcopy).norm();
@@ -557,8 +557,8 @@ public class Arrow extends Constructible<Arrow> {
 //        Acopy.applyAffineTransform(tr);
 //        Bcopy.applyAffineTransform(tr);
         if (!isFreeMathObject()) {
-            A.applyAffineTransform(tr);
-            B.applyAffineTransform(tr);
+            A.getVec().applyAffineTransform(tr);
+            B.getVec().applyAffineTransform(tr);
         }
 //        rebuildShape();
         return this;
@@ -588,7 +588,7 @@ public class Arrow extends Constructible<Arrow> {
      *
      * @return A reference to the starting Point object
      */
-    public Vec getStart() {
+    public Coordinates<?> getStart() {
         return A;
     }
 
@@ -597,7 +597,7 @@ public class Arrow extends Constructible<Arrow> {
      *
      * @param A Starting point
      */
-    public void setStart(Vec A) {
+    public void setStart(Coordinates<?> A) {
         this.A = A;
         rebuildShape();
     }
@@ -607,7 +607,7 @@ public class Arrow extends Constructible<Arrow> {
      *
      * @return A reference to the ending Point object
      */
-    public Vec getEnd() {
+    public Coordinates<?> getEnd() {
         return B;
     }
 
@@ -616,7 +616,7 @@ public class Arrow extends Constructible<Arrow> {
      *
      * @param B Ending point
      */
-    public void setEnd(Vec B) {
+    public void setEnd(Coordinates<?> B) {
         this.B = B;
         rebuildShape();
     }
@@ -807,6 +807,13 @@ public class Arrow extends Constructible<Arrow> {
         return this;
     }
 
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        super.registerUpdateableHook(scene);
+        scene.registerUpdateable(A);
+        scene.registerUpdateable(B);
+        setUpdateLevel(Math.max(A.getUpdateLevel(),B.getUpdateLevel())+1);
+    }
 
     private enum labelTypeEnum {NORMAL, DISTANCE, COORDS}
 }

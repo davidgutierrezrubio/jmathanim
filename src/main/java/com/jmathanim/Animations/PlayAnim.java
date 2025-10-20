@@ -233,7 +233,7 @@ public class PlayAnim {
      * @param runtime Duration in seconds
      * @param dx      x-coordinate of translation vector
      * @param dy      y-coordinate of translation vector
-     * @param objs    Mathobjects to animate (varargs)
+     * @param objs    Objects to animate (varargs)
      */
     public void shift(double runtime, double dx, double dy, AffineTransformable<?>... objs) {
         scene.playAnimation(Commands.shift(runtime, dx, dy, objs));
@@ -244,7 +244,7 @@ public class PlayAnim {
      *
      * @param runtime Duration in seconds
      * @param v       Traslation vector
-     * @param objs    Mathobjects to animate (varargs)
+     * @param objs    Objects to animate (varargs)
      */
     public void shift(double runtime, Vec v, MathObject<?>... objs) {
         scene.playAnimation(Commands.shift(runtime, v, objs));
@@ -256,7 +256,7 @@ public class PlayAnim {
      * @param runTime     Duration in seconds
      * @param center      Scale center
      * @param scaleFactor Scale factor
-     * @param objs        Mathobjects to animate (varargs)
+     * @param objs        Objects to animate (varargs)
      */
     public void scale(double runTime, Point center, double scaleFactor, AffineTransformable<?>... objs) {
         scale(runTime, center, scaleFactor, scaleFactor, scaleFactor, objs);
@@ -269,7 +269,7 @@ public class PlayAnim {
      *
      * @param runTime     Duration in seconds
      * @param scaleFactor Scale factor
-     * @param objs        Mathobjects to animate (varargs)
+     * @param objs        Objects to animate (varargs)
      */
     public void scale(double runTime, double scaleFactor, AffineTransformable<?>... objs) {
         scale(runTime, scaleFactor, scaleFactor, scaleFactor, objs);
@@ -283,7 +283,7 @@ public class PlayAnim {
      * @param runTime Duration in seconds
      * @param scx     x scale factor
      * @param scy     y scale factor
-     * @param objs    Mathobjects to animate (varargs)
+     * @param objs    Objects to animate (varargs)
      */
     public void scale(double runTime, double scx, double scy, AffineTransformable<?>... objs) {
         scale(runTime, scx, scy, 1, objs);
@@ -298,7 +298,7 @@ public class PlayAnim {
      * @param scx     x scale factor
      * @param scy     y scale factor
      * @param scz     z scale factor
-     * @param objs    Mathobjects to animate (varargs)
+     * @param objs    Objects to animate (varargs)
      */
     public void scale(double runTime, double scx, double scy, double scz, AffineTransformable<?>... objs) {
         Rect r = objs[0].getBoundingBox();
@@ -315,7 +315,7 @@ public class PlayAnim {
      * @param center  Scale center
      * @param scx     x-scale
      * @param scy     y-scale
-     * @param objs    Mathobjects to animate (varargs)
+     * @param objs    Objects to animate (varargs)
      */
     public void scale(double runTime, Point center, double scx, double scy, AffineTransformable<?>... objs) {
         scene.playAnimation(Commands.scale(runTime, center, scx, scy, 1, objs));
@@ -330,7 +330,7 @@ public class PlayAnim {
      * @param scx     x-scale
      * @param scy     y-scale
      * @param scz     z-scale
-     * @param objs    Mathobjects to animate (varargs)
+     * @param objs    Objects to animate (varargs)
      */
     public void scale(double runTime, Point center, double scx, double scy, double scz, AffineTransformable<?>... objs) {
         scene.playAnimation(Commands.scale(runTime, center, scx, scy, scz, objs));
@@ -342,7 +342,7 @@ public class PlayAnim {
      *
      * @param runTime Duration in seconds
      * @param angle   Rotation angle, in radians
-     * @param objs    Mathobjects to animate (varargs)
+     * @param objs    Objects to animate (varargs)
      */
     public void rotate(double runTime, double angle, AffineTransformable<?>... objs) {
         Vec center;
@@ -365,7 +365,7 @@ public class PlayAnim {
      * @param runTime Duration in seconds
      * @param center  Rotation center
      * @param angle   Rotation angle, in radians
-     * @param objs    Mathobjects to animate (varargs)
+     * @param objs    Objects to animate (varargs)
      */
     public void rotate(double runTime, Point center, double angle, AffineTransformable<?>... objs) {
         scene.playAnimation(Commands.rotate(runTime, center, angle, objs));

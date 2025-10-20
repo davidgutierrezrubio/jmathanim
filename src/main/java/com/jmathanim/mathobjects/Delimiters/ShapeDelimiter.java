@@ -61,8 +61,8 @@ public class ShapeDelimiter extends Delimiter {
 
         double width = A.to(B).norm() * amplitudeScale;//The final width of the delimiter
         double angle = A.to(B).getAngle();
-        Vec AA = A.interpolate(B, .5 * (1 - amplitudeScale));
-        Vec BB = A.interpolate(B, .5 * (1 + amplitudeScale));
+        Vec AA = A.getVec().interpolate(B, .5 * (1 - amplitudeScale));
+        Vec BB = A.getVec().interpolate(B, .5 * (1 + amplitudeScale));
         MultiShapeObject bodyCopy = body.copy();
             delimiterShapeToDraw.getPath().clear();
 

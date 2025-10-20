@@ -28,6 +28,7 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
     }
 
     protected AbstractPoint(Vec v) {
+        super();
         this.v = v;
         previousVecPosition = this.getVec().copy();
         this.dotShape = new Shape();

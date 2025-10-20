@@ -18,8 +18,8 @@ import com.jmathanim.mathobjects.updaters.Updater;
 
 public abstract class Delimiter extends Constructible<Delimiter> {
     public final Vec labelMarkPoint;
-    protected final Vec A;
-    protected final Vec B;
+    protected final Coordinates<?> A;
+    protected final Coordinates<?> B;
     protected final Shape delimiterShapeToDraw;
 //    protected final MODrawProperties mpDelimiterShape;
     protected final DrawStylePropertiesObjectsArray mpDelimiter;
@@ -28,7 +28,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
      * Usually one Shape (delimiter) and optionally a MathObject as Label
      */
     protected final MathObjectGroup groupElementsToBeDrawn;
-    private MathObject delimiterLabel;
+    private MathObject<?> delimiterLabel;
     public final RigidBox delimiterLabelRigidBox;
     protected double amplitudeScale;
     protected TextUpdaterFactory textUpdaterFactory;
@@ -47,10 +47,10 @@ public abstract class Delimiter extends Constructible<Delimiter> {
     protected double gap;
 
 
-    public Delimiter(Coordinates A, Coordinates B, DelimiterType type, double gap) {
+    public Delimiter(Coordinates<?> A, Coordinates<?> B, DelimiterType type, double gap) {
         super();
-        this.A = A.getVec();
-        this.B = B.getVec();
+        this.A = A;
+        this.B = B;
         this.type = type;
         this.gap = gap;
 
@@ -376,5 +376,13 @@ public abstract class Delimiter extends Constructible<Delimiter> {
         super.update(scene);
         groupElementsToBeDrawn.update(scene);
         rebuildShape();
+    }
+
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        super.registerUpdateableHook(scene);
+        scene.registerUpdateable(A);
+        scene.registerUpdateable(B);
+        setUpdateLevel(Math.max(A.getUpdateLevel(),B.getUpdateLevel())+1);
     }
 }

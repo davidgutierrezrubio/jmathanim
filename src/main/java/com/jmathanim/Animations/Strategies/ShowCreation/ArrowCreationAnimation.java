@@ -50,7 +50,7 @@ public class ArrowCreationAnimation extends AbstractCreationStrategy {
         // if there are 2 heads (ending and beginning point), better scale from the
         // center
 //        Point scaleCenter = (obj.getArrowHead2().size() > 0 ? obj.getCenter() : obj.getBody().getPoint(0));
-        Vec scaleCenter = obj.getStart();
+        Vec scaleCenter = obj.getStart().getVec();
 //        obj.scale(scaleCenter, lt, lt);
         obj.setAmplitudeScale(lt);
 //        obj.setArrowThickness(obj.getArrowThickness() * lt);

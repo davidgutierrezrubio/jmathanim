@@ -68,6 +68,7 @@ public class CTMidPoint extends CTAbstractPoint<CTMidPoint> {
         this.A = A;
         this.B = B;
         this.segment = segment;
+        update(scene);
     }
 
     @Override

@@ -42,10 +42,10 @@ public class ArrowTransform extends TransformStrategy<Arrow> {
     @Override
     public boolean doInitialization() {
         super.doInitialization();
-        Vec a = getOriginObject().getStart().copy();
-        Vec b = getOriginObject().getEnd().copy();
-        Vec c = getDestinyObject().getStart().copy();
-        Vec d = getDestinyObject().getEnd().copy();
+        Vec a = getOriginObject().getStart().getVec().copy();
+        Vec b = getOriginObject().getEnd().getVec().copy();
+        Vec c = getDestinyObject().getStart().getVec().copy();
+        Vec d = getDestinyObject().getEnd().getVec().copy();
         getIntermediateObject().copyStateFrom(this.getOriginObject());
         anim = Commands.isomorphism(runTime, a, b, c, d, getIntermediateObject());
         this.copyEffectParametersTo(anim);
