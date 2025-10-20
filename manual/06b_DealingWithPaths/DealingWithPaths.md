@@ -124,7 +124,7 @@ For example, the following code draws an annulus and a copy with 3 new JMPathPoi
 
 ```java
 Shape c = Shape.annulus(.5, 1).fillColor("pink");
-MediatorMathObject.setShowDebugPoints(c,true);
+DebugTools.setShowDebugPoints(c,true);
 Shape c2 = c.copy()
     .stack()
     .withGaps(.25)
