@@ -282,4 +282,14 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
     public T mult(double lambda) {
         return copy().multInSite(lambda);
     }
+
+    @Override
+    protected void setDebugText(String debugText) {
+        dotShape.setDebugText(debugText);
+    }
+
+    @Override
+    protected String getDebugText() {
+        return dotShape.getDebugText();
+    }
 }

@@ -1,5 +1,6 @@
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
@@ -15,11 +16,19 @@ public class MediatorMathObject {
     }
 
     public static String getDebugText(MathObject<?> obj) {
-        return obj.getDebugText();
+        if (obj instanceof Constructible) {
+            return ((Constructible<?>) obj).getMathObject().getDebugText();
+        }else {
+            return obj.getDebugText();
+        }
     }
 
     public static void setDebugText(MathObject<?> obj, String text) {
-        obj.setDebugText(text);
+       if (obj instanceof Constructible) {
+           ((Constructible<?>) obj).getMathObject().setDebugText(text);
+       }else {
+           obj.setDebugText(text);
+       }
     }
 
     public static void addToSceneHook(MathObject<?> obj, JMathAnimScene scene) {
