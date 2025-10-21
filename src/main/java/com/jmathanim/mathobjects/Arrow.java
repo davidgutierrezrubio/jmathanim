@@ -95,7 +95,7 @@ public class Arrow extends Constructible<Arrow> {
     public static Shape buildArrowHead(ArrowType type) {
         Shape resul;
         try {
-            resul = new Shape(loadHeadShape(type));
+            resul = new Shape(loadArrowHeadPath(type));
         } catch (Exception e) {
             JMathAnimScene.logger.error("An exception occurred loading arrow models, returning empty Shape");
             JMathAnimScene.logger.error(e.getMessage());
@@ -135,7 +135,7 @@ public class Arrow extends Constructible<Arrow> {
         return resul;
     }
 
-    private static JMPath loadHeadShape(ArrowType type) throws Exception {
+    private static JMPath loadArrowHeadPath(ArrowType type) throws Exception {
         ResourceLoader rl = new ResourceLoader();
         URL arrowUrl;
         JMPath resul;
@@ -143,13 +143,17 @@ public class Arrow extends Constructible<Arrow> {
             //Always FIRST point to the RIGHT,
             //LAST point to the LEFT
             case NONE_BUTT:
-                return Shape.segment(Vec.to(1, 0), Vec.to(0, 0)).getPath();
+                resul=new JMPath();
+                resul.addPoint(Vec.to(1, 0), Vec.to(0, 0));
+                return resul;
             case NONE_ROUND:
                 resul = Shape.arc(PI).getPath();
                 resul.setProperty("gap", -1d);
                 return resul;
             case NONE_SQUARE:
-                return Shape.segment(Vec.to(1, 0), Vec.to(0, 0)).getPath();
+                resul=new JMPath();
+                resul.addPoint(Vec.to(1, 0), Vec.to(0, 0));
+                return resul;
             case ARROW1:
                 arrowUrl = rl.getResource("#arrow1.svg", "shapeResources/arrows");
                 return SVGUtils.importSVG(arrowUrl).get(0).getPath();
@@ -201,8 +205,8 @@ public class Arrow extends Constructible<Arrow> {
     }
 
     private void loadModels() throws Exception {
-        JMPath h1 = loadHeadShape(typeA);
-        JMPath h2 = loadHeadShape(typeB);
+        JMPath h1 = loadArrowHeadPath(typeA);
+        JMPath h2 = loadArrowHeadPath(typeB);
         h2.scale(-1, -1);
 
         if (h1.getProperty("gap") != null) {

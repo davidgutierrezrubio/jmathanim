@@ -228,6 +228,13 @@ public class Shape extends AbstractShape<Shape> {
      * @return The created arc
      */
     public static Shape arc(double angle, int numSegments) {
+        JMPath path = getArcPath(angle, numSegments);
+        Shape obj = new Shape(path);
+        obj.objectLabel = "circle";
+        return obj;
+    }
+
+    private static JMPath getArcPath(double angle, int numSegments) {
         JMPath path = new JMPath();
 
         double x1, y1;
@@ -241,9 +248,7 @@ public class Shape extends AbstractShape<Shape> {
         path.get(0).setSegmentToThisPointVisible(false);
         path.get(0).getVEnter().copyCoordinatesFrom(path.get(0).getV());
         path.get(-1).getVExit().copyCoordinatesFrom(path.get(-1).getV());
-        Shape obj = new Shape(path);
-        obj.objectLabel = "circle";
-        return obj;
+        return path;
     }
 
     /**

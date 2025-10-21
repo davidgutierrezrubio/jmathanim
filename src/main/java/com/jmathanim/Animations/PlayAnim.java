@@ -21,10 +21,7 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.ScreenAnchor;
 import com.jmathanim.Styling.PaintStyle;
-import com.jmathanim.Utils.Boxable;
-import com.jmathanim.Utils.OrientationType;
-import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.Vec;
+import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
 import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
@@ -132,8 +129,8 @@ public class PlayAnim {
 
     /**
      * Animates all the objects in the scene, setting their alpha (draw and fill) from current to 0, using default
-     * runtime defaultRunTimefadeOut. Then remove the objects to the scene. This method is mostly used as a
-     * transition between parts of a scene, as it clears the scene completely.
+     * runtime defaultRunTimefadeOut. Then remove the objects to the scene. This method is mostly used as a transition
+     * between parts of a scene, as it clears the scene completely.
      */
     public void fadeOutAll() {
         fadeOutAll(defaultRunTimefadeOut);
@@ -405,11 +402,43 @@ public class PlayAnim {
      * @param runtime Duration in seconds
      */
     public void adjustCameraToAllObjects(double runtime) {
-        final Vec gaps = scene.getCamera().getGaps();
-        Rect r = scene.getCamera().getMathView();
-        for (MathObject obj : scene.getMathObjects()) {
-            r = Rect.union(r, obj.getBoundingBox().addGap(gaps.x, gaps.y));
+        Camera camera = scene.getCamera();
+        final Vec gaps = camera.getGaps();
+        Rect r = new EmptyRect();
+        for (MathObject<?> obj : scene.getMathObjects()) {
+            if (obj.getCamera() == camera) {
+                r = Rect.union(r, obj.getBoundingBox());
+            }
         }
+        r.addGap(gaps.x, gaps.y);
+
+        if (camera.getMathView().contains(r)) {
+            r.copyFrom(camera.getMathView());
+        }
+        zoomToRect(runtime, r);
+    }
+
+    /**
+     * Performs a pan and zoom out animation of the default camera to ensure all objects in the scene fit in the math
+     * view, using the specified run time.You can set the gaps between objects and mathview borders, with the
+     * camera.setGaps method. This method doesn't zoom in the view.
+     *
+     * @param runtime Duration in seconds
+     */
+    public void zoomCameraToAllObjects(double runtime) {
+        Camera camera = scene.getCamera();
+        final Vec gaps = camera.getGaps();
+        Rect r = new EmptyRect();
+        for (MathObject<?> obj : scene.getMathObjects()) {
+            if (obj.getCamera() == camera) {
+                r = Rect.union(r, obj.getBoundingBox());
+            }
+        }
+        r.addGap(gaps.x, gaps.y);
+
+//        if (camera.getMathView().contains(r)) {
+//            r.copyFrom(camera.getMathView());
+//        }
         zoomToRect(runtime, r);
     }
 
