@@ -16,7 +16,6 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Constructible.Conics.CTCircleArc;
 import com.jmathanim.Constructible.Constructible;
@@ -26,7 +25,6 @@ import com.jmathanim.Constructible.Points.CTIntersectionPoint;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.ArrowType;
 import com.jmathanim.Enum.SlopeDirectionType;
-import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -49,7 +47,7 @@ public class Arrow extends Constructible<Arrow> {
     protected final MathObjectGroup groupElementsToBeDrawn;
     private final Vec Acopy, Bcopy;
     private final Shape shapeToDraw;
-    private final Shape head1, head2;
+    private final JMPath head1, head2;
     private double amplitudeScale;
     private double angle;
     private double baseHeight1;
@@ -73,8 +71,8 @@ public class Arrow extends Constructible<Arrow> {
         this.labelArcUpside = new Shape();
         this.labelArcDownside = new Shape();
         this.arrowLabel = null;
-        head1 = new Shape();
-        head2 = new Shape();
+        head1 = new JMPath();
+        head2 = new JMPath();
         arrowThickness = 20;//TODO: Default value. This should be in config file
         setAmplitudeScale(1d);
         headStartMultiplier = 1d;
@@ -95,15 +93,15 @@ public class Arrow extends Constructible<Arrow> {
      * @return A Shape with the arrow head generated
      */
     public static Shape buildArrowHead(ArrowType type) {
-        Shape resul = new Shape();
+        Shape resul;
         try {
-            resul = loadHeadShape(type);
+            resul = new Shape(loadHeadShape(type));
         } catch (Exception e) {
             JMathAnimScene.logger.error("An exception occurred loading arrow models, returning empty Shape");
             JMathAnimScene.logger.error(e.getMessage());
            resul=new Shape();
         }
-        resul.style("default");
+        resul.style("arrowdefault");
         resul.getPath().closePath();
         return resul;
     }
@@ -137,43 +135,43 @@ public class Arrow extends Constructible<Arrow> {
         return resul;
     }
 
-    private static Shape loadHeadShape(ArrowType type) throws Exception {
+    private static JMPath loadHeadShape(ArrowType type) throws Exception {
         ResourceLoader rl = new ResourceLoader();
         URL arrowUrl;
-        Shape resul;
+        JMPath resul;
         switch (type) {
             //Always FIRST point to the RIGHT,
             //LAST point to the LEFT
             case NONE_BUTT:
-                return Shape.segment(Vec.to(1, 0), Vec.to(0, 0));
+                return Shape.segment(Vec.to(1, 0), Vec.to(0, 0)).getPath();
             case NONE_ROUND:
-                resul = Shape.arc(PI);
+                resul = Shape.arc(PI).getPath();
                 resul.setProperty("gap", -1d);
                 return resul;
             case NONE_SQUARE:
-                return Shape.segment(Vec.to(1, 0), Vec.to(0, 0));
+                return Shape.segment(Vec.to(1, 0), Vec.to(0, 0)).getPath();
             case ARROW1:
                 arrowUrl = rl.getResource("#arrow1.svg", "shapeResources/arrows");
-                return SVGUtils.importSVG(arrowUrl).get(0);
+                return SVGUtils.importSVG(arrowUrl).get(0).getPath();
             case ARROW2:
                 arrowUrl = rl.getResource("#arrow2.svg", "shapeResources/arrows");
-                return SVGUtils.importSVG(arrowUrl).get(0);
+                return SVGUtils.importSVG(arrowUrl).get(0).getPath();
             case ARROW3:
                 arrowUrl = rl.getResource("#arrow3.svg", "shapeResources/arrows");
-                return SVGUtils.importSVG(arrowUrl).get(0);
+                return SVGUtils.importSVG(arrowUrl).get(0).getPath();
             case SQUARE:
                 arrowUrl = rl.getResource("#ArrowSquare.svg", "shapeResources/arrows");
-                resul = SVGUtils.importSVG(arrowUrl).get(0);
+                resul = SVGUtils.importSVG(arrowUrl).get(0).getPath();
                 resul.setProperty("gap", -resul.getHeight() * .5);
                 return resul;
             case BULLET:
-                resul = Shape.arc(1.75 * PI);
-                AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(resul.getPoint(0).copy(),
-                        resul.getPoint(-1).copy(),
-                        resul.getPoint(0).copy(),
-                        resul.getPoint(0).copy().shift(-1, 0),
+                resul = Shape.arc(1.75 * PI).getPath();
+                AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(resul.get(0),
+                        resul.get(-1),
+                        resul.get(0),
+                        resul.get(0).getV().add(-1, 0),
                         1);
-                tr.applyTransform(resul);
+                resul.applyAffineTransform(tr);
                 resul.setProperty("gap", -resul.getHeight() * .5);
                 return resul;
             default:
@@ -203,8 +201,8 @@ public class Arrow extends Constructible<Arrow> {
     }
 
     private void loadModels() throws Exception {
-        Shape h1 = loadHeadShape(typeA);
-        Shape h2 = loadHeadShape(typeB);
+        JMPath h1 = loadHeadShape(typeA);
+        JMPath h2 = loadHeadShape(typeB);
         h2.scale(-1, -1);
 
         if (h1.getProperty("gap") != null) {
@@ -240,8 +238,8 @@ public class Arrow extends Constructible<Arrow> {
 
         Acopy.copyCoordinatesFrom(A);
         Bcopy.copyCoordinatesFrom(A.getVec().interpolate(B, getAmplitudeScale()));
-        Shape h1A = head1.copy();
-        Shape h1B = head2.copy();
+        JMPath h1A = head1.copy();
+        JMPath h1B = head2.copy();
         double dist = Acopy.to(Bcopy).norm();
         if (arrowLabel != null) {
             arrowLabel.update(scene);

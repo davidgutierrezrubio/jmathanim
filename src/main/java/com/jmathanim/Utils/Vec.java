@@ -26,6 +26,8 @@ import com.jmathanim.mathobjects.Stateable;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 
+import java.io.Serializable;
+
 import static com.jmathanim.jmathanim.JMathAnimScene.PI2;
 
 /**
@@ -33,7 +35,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI2;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<Vec>, Interpolable<Vec> {
+public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<Vec>, Interpolable<Vec>, Serializable {
 
     public double x, y, z;
     public double xState, yState, zState;

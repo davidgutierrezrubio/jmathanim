@@ -21,6 +21,7 @@ import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 
 /**
@@ -31,7 +32,7 @@ public class JMPathPoint implements
         Coordinates<JMPathPoint>,
         AffineTransformable<JMPathPoint>,
         Interpolable<JMPathPoint>,
-        Stateable {
+        Stateable, Serializable {
 
     //    public final Point p; // The vertex point
     private final Vec v; // The vertex point
@@ -40,7 +41,7 @@ public class JMPathPoint implements
     public int numDivisions = 0;// This number is used for convenience to store easily number of divisions when
     private boolean isSegmentToThisPointVisible;
     private boolean isSegmentToThisPointCurved;
-    private Point pCenter; // The vertex Point object, created on demand
+    private transient Point pCenter; // The vertex Point object, created on demand
     // subdiving a path
     private JMPathPoint pState;
 
