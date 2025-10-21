@@ -23,10 +23,7 @@ import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.RendererEffects;
-import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.ResourceLoader;
-import com.jmathanim.Utils.Vec;
+import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.jmathanim.LogUtils;
 import com.jmathanim.mathobjects.*;
@@ -56,6 +53,7 @@ import javafx.scene.transform.Translate;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -487,11 +485,16 @@ public class JavaFXRenderer extends Renderer {
         String fileName = stream.toString();
         Image image;
         if (!images.containsKey(fileName)) {// If the image is not already loaded...
-            ResourceLoader rl = new ResourceLoader();
-            final URL imageResource = rl.getResource(fileName, "images");
-            image = new Image(stream);
-            images.put(fileName, image);
-            JMathAnimScene.logger.info("Loaded image " + fileName);
+            try {
+                ResourceLoader rl = new ResourceLoader();
+                final URL imageResource = rl.getResource(fileName, "images");
+                image = new Image(stream);
+                images.put(fileName, image);
+                JMathAnimScene.logger.info("Loaded image " + fileName);
+            } catch (FileNotFoundException e) {
+                JMathAnimScene.logger.error("File " + LogUtils.CYAN + fileName + LogUtils.RESET + " not found. Returning EmptyRect");
+                return new EmptyRect();
+            }
         } else {
             image = images.get(fileName);
         }

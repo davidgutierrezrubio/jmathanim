@@ -20,6 +20,7 @@ package com.jmathanim.Utils;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -49,11 +50,11 @@ public class ResourceLoader {
      *
      * @param resource String with the path of the resource. If this string
      * begins with &quot;#&quot; it denotes an internal file located at resources
-     * directory
+     * directory or null if such resource does not exist.
      * @param folder Folder where to look at (config, arrows,...)
      * @return URL with the resource location
      */
-    public URL getResource(String resource, String folder) {
+    public URL getResource(String resource, String folder) throws FileNotFoundException {
         if (resource.startsWith("!")) {
             return parseExternalAbsoluteResource(resource.substring(1));
         }
@@ -106,10 +107,12 @@ public class ResourceLoader {
      * @return A URL object pointing to the resolved internal resource, or null if the resource
      *         could not be located.
      */
-    private URL parseInternalResource(String resource, String folder) {
+    private URL parseInternalResource(String resource, String folder) throws FileNotFoundException{
         String urlStr = folder + "/" + resource;
 
-        return this.getClass().getClassLoader().getResource(urlStr);
+        URL resul = this.getClass().getClassLoader().getResource(urlStr);
+        if (resul==null) throw new FileNotFoundException();
+        return resul;
     }
 
     /**

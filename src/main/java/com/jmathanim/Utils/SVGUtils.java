@@ -139,8 +139,9 @@ public class SVGUtils {
      */
     public static MultiShapeObject importSVG(String fileName)  {
         ResourceLoader rl=new ResourceLoader();
-        URL url = rl.getResource(fileName, "images");
+
         try {
+            URL url = rl.getResource(fileName, "images");
             return importSVG(url, MODrawProperties.makeNullValues());
         } catch (Exception e) {
             logger.error("An exception ocurred loading SVG file "+fileName+". Returning empty MultiShapeObject instead");

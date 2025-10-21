@@ -63,10 +63,6 @@ public class PlayAnim {
      */
     public double defaultRunTimeHighlight = 1;
     /**
-     * Default runtime for camera methods (in seconds)
-     */
-    public double defaultRunTimeCamera = 1;
-    /**
      * Default runtime for move out methods (in seconds)
      */
     public double defaultRunTimeMoveOut = 1;
@@ -384,15 +380,6 @@ public class PlayAnim {
         scene.playAnimation(new Transform(runTime, transformed, destiny));
     }
 
-    /**
-     * Performs a pan and zoom out animation of the current camera to ensure all objects in the scene fit in the math
-     * view, using the default run time for camera animations. You can set the gaps between objects and mathview
-     * borders, with the camera.setGaps method. This method doesn't zoom in the view.
-     */
-    public void adjustCameraToAllObjects() {
-        adjustCameraToAllObjects(defaultRunTimeCamera);
-
-    }
 
     /**
      * Performs a pan and zoom out animation of the default camera to ensure all objects in the scene fit in the math
@@ -443,17 +430,6 @@ public class PlayAnim {
     }
 
     /**
-     * Performs a pan and zoom out animation of the current camera to ensure all given objects fit in the math view,
-     * using the default run time for camera animations.You can set the gaps between objects and mathview borders, with
-     * the camera.setGaps method. This method doesn't zoom in the view.
-     *
-     * @param objs Mathobjects to include in the view (varargs)
-     */
-    public void adjustToObjects(MathObject<?>... objs) {
-        adjustToObjects(defaultRunTimeCamera, objs);
-    }
-
-    /**
      * Performs a pan and zoom out animation of the default camera to ensure all given objects fit in the math view,
      * using the specified run time. You can set the gaps between objects and mathview borders, with the camera.setGaps
      * method. This method doesn't zoom in the view.
@@ -461,38 +437,42 @@ public class PlayAnim {
      * @param runTime Duration in seconds
      * @param objs    Mathobjects to include in the view (varargs)
      */
-    public void adjustToObjects(double runTime, MathObject<?>... objs) {
+    public void adjustCameraToObjects(double runTime, MathObject<?>... objs) {
         final Vec gaps = scene.getCamera().getGaps();
-        Rect r = scene.getCamera().getMathView();
+        Rect r = new EmptyRect();
         r = Rect.union(r, Rect.make(objs));
         r.addGap(gaps.x, gaps.y);
+        if (scene.getCamera().getMathView().contains(r)) {
+            r.copyFrom(scene.getCamera().getMathView());
+        }
         zoomToRect(runTime, r);
     }
 
     /**
-     * This method is similar to adjustToObjects, but it performs a zoom in to use all availabla math view to show the
+     * This method is similar to adjustToObjects, but it performs a zoom in to use all available math view to show the
      * specified objects. Default camera is used
      *
      * @param runTime Duration in seconds
      * @param objs    Mathobjects to include in the view (varargs)
      */
-    public void zoomToObjects(double runTime, Boxable... objs) {
+    public void zoomCameraToObjects(double runTime, Boxable... objs) {
         Rect r = Rect.make(objs);
+        r.addGap(scene.getCamera().getGaps().x, scene.getCamera().getGaps().y);
         zoomToRect(runTime, r);
     }
 
-    /**
-     * This method is similar to adjustToObjects, but it performs a zoom in to use all availabla math view to show the
-     * specified objects, using the specified camera.
-     *
-     * @param runTime Duration in seconds
-     * @param cam     Camera to use
-     * @param objs    Mathobjects to include in the view (varargs)
-     */
-    public void zoomToObjects(double runTime, Camera cam, Boxable... objs) {
-        Rect r = Rect.make(objs);
-        zoomToRect(runTime, cam, r);
-    }
+//    /**
+//     * This method is similar to adjustToObjects, but it performs a zoom in to use all availabla math view to show the
+//     * specified objects, using the specified camera.
+//     *
+//     * @param runTime Duration in seconds
+//     * @param cam     Camera to use
+//     * @param objs    Mathobjects to include in the view (varargs)
+//     */
+//    public void zoomCameraToObjects(double runTime, Camera cam, Boxable... objs) {
+//        Rect r = Rect.make(objs);
+//        zoomToRect(runTime, cam, r);
+//    }
 
     /**
      * Deprecated: This method will be removed

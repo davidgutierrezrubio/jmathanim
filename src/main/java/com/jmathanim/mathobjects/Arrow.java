@@ -28,13 +28,18 @@ import com.jmathanim.Enum.SlopeDirectionType;
 import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.jmathanim.LogUtils;
 import com.jmathanim.mathobjects.Text.AbstractLatexMathObject;
 import com.jmathanim.mathobjects.Tippable.LabelTip;
 import com.jmathanim.mathobjects.updaters.Updater;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.URL;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
+import static com.jmathanim.jmathanim.JMathAnimScene.logger;
 
 /**
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
@@ -48,6 +53,7 @@ public class Arrow extends Constructible<Arrow> {
     private final Vec Acopy, Bcopy;
     private final Shape shapeToDraw;
     private final JMPath head1, head2;
+    private final Coordinates<?> A, B;
     private double amplitudeScale;
     private double angle;
     private double baseHeight1;
@@ -56,7 +62,6 @@ public class Arrow extends Constructible<Arrow> {
     private double baseRealHeight2;
     private double headStartMultiplier, headEndMultiplier;
     private double gapA, gapB;
-    private final Coordinates<?> A, B;
     private double baseDist1, baseDist2;
     private double arrowThickness;
     private ArrowType typeA, typeB;
@@ -99,7 +104,7 @@ public class Arrow extends Constructible<Arrow> {
         } catch (Exception e) {
             JMathAnimScene.logger.error("An exception occurred loading arrow models, returning empty Shape");
             JMathAnimScene.logger.error(e.getMessage());
-           resul=new Shape();
+            resul = new Shape();
         }
         resul.style("arrowdefault");
         resul.getPath().closePath();
@@ -135,7 +140,7 @@ public class Arrow extends Constructible<Arrow> {
         return resul;
     }
 
-    private static JMPath loadArrowHeadPath(ArrowType type) throws Exception {
+    public static JMPath loadArrowHeadPath(ArrowType type) throws Exception {
         ResourceLoader rl = new ResourceLoader();
         URL arrowUrl;
         JMPath resul;
@@ -143,29 +148,33 @@ public class Arrow extends Constructible<Arrow> {
             //Always FIRST point to the RIGHT,
             //LAST point to the LEFT
             case NONE_BUTT:
-                resul=new JMPath();
+                resul = new JMPath();
                 resul.addPoint(Vec.to(1, 0), Vec.to(0, 0));
+                resul.get(0).setSegmentToThisPointVisible(false);
                 return resul;
             case NONE_ROUND:
                 resul = Shape.arc(PI).getPath();
                 resul.setProperty("gap", -1d);
                 return resul;
             case NONE_SQUARE:
-                resul=new JMPath();
+                resul = new JMPath();
                 resul.addPoint(Vec.to(1, 0), Vec.to(0, 0));
+                resul.get(0).setSegmentToThisPointVisible(false);
                 return resul;
             case ARROW1:
-                arrowUrl = rl.getResource("#arrow1.svg", "shapeResources/arrows");
-                return SVGUtils.importSVG(arrowUrl).get(0).getPath();
+                return loadArrowHeadFile("#arrow1.svg", "#arrow1.bin", "shapeResources/arrows", rl);
             case ARROW2:
-                arrowUrl = rl.getResource("#arrow2.svg", "shapeResources/arrows");
-                return SVGUtils.importSVG(arrowUrl).get(0).getPath();
+//                arrowUrl = rl.getResource("#arrow2.svg", "shapeResources/arrows");
+//                return SVGUtils.importSVG(arrowUrl).get(0).getPath();
+                return loadArrowHeadFile("#arrow2.svg", "#arrow2.bin", "shapeResources/arrows", rl);
             case ARROW3:
-                arrowUrl = rl.getResource("#arrow3.svg", "shapeResources/arrows");
-                return SVGUtils.importSVG(arrowUrl).get(0).getPath();
+//                arrowUrl = rl.getResource("#arrow3.svg", "shapeResources/arrows");
+//                return SVGUtils.importSVG(arrowUrl).get(0).getPath();
+                return loadArrowHeadFile("#arrow3.svg", "#arrow3.bin", "shapeResources/arrows", rl);
             case SQUARE:
-                arrowUrl = rl.getResource("#ArrowSquare.svg", "shapeResources/arrows");
-                resul = SVGUtils.importSVG(arrowUrl).get(0).getPath();
+//                arrowUrl = rl.getResource("#ArrowSquare.svg", "shapeResources/arrows");
+//                resul = SVGUtils.importSVG(arrowUrl).get(0).getPath();
+                resul = loadArrowHeadFile("#ArrowSquare.svg", "#ArrowSquare.bin", "shapeResources/arrows", rl);
                 resul.setProperty("gap", -resul.getHeight() * .5);
                 return resul;
             case BULLET:
@@ -180,6 +189,48 @@ public class Arrow extends Constructible<Arrow> {
                 return resul;
             default:
                 throw new AssertionError();
+        }
+    }
+
+    private static JMPath loadArrowHeadFile(String arrowSVGName, String arrowSerializedName, String folder, ResourceLoader rl) {
+        URL arrowUrl;
+        JMPath headPath;
+
+            try {
+                arrowUrl = rl.getResource(arrowSerializedName, folder);
+                ObjectInputStream in = new ObjectInputStream(arrowUrl.openStream());
+                headPath = (JMPath) in.readObject();
+                logger.debug("Loader serialized arrow head " + arrowSerializedName);
+                return headPath;
+            } catch (ClassNotFoundException e) {
+                logger.warn("ClassNotFoundException when trying to load serialized object "
+                        + LogUtils.YELLOW + arrowSerializedName + LogUtils.RESET +
+                        ". Loading SVG instead"
+                );
+            } catch (FileNotFoundException e) {
+                logger.warn("FileNotFoundException when trying to load serialized object "
+                        + LogUtils.YELLOW + arrowSerializedName + LogUtils.RESET +
+                        ". Loading SVG instead"
+                );
+            } catch (IOException e) {
+                logger.warn("IOException when trying to load serialized object "
+                        + LogUtils.YELLOW + arrowSerializedName + LogUtils.RESET +
+                        ". Loading SVG instead"
+                );
+            }
+        try {
+            arrowUrl = rl.getResource(arrowSVGName, folder);
+            return SVGUtils.importSVG(arrowUrl).get(0).getPath();
+        }
+        catch (FileNotFoundException ex) {
+            logger.warn("FileNotFoundException when trying to load SVG internal object "
+                    + LogUtils.YELLOW + arrowSVGName + LogUtils.RESET +
+                    ". Switching to NONE_BUTT");
+            try {
+                return loadArrowHeadPath(ArrowType.NONE_BUTT);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -787,7 +838,7 @@ public class Arrow extends Constructible<Arrow> {
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
         super.registerUpdateableHook(scene);
-        dependsOn(scene, A,B);
+        dependsOn(scene, A, B);
     }
 
     private enum labelTypeEnum {NORMAL, DISTANCE, COORDS}
