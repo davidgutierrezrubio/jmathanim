@@ -196,33 +196,32 @@ public class Arrow extends Constructible<Arrow> {
         URL arrowUrl;
         JMPath headPath;
 
-            try {
-                arrowUrl = rl.getResource(arrowSerializedName, folder);
-                ObjectInputStream in = new ObjectInputStream(arrowUrl.openStream());
-                headPath = (JMPath) in.readObject();
-                logger.debug("Loader serialized arrow head " + arrowSerializedName);
-                return headPath;
-            } catch (ClassNotFoundException e) {
-                logger.warn("ClassNotFoundException when trying to load serialized object "
-                        + LogUtils.YELLOW + arrowSerializedName + LogUtils.RESET +
-                        ". Loading SVG instead"
-                );
-            } catch (FileNotFoundException e) {
-                logger.warn("FileNotFoundException when trying to load serialized object "
-                        + LogUtils.YELLOW + arrowSerializedName + LogUtils.RESET +
-                        ". Loading SVG instead"
-                );
-            } catch (IOException e) {
-                logger.warn("IOException when trying to load serialized object "
-                        + LogUtils.YELLOW + arrowSerializedName + LogUtils.RESET +
-                        ". Loading SVG instead"
-                );
-            }
+        try {
+            arrowUrl = rl.getResource(arrowSerializedName, folder);
+            ObjectInputStream in = new ObjectInputStream(arrowUrl.openStream());
+            headPath = (JMPath) in.readObject();
+            logger.debug("Loader serialized arrow head " + arrowSerializedName);
+            return headPath;
+        } catch (ClassNotFoundException e) {
+            logger.warn("ClassNotFoundException when trying to load serialized object "
+                    + LogUtils.YELLOW + arrowSerializedName + LogUtils.RESET +
+                    ". Loading SVG instead"
+            );
+        } catch (FileNotFoundException e) {
+            logger.warn("FileNotFoundException when trying to load serialized object "
+                    + LogUtils.YELLOW + arrowSerializedName + LogUtils.RESET +
+                    ". Loading SVG instead"
+            );
+        } catch (IOException e) {
+            logger.warn("IOException when trying to load serialized object "
+                    + LogUtils.YELLOW + arrowSerializedName + LogUtils.RESET +
+                    ". Loading SVG instead"
+            );
+        }
         try {
             arrowUrl = rl.getResource(arrowSVGName, folder);
             return SVGUtils.importSVG(arrowUrl).get(0).getPath();
-        }
-        catch (FileNotFoundException ex) {
+        } catch (FileNotFoundException ex) {
             logger.warn("FileNotFoundException when trying to load SVG internal object "
                     + LogUtils.YELLOW + arrowSVGName + LogUtils.RESET +
                     ". Switching to NONE_BUTT");
@@ -456,17 +455,32 @@ public class Arrow extends Constructible<Arrow> {
             boolean upperSide = true;
             Object upperObj = arrowLabel.getProperty("upperSide");
             if (upperObj != null) upperSide = (boolean) upperObj;
+            copy.labelType=labelType;
             if (labelType == labelTypeEnum.DISTANCE) {
-                copy.addLengthLabel(arrowLabel.distanceToShape, stringFormat, upperSide);
+                copy.addLengthLabelTip(stringFormat, arrowLabel.distanceToShape, upperSide);
             }
             if (labelType == labelTypeEnum.COORDS) {
-                copy.addVecLabel(arrowLabel.distanceToShape, stringFormat, upperSide);
+                copy.addVecLabelTip(arrowLabel.distanceToShape, stringFormat, upperSide);
             }
-
+            if (labelType==labelTypeEnum.NORMAL) {
+                copy.registerLabel(getLabelTip().copy());
+            }
         }
         copy.copyStateFrom(this);
         return copy;
     }
+//    LabelTip label = LabelTip.makeLabelTip((upperSide ? labelArcUpside : labelArcDownside), .5, "text");
+//        label.setProperty("upperSide", upperSide);//This will be useful when copying labels
+//    label.distanceToShape = gap;
+//        label.setSlopeDirection((upperSide ? SlopeDirectionType.POSITIVE : SlopeDirectionType.NEGATIVE));
+//        label.setAnchor(AnchorType.LOWER);
+//    registerLabel(label);
+//    labelType = labelTypeEnum.NORMAL;
+//        this.stringFormat = "";
+//        return label;
+
+
+
 
     @Override
     public void copyStateFrom(Stateable obj) {
@@ -693,17 +707,32 @@ public class Arrow extends Constructible<Arrow> {
         return this;
     }
 
-    public LabelTip getLabel() {
+    public LabelTip getLabelTip() {
         return arrowLabel;
     }
 
-    public <T extends Arrow> T setLabel(LabelTip labelTip) {
+
+
+
+    private void registerLabel(LabelTip labelTip) {
         arrowLabel = labelTip;
         labelType = labelTypeEnum.NORMAL;
         mpArrow.add(arrowLabel);
         groupElementsToBeDrawn.clear();
         groupElementsToBeDrawn.add(shapeToDraw, arrowLabel);
-        return (T) this;
+    }
+
+
+    public LabelTip addLabelTip(String text,double gap, boolean upperSide) {
+        LabelTip label = LabelTip.makeLabelTip((upperSide ? labelArcUpside : labelArcDownside), .5, text);
+        label.setProperty("upperSide", upperSide);//This will be useful when copying labels
+        label.distanceToShape = gap;
+        label.setSlopeDirection((upperSide ? SlopeDirectionType.POSITIVE : SlopeDirectionType.NEGATIVE));
+        label.setAnchor(AnchorType.LOWER);
+        registerLabel(label);
+        labelType = labelTypeEnum.NORMAL;
+        this.stringFormat = "";
+        return label;
     }
 
     /**
@@ -712,17 +741,18 @@ public class Arrow extends Constructible<Arrow> {
      *
      * @param gap    Gap between control delimiter and label
      * @param format Format to print the length, for example "0.00"
-     * @return The Label, a LatexMathObject
+     * @return The created LabelTip object
      */
-    public LabelTip addLengthLabel(double gap,
-                                   String format, boolean upperSide) {
+    public LabelTip addLengthLabelTip(String format, double gap, boolean upperSide) {
 
         LabelTip label = LabelTip.makeLabelTip((upperSide ? labelArcUpside : labelArcDownside), .5, "${#0}$");
         label.setProperty("upperSide", upperSide);//This will be useful when copying labels
         label.distanceToShape = gap;
         label.setSlopeDirection((upperSide ? SlopeDirectionType.POSITIVE : SlopeDirectionType.NEGATIVE));
         label.setAnchor(AnchorType.LOWER);
-        setLabel(label);
+        registerLabel(label);
+
+
         labelType = labelTypeEnum.DISTANCE;
         this.stringFormat = format;
 
@@ -751,14 +781,14 @@ public class Arrow extends Constructible<Arrow> {
      *
      * @param gap    Gap between control delimiter and label
      * @param format Format to print the numbers, for example "0.00"
-     * @return The Label, a LatexMathObject
+     * @return The created LabelTip object
      */
-    public LabelTip addVecLabel(double gap, String format, boolean upperSide) {
+    public LabelTip addVecLabelTip(double gap, String format, boolean upperSide) {
         LabelTip label = LabelTip.makeLabelTip((upperSide ? labelArcUpside : labelArcDownside), .5, "$({#0},{#1})$");
         label.setProperty("upperSide", upperSide);//This will be useful when copying labels
         label.distanceToShape = gap;
         label.setAnchor(AnchorType.LOWER);
-        setLabel(label);
+        registerLabel(label);
         labelType = labelTypeEnum.COORDS;
         AbstractLatexMathObject<?> t = arrowLabel.getLaTeXObject();
         t.setArgumentsFormat(format);
@@ -829,8 +859,8 @@ public class Arrow extends Constructible<Arrow> {
     @Override
     public Arrow setFreeMathObject(boolean isMathObjectFree) {
         super.setFreeMathObject(isMathObjectFree);
-        if (getLabel() != null) {
-            getLabel().setFreeMathObject(isMathObjectFree);
+        if (getLabelTip() != null) {
+            getLabelTip().setFreeMathObject(isMathObjectFree);
         }
         return this;
     }

@@ -401,8 +401,9 @@ public abstract class JMathAnimScene {
      */
     protected final void doDraws() {
         objectsAlreadydrawn.clear();
-        doUpdates();
         doLinks();
+        doUpdates();
+
 
         if (!animationIsDisabled) {
             // Objects to be drawn on screen. Sort them by layer
