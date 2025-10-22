@@ -20,7 +20,7 @@ Each `JMPathPoint` has information about the precise shape of the curve at this 
 
 You can access a particular `JMPathPoint` from the `Shape` class using the `get` method. So, in the previous code, `ellipse.get(0)` will return the first `JMPathPoint` of the path. These points are stored in a `CircularArray` object so that `ellipse.get(-1)` will return the last element of the path.
 
-If you set the flag to show debug points with the command `ellipse.setShowDebugPoints(true)` JMathAnim will number the path's points for you:
+If you set the flag to show debug points with the command `DebugTools.setShowDebugPoints(ellipse, true)` JMathAnim will number the path's points for you:
 
 <img src="01b_EllipseDebug.png" alt="01b_EllipseDebug" style="zoom:50%;" />
 
@@ -124,7 +124,7 @@ For example, the following code draws an annulus and a copy with 3 new JMPathPoi
 
 ```java
 Shape c = Shape.annulus(.5, 1).fillColor("pink");
-MediatorMathObject.setShowDebugPoints(c,true);
+DebugTools.setShowDebugPoints(c,true);
 Shape c2 = c.copy()
     .stack()
     .withGaps(.25)
