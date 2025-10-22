@@ -181,7 +181,7 @@ You obtain objects stacked to the borders of the actual screen view:
 
 
 
-There is shortcut method if you want to simply put the object at the center screen. The method `.center()` is equivalent to `.stack().toScreen(ScreenAnchor.CENTER)`.
+There is shortcut method if you want to simply put the object at the center of the screen. The method `.center()` is equivalent to `.stack().toScreen(ScreenAnchor.CENTER)`.
 
 ## Aligning objects
 
@@ -313,15 +313,27 @@ Produces the following sequence of interpolated transforms from one square to an
 Since version 0.9.9-SNAPSHOT, the `createInverse2DIsomorphic` method is implemented too, that returns the (only) inverse isomorphic transform that maps A into C and B into D.
 
 ```java
-Shape sq = LaTeXMathObject.make("R").get(0).scale(8).center().fillColor("steelblue").fillAlpha(.3);//Square, fill color dark green, and opacity 30%
-Point A = sq.getBoundingBox().getDL().drawColor("darkblue");//First vertex of the square (lower-left corner), dark blue color
-Point B = sq.getBoundingBox().getUL().drawColor("darkblue");//First vertex of the square (lower-right corner), dark blue color
+//Generates a LatexMathObject and gets the first shape, fill it with color steelblue, and opacity 30%
+LatexShape bigR = LatexMathObject.make("R").get(0).scale(8).center().fillColor("steelblue").fillAlpha(.3);
+
+//Create a point located at the lower left corner of the bounding box of bigR
+Point A = Point.at(bigR.getBoundingBox().getLowerLeft())
+    .drawColor("darkblue");
+
+//Create a point located at the upper left corner of the bounding box of bigR
+Point B = Point.at(bigR.getBoundingBox().getUpperLeft())
+    .drawColor("darkblue");
+
 Point C = Point.at(3.5, -1).drawColor("darkred");//Destiny point of A, dark red color
 Point D = Point.at(3.7, .5).drawColor("darkred");//Destiny point of B, dark red color
+
 add(A, B, C, D);
 for (double alpha = 0; alpha <= 1; alpha += .2) {
-    AffineJTransform transform = AffineJTransform.createInverse2DIsomorphic(A, B, C, D, alpha);
-    add(transform.getTransformedObject(sq));//Adds a copy of the square, transformed
+    //Inverse isomorphic transformation that maps (A,B) onto (C,D)
+    AffineJTransform transform = AffineJTransform.createInverse2DIsomorphic(A, B,
+                                                                            C, D,
+                                                                            alpha);
+    add(transform.getTransformedObject(bigR));//Adds a copy of the square, transformed
 }
 camera.adjustToAllObjects();
 waitSeconds(5);
@@ -364,9 +376,9 @@ Shape circ = Shape.circle().scale(.5).shift(.5, .5).fillColor("orange").fillAlph
 Point A = Point.at(0, 0).drawColor("darkblue").layer(1); 
 Point B = Point.at(1, 0).drawColor("darkblue").layer(1); 
 Point C = Point.at(0, 1).drawColor("darkblue").layer(1); 
-Point D = Point.at(1.5, -.5).dotStyle(DotSyle.PLUS).thickness(6).drawColor("darkgreen");
-Point E = Point.at(2, 0).dotStyle(DotSyle.PLUS).thickness(6).drawColor("darkgreen");
-Point F = Point.at(1.75, .75).dotStyle(DotSyle.PLUS).thickness(6).drawColor("darkgreen");
+Point D = Point.at(1.5, -.5).dotStyle(DotStyle.PLUS).thickness(6).drawColor("darkgreen");
+Point E = Point.at(2, 0).dotStyle(DotStyle.PLUS).thickness(6).drawColor("darkgreen");
+Point F = Point.at(1.75, .75).dotStyle(DotStyle.PLUS).thickness(6).drawColor("darkgreen");
 add(sq, circ, A, B, C, D, E, F);
 
 for (double alpha = 0; alpha <= 1; alpha += .2) {
@@ -399,12 +411,16 @@ for (int n = 0; n < 10; n++) {
 }
 camera.scale(2 * h / camera.getMathView().getHeight());//Zooms out so that the height of view is 2xTotal height
 add(group);//This adds all squares to the scene, but not the group object itself.
-LaTeXMathObject layoutName = LaTeXMathObject.make("").scale(7);
+LatexMathObject layoutName = LatexMathObject.make("").scale(7);
 add(layoutName);
-for (MathObjectGroup.Layout layout : MathObjectGroup.Layout.values()) {//Iterate over all the layout values
+for (LayoutType layout : LayoutType.values()) {//Iterate over all the layout values
     group.setLayout(layout, .1); //Set this layout, with .1 gap between objects
-    layoutName.setLaTeX(layout.name()).stackToScreen(Anchor.Type.LOWER, .2, .2); //Change value of the label
+    layoutName.setLaTeX(layout.name())
+        .stack()
+        .withRelativeGaps(.2)
+        .toScreen(ScreenAnchor.LOWER);
     waitSeconds(3);
+}
 ```
 
 
@@ -421,14 +437,14 @@ The `BoxLayout` allocates the objects in a matrix form:
 MathObjectGroup gr = MathObjectGroup.make();
 int num = 16;
 for (int n = 0; n < num; n++) {
-    MathObject sq = Shape.square().scale(.25).fillColor("violet").fillAlpha(1 - 1. * (n+1) / num).thickness(6);
-    LaTeXMathObject t = LaTeXMathObject.make("" + n);
-    t.stackTo(sq, Anchor.Type.CENTER).layer(1);
+    Shape sq = Shape.square().scale(.25).fillColor("violet").fillAlpha(1 - 1. * (n+1) / num).thickness(6);
+    LatexMathObject t = LatexMathObject.make("" + n);
+    t.stack().toObject(sq).layer(1);
     gr.add(MathObjectGroup.make(sq, t));//Each object of the group is itself a group with 2 elements
 }
 Point refPoint = Point.origin(); //The reference point to locate the box
 add(refPoint.thickness(40).drawColor(JMColor.RED).layer(1));
-BoxLayout layout = new BoxLayout(refPoint, 4, BoxLayout.Direction.RIGHT_UP, .1, .1);//This is where the magic happens
+BoxLayout layout = BoxLayout.make(refPoint, 4,  .1, .1);//This is where the magic happens
 add(gr.setLayout(layout));
 camera.zoomToAllObjects();
 waitSeconds(3);//Smile, you're in a screenshot!
@@ -438,7 +454,7 @@ Gives a static image like this. The red dot is the reference point
 
 <img src="boxlayout01.png" alt="image-20210317090826194" style="zoom: 50%;" />
 
-The `BoxLayout.Direction.RIGHT_UP` tells the layout to first fill the row in the `RIGHT` direction, and then go `UP` to move to the next one. You can try other values, like `LEFT_DOWN`.
+As you can see, the default direction is first fill rows left-to-right and then proceed down-to-up. This corresponds to  the`BoxDirection.RIGHT_UP` enum parameter, that tells the layout to first fill the row in the `RIGHT` direction, and then go `UP` to move to the next one. You can try other values, like `LEFT_DOWN`, for example, with the method `setDirection`.
 
 The gaps are not the usual horizontal and vertical gaps, but the in-row-gap, and between-row gaps. The "row" term in this case is not the usual horizontal row, but the lower level groups of objects. For example, if direction is `RIGHT_DOWN` , `RIGHT_UP`, `LEFT_DOWN` or `LEFT_UP` the "rows" will be horizontal and the in-row-gap will act like a horizontal gap (and the between-rows-gap like a vertical gap), but if direction is `UP_RIGHT`, `UP_LEFT`, `DOWN_RIGHT`, or `DOWN_LEFT`, the "rows" will be vertical and the in-row-gap will act like a vertical gap. An image is worth a thousand words:
 
@@ -461,13 +477,13 @@ for(MathObjectGroup rows:layout.getRowGroups(gr)) {//Iterate over the rows
 If in the previous code you change the 
 
 ```java
-BoxLayout layout = new BoxLayout(refPoint, 4, BoxLayout.Direction.RIGHT_UP, .1, .1);//This is where the magic happens
+BoxLayout layout = BoxLayout.make(refPoint, 4,  .1, .1);//This is where the magic happens
 ```
 
 into
 
 ```java
-SpiralLayout layout = new SpiralLayout(refPoint, SpiralLayout.Orientation.RIGHT_CLOCKWISE, .1, .1);//Another kind of magic!
+SpiralLayout layout = SpiralLayout.make(refPoint, SpiralLayout.Orientation.RIGHT_CLOCKWISE, .1, .1);//Another kind of magic!
 ```
 
 You will get the objects in a spiral form:
@@ -481,7 +497,7 @@ This class has the method`setSpiralGap` that admits an integer parameter that co
 ```java
 int num=50;//Now we are creating more squares!
 ........
-SpiralLayout layout = new SpiralLayout(refPoint, SpiralLayout.Orientation.RIGHT_CLOCKWISE, 0, 0).setSpiralGap(1);
+SpiralLayout layout = SpiralLayout.make(refPoint, SpiralLayout.Orientation.RIGHT_CLOCKWISE, 0, 0).setSpiralGap(1);
 ```
 
 You will obtain the following image:
@@ -495,7 +511,7 @@ You will obtain the following image:
 If you use the `HeapLayout`:
 
 ```java
-HeapLayout layout = new HeapLayout(refPoint, .1, .1);
+HeapLayout layout = HeapLayout.make(refPoint, .1, .1);
 ```
 
 You will get a triangular pile of numbered squares:
@@ -507,7 +523,7 @@ You will get a triangular pile of numbered squares:
 The `PascalLayout` resembles the positions of numbers in the Pascal triangle. If you use the code:
 
 ```java
-PascalLayout layout = new PascalLayout(refPoint,.1,.1);
+PascalLayout layout = PascalLayout.make(refPoint,.1,.1);
 ```
 
 You will obtain a layout like this:
@@ -522,17 +538,20 @@ The `FlowLayout` is similar to the `BoxLayout` except the new row is created whe
 int num = 70;
 MathObjectGroup sqs = MathObjectGroup.make();
 for (int n = 0; n < num; n++) {//Create random bars
-     sqs.add(Shape.square().scale(Math.random(), .1).style("solidorange"));
+    sqs.add(
+        Shape.square().scale(Math.random(), .1).fillColor("random")
+    );
 }
-double width = 2;
+double width = 4;
 final Point corner = Point.relAt(.1, .9);
 add(corner.thickness(40).drawColor("red").layer(1));
 add(Line.YAxis().shift(corner.v.add(Vec.to(width, 0))));//Draw vertical lines to mark the margins
 add(Line.YAxis().shift(corner.v.add(Vec.to(0, 0))));
-FlowLayout flayout = new FlowLayout(corner, width, AbstractBoxLayout.Direction.RIGHT_DOWN, 0,0);
+FlowLayout flayout = FlowLayout.make(corner, width, .1,.1);
+   .setDirection(BoxDirection.RIGHT_DOWN);
 sqs.setLayout(flayout);
 add(sqs);
-camera.adjustToAllObjects();
+camera.adjustToObjects(sqs);
 waitSeconds(2);
 ```
 
@@ -543,7 +562,7 @@ waitSeconds(2);
 From version 0.9.2-SNAPSHOT the `ComposeLayout` allows the creation of more complex layouts by composition. The syntax for creating a composite layout is
 
 ```java
-ComposeLayout composedLayout=new ComposeLayout(outerLayout, innerLayout, size);
+ComposeLayout composedLayout=ComposeLayout.make(outerLayout, innerLayout, size);
 ```
 
 When applied to a group, this layout will first divide the group into subgroups of `size` elements, then will layout each one with the inner layout, and finally it will layout each subgroup, as an individual object, with the outer layout.
@@ -554,18 +573,19 @@ We illustrate this with an example. Here we use as inner layout a `BoxLayout` an
 MathObjectGroup gr = MathObjectGroup.make();
 int num = 54;
 for (int n = 0; n < num; n++) {//Creates a group with 54 numbered squares
-    MathObject sq = Shape.square().scale(.25).fillColor("violet").fillAlpha(1 - 1. * (n + 1) / num).thickness(6);
-    LaTeXMathObject t = LaTeXMathObject.make("" + n);
-    t.stackTo(sq, Anchor.Type.CENTER).layer(1);
+    Shape sq = Shape.square().scale(.25).fillColor("violet").fillAlpha(1 - 1. * (n + 1) / num).thickness(6);
+    LatexMathObject t = LatexMathObject.make("" + n);
+    t.stack().toObject(sq).layer(1);
     gr.add(MathObjectGroup.make(sq, t));//Each object of the group is itself a group with 2 elements
 }
 
 Point refPoint = Point.origin(); //The reference point to locate the outer layout
 add(refPoint.thickness(40).drawColor(JMColor.RED).layer(1));//add this point so we can see it clearly
 
-GroupLayout innerLayout = new BoxLayout(refPoint, 3, BoxLayout.Direction.RIGHT_DOWN, 0, 0);
-GroupLayout outerLayout = new PascalLayout(refPoint, .1, .1);
-ComposeLayout composedLayout=new ComposeLayout(outerLayout, innerLayout, 9);//The composed layout
+GroupLayout innerLayout = BoxLayout.make(refPoint, 3, 0, 0)
+    .setDirection(BoxDirection.RIGHT_DOWN);
+GroupLayout outerLayout = PascalLayout.make(refPoint, .1, .1);
+ComposeLayout composedLayout = ComposeLayout.make(outerLayout, innerLayout, 9);//The composed layout
 
 add(gr.setLayout(composedLayout));
 camera.adjustToAllObjects();
@@ -577,19 +597,20 @@ waitSeconds(3);//Smile, you're in a screenshot!
 Another example: we use composite layouts to draw a Sierpinski triangle using a group of equilateral triangles and iterating compositions:
 
 ```java
-MathObjectGroup triangles = MathObjectGroup.make();
 int degree = 6;//Degree of the Sierpinski triangle
 int num = (int) Math.pow(3, degree);//We need 3^degree triangles!
-for (int n = 0; n < num; n++) {
-    MathObject tr = Shape.regularPolygon(3).scale(.25);
-    triangles.add(tr);
-}
-Point corner = Point.relAt(.5, .9);//Top corner of the Sierpinski triangle
-PascalLayout innerLayout = new PascalLayout(corner, 0, 0);
+Shape tr = Shape.regularPolygon(3).scale(.25);//Base triangle
+
+//This method creates a group with num copies of the same object
+MathObjectGroup triangles = MathObjectGroup.makeCopies(tr, num);
+
+Vec corner = Vec.to(0,0);//Coordinates of top corner of the Sierpinski triangle
+PascalLayout innerLayout = PascalLayout.make(corner, 0, 0);
+
 GroupLayout previousLayout = innerLayout;
 GroupLayout sierpinskiLayout = innerLayout;
 for (int n = 1; n < degree; n++) {//Iterates composing the innerLayout with itself 6 times
-    sierpinskiLayout = new ComposeLayout(previousLayout, innerLayout, 3);
+    sierpinskiLayout = ComposeLayout.make(previousLayout, innerLayout, 3);
     previousLayout = sierpinskiLayout;
 }
 sierpinskiLayout.applyLayout(triangles);
@@ -603,7 +624,6 @@ We obtain the following image (note that there are 729 triangles in there):
 
 
 <img src="Sierpinski.png" alt="image-20210427133822331" style="zoom:50%;" />
-
 
 
 
