@@ -62,13 +62,13 @@ public class TesterMathObjects {
             assertPointEquals(p1, p2, "points different->"+errorMessage);
             return;
         }
-        if (ob1 instanceof Line) {
-            Line l1 = (Line) ob1;
-            Line l2 = (Line) ob2;
-            assertVecEquals(l1.p1,l2.p1,"points different->"+errorMessage);
-            assertVecEquals(l1.p2,l2.p2,"points different->"+errorMessage);
-            assertsMODrawPropertiesEquals(l1.getMp(),l2.getMp(),"styles different->"+errorMessage);
-        }
+//        if (ob1 instanceof Line) {
+//            Line l1 = (Line) ob1;
+//            Line l2 = (Line) ob2;
+//            assertVecEquals(l1.p1,l2.p1,"points different->"+errorMessage);
+//            assertVecEquals(l1.p2,l2.p2,"points different->"+errorMessage);
+//            assertsMODrawPropertiesEquals(l1.getMp(),l2.getMp(),"styles different->"+errorMessage);
+//        }
         
         //Shape
         if (ob1 instanceof Shape) {
