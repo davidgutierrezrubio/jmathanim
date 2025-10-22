@@ -19,7 +19,10 @@ package com.jmathanim.Utils.Layouts;
 
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.BoxDirection;
-import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.AbstractMathGroup;
+import com.jmathanim.mathobjects.Coordinates;
+import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MathObjectGroup;
 
 /**
  * A box layout. This layout allocates the objects following a row-column
@@ -31,16 +34,47 @@ public class BoxLayout extends AbstractBoxLayout {
 
     int rowSize;
 
+
+    /**
+     * Creates a box layout
+     *
+     * @param corner       A point object, the corner of the box. The precise corner
+     *                     depends on the direction chosen. For example if direction is RIGHT_UP,
+     *                     the corner will be the lower left one. If direction is DOWN_LEFT, the
+     *                     corner will be the upper right one.
+     * @param rowSize      Numbers of element in each row. Note that "row" becomes
+     *                     "columns" if direction is UP_LEFT, UP_RIGHT, DOWN_LEFT or DOWN_RIGHT
+     * @param boxDirection Direction of the box. Specifies the direction to stack
+     *                     the elements. A direction of RIGHT_UP will stack the row in the RIGHT
+     *                     direction and then UP to allocate the next row
+     * @param inRowGap     Gap between 2 consecutive elements in the same row
+     * @param inColGap     Gap between 2 consecutive elements in the same column
+     */
+    protected BoxLayout(Coordinates<?> corner, int rowSize, BoxDirection boxDirection, double inRowGap, double inColGap) {
+        super(corner, inRowGap, inColGap);
+        computeDirections(boxDirection);
+        this.rowSize = rowSize;
+    }
     /**
      * Creates a new BoxLayout. The default direction is RIGHT_UP.
      *
      * @param rowSize Number of elements per row
-     * @param colGap Column gap
-     * @param rowGap Row gap
+     * @return The created layout
+     */
+    public static BoxLayout make(int rowSize) {
+        return make(null, rowSize, 0,0);
+    }
+
+    /**
+     * Creates a new BoxLayout. The default direction is RIGHT_UP.
+     *
+     * @param rowSize Number of elements per row
+     * @param colGap  Column gap
+     * @param rowGap  Row gap
      * @return The created layout
      */
     public static BoxLayout make(int rowSize, double colGap, double rowGap) {
-        return new BoxLayout(rowSize, BoxDirection.RIGHT_UP, colGap, rowGap);
+        return make(null, rowSize, colGap, rowGap);
     }
 
     /**
@@ -49,60 +83,8 @@ public class BoxLayout extends AbstractBoxLayout {
      * @param rowSize Number of elements per row
      * @return The created layout
      */
-    public static BoxLayout make(int rowSize) {
-        return new BoxLayout(rowSize);
-    }
-    
-
-    public BoxLayout(int rowSize) {
-        this(null, rowSize, BoxDirection.RIGHT_DOWN, 0, 0);
-    }
-
-    /**
-     * Creates a box layout with specified corner point, no gaps, and RIGHT_UP
-     * direction
-     *
-     * @param corner A Point object, the lower left corner of the box
-     * @param rowSize Numbers of elements in a row
-     */
-    public BoxLayout(Point corner, int rowSize) {
-        this(corner, rowSize, BoxDirection.RIGHT_UP, 0, 0);
-    }
-
-    /**
-     * Creates a box layout
-     *
-     * @param corner A point object, the corner of the box. The precise corner
-     * depends on the direction chosen. For example if direction is RIGHT_UP,
-     * the corner will be the lower left one. If direction is DOWN_LEFT, the
-     * corner will be the upper right one.
-     * @param rowSize Numbers of element in each row. Note that "row" becomes
-     * "columns" if direction is UP_LEFT, UP_RIGHT, DOWN_LEFT or DOWN_RIGHT
-     * @param boxDirection Direction of the box. Specifies the direction to stack
-     * the elements. A direction of RIGHT_UP will stack the row in the RIGHT
-     * direction and then UP to allocate the next row
-     * @param inRowGap Gap between 2 consecutive elements in the same row
-     * @param inColGap Gap between 2 consecutive elements in the same column
-     */
-    public BoxLayout(Coordinates<?> corner, int rowSize, BoxDirection boxDirection, double inRowGap, double inColGap) {
-        super(corner, inRowGap, inColGap);
-        computeDirections(boxDirection);
-        this.rowSize = rowSize;
-    }
-
-    /**
-     * Overloaded method. Creates a box layout with no corner
-     *
-     * @param rowSize Numbers of element in each row. Note that "row" becomes
-     * "columns" if direction is UP_LEFT, UP_RIGHT, DOWN_LEFT or DOWN_RIGHT
-     * @param boxDirection Direction of the box. Specifies the direction to stack
-     * the elements. A direction of RIGHT_UP will stack the row in the RIGHT
-     * direction and then UP to allocate the next row
-     * @param inRowGap Gap between 2 consecutive elements in the same row
-     * @param inColGap Gap between 2 consecutive elements in the same column
-     */
-    public BoxLayout(int rowSize, BoxDirection boxDirection, double inRowGap, double inColGap) {
-        this(null, rowSize, boxDirection, inRowGap, inColGap);
+    public static BoxLayout make(Coordinates<?> refCoords, int rowSize, double colGap, double rowGap) {
+        return new BoxLayout(refCoords, rowSize, BoxDirection.RIGHT_UP, colGap, rowGap);
     }
 
     @Override
@@ -199,7 +181,7 @@ public class BoxLayout extends AbstractBoxLayout {
         if (this.corner != null) {
             return new BoxLayout(corner.copy(), rowSize, BoxDirection.RIGHT_UP, inRowGap, inColGap);
         } else {
-            return new BoxLayout(rowSize, BoxDirection.RIGHT_UP, inRowGap, inColGap);
+            return new BoxLayout(null, rowSize, BoxDirection.RIGHT_UP, inRowGap, inColGap);
         }
     }
 

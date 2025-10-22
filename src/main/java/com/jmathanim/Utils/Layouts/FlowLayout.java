@@ -36,6 +36,9 @@ public class FlowLayout extends AbstractBoxLayout {
 	public IntToDoubleFunction rowLength;
 	BoxDirection boxDirection;
 
+    public static FlowLayout make(Coordinates<?> corner, double width, double inRowGap, double inColGap){
+        return new FlowLayout(corner, width,BoxDirection.RIGHT_UP,inRowGap,inColGap);
+    }
 	/**
 	 * Creates a new FlowLayout
 	 * @param corner
@@ -44,14 +47,14 @@ public class FlowLayout extends AbstractBoxLayout {
 	 * @param inRowGap
 	 * @param inColGap
 	 */
-	public FlowLayout(Coordinates<?> corner, double width, BoxDirection boxDirection, double inRowGap, double inColGap) {
+	protected FlowLayout(Coordinates<?> corner, double width, BoxDirection boxDirection, double inRowGap, double inColGap) {
 		super(corner, inRowGap, inColGap);
 		rowLength = (int row) -> width;
 		this.boxDirection = boxDirection;
 		computeDirections(boxDirection);
 	}
 
-	public FlowLayout(Coordinates<?>  corner, IntToDoubleFunction widthFunction, BoxDirection boxDirection, double inRowGap,
+    protected FlowLayout(Coordinates<?>  corner, IntToDoubleFunction widthFunction, BoxDirection boxDirection, double inRowGap,
 					  double inColGap) {
 		super(corner, inRowGap, inColGap);
 		rowLength = widthFunction;

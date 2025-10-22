@@ -20,6 +20,7 @@ package com.jmathanim.Utils.Layouts;
 import com.jmathanim.Enum.LayoutType;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.AbstractMathGroup;
+import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
 
@@ -34,16 +35,12 @@ public class HeapLayout extends GroupLayout {
 
 	private final ArrayList<MathObjectGroup> rightSide, leftSide;
 	MathObjectGroup center;
-	private final Point base;
+	private final Coordinates<?> base;
 	private final double horizontalGap, verticalGap;
 
-	public HeapLayout() {
-		this(0, 0);
-	}
-
-	public HeapLayout(double hgap, double vgap) {
-		this(null, hgap, vgap);
-	}
+    public static HeapLayout make(Coordinates<?> refCoords, double hgap, double vgap) {
+        return new HeapLayout(refCoords, hgap, vgap);
+    }
 
 	/**
 	 * Creates a new heap layout
@@ -53,7 +50,7 @@ public class HeapLayout extends GroupLayout {
 	 * @param hgap Horizontal gap
 	 * @param vgap Vertical gap
 	 */
-	public HeapLayout(Point base, double hgap, double vgap) {
+	protected HeapLayout(Coordinates<?> base, double hgap, double vgap) {
 		center = new MathObjectGroup();
 		rightSide = new ArrayList<>();
 		leftSide = new ArrayList<>();

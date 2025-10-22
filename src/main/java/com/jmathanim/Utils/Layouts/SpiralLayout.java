@@ -20,7 +20,7 @@ package com.jmathanim.Utils.Layouts;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.mathobjects.AbstractMathGroup;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Coordinates;
 
 /**
  * A Layout following a spiral form. The first object is the center of the
@@ -31,43 +31,39 @@ import com.jmathanim.mathobjects.Point;
  */
 public class SpiralLayout extends GroupLayout {
 
-    private final Point center;
+    private final Coordinates<?> center;
+    Orientation orientation;
+    AnchorType[] stacks;
     private double horizontalGap, verticalGap;
     private int spiralGap;
 
     /**
-     * This values define the orientation of the spiral. LEFT/RIGHT/LOWER/UPPER
-     * defines the first direction of the spiral and CLOCKWISE/COUNTERCLOCKWISE
-     * the direction
+     * Creates a spiral layout
+     *
+     * @param center      Center of the spiral. The center of the first object will
+     *                    be this point.
+     * @param orientation Orientation of the spiral and where to put the second
+     *                    object. A orientation of LEFT_CLOCKWISE puts the second block at the left
+     *                    of the first one, following a clockwise pattern for the next ones.
+     * @param hgap        Horizontal gap
+     * @param vgap        Vertical gap
      */
-    public enum Orientation {
-        UPPER_CLOCKWISE, UPPER_COUNTERCLOCKWISE, RIGHT_CLOCKWISE, RIGHT_COUNTERCLOCKWISE, LOWER_CLOCKWISE,
-        LOWER_COUNTERCLOCKWISE, LEFT_CLOCKWISE, LEFT_COUNTERCLOCKWISE
+    protected SpiralLayout(Coordinates<?> center, Orientation orientation, double hgap, double vgap) {
+        this.center = center;
+        this.orientation = orientation;
+        this.horizontalGap = hgap;
+        this.verticalGap = vgap;
+        this.spiralGap = 0;
     }
 
-    Orientation orientation;
-    AnchorType[] stacks;
-
-    public static SpiralLayout make() {
-        return make(Orientation.RIGHT_CLOCKWISE, 0);
-    }
-
-    public static SpiralLayout make(Orientation orientation, int gap) {
-        SpiralLayout resul = new SpiralLayout();
-        resul.setOrientation(orientation);
-        resul.setSpiralGap(gap);
+    public static SpiralLayout make(Coordinates<?> refCoords, Orientation orientation, double hgap, double vgap) {
+        SpiralLayout resul = new SpiralLayout(refCoords, orientation, hgap, vgap);
         return resul;
     }
 
-    /**
-     * Constructor with default values. A spiral layout with no gaps, the second
-     * object is put at the right of the first one, and follows a clockwise
-     * orientation. The reference point is the center of the first object, so
-     * this is unaffected.
-     *
-     */
-    public SpiralLayout() {
-        this(null, Orientation.RIGHT_CLOCKWISE, 0, 0);
+    public static SpiralLayout make(Orientation orientation, double hgap, double vgap) {
+        SpiralLayout resul = new SpiralLayout(null, orientation, hgap, vgap);
+        return resul;
     }
 
     public Orientation getOrientation() {
@@ -77,7 +73,7 @@ public class SpiralLayout extends GroupLayout {
     /**
      * Sets the spiral orientation
      *
-     * @param <T> Calling class
+     * @param <T>         Calling class
      * @param orientation A value of enum Orientation.
      * @return This object
      */
@@ -87,26 +83,8 @@ public class SpiralLayout extends GroupLayout {
     }
 
     /**
-     * Creates a spiral layout
-     *
-     * @param center Center of the spiral. The center of the first object will
-     * be this point.
-     * @param orientation Orientation of the spiral and where to put the second
-     * object. A orientation of LEFT_CLOCKWISE puts the second block at the left
-     * of the first one, following a clockwise pattern for the next ones.
-     * @param hgap Horizontal gap
-     * @param vgap Vertical gap
-     */
-    public SpiralLayout(Point center, Orientation orientation, double hgap, double vgap) {
-        this.center = center;
-        this.orientation = orientation;
-        this.horizontalGap = hgap;
-        this.verticalGap = vgap;
-        this.spiralGap = 0;
-    }
-
-    /**
      * Set the gaps between consecutive elements of the layout
+     *
      * @param hgap Horizontal gap
      * @param vgap Vertical gap
      * @return This object
@@ -195,16 +173,26 @@ public class SpiralLayout extends GroupLayout {
     /**
      * Sets the spiral gap
      *
-     * @param <T> Calling class
+     * @param <T>       Calling class
      * @param spiralGap The spiral gap. A value of 0 means all revolutions of
-     * the spiral are glued together. A value of 1 or greater leaves a
-     * proportional space between revolutions depending on the sizes of the
-     * objects.
+     *                  the spiral are glued together. A value of 1 or greater leaves a
+     *                  proportional space between revolutions depending on the sizes of the
+     *                  objects.
      * @return This object
      */
     public <T extends SpiralLayout> T setSpiralGap(int spiralGap) {
         this.spiralGap = spiralGap;
         return (T) this;
+    }
+
+    /**
+     * This values define the orientation of the spiral. LEFT/RIGHT/LOWER/UPPER
+     * defines the first direction of the spiral and CLOCKWISE/COUNTERCLOCKWISE
+     * the direction
+     */
+    public enum Orientation {
+        UPPER_CLOCKWISE, UPPER_COUNTERCLOCKWISE, RIGHT_CLOCKWISE, RIGHT_COUNTERCLOCKWISE, LOWER_CLOCKWISE,
+        LOWER_COUNTERCLOCKWISE, LEFT_CLOCKWISE, LEFT_COUNTERCLOCKWISE
     }
 
 }

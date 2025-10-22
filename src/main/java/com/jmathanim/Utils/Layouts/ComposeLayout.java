@@ -33,6 +33,9 @@ public class ComposeLayout extends GroupLayout {
 	GroupLayout internalLayout;
 	int sizeInternalGroups;
 
+    public static ComposeLayout make(GroupLayout externalLayout, GroupLayout internalLayout, int sizeInternalGroups) {
+        return new ComposeLayout(externalLayout,internalLayout,sizeInternalGroups);
+    }
 	/**
 	 * Creates a new ComposeLayout. The original MathObjectGroup is split into
 	 * internal subgroups of the given size, and each one is applied the internal
@@ -43,7 +46,7 @@ public class ComposeLayout extends GroupLayout {
 	 * @param internalLayout     Layout to apply in the inner level
 	 * @param sizeInternalGroups Size of the inner subgroups
 	 */
-	public ComposeLayout(GroupLayout externalLayout, GroupLayout internalLayout, int sizeInternalGroups) {
+	protected ComposeLayout(GroupLayout externalLayout, GroupLayout internalLayout, int sizeInternalGroups) {
 		this.externalLayout = externalLayout;
 		this.internalLayout = internalLayout;
 		this.sizeInternalGroups = sizeInternalGroups;
