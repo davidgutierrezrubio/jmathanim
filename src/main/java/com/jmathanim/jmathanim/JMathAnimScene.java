@@ -37,8 +37,7 @@ import com.jmathanim.mathobjects.Text.LatexShape;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.net.URISyntaxException;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -402,8 +401,9 @@ public abstract class JMathAnimScene {
      */
     protected final void doDraws() {
         objectsAlreadydrawn.clear();
-        doUpdates();
         doLinks();
+        doUpdates();
+
 
         if (!animationIsDisabled) {
             // Objects to be drawn on screen. Sort them by layer
@@ -546,17 +546,12 @@ public abstract class JMathAnimScene {
         }
 
         ResourceLoader rl = new ResourceLoader();
-        URL soundURL = rl.getResource(soundName, "sounds");
-        File file;
-        try {
-            file = new File(soundURL.toURI());
-        } catch (URISyntaxException ex) {
-            JMathAnimScene.logger.error("Sound " + soundName + " is not a correct URL resource.");
-            return;
-        }
 
-        if (!file.exists()) {
-            JMathAnimScene.logger.error("Sound " + soundName + " not found. Verify that the name is correct.");
+        URL soundURL;
+        try {
+            soundURL = rl.getResource(soundName, "sounds");
+        } catch (FileNotFoundException e) {
+            JMathAnimScene.logger.error("File " + LogUtils.CYAN+soundName+LogUtils.RESET + " not found.");
             return;
         }
 
@@ -822,7 +817,7 @@ public abstract class JMathAnimScene {
      * Check if an object is in the scene. MathObjectGroup objects are considered to be in the scene if all their
      * elements are.
      *
-     * @param MathObject<?> Object to check
+     * @param mathObject Object to check
      * @return True if object is in the scene. False otherwise.
      */
     public boolean isInScene(MathObject<?> mathObject) {

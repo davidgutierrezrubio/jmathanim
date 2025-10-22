@@ -42,38 +42,40 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
     private final DrawStylePropertiesObjectsArray mpArray;
     public AbstractShape<?> shape;
     public double locationParameterOnShape;
-    public Double distanceToShape;
     //    public double rotationAngleAroundPivotPoint;
     public double rotationAngleAroundCenterOfMathObject;
     public boolean isParametrized;
     protected double correctionAngle;
     protected SlopeDirectionType slopeDirectionType;
     protected RotationType rotationType;
+    private double distanceToShape;
+    private boolean distanceToShapeRelative;
     private AnchorType anchor;
     private AnchorTypeUsed anchorType;
     private boolean alreadyRebuildingShape = false;
     private Vec anchorPoint;
 
 
-    protected AbstractTippableObject(AbstractShape<?> shape, MathObject tipObject, double location) {
+    protected AbstractTippableObject(AbstractShape<?> shape, MathObject<?> tipObject, double location) {
         correctionAngle = PI / 2;
         this.shape = shape;
         this.tipObjectRigidBox = new RigidBox(tipObject);
         this.locationParameterOnShape = location;
         this.slopeDirectionType = SlopeDirectionType.POSITIVE;
-        distanceToShape = null;
+        distanceToShape = .5;
+        distanceToShapeRelative = true;
         rotationType = RotationType.ROTATE;
 //        rotationAngleAroundPivotPoint = 0;
         rotationAngleAroundCenterOfMathObject = 0;
         anchor = AnchorType.UPPER;
         anchorType = AnchorTypeUsed.ANCHOR;
-        pivotPointRefMathObject =Vec.to(0,0);
+        pivotPointRefMathObject = Vec.to(0, 0);
 
         //Point of the Shape
-        markPoint = Vec.to(0,0);
+        markPoint = Vec.to(0, 0);
 
         //Reference point where the MathObject will be anchored, calculated at a certain distance from the markPoint
-        pivotPointRefShape = Vec.to(0,0);
+        pivotPointRefShape = Vec.to(0, 0);
         isParametrized = false;
         mpArray = new DrawStylePropertiesObjectsArray();
         mpArray.copyFrom(tipObject.getMp());
@@ -109,25 +111,23 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
         return (T) this;
     }
 
+    /**
+     * Checks if the distance to the shape is relative to the tip object's height.
+     *
+     * @return True if the distance is relative, false otherwise.
+     */
+    public boolean isDistanceToShapeRelative() {
+        return distanceToShapeRelative;
+    }
 
-//    private <T extends AbstractTippableObject> T setRotationAngleAroundCenterOfMathObject(double rotationAngleAroundCenterOfMathObject) {
-//        this.rotationAngleAroundCenterOfMathObject = rotationAngleAroundCenterOfMathObject;
-//        if (anchorType == AnchorTypeUsed.ANCHOR) {
-//            setAnchor(anchor);
-//        }
-//        rebuildShape();
-//        return (T) this;
-//    }
-
-//    public double getRotationAngleAroundPivotPoint() {
-//        return rotationAngleAroundPivotPoint;
-//    }
-//
-//    public <T extends AbstractTippableObject> T setRotationAngleAroundPivotPoint(double rotationAngleAroundPivotPoint) {
-//        this.rotationAngleAroundPivotPoint = rotationAngleAroundPivotPoint;
-//        rebuildShape();
-//        return (T) this;
-//    }
+    /**
+     * Sets whether the distance to the shape should be relative to the tip object's height.
+     *
+     * @param distanceToShapeRelative True to make the distance relative, false for absolute.
+     */
+    public void setDistanceToShapeRelative(boolean distanceToShapeRelative) {
+        this.distanceToShapeRelative = distanceToShapeRelative;
+    }
 
     public RotationType getRotationType() {
         return rotationType;
@@ -143,7 +143,7 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
         return distanceToShape;
     }
 
-    public T setDistanceToShape(Double distanceToShape) {
+    public T setDistanceToShape(double distanceToShape) {
         this.distanceToShape = distanceToShape;
         rebuildShape();
         return (T) this;
@@ -252,10 +252,11 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
 //        Point labelAnchorPointDst=markPoint.copy();
         pivotPointRefShape.copyCoordinatesFrom(markPoint);
 
-        if (distanceToShape != null)
-            pivotPointRefShape.addInSite(normal.multInSite(distanceToShape));
-        else
-            pivotPointRefShape.addInSite(normal.multInSite(tipObjectRigidBox.getHeight() * .5));
+
+        double dist = (distanceToShapeRelative ? distanceToShape * tipObjectRigidBox.getHeight() : distanceToShape);
+        pivotPointRefShape.addInSite(normal.multInSite(dist));
+
+
         Vec shiftVector = pivotPointRefMathObject.to(pivotPointRefShape);
         tipObjectRigidBox.shift(shiftVector);
 

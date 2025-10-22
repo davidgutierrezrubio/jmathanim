@@ -272,7 +272,8 @@ public class Camera implements Boxable {
      */
     public Camera adjustToAllObjects() {
         if (!scene.getMathObjects().isEmpty()) {
-            MathObject<?>[] objs = scene.getMathObjects().toArray(new MathObject[0]);
+//            MathObject<?>[] objs = scene.getMathObjects().toArray(new MathObject[0]);
+            MathObject<?>[] objs = scene.getMathObjects().stream().filter(t -> (t.getCamera() == this)).toArray(MathObject[]::new);
             adjustToObjects(objs);
         }
         return this;
@@ -372,7 +373,8 @@ public class Camera implements Boxable {
      */
     public Camera zoomToAllObjects() {
         if (!scene.getMathObjects().isEmpty()) {
-            MathObject<?>[] objs = scene.getMathObjects().toArray(new MathObject[0]);
+//            MathObject<?>[] objs = scene.getMathObjects().toArray(new MathObject[0]);
+            MathObject<?>[] objs = scene.getMathObjects().stream().filter(t -> (t.getCamera() == this)).toArray(MathObject[]::new);
             zoomToObjects(objs);
         }
         return this;
@@ -390,7 +392,8 @@ public class Camera implements Boxable {
     }
 
     /**
-     * Returns the smallest rectangle which contains a given one, with the proportions of the screen view
+     * Returns the smallest rectangle which contains a given one, with the proportions of the screen view. Camera gaps
+     * are not applied.
      *
      * @param r A Rect object, rectangle to contain
      * @return The rectangle which contains r, with the screen proportions
@@ -422,7 +425,7 @@ public class Camera implements Boxable {
             resul.ymin = r.ymin;
             resul.ymax = r.ymax;
         }
-        resul.addGap(hgap, vgap);
+//        resul.addGap(hgap, vgap);
         return resul;
     }
 
@@ -455,7 +458,7 @@ public class Camera implements Boxable {
 
     @Override
     public String toString() {
-        return "Camera (xmin, xmax, ycenter): (" + xmin + ", " + xmax + ", " + (ymin + ymax) / 2 + ")";
+        return "Camera (xmin, xmax, xcenter, ycenter): (" + xmin + ", " + xmax + ", " + (xmin + xmax) / 2 + ", " + (ymin + ymax) / 2 + ")";
     }
 
     public void registerUpdateable(shouldUdpateWithCamera object) {

@@ -22,6 +22,7 @@ import com.jmathanim.Constructible.Lines.CTLine;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.jmathanim.LogUtils;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.NullMathObject;
@@ -35,6 +36,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -54,7 +56,7 @@ import java.util.zip.ZipFile;
 public class GeogebraLoader implements Iterable<Constructible>, hasCameraParameters {
 
     private final ResourceLoader rl;
-    private final URL url;
+    private URL url;
     private final String fileName;
     private ZipFile zipFile;
     private ZipEntry zipEntry;
@@ -67,7 +69,11 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
     private GeogebraLoader(String fileName) {
         this.fileName=fileName;
         rl = new ResourceLoader();
-        url = rl.getResource(fileName, "geogebra");
+        try {
+            url = rl.getResource(fileName, "geogebra");
+        } catch (FileNotFoundException e) {
+           JMathAnimScene.logger.warn("Geogebra file "+ LogUtils.CYAN+fileName+LogUtils.RESET+" not found");
+        }
         this.cp = new GeogebraCommandParser();
         cp.registerGeogebraElement("xAxis", CTLine.make(Line.XAxis()).visible(false));
         cp.registerGeogebraElement("yAxis", CTLine.make(Line.YAxis()).visible(false));

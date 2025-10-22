@@ -262,7 +262,7 @@ AbstractShape<T extends AbstractShape<T>>
      * @param connectBtoA If true, the end of path B will be connected to the beginning of path A by a straight line
      * @return This object
      */
-    public T merge(AbstractShape<?> sh, boolean connectAtoB, boolean connectBtoA) {
+    public T merge(hasPath sh, boolean connectAtoB, boolean connectBtoA) {
         jmpath.merge(sh.getPath().copy(), connectAtoB, connectBtoA);
         return (T) this;
     }

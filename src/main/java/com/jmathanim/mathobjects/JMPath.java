@@ -22,10 +22,8 @@ import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Utils.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.io.Serializable;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -37,7 +35,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.logger;
  *
  * @author David Gutiérrez davidgutierrezrubio@gmail.com
  */
-public class JMPath implements Boxable, Iterable<JMPathPoint>, AffineTransformable<JMPath>, hasPath {
+public class JMPath implements Boxable, Iterable<JMPathPoint>, AffineTransformable<JMPath>, hasPath, Serializable {
 
     public static final double DELTA_DERIVATIVE = .0001;
     // this way
@@ -45,6 +43,7 @@ public class JMPath implements Boxable, Iterable<JMPathPoint>, AffineTransformab
     private final ArrayList<Vec> rectifiedVecPoints;
     private final ArrayList<Double> rectifiedPointDistances;
     private final ArrayList<ArrayList<float[]>> rectifiedPath;
+    private final HashMap<String, Object> properties;
     public int pathType; // Default value
     private JMPath pathBackup;
     private double computedPathLength;
@@ -71,6 +70,7 @@ public class JMPath implements Boxable, Iterable<JMPathPoint>, AffineTransformab
         rectifiedPath = new ArrayList<>();
         rectifiedVecPoints = new ArrayList<>();
         rectifiedPointDistances = new ArrayList<>();
+        this.properties = new HashMap<>();
     }
 
     /**
@@ -444,16 +444,16 @@ public class JMPath implements Boxable, Iterable<JMPathPoint>, AffineTransformab
         int k = (int) Math.floor(size);
         double t0 = size - k;
 
-        if (t==1) { //Special case, if t=1 use the last segment interpolating at t0=1;
-        k--;
-        t0=1;
+        if (t == 1) { //Special case, if t=1 use the last segment interpolating at t0=1;
+            k--;
+            t0 = 1;
         }
 
 
         //Look for k-th visible element
         int count = 0;
         int indexToUse = 0;
-        for (int i = 0; i < jmPathPoints.size()+1; i++) {
+        for (int i = 0; i < jmPathPoints.size() + 1; i++) {
             indexToUse = i;
             JMPathPoint jmp = jmPathPoints.get(i + 1);
             if (jmp.isSegmentToThisPointVisible()) {
@@ -1201,13 +1201,13 @@ public class JMPath implements Boxable, Iterable<JMPathPoint>, AffineTransformab
     /**
      * Merge this path A with another one B
      *
-     * @param secondPath  The second path to merge
+     * @param secondPath  The second path to merge. Any object that implements the hasPath interface
      * @param connectAtoB If true, the end of A will be connected to the beginning of B by a straight line
      * @param connectBtoA If true, the end of B will be connected to the beginning of A by a straight line
      * @return This object
      */
-    public JMPath merge(JMPath secondPath, boolean connectAtoB, boolean connectBtoA) {
-        JMPath pa = secondPath.copy();
+    public JMPath merge(hasPath secondPath, boolean connectAtoB, boolean connectBtoA) {
+        JMPath pa = secondPath.getPath().copy();
         //Special case: if this path is empty
         if (isEmpty()) {
             getJmPathPoints().addAll(pa.getJmPathPoints());
@@ -1377,6 +1377,30 @@ public class JMPath implements Boxable, Iterable<JMPathPoint>, AffineTransformab
 
     @Override
     public JMPath getPath() {
+        return this;
+    }
+
+
+    /**
+     * Retrieves the property with given key
+     *
+     * @param key A String with the key name
+     * @return The proporty
+     */
+    public Object getProperty(String key) {
+        return properties.get(key);
+    }
+
+    /**
+     * Stores an object into an internal dictionary of the MathObject. This can be useful if additional information to
+     * this object needs to be saved
+     *
+     * @param key A String denoting the key
+     * @param obj Any Java Object
+     * @return This object
+     */
+    public JMPath setProperty(String key, Object obj) {
+        properties.put(key, obj);
         return this;
     }
 }

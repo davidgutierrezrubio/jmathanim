@@ -7,6 +7,7 @@ import com.jmathanim.Enum.RotationType;
 import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
@@ -284,13 +285,13 @@ public abstract class Delimiter extends Constructible<Delimiter> {
         else
         if (del.delimiterLabel != null) {
             if (del.textUpdaterFactory instanceof LengthUpdaterFactory) {
-                addLengthLabel(del.labelMarkGap, del.textUpdaterFactory.getFormat());
+                addLengthLabelTip(del.labelMarkGap, del.textUpdaterFactory.getFormat());
             } else if (del.textUpdaterFactory instanceof CountUpdaterFactory) {
-                addCountLabel(del.labelMarkGap,((CountUpdaterFactory)del.textUpdaterFactory).getObjectToCount());
+//                addCountLabelTip(del.labelMarkGap,((CountUpdaterFactory)del.textUpdaterFactory).getObjectToCount());
             }
             else
             {
-                setLabel(del.getLabel().copy(), del.labelMarkGap);
+                addlabelTip(del.getLabel().copy(), del.labelMarkGap);
             }
             getLabel().getMp().copyFrom(del.getLabel().getMp());
         }
@@ -312,11 +313,11 @@ public abstract class Delimiter extends Constructible<Delimiter> {
     protected abstract void buildDelimiterShape();
 
 
-    public Delimiter setLabel(String text, double labelGap) {
-        return setLabel(LatexMathObject.make(text), labelGap);
+    public Delimiter addlabelTip(String text, double labelGap) {
+        return addlabelTip(LatexMathObject.make(text), labelGap);
     }
 
-    public <T extends Delimiter> T setLabel(MathObject label, double labelGap) {
+    public <T extends Delimiter> T addlabelTip(MathObject label, double labelGap) {
         this.labelMarkGap = labelGap;
         this.delimiterLabel = label;
 
@@ -334,9 +335,9 @@ public abstract class Delimiter extends Constructible<Delimiter> {
      * @param format Format to print the length, for example "0.00"
      * @return The Label, a LatexMathObject
      */
-    public LatexMathObject addLengthLabel(double gap,
-                                          String format) {
-        setLabel("${#0}$", gap);
+    public LatexMathObject addLengthLabelTip(double gap,
+                                             String format) {
+        addlabelTip("${#0}$", gap);
         LatexMathObject t = (LatexMathObject) getLabel();
         t.setArgumentsFormat(format);
 
@@ -349,33 +350,22 @@ public abstract class Delimiter extends Constructible<Delimiter> {
         return (LatexMathObject) getLabel();
     }
 
-    /**
-     * Adds a label that displays the count of objects in a given MathObjectGroup. The label is positioned based on the
-     * delimiter's label mark point.
-     *
-     * <p>This method sets the label format to display the count of the MathObjectGroup
-     * size. The label will automatically update whenever the size of the group changes.</p>
-     *
-     * @param gap The gap between the delimiter and the label.
-     * @param objectToCount  The MathObjectGroup whose size will be counted and displayed in the label.
-     * @return The label as a LaTeXMathObject that shows the count of objects in the group.
-     */
-    public LatexMathObject addCountLabel(double gap, Object objectToCount) {
-        setLabel("${#0}$", .1);
-        LatexMathObject t = (LatexMathObject) getLabel();
-        t.setArgumentsFormat("#");
-        textUpdaterFactory=new CountUpdaterFactory(scene,t,objectToCount,"#");
-        t.registerUpdater(textUpdaterFactory.getUpdater());
-        t.update(JMathAnimConfig.getConfig().getScene());
-        return (LatexMathObject) getLabel();
-    }
-
-
     @Override
     public void update(JMathAnimScene scene) {
         super.update(scene);
         groupElementsToBeDrawn.update(scene);
         rebuildShape();
+    }
+
+
+
+    @Override
+    protected Rect computeBoundingBox() {
+        Rect bb = super.computeBoundingBox();
+//        if (getL != null) {
+//            return Rect.union(bb, labelTip.getBoundingBox());
+//        } else
+            return bb;
     }
 
     @Override

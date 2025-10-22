@@ -16,7 +16,6 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Constructible.Conics.CTCircleArc;
 import com.jmathanim.Constructible.Constructible;
@@ -26,17 +25,21 @@ import com.jmathanim.Constructible.Points.CTIntersectionPoint;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.ArrowType;
 import com.jmathanim.Enum.SlopeDirectionType;
-import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.jmathanim.LogUtils;
 import com.jmathanim.mathobjects.Text.AbstractLatexMathObject;
 import com.jmathanim.mathobjects.Tippable.LabelTip;
 import com.jmathanim.mathobjects.updaters.Updater;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.URL;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
+import static com.jmathanim.jmathanim.JMathAnimScene.logger;
 
 /**
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
@@ -49,7 +52,8 @@ public class Arrow extends Constructible<Arrow> {
     protected final MathObjectGroup groupElementsToBeDrawn;
     private final Vec Acopy, Bcopy;
     private final Shape shapeToDraw;
-    private final Shape head1, head2;
+    private final JMPath head1, head2;
+    private final Coordinates<?> A, B;
     private double amplitudeScale;
     private double angle;
     private double baseHeight1;
@@ -58,11 +62,10 @@ public class Arrow extends Constructible<Arrow> {
     private double baseRealHeight2;
     private double headStartMultiplier, headEndMultiplier;
     private double gapA, gapB;
-    private final Coordinates<?> A, B;
     private double baseDist1, baseDist2;
     private double arrowThickness;
     private ArrowType typeA, typeB;
-    private LabelTip arrowLabel;
+    private LabelTip labelTip;
     private labelTypeEnum labelType;
     private String stringFormat;
 
@@ -72,9 +75,9 @@ public class Arrow extends Constructible<Arrow> {
         labelType = labelTypeEnum.NORMAL;
         this.labelArcUpside = new Shape();
         this.labelArcDownside = new Shape();
-        this.arrowLabel = null;
-        head1 = new Shape();
-        head2 = new Shape();
+        this.labelTip = null;
+        head1 = new JMPath();
+        head2 = new JMPath();
         arrowThickness = 20;//TODO: Default value. This should be in config file
         setAmplitudeScale(1d);
         headStartMultiplier = 1d;
@@ -95,15 +98,15 @@ public class Arrow extends Constructible<Arrow> {
      * @return A Shape with the arrow head generated
      */
     public static Shape buildArrowHead(ArrowType type) {
-        Shape resul = new Shape();
+        Shape resul;
         try {
-            resul = loadHeadShape(type);
+            resul = new Shape(loadArrowHeadPath(type));
         } catch (Exception e) {
             JMathAnimScene.logger.error("An exception occurred loading arrow models, returning empty Shape");
             JMathAnimScene.logger.error(e.getMessage());
-           resul=new Shape();
+            resul = new Shape();
         }
-        resul.style("default");
+        resul.style("arrowdefault");
         resul.getPath().closePath();
         return resul;
     }
@@ -137,47 +140,96 @@ public class Arrow extends Constructible<Arrow> {
         return resul;
     }
 
-    private static Shape loadHeadShape(ArrowType type) throws Exception {
+    public static JMPath loadArrowHeadPath(ArrowType type) throws Exception {
         ResourceLoader rl = new ResourceLoader();
         URL arrowUrl;
-        Shape resul;
+        JMPath resul;
         switch (type) {
             //Always FIRST point to the RIGHT,
             //LAST point to the LEFT
             case NONE_BUTT:
-                return Shape.segment(Vec.to(1, 0), Vec.to(0, 0));
+                resul = new JMPath();
+                resul.addPoint(Vec.to(1, 0), Vec.to(0, 0));
+                resul.get(0).setSegmentToThisPointVisible(false);
+                return resul;
             case NONE_ROUND:
-                resul = Shape.arc(PI);
+                resul = Shape.arc(PI).getPath();
                 resul.setProperty("gap", -1d);
                 return resul;
             case NONE_SQUARE:
-                return Shape.segment(Vec.to(1, 0), Vec.to(0, 0));
+                resul = new JMPath();
+                resul.addPoint(Vec.to(1, 0), Vec.to(0, 0));
+                resul.get(0).setSegmentToThisPointVisible(false);
+                return resul;
             case ARROW1:
-                arrowUrl = rl.getResource("#arrow1.svg", "shapeResources/arrows");
-                return SVGUtils.importSVG(arrowUrl).get(0);
+                return loadArrowHeadFile("#arrow1.svg", "#arrow1.bin", "shapeResources/arrows", rl);
             case ARROW2:
-                arrowUrl = rl.getResource("#arrow2.svg", "shapeResources/arrows");
-                return SVGUtils.importSVG(arrowUrl).get(0);
+//                arrowUrl = rl.getResource("#arrow2.svg", "shapeResources/arrows");
+//                return SVGUtils.importSVG(arrowUrl).get(0).getPath();
+                return loadArrowHeadFile("#arrow2.svg", "#arrow2.bin", "shapeResources/arrows", rl);
             case ARROW3:
-                arrowUrl = rl.getResource("#arrow3.svg", "shapeResources/arrows");
-                return SVGUtils.importSVG(arrowUrl).get(0);
+//                arrowUrl = rl.getResource("#arrow3.svg", "shapeResources/arrows");
+//                return SVGUtils.importSVG(arrowUrl).get(0).getPath();
+                return loadArrowHeadFile("#arrow3.svg", "#arrow3.bin", "shapeResources/arrows", rl);
             case SQUARE:
-                arrowUrl = rl.getResource("#ArrowSquare.svg", "shapeResources/arrows");
-                resul = SVGUtils.importSVG(arrowUrl).get(0);
+//                arrowUrl = rl.getResource("#ArrowSquare.svg", "shapeResources/arrows");
+//                resul = SVGUtils.importSVG(arrowUrl).get(0).getPath();
+                resul = loadArrowHeadFile("#ArrowSquare.svg", "#ArrowSquare.bin", "shapeResources/arrows", rl);
                 resul.setProperty("gap", -resul.getHeight() * .5);
                 return resul;
             case BULLET:
-                resul = Shape.arc(1.75 * PI);
-                AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(resul.getPoint(0).copy(),
-                        resul.getPoint(-1).copy(),
-                        resul.getPoint(0).copy(),
-                        resul.getPoint(0).copy().shift(-1, 0),
+                resul = Shape.arc(1.75 * PI).getPath();
+                AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(resul.get(0),
+                        resul.get(-1),
+                        resul.get(0),
+                        resul.get(0).getV().add(-1, 0),
                         1);
-                tr.applyTransform(resul);
+                resul.applyAffineTransform(tr);
                 resul.setProperty("gap", -resul.getHeight() * .5);
                 return resul;
             default:
                 throw new AssertionError();
+        }
+    }
+
+    private static JMPath loadArrowHeadFile(String arrowSVGName, String arrowSerializedName, String folder, ResourceLoader rl) {
+        URL arrowUrl;
+        JMPath headPath;
+
+        try {
+            arrowUrl = rl.getResource(arrowSerializedName, folder);
+            ObjectInputStream in = new ObjectInputStream(arrowUrl.openStream());
+            headPath = (JMPath) in.readObject();
+            logger.debug("Loader serialized arrow head " + arrowSerializedName);
+            return headPath;
+        } catch (ClassNotFoundException e) {
+            logger.warn("ClassNotFoundException when trying to load serialized object "
+                    + LogUtils.YELLOW + arrowSerializedName + LogUtils.RESET +
+                    ". Loading SVG instead"
+            );
+        } catch (FileNotFoundException e) {
+            logger.warn("FileNotFoundException when trying to load serialized object "
+                    + LogUtils.YELLOW + arrowSerializedName + LogUtils.RESET +
+                    ". Loading SVG instead"
+            );
+        } catch (IOException e) {
+            logger.warn("IOException when trying to load serialized object "
+                    + LogUtils.YELLOW + arrowSerializedName + LogUtils.RESET +
+                    ". Loading SVG instead"
+            );
+        }
+        try {
+            arrowUrl = rl.getResource(arrowSVGName, folder);
+            return SVGUtils.importSVG(arrowUrl).get(0).getPath();
+        } catch (FileNotFoundException ex) {
+            logger.warn("FileNotFoundException when trying to load SVG internal object "
+                    + LogUtils.YELLOW + arrowSVGName + LogUtils.RESET +
+                    ". Switching to NONE_BUTT");
+            try {
+                return loadArrowHeadPath(ArrowType.NONE_BUTT);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -203,8 +255,8 @@ public class Arrow extends Constructible<Arrow> {
     }
 
     private void loadModels() throws Exception {
-        Shape h1 = loadHeadShape(typeA);
-        Shape h2 = loadHeadShape(typeB);
+        JMPath h1 = loadArrowHeadPath(typeA);
+        JMPath h2 = loadArrowHeadPath(typeB);
         h2.scale(-1, -1);
 
         if (h1.getProperty("gap") != null) {
@@ -240,12 +292,12 @@ public class Arrow extends Constructible<Arrow> {
 
         Acopy.copyCoordinatesFrom(A);
         Bcopy.copyCoordinatesFrom(A.getVec().interpolate(B, getAmplitudeScale()));
-        Shape h1A = head1.copy();
-        Shape h1B = head2.copy();
+        JMPath h1A = head1.copy();
+        JMPath h1B = head2.copy();
         double dist = Acopy.to(Bcopy).norm();
-        if (arrowLabel != null) {
-            arrowLabel.update(scene);
-            arrowLabel.getMathObject().scale(arrowLabel.pivotPointRefMathObject, getAmplitudeScale());
+        if (labelTip != null) {
+            labelTip.update(scene);
+            labelTip.getMathObject().scale(labelTip.pivotPointRefMathObject, getAmplitudeScale());
 
         }
 
@@ -399,21 +451,40 @@ public class Arrow extends Constructible<Arrow> {
     @Override
     public Arrow copy() {
         Arrow copy = new Arrow(A.copy(), B.copy());
-        if (arrowLabel != null) {
+        if (labelTip != null) {
             boolean upperSide = true;
-            Object upperObj = arrowLabel.getProperty("upperSide");
+            Object upperObj = labelTip.getProperty("upperSide");
             if (upperObj != null) upperSide = (boolean) upperObj;
+            copy.labelType=labelType;
             if (labelType == labelTypeEnum.DISTANCE) {
-                copy.addLengthLabel(arrowLabel.distanceToShape, stringFormat, upperSide);
+                copy.addLengthLabelTip(stringFormat,  upperSide);
+                copy.getLabelTip().setDistanceToShapeRelative(getLabelTip().isDistanceToShapeRelative());
+                copy.getLabelTip().setDistanceToShape(getLabelTip().getDistanceToShape());
             }
             if (labelType == labelTypeEnum.COORDS) {
-                copy.addVecLabel(arrowLabel.distanceToShape, stringFormat, upperSide);
+                copy.addVecLabelTip(labelTip.getDistanceToShape(), stringFormat, upperSide);
+                copy.getLabelTip().setDistanceToShapeRelative(getLabelTip().isDistanceToShapeRelative());
+                copy.getLabelTip().setDistanceToShape(getLabelTip().getDistanceToShape());
             }
-
+            if (labelType==labelTypeEnum.NORMAL) {
+                copy.registerLabel(getLabelTip().copy());
+            }
         }
         copy.copyStateFrom(this);
         return copy;
     }
+//    LabelTip label = LabelTip.makeLabelTip((upperSide ? labelArcUpside : labelArcDownside), .5, "text");
+//        label.setProperty("upperSide", upperSide);//This will be useful when copying labels
+//    label.distanceToShape = gap;
+//        label.setSlopeDirection((upperSide ? SlopeDirectionType.POSITIVE : SlopeDirectionType.NEGATIVE));
+//        label.setAnchor(AnchorType.LOWER);
+//    registerLabel(label);
+//    labelType = labelTypeEnum.NORMAL;
+//        this.stringFormat = "";
+//        return label;
+
+
+
 
     @Override
     public void copyStateFrom(Stateable obj) {
@@ -459,15 +530,15 @@ public class Arrow extends Constructible<Arrow> {
 //            this.getMp().copyFrom(ar.getMp());
         this.shapeToDraw.getMp().copyFrom(ar.shapeToDraw.getMp());
 
-        if (this.arrowLabel != null) {
-            this.arrowLabel.copyStateFrom(ar.arrowLabel);
+        if (this.labelTip != null) {
+            this.labelTip.copyStateFrom(ar.labelTip);
         }
     }
 
     @Override
     public void update(JMathAnimScene scene) {
         super.update(scene);
-        if (arrowLabel != null) arrowLabel.update(scene);
+        if (labelTip != null) labelTip.update(scene);
         rebuildShape();
 
     }
@@ -575,7 +646,10 @@ public class Arrow extends Constructible<Arrow> {
     @Override
     protected Rect computeBoundingBox() {
         rebuildShape();
-        return shapeToDraw.getPath().getBoundingBox();
+        Rect bb = shapeToDraw.getPath().getBoundingBox();
+        if (labelTip != null) {
+            return Rect.union(bb, labelTip.getBoundingBox());
+        } else return bb;
     }
 
     /**
@@ -640,40 +714,57 @@ public class Arrow extends Constructible<Arrow> {
         return this;
     }
 
-    public LabelTip getLabel() {
-        return arrowLabel;
+    public LabelTip getLabelTip() {
+        return labelTip;
     }
 
-    public <T extends Arrow> T setLabel(LabelTip labelTip) {
-        arrowLabel = labelTip;
+
+
+
+    private void registerLabel(LabelTip labelTip) {
+        this.labelTip = labelTip;
         labelType = labelTypeEnum.NORMAL;
-        mpArrow.add(arrowLabel);
+        mpArrow.add(this.labelTip);
         groupElementsToBeDrawn.clear();
-        groupElementsToBeDrawn.add(shapeToDraw, arrowLabel);
-        return (T) this;
+        groupElementsToBeDrawn.add(shapeToDraw, this.labelTip);
+    }
+
+
+    public LabelTip addLabelTip(String text, boolean upperSide) {
+        LabelTip label = LabelTip.makeLabelTip((upperSide ? labelArcUpside : labelArcDownside), .5, text);
+        label.setProperty("upperSide", upperSide);//This will be useful when copying labels
+        label.setDistanceToShape(.1);
+        label.setDistanceToShapeRelative(true);
+        label.setSlopeDirection((upperSide ? SlopeDirectionType.POSITIVE : SlopeDirectionType.NEGATIVE));
+        label.setAnchor(AnchorType.LOWER);
+        registerLabel(label);
+        labelType = labelTypeEnum.NORMAL;
+        this.stringFormat = "";
+        return label;
     }
 
     /**
      * Adds a label with the length.The points mark the beginning and end of the delimiter.The delimiter lies at the
      * "left" of vector AB.
      *
-     * @param gap    Gap between control delimiter and label
      * @param format Format to print the length, for example "0.00"
-     * @return The Label, a LatexMathObject
+     * @return The created LabelTip object
      */
-    public LabelTip addLengthLabel(double gap,
-                                   String format, boolean upperSide) {
+    public LabelTip addLengthLabelTip(String format, boolean upperSide) {
 
         LabelTip label = LabelTip.makeLabelTip((upperSide ? labelArcUpside : labelArcDownside), .5, "${#0}$");
         label.setProperty("upperSide", upperSide);//This will be useful when copying labels
-        label.distanceToShape = gap;
+        label.setDistanceToShape(.1);
+        label.setDistanceToShapeRelative(true);
         label.setSlopeDirection((upperSide ? SlopeDirectionType.POSITIVE : SlopeDirectionType.NEGATIVE));
         label.setAnchor(AnchorType.LOWER);
-        setLabel(label);
+        registerLabel(label);
+
+
         labelType = labelTypeEnum.DISTANCE;
         this.stringFormat = format;
 
-        AbstractLatexMathObject<?> t = arrowLabel.getLaTeXObject();
+        AbstractLatexMathObject<?> t = labelTip.getLaTeXObject();
         t.setArgumentsFormat(format);
 
 
@@ -698,19 +789,19 @@ public class Arrow extends Constructible<Arrow> {
      *
      * @param gap    Gap between control delimiter and label
      * @param format Format to print the numbers, for example "0.00"
-     * @return The Label, a LatexMathObject
+     * @return The created LabelTip object
      */
-    public LabelTip addVecLabel(double gap, String format, boolean upperSide) {
+    public LabelTip addVecLabelTip(double gap, String format, boolean upperSide) {
         LabelTip label = LabelTip.makeLabelTip((upperSide ? labelArcUpside : labelArcDownside), .5, "$({#0},{#1})$");
         label.setProperty("upperSide", upperSide);//This will be useful when copying labels
-        label.distanceToShape = gap;
+        label.setDistanceToShape(gap);
         label.setAnchor(AnchorType.LOWER);
-        setLabel(label);
+        registerLabel(label);
         labelType = labelTypeEnum.COORDS;
-        AbstractLatexMathObject<?> t = arrowLabel.getLaTeXObject();
+        AbstractLatexMathObject<?> t = labelTip.getLaTeXObject();
         t.setArgumentsFormat(format);
         this.stringFormat = format;
-        arrowLabel.registerUpdater(new Updater() {
+        labelTip.registerUpdater(new Updater() {
 //            @Override
 //            public void computeUpdateLevel() {
 //                this.updateLevel = Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1;
@@ -732,15 +823,6 @@ public class Arrow extends Constructible<Arrow> {
 //    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
 //        super.draw(scene, r, cam);
 //    }
-
-    /**
-     * Returns the arrow label if defined
-     *
-     * @return The arror label, a LabelTip object. null if none defined.
-     */
-    public LabelTip getArrowLabel() {
-        return arrowLabel;
-    }
 
     /**
      * Returns the scale of the amplitude of arrow. A value of 1 draws the arrow from one anchor point to another.
@@ -776,8 +858,8 @@ public class Arrow extends Constructible<Arrow> {
     @Override
     public Arrow setFreeMathObject(boolean isMathObjectFree) {
         super.setFreeMathObject(isMathObjectFree);
-        if (getLabel() != null) {
-            getLabel().setFreeMathObject(isMathObjectFree);
+        if (getLabelTip() != null) {
+            getLabelTip().setFreeMathObject(isMathObjectFree);
         }
         return this;
     }
@@ -785,7 +867,7 @@ public class Arrow extends Constructible<Arrow> {
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
         super.registerUpdateableHook(scene);
-        dependsOn(scene, A,B);
+        dependsOn(scene, A, B);
     }
 
     private enum labelTypeEnum {NORMAL, DISTANCE, COORDS}

@@ -88,6 +88,13 @@ public interface Coordinates<T extends Coordinates<T>> extends Boxable, Updateab
     public T add(Coordinates<?> v2);
 
 
+    /**
+     * Add the given coordinates to this and return the result. The original coordinates object is unaltered.
+     *
+     * @param x The x coordinate to add
+     * @param y The y coordinate to add
+     * @return The result. A new object
+     */
     default T add(double x, double y) {
         return add(Vec.to(x, y));
     }
