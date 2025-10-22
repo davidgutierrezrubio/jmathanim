@@ -31,7 +31,7 @@ import com.jmathanim.mathobjects.Stateable;
  */
 public class PointOnFunctionGraph extends AbstractPoint<PointOnFunctionGraph> {
 
-    private static double DELTA_DERIVATE = 0.000001d;
+    private static double DELTA_DERIVATE = 0.001d;
     private final Vec slopePointRight;
     private final Vec slopePointLeft;
     FunctionGraph fg;

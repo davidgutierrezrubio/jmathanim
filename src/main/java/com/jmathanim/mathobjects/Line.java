@@ -32,8 +32,8 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 public class Line extends AbstractShape<Line> implements HasDirection, shouldUdpateWithCamera,hasTrivialBoundingBox {
 
     private final JMPathPoint borderPoint1, borderPoint2;
-    protected final Vec p1;
-    protected final Vec p2;
+    protected final Coordinates<?> p1;
+    protected final Coordinates<?> p2;
     private Point pointP1;//Visible points to be created on the fly if the user asks for them
     private Point pointP2;
 
@@ -45,8 +45,8 @@ public class Line extends AbstractShape<Line> implements HasDirection, shouldUdp
      */
     public Line(Coordinates<?> p1, Coordinates<?> p2) {
         super();
-        this.p1 = p1.getVec();
-        this.p2 = p2.getVec();
+        this.p1 = p1;
+        this.p2 = p2;
         borderPoint1 = new JMPathPoint(Vec.to(0, 0), true);// trivial boundary points, just to
         // initialize objects
         borderPoint2 = new JMPathPoint(Vec.to(0, 0), true);// trivial boundary points, just to
@@ -86,8 +86,8 @@ public class Line extends AbstractShape<Line> implements HasDirection, shouldUdp
 
     @Override
     public Line applyAffineTransform(AffineJTransform transform) {
-        p1.applyAffineTransform(transform);
-        p2.applyAffineTransform(transform);
+        p1.getVec().applyAffineTransform(transform);
+        p2.getVec().applyAffineTransform(transform);
         transform.applyTransformsToDrawingProperties(this);
         rebuildShape();
         return this;
@@ -100,14 +100,12 @@ public class Line extends AbstractShape<Line> implements HasDirection, shouldUdp
      */
     public void rebuildShape() {
         Rect rect = camera.getMathView();
-        double[] intersectLine = rect.intersectLine(p1.x, p1.y, p2.x, p2.y);
+        double[] intersectLine = rect.intersectLine(p1.getVec().x, p1.getVec().y, p2.getVec().x, p2.getVec().y);
 
         if (intersectLine == null) {
             // If there are no getIntersectionPath points, take p1 and p2 (workaround)
-            borderPoint1.getV().x = p1.x;
-            borderPoint1.getV().y = p1.y;
-            borderPoint2.getV().x = p2.x;
-            borderPoint2.getV().y = p2.y;
+            borderPoint1.getV().copyCoordinatesFrom(p1);
+            borderPoint2.getV().copyCoordinatesFrom(p2);
         } else {
             borderPoint1.getV().x = intersectLine[0];
             borderPoint1.getV().y = intersectLine[1];
@@ -175,7 +173,7 @@ public class Line extends AbstractShape<Line> implements HasDirection, shouldUdp
      */
     @Override
     public Vec getCenter() {
-        return p1.copy();
+        return p1.getVec().copy();
     }
 
     @Override

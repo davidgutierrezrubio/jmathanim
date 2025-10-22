@@ -29,6 +29,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.hasTrivialBoundingBox;
+import com.jmathanim.mathobjects.shouldUdpateWithCamera;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -38,7 +39,7 @@ import java.util.Locale;
 /**
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Axes extends MathObject<Axes> implements hasTrivialBoundingBox {
+public class Axes extends MathObject<Axes> implements shouldUdpateWithCamera,hasTrivialBoundingBox  {
 
     public static final double LEGEND_TICKS_GAP = .5;
     private final Line xAxis;
@@ -49,7 +50,7 @@ public class Axes extends MathObject<Axes> implements hasTrivialBoundingBox {
     DecimalFormat format;
     DrawStylePropertiesObjectsArray mpArray;
 
-    public Axes() {
+    protected Axes() {
         mpArray = new DrawStylePropertiesObjectsArray();
         getMp().loadFromStyle("axisdefault");
         xticksBase = new ArrayList<>();
@@ -65,10 +66,9 @@ public class Axes extends MathObject<Axes> implements hasTrivialBoundingBox {
         format = new DecimalFormat(pattern, symbols);
     }
 
-    public static Axes makeBasicAxes() {
-        return makeBasicAxes(0, -1);
+    public static Axes make() {
+        return new Axes();
     }
-
     /**
      * Generates Basic axes with ticks from specified values at integer values
      *
@@ -76,7 +76,7 @@ public class Axes extends MathObject<Axes> implements hasTrivialBoundingBox {
      * @param maxValue Max value
      * @return The Axes object
      */
-    public static Axes makeBasicAxes(int minValue, int maxValue) {
+    public static Axes make(int minValue, int maxValue) {
         Axes resul = new Axes();
         if (minValue <= maxValue) {
             resul.generatePrimaryXTicks(minValue, maxValue, 1);
@@ -230,6 +230,7 @@ public class Axes extends MathObject<Axes> implements hasTrivialBoundingBox {
                 addXTicksLegend(x, TickAxes.TickType.PRIMARY, 0);
             }
         }
+        updateWithCamera(camera);
         return this;
     }
 
@@ -248,6 +249,7 @@ public class Axes extends MathObject<Axes> implements hasTrivialBoundingBox {
                 addYTicksLegend(y, TickAxes.TickType.PRIMARY, 0);
             }
         }
+        updateWithCamera(camera);
         return this;
     }
 
@@ -357,9 +359,16 @@ public class Axes extends MathObject<Axes> implements hasTrivialBoundingBox {
     @Override
     public void update(JMathAnimScene scene) {
         super.update(scene);
+
+    }
+
+    @Override
+    public void updateWithCamera(Camera camera) {
         double xmax = getCamera().getMathView().xmax;
         double xmin = getCamera().getMathView().xmin;
         double scale = (xmax - xmin) / 4;
+        xAxis.updateWithCamera(camera);
+        yAxis.updateWithCamera(camera);
         xticks.clear();
         for (int n = 0; n < xticksBase.size(); n++) {
             if (xticksBase.get(n).shouldDraw(getCamera())) {
