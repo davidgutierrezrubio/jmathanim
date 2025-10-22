@@ -317,7 +317,7 @@ public void setupSketch() {
 
 @Override
 public void runSketch() {
-    Axes axes = new Axes();
+    Axes axes = Axes.make();
     axes.generatePrimaryXTicks(0, 1, .25);
     axes.generatePrimaryYTicks(0, 1, .25);
     add(axes);

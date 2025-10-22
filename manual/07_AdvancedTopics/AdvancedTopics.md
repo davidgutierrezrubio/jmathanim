@@ -41,7 +41,7 @@ When creating a new `MathObject` subclass which depends on other objects, you sh
 For example, let's suppose we have the following simple animation, where a `Point` object named `A` moves from the point (1,1) to (-1,1):
 
 ```java
-add(new Axes(),Shape.circle());
+add(Axes.make(),Shape.circle());
 Point A = Point.at(1, .5);
 play.shift(3,-2,0,A);
 waitSeconds(3);
@@ -82,7 +82,7 @@ class UnitPoint extends Point {
 and modify the scene, adding an instance of this class:
 
 ```java
-add(new Axes(),Shape.circle());
+add(Axes.make(), Shape.circle());
 Point A = Point.at(1, .5);
 UnitPoint B = new UnitPoint(A);
 B.drawColor("red");

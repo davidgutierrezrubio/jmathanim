@@ -1,4 +1,4 @@
-[home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
+[ghome](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
 
 # Examples gallery
 
@@ -17,9 +17,7 @@ public void setupSketch() {
 
 @Override
 public void runSketch() {
-    final Axes axes = new Axes();
-    axes.generatePrimaryXTicks(-2, 2, 1);
-    axes.generatePrimaryYTicks(-2, 2, 1);
+    Axes axes = Axes.make(-2,2);//Axes with unit marks from -2 to 2, both vertically and horizontally
     add(axes);
 
     //The function
@@ -43,15 +41,29 @@ public void runSketch() {
 
     //Now we shift the point A to the first root and fadeIn a illustrative text and a marker point
     play.shift(5, root1 - xStart, 0, A);
-    Point marker1 = A.copy().dotStyle(Point.DotSyle.CROSS).drawColor("darkblue");
+    PointOnFunctionGraph marker1 = A.copy().dotStyle(DotStyle.CROSS).drawColor("darkblue");
 
-    play.fadeIn(2, LaTeXMathObject.make("$$f'(x)=0$$").scale(.5).stackTo(A, AnchorType.UPPER, .1), marker1);
+    LatexMathObject text1 = LatexMathObject.make("$$f'(x)=0$$")
+        .scale(.5)
+        .stack()
+        .withGaps(.1)
+        .withDestinyAnchor(AnchorType.UPPER)
+        .toObject(A);
+
+    play.fadeIn(2, text1,marker1);
 
     //We do the same with the second root
     play.shift(5, root2 - root1, 0, A);
-    Point marker2 = A.copy().dotStyle(Point.DotSyle.CROSS).drawColor("darkblue");
+    PointOnFunctionGraph marker2 = A.copy().dotStyle(DotStyle.CROSS).drawColor("darkblue");
 
-    play.fadeIn(2, LaTeXMathObject.make("$$f'(x)=0$$").scale(.5).stackTo(A, AnchorType.LOWER, .1), marker2);
+    LatexMathObject text2 = LatexMathObject.make("$$f'(x)=0$$")
+        .scale(.5)
+        .stack()
+        .withGaps(.1)
+        .withDestinyAnchor(AnchorType.LOWER)
+        .toObject(A);
+
+    play.fadeIn(2, text2, marker2);
 
     play.shift(5, 1, 0, A);
 
@@ -74,7 +86,7 @@ public void setupSketch() {
 
 public void runSketch() throws Exception {
     int orderTaylor = 8;
-    Axes axes = new Axes();
+    Axes axes = Axes.make();
     axes.addXTicksLegend("$\\pi$", PI, TickAxes.TickType.PRIMARY, 0);
     axes.addXTicksLegend("$-\\pi$", -PI, TickAxes.TickType.PRIMARY, 0);
     axes.addXTicksLegend("$2\\pi$", 2 * PI, TickAxes.TickType.PRIMARY, 0);
@@ -139,7 +151,7 @@ You can [see the video here](https://imgur.com/gallery/PjlVtXw).
 Two parametric curves expressed in polar coordinates. Note that we made a copy of the first one as it becomes altered after the first `transform`.
 
 ```java
-add(new Axes());
+add(Axes.make());
 ParametricCurve trifolium = ParametricCurve.makePolar(t -> 2 * Math.cos(t) * (4 * Math.sin(t) * Math.sin(t) - 1), t -> t, 0, PI);
 ParametricCurve nephroid = ParametricCurve.makePolar(t -> 1 + 2 * Math.sin(t / 2), t -> t, 0, 4 * PI);
 
@@ -580,7 +592,7 @@ for (int n = 0; n < 10; n++) {
 }
 double vertGap = Math.sqrt(3) - 2;//This negative gap is computed so that circles are tangent
 MathObjectGroup pyramid=MathObjectGroup.make(coin);
-pyramid.setLayout(new PascalLayout(0, vertGap));
+pyramid.setLayout(PascalLayout.make(0, vertGap));
 add(pyramid);
 camera.adjustToAllObjects();
 camera.scale(2);
@@ -629,11 +641,11 @@ Here is a gif from the movie generated:
 This example illustrates the transform animation between two multishape objects.
 
 ```java
-LaTeXMathObject text = LaTeXMathObject.make("I$\\heartsuit$pentagons").center();
-text.setColor(JMColor.parse("darkred"), 1);//Heart must be dark red
+LatexMathObject   text = LatexMathObject.make("I$\\heartsuit$pentagons").center();
+text.setColorsToIndices(JMColor.parse("darkred"), 1);//Heart must be dark red
 
 MultiShapeObject pentagons = MultiShapeObject.make();
-for (Shape sh : text) {//Iterates over the shapes
+for (LatexShape sh : text) {//Iterates over the shapes
     //Creates a pentagon rotated with a random angle
     Shape pentagon = Shape.regularPolygon(5);
     pentagon.rotate(Math.random() * 2 * PI);
@@ -664,7 +676,7 @@ Shape candy = Shape.circle().scale(.03).thickness(2);//base shape for candy
 int numCandies = 1000;//Number of candies to fall
 Point refPoint = Point.origin();
 //Locates the refPoint at the bottom of the screen, leaving a margin the size of a candy
-refPoint.stackToScreen(AnchorType.LOWER, candy.getWidth(), candy.getHeight());
+refPoint.stack().withGaps(candy.getHeight()).toScreen(ScreenAnchor.LOWER);
 
 //Creates the group of candies
 MathObjectGroup candyHeap = MathObjectGroup.make();
@@ -693,9 +705,9 @@ Collections.reverse(auxCandyHeap.getObjects());
 
 double radius = .5 * candy.getHeight();//radius of a candy
 double vgap = radius * (Math.sqrt(3) - 2);//negative gap so that the circles will stick together
-PascalLayout layout = new PascalLayout(Point.origin(), 0, vgap);//The reference point here is meaningless, we will align the group later
+PascalLayout layout = PascalLayout.make(Point.origin(), 0, vgap);//The reference point here is meaningless, we will align the group later
 auxCandyHeap.setLayout(layout);
-auxCandyHeap.stackTo(refPoint, AnchorType.UPPER);
+auxCandyHeap.stack().withDestinyAnchor(AnchorType.UPPER).toObject(refPoint);
 
 //Note that we used auxCandyHeap only the set the layout of all elements of group candyHeap
 //Now perform animations. We will shuffle all elements in each row
@@ -703,7 +715,7 @@ AnimationGroup anim = AnimationGroup.make();
 MathObjectGroup rows = layout.getRowGroups(auxCandyHeap);
 Collections.reverse(rows.getObjects()); //Reverse the order of rows
 int counter = 0;
-int rowCounter=0;
+int rowCounter = 0;
 for (MathObject r : rows) {
     MathObjectGroup row = (MathObjectGroup) r;
     Collections.shuffle(row.getObjects());
@@ -717,7 +729,7 @@ for (MathObject r : rows) {
             Concatenate conc = Concatenate.make();
             final double wt = 2d * counter / candyHeap.size();
             conc.add(WaitAnimation.make(wt));
-            conc.add(Commands.moveIn(1-.9*rowCounter/rows.size(), AnchorType.UPPER,candyToFall).setLambda(t -> t * t));
+            conc.add(Commands.moveIn(1 - .9 * rowCounter / rows.size(), ScreenAnchor.UPPER, candyToFall).setLambda(t -> t * t));
             anim.add(conc);
             counter++;
         }
@@ -750,7 +762,7 @@ double scaleSmallSquare = 2 * Math.tan(PI / numberSmallSquares);
 //Creates a base shape (a square, that can be changed)
 //and put it to the right of the point (1,0)
 Shape baseShape = Shape.square().scale(scaleSmallSquare);
-baseShape.stackTo(Point.at(1, 0), AnchorType.RIGHT);
+baseShape.stack().withOriginAnchor(AnchorType.LEFT).toPoint(1, 0);
 
 //Colors to alternate in base shape
 JMColor col1 = JMColor.parse("#512D6D");
@@ -764,7 +776,7 @@ double delta = 2 * PI / numberSmallSquares;
 circles[0] = new MathObjectGroup();
 boolean useFirstColor = false;
 for (int n = 0; n < numberSmallSquares; n++) {
-    MathObject smallSquare = baseShape.copy().fillColor(useFirstColor ? col1 : col2);
+    Shape smallSquare = baseShape.copy().fillColor(useFirstColor ? col1 : col2);
     smallSquare.rotate(Point.origin(), delta * n);
     circles[0].add(smallSquare);
     useFirstColor = !useFirstColor;
@@ -785,7 +797,11 @@ camera.adjustToAllObjects();
 AnimationGroup ag = AnimationGroup.make();
 boolean reverse = false;
 for (int k = 0; k < circles.length; k++) {
-    ag.add(Commands.rotate(1, Point.origin(), delta * (reverse ? -1 : 1), circles[k]));
+    ag.add(Commands.rotate(1,//1 second
+                           Vec.to(0,0), //Rotation center
+                           (reverse ? -delta : delta),//angle
+                           circles[k])//Object to rotate
+          );
     reverse = !reverse;
 }
 
@@ -822,13 +838,13 @@ public void runSketch() {
         boolean rand = (Math.random() < .5);
         truchets.add(makeTruchet(rand));
     }
-    truchets.setLayout(new BoxLayout(rowSize)).center();
+    truchets.setLayout(BoxLayout.make(rowSize)).center();
     add(truchets);
 
     //A radial gradient, centered at origin and relative to screen
     JMRadialGradient grad = new JMRadialGradient(
-        		truchets.getCenter(),
-        		truchets.getHeight() * .5);
+        truchets.getCenter(),
+        truchets.getHeight() * .5);
     grad.setRelativeToShape(false);
     grad.add(0, JMColor.parse("#EEEEEE"));
     grad.add(1, JMColor.parse("#FF5722"));
@@ -836,7 +852,7 @@ public void runSketch() {
     truchets.fillColor(grad).drawColor(grad);
     camera.setMathXY(-1, 1, 0);
     playAnimation(
-        Commands.rotate(20, 2 * PI, truchets).setLambda(t -> t),
+        Commands.rotate(20, 4 * PI, truchets).setLambda(t -> t),
         Commands.cameraScale(20, camera, 20).setLambda(t -> t)
     );
     waitSeconds(5);//In this 5 seconds you will think that the picture is still moving :-)

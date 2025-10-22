@@ -632,7 +632,7 @@ The animation `Commands.affineTransform(double runtime, Point a, Point b, Point 
 
 ```java
 //Create axes, color dark blue, in layer 1 so that they draw over the rest of the objects
-Axes axes = new Axes();
+Axes axes = Axes.make();
 axes.generatePrimaryXTicks(-2, 2, 1);
 axes.generatePrimaryYTicks(-2, 2, 1);
 add(axes);

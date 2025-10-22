@@ -81,7 +81,7 @@ axesGradient.setRelativeToShape(false)
     .add(0d, "black")
     .add(1d, "violet");
 
-Axes axes = new Axes();
+Axes axes = Axes.make();
 axes.generatePrimaryXTicks(-2, 2, .5)
     .generatePrimaryYTicks(-2, 2, .5)
     .drawColor(axesGradient);
