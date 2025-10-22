@@ -65,7 +65,7 @@ public class Arrow extends Constructible<Arrow> {
     private double baseDist1, baseDist2;
     private double arrowThickness;
     private ArrowType typeA, typeB;
-    private LabelTip arrowLabel;
+    private LabelTip labelTip;
     private labelTypeEnum labelType;
     private String stringFormat;
 
@@ -75,7 +75,7 @@ public class Arrow extends Constructible<Arrow> {
         labelType = labelTypeEnum.NORMAL;
         this.labelArcUpside = new Shape();
         this.labelArcDownside = new Shape();
-        this.arrowLabel = null;
+        this.labelTip = null;
         head1 = new JMPath();
         head2 = new JMPath();
         arrowThickness = 20;//TODO: Default value. This should be in config file
@@ -295,9 +295,9 @@ public class Arrow extends Constructible<Arrow> {
         JMPath h1A = head1.copy();
         JMPath h1B = head2.copy();
         double dist = Acopy.to(Bcopy).norm();
-        if (arrowLabel != null) {
-            arrowLabel.update(scene);
-            arrowLabel.getMathObject().scale(arrowLabel.pivotPointRefMathObject, getAmplitudeScale());
+        if (labelTip != null) {
+            labelTip.update(scene);
+            labelTip.getMathObject().scale(labelTip.pivotPointRefMathObject, getAmplitudeScale());
 
         }
 
@@ -451,16 +451,20 @@ public class Arrow extends Constructible<Arrow> {
     @Override
     public Arrow copy() {
         Arrow copy = new Arrow(A.copy(), B.copy());
-        if (arrowLabel != null) {
+        if (labelTip != null) {
             boolean upperSide = true;
-            Object upperObj = arrowLabel.getProperty("upperSide");
+            Object upperObj = labelTip.getProperty("upperSide");
             if (upperObj != null) upperSide = (boolean) upperObj;
             copy.labelType=labelType;
             if (labelType == labelTypeEnum.DISTANCE) {
-                copy.addLengthLabelTip(stringFormat, arrowLabel.distanceToShape, upperSide);
+                copy.addLengthLabelTip(stringFormat,  upperSide);
+                copy.getLabelTip().setDistanceToShapeRelative(getLabelTip().isDistanceToShapeRelative());
+                copy.getLabelTip().setDistanceToShape(getLabelTip().getDistanceToShape());
             }
             if (labelType == labelTypeEnum.COORDS) {
-                copy.addVecLabelTip(arrowLabel.distanceToShape, stringFormat, upperSide);
+                copy.addVecLabelTip(labelTip.getDistanceToShape(), stringFormat, upperSide);
+                copy.getLabelTip().setDistanceToShapeRelative(getLabelTip().isDistanceToShapeRelative());
+                copy.getLabelTip().setDistanceToShape(getLabelTip().getDistanceToShape());
             }
             if (labelType==labelTypeEnum.NORMAL) {
                 copy.registerLabel(getLabelTip().copy());
@@ -526,15 +530,15 @@ public class Arrow extends Constructible<Arrow> {
 //            this.getMp().copyFrom(ar.getMp());
         this.shapeToDraw.getMp().copyFrom(ar.shapeToDraw.getMp());
 
-        if (this.arrowLabel != null) {
-            this.arrowLabel.copyStateFrom(ar.arrowLabel);
+        if (this.labelTip != null) {
+            this.labelTip.copyStateFrom(ar.labelTip);
         }
     }
 
     @Override
     public void update(JMathAnimScene scene) {
         super.update(scene);
-        if (arrowLabel != null) arrowLabel.update(scene);
+        if (labelTip != null) labelTip.update(scene);
         rebuildShape();
 
     }
@@ -642,7 +646,10 @@ public class Arrow extends Constructible<Arrow> {
     @Override
     protected Rect computeBoundingBox() {
         rebuildShape();
-        return shapeToDraw.getPath().getBoundingBox();
+        Rect bb = shapeToDraw.getPath().getBoundingBox();
+        if (labelTip != null) {
+            return Rect.union(bb, labelTip.getBoundingBox());
+        } else return bb;
     }
 
     /**
@@ -708,25 +715,26 @@ public class Arrow extends Constructible<Arrow> {
     }
 
     public LabelTip getLabelTip() {
-        return arrowLabel;
+        return labelTip;
     }
 
 
 
 
     private void registerLabel(LabelTip labelTip) {
-        arrowLabel = labelTip;
+        this.labelTip = labelTip;
         labelType = labelTypeEnum.NORMAL;
-        mpArrow.add(arrowLabel);
+        mpArrow.add(this.labelTip);
         groupElementsToBeDrawn.clear();
-        groupElementsToBeDrawn.add(shapeToDraw, arrowLabel);
+        groupElementsToBeDrawn.add(shapeToDraw, this.labelTip);
     }
 
 
-    public LabelTip addLabelTip(String text,double gap, boolean upperSide) {
+    public LabelTip addLabelTip(String text, boolean upperSide) {
         LabelTip label = LabelTip.makeLabelTip((upperSide ? labelArcUpside : labelArcDownside), .5, text);
         label.setProperty("upperSide", upperSide);//This will be useful when copying labels
-        label.distanceToShape = gap;
+        label.setDistanceToShape(.1);
+        label.setDistanceToShapeRelative(true);
         label.setSlopeDirection((upperSide ? SlopeDirectionType.POSITIVE : SlopeDirectionType.NEGATIVE));
         label.setAnchor(AnchorType.LOWER);
         registerLabel(label);
@@ -739,15 +747,15 @@ public class Arrow extends Constructible<Arrow> {
      * Adds a label with the length.The points mark the beginning and end of the delimiter.The delimiter lies at the
      * "left" of vector AB.
      *
-     * @param gap    Gap between control delimiter and label
      * @param format Format to print the length, for example "0.00"
      * @return The created LabelTip object
      */
-    public LabelTip addLengthLabelTip(String format, double gap, boolean upperSide) {
+    public LabelTip addLengthLabelTip(String format, boolean upperSide) {
 
         LabelTip label = LabelTip.makeLabelTip((upperSide ? labelArcUpside : labelArcDownside), .5, "${#0}$");
         label.setProperty("upperSide", upperSide);//This will be useful when copying labels
-        label.distanceToShape = gap;
+        label.setDistanceToShape(.1);
+        label.setDistanceToShapeRelative(true);
         label.setSlopeDirection((upperSide ? SlopeDirectionType.POSITIVE : SlopeDirectionType.NEGATIVE));
         label.setAnchor(AnchorType.LOWER);
         registerLabel(label);
@@ -756,7 +764,7 @@ public class Arrow extends Constructible<Arrow> {
         labelType = labelTypeEnum.DISTANCE;
         this.stringFormat = format;
 
-        AbstractLatexMathObject<?> t = arrowLabel.getLaTeXObject();
+        AbstractLatexMathObject<?> t = labelTip.getLaTeXObject();
         t.setArgumentsFormat(format);
 
 
@@ -786,14 +794,14 @@ public class Arrow extends Constructible<Arrow> {
     public LabelTip addVecLabelTip(double gap, String format, boolean upperSide) {
         LabelTip label = LabelTip.makeLabelTip((upperSide ? labelArcUpside : labelArcDownside), .5, "$({#0},{#1})$");
         label.setProperty("upperSide", upperSide);//This will be useful when copying labels
-        label.distanceToShape = gap;
+        label.setDistanceToShape(gap);
         label.setAnchor(AnchorType.LOWER);
         registerLabel(label);
         labelType = labelTypeEnum.COORDS;
-        AbstractLatexMathObject<?> t = arrowLabel.getLaTeXObject();
+        AbstractLatexMathObject<?> t = labelTip.getLaTeXObject();
         t.setArgumentsFormat(format);
         this.stringFormat = format;
-        arrowLabel.registerUpdater(new Updater() {
+        labelTip.registerUpdater(new Updater() {
 //            @Override
 //            public void computeUpdateLevel() {
 //                this.updateLevel = Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1;
@@ -815,15 +823,6 @@ public class Arrow extends Constructible<Arrow> {
 //    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
 //        super.draw(scene, r, cam);
 //    }
-
-    /**
-     * Returns the arrow label if defined
-     *
-     * @return The arror label, a LabelTip object. null if none defined.
-     */
-    public LabelTip getArrowLabel() {
-        return arrowLabel;
-    }
 
     /**
      * Returns the scale of the amplitude of arrow. A value of 1 draws the arrow from one anchor point to another.

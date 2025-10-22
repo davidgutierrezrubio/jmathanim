@@ -37,12 +37,12 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
 
     private final AbstractLatexMathObject<?> laTeXMathObject;
 
-    protected LabelTip(AbstractShape<?> shape, AbstractLatexMathObject<?> tipLabel, AnchorType anchor, double locationParameter) {
-        super(shape, tipLabel, locationParameter);
+    protected LabelTip(AbstractShape<?> shape, AbstractLatexMathObject<?> tipObject, AnchorType anchor, double locationParameter) {
+        super(shape, tipObject, locationParameter);
         setAnchor(anchor);
-        laTeXMathObject = tipLabel;
+        laTeXMathObject = tipObject;
         correctionAngle = 0;
-        distanceToShape = .25 * tipLabel.getHeight();
+//        setDistanceToShape(.25 * tipObject.getHeight());
     }
 
 
@@ -51,7 +51,7 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
         setAnchorPoint(anchorPoint);
         laTeXMathObject = tipObject;
         correctionAngle = 0;
-        distanceToShape = .25 * tipObject.getHeight();
+//        setDistanceToShape(.25 * tipObject.getHeight());
     }
 
     /**
@@ -139,7 +139,7 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
     public static LabelTip makeLabelTip(AbstractShape<?> shape, double locationParameter, AbstractLatexMathObject<?> tipLabel, boolean upSide) {
 
         LabelTip resul = new LabelTip(shape, tipLabel, AnchorType.LOWER, locationParameter);
-        resul.setDistanceToShape(tipLabel.getHeight() * .25);
+//        resul.setDistanceToShape(tipLabel.getHeight() * .25);
         if (!upSide) {
             resul.setSlopeDirection(SlopeDirectionType.NEGATIVE)
                     .setAnchor(AnchorType.UPPER);
