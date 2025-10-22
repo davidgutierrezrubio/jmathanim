@@ -64,25 +64,33 @@ which produces the following image:
 
 
 
-As you can see, the `stack()` command returns an instance of `StackUtils<?>` class that allows concatenating additional parameters. These are the allowed methods to define how do you want to stack something to something:
+As you can see, the `stack()` command returns an instance of `StackUtils` class that allows concatenating additional parameters, so if you want to stack an object, the chain of method should be something like.
+
+```java
+myObject.stack()
+    <stack parameters, like .withOriginAnchor or .withGaps>
+    <command to finish and apply the stack, currrently .toPoint, .toObject or .toScreen>
+```
+
+
+
+ These are the allowed methods to define how do you want to stack something to something:
 
 ```java
 .stack() //Start the stacking sequence
 
-withOriginAnchor(AnchorType anchorOrigin) //Specifies origin anchor (LEFT, RIGHT, etc.). If not defined, reverse destiny anchor will be used (LEFT-RIGHT,etc.)
-withDestinyAnchor(AnchorType anchorDestiny) //Specifies destiny anchor (LEFT, RIGHT, etc.). If not defined, CENTER anchor will be used
+.withOriginAnchor(AnchorType anchorOrigin) //Specifies origin anchor (LEFT, RIGHT, etc.). If not defined, reverse destiny anchor will be used (LEFT-RIGHT,etc.)
+.withDestinyAnchor(AnchorType anchorDestiny) //Specifies destiny anchor (LEFT, RIGHT, etc.). If not defined, CENTER anchor will be used
 
-withGaps(double hGap, double vGap) //Specifies horizontal and vertical gaps to apply when stacking the object
-withGaps(double gap) //Overloaded method, equivalent to withGaps(gap,gap)
-withRelativeGaps(double hGap, double vGap) //Similar to the previous method, but gaps are scaled according to the width and height of the origin object (here, widht and height are referred to that of its bounding box).
-withRelativeGaps(double gap) //Overloaded method, equivalent to withRelativeGaps(gap,gap)
-
- 
+.withGaps(double hGap, double vGap) //Specifies horizontal and vertical gaps to apply when stacking the object
+.withGaps(double gap) //Overloaded method, equivalent to withGaps(gap,gap)
+.withRelativeGaps(double hGap, double vGap) //Similar to the previous method, but gaps are scaled according to the width and height of the origin object (here, widht and height are referred to that of its bounding box).
+.withRelativeGaps(double gap) //Overloaded method, equivalent to withRelativeGaps(gap,gap)
     
 //These methods apply the stacking and return the origin object:
-toPoint(Coordinates<?> coords) //Applies the stacking taking destiny as the given coordinates, and returns the origin object
-toObject(Boxable boxable) //Applies the stacking taking destiny as given object and returns the origin object. The destiny can be a MathObject or a Rect object.
-toScreen(ScreenAnchor anchor)//Applies the stacking taking destiny as camera view, using the given screenAnchor object. Any previous withDestinyAnchor method is ignored.
+.toPoint(Coordinates<?> coords) //Applies the stacking taking destiny as the given coordinates, and returns the origin object
+.toObject(Boxable boxable) //Applies the stacking taking destiny as given object and returns the origin object. The destiny can be a MathObject or a Rect object.
+.toScreen(ScreenAnchor anchor)//Applies the stacking taking destiny as camera view, using the given screenAnchor object. Any previous withDestinyAnchor method is ignored.
 ```
 
 
@@ -159,7 +167,7 @@ circle1.stack()//Stack this object...
 
 circle2.stack()//Stack this object...
     .withOriginAnchor(AnchorType.LOWER)//so that its lower anchor...
-    .toScreen(ScreenAnchor.LOWER_RIGHT);//matchs the upper left corner of the screen
+    .toScreen(ScreenAnchor.LOWER_RIGHT);//matchs the lower right corner of the screen
 
 //Add everything to the scene
 add(square1, square2, circle1,circle2);
