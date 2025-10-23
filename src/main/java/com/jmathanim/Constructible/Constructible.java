@@ -24,9 +24,9 @@ import com.jmathanim.Styling.RendererEffects;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.DebugTools;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.DebugTools;
 import com.jmathanim.mathobjects.Stateable;
 
 /**
@@ -94,7 +94,7 @@ public abstract class Constructible<T extends Constructible<T>> extends MathObje
 
     @Override
     public void update(JMathAnimScene scene) {
-//        super.update(scene);
+        super.update(scene);
         rebuildShape();
         setHasBeenUpdated(true);
     }
@@ -113,8 +113,8 @@ public abstract class Constructible<T extends Constructible<T>> extends MathObje
     }
 
     @Override
-    public T applyAffineTransform(AffineJTransform transform) {
-        getMathObject().applyAffineTransform(transform);
+    public T applyAffineTransform(AffineJTransform affineJTransform) {
+        getMathObject().applyAffineTransform(affineJTransform);
         return (T) this;
     }
     @Override

@@ -113,10 +113,10 @@ public class Ray extends AbstractShape<Ray> implements HasDirection {
     }
 
     @Override
-    public Ray applyAffineTransform(AffineJTransform transform) {
-        getP1().getVec().applyAffineTransform(transform);
-        getP2().getVec().applyAffineTransform(transform);
-        transform.applyTransformsToDrawingProperties(this);
+    public Ray applyAffineTransform(AffineJTransform affineJTransform) {
+        getP1().getVec().applyAffineTransform(affineJTransform);
+        getP2().getVec().applyAffineTransform(affineJTransform);
+        affineJTransform.applyTransformsToDrawingProperties(this);
         return this;
     }
 

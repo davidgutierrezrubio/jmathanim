@@ -150,11 +150,11 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
     }
 
     @Override
-    public T applyAffineTransform(AffineJTransform transform) {
+    public T applyAffineTransform(AffineJTransform affineJTransform) {
         if (isFreeMathObject()) {
-            getMathObject().applyAffineTransform(transform);
+            getMathObject().applyAffineTransform(affineJTransform);
         } else {
-            tipObjectRigidBox.applyAffineTransformToBaseTransform(transform);
+            tipObjectRigidBox.applyAffineTransformToBaseTransform(affineJTransform);
         }
         return (T) this;
     }

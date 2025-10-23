@@ -190,12 +190,12 @@ public class JMPathPoint implements
     }
 
     @Override
-    public JMPathPoint applyAffineTransform(AffineJTransform tr) {
+    public JMPathPoint applyAffineTransform(AffineJTransform affineJTransform) {
 //        JMPathPoint pSrc = this.copy();
 
-        this.getV().applyAffineTransform(tr);
-        this.getVExit().applyAffineTransform(tr);
-        this.getVEnter().applyAffineTransform(tr);
+        this.getV().applyAffineTransform(affineJTransform);
+        this.getVExit().applyAffineTransform(affineJTransform);
+        this.getVEnter().applyAffineTransform(affineJTransform);
 
         return this;
     }

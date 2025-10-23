@@ -284,13 +284,13 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
     /**
      * Applies an affine transform to the vector. the transformed vector. The original vector is altered.
      *
-     * @param tr Affine transform
+     * @param affineJTransform Affine transform
      * @return This object, with the transform applied
      */
     @Override
-    public Vec applyAffineTransform(AffineJTransform tr) {
+    public Vec applyAffineTransform(AffineJTransform affineJTransform) {
         RealMatrix pRow = new Array2DRowRealMatrix(new double[][]{{1d, x, y, z}});
-        RealMatrix pNew = pRow.multiply(tr.getMatrix());
+        RealMatrix pNew = pRow.multiply(affineJTransform.getMatrix());
 
         x = pNew.getEntry(0, 1);
         y = pNew.getEntry(0, 2);

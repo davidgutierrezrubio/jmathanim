@@ -32,7 +32,11 @@ public class CameraAlwaysAdjusting implements Updateable {
     Camera camera;
     double hgap, vgap;
 
-    public CameraAlwaysAdjusting(Camera cam, double hgap, double vgap) {
+    public static CameraAlwaysAdjusting make(Camera cam, double hgap, double vgap) {
+        return new CameraAlwaysAdjusting(cam, hgap, vgap);
+    }
+
+    protected CameraAlwaysAdjusting(Camera cam, double hgap, double vgap) {
         this.camera = cam;
         this.hgap = hgap;
         this.vgap = vgap;

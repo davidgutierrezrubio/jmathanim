@@ -39,14 +39,14 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
     }
 
     @Override
-    public T applyAffineTransform(AffineJTransform tr) {
+    public T applyAffineTransform(AffineJTransform affineJTransform) {
         RealMatrix pRow = new Array2DRowRealMatrix(new double[][]{{1d, v.x, v.y, v.z}});
-        RealMatrix pNew = pRow.multiply(tr.getMatrix());
+        RealMatrix pNew = pRow.multiply(affineJTransform.getMatrix());
 
         v.x = pNew.getEntry(0, 1);
         v.y = pNew.getEntry(0, 2);
         v.z = pNew.getEntry(0, 3);
-        tr.applyTransformsToDrawingProperties(this);
+        affineJTransform.applyTransformsToDrawingProperties(this);
         return (T) this;
     }
 

@@ -636,12 +636,12 @@ public abstract class MathObject<T extends MathObject<T>> implements
     /**
      * Apply an affine transform to the object.
      *
-     * @param transform Affine transform to apply
+     * @param affineJTransform Affine transform to apply
      * @return This object
      */
-    public T applyAffineTransform(AffineJTransform transform) {
+    public T applyAffineTransform(AffineJTransform affineJTransform) {
         if (isRigid) {
-            AffineJTransform compose = modelMatrix.compose(transform);
+            AffineJTransform compose = modelMatrix.compose(affineJTransform);
             modelMatrix.copyFrom(compose);
         }
         return (T) this;// By default does nothing

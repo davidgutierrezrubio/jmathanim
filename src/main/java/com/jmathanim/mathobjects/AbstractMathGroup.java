@@ -151,11 +151,11 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
     }
 
     @Override
-    public T applyAffineTransform(AffineJTransform tr) {
+    public T applyAffineTransform(AffineJTransform affineJTransform) {
         for (MathObject<?> obj : objects) {
-            obj.applyAffineTransform(tr);
+            obj.applyAffineTransform(affineJTransform);
         }
-        tr.applyTransformsToDrawingProperties(this);
+        affineJTransform.applyTransformsToDrawingProperties(this);
         return (T) this;
     }
 

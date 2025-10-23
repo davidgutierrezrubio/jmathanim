@@ -98,11 +98,11 @@ AbstractShape<T extends AbstractShape<T>>
     }
 
     @Override
-    public T applyAffineTransform(AffineJTransform transform) {
-        super.applyAffineTransform(transform);
+    public T applyAffineTransform(AffineJTransform affineJTransform) {
+        super.applyAffineTransform(affineJTransform);
         if (!isRigid) {
-            jmpath.applyAffineTransform(transform);
-            transform.applyTransformsToDrawingProperties(this);
+            jmpath.applyAffineTransform(affineJTransform);
+            affineJTransform.applyTransformsToDrawingProperties(this);
         }
         return (T) this;
     }

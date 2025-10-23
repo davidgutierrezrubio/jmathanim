@@ -56,8 +56,8 @@ public abstract class AbstractJMImage<T extends AbstractJMImage<T>>  extends Mat
     }
 
     @Override
-    public T applyAffineTransform(AffineJTransform tr) {
-        currentViewTransform = currentViewTransform.compose(tr);
+    public T applyAffineTransform(AffineJTransform affineJTransform) {
+        currentViewTransform = currentViewTransform.compose(affineJTransform);
         return (T) this;
     }
 

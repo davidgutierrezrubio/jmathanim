@@ -1274,10 +1274,10 @@ public class JMPath implements Boxable, Iterable<JMPathPoint>, AffineTransformab
         return p1.to(p2);
     }
 
-    public JMPath applyAffineTransform(AffineJTransform tr) {
+    public JMPath applyAffineTransform(AffineJTransform affineJTransform) {
         int size = size();
         for (int n = 0; n < size; n++) {
-            get(n).applyAffineTransform(tr);
+            get(n).applyAffineTransform(affineJTransform);
         }
         return this;
 

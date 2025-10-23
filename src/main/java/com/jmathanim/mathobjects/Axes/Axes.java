@@ -188,7 +188,7 @@ public class Axes extends MathObject<Axes> implements shouldUdpateWithCamera,has
     }
 
     @Override
-    public Axes applyAffineTransform(AffineJTransform tr) {
+    public Axes applyAffineTransform(AffineJTransform affineJTransform) {
         // Do nothing???
         return this;
     }

@@ -59,8 +59,8 @@ public abstract class CTAbstractPoint<T extends CTAbstractPoint<T>> extends Cons
     }
 
     @Override
-    public T applyAffineTransform(AffineJTransform transform) {
-        pointToShow.applyAffineTransform(transform);
+    public T applyAffineTransform(AffineJTransform affineJTransform) {
+        pointToShow.applyAffineTransform(affineJTransform);
         if (!isFreeMathObject()) {
             this.coordinatesOfPoint.copyCoordinatesFrom(pointToShow.v);
         }

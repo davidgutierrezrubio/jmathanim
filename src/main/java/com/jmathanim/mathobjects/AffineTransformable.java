@@ -1,10 +1,19 @@
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Enum.AnchorType;
-import com.jmathanim.Utils.*;
+import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.Boxable;
+import com.jmathanim.Utils.Rect;
+import com.jmathanim.Utils.Vec;
 
 public interface AffineTransformable <T extends AffineTransformable<T>>  extends Boxable,Copyable<T> {
-    T applyAffineTransform(AffineJTransform tr);
+
+    /**
+     * Apply the given affine transform to the object. Object is altered
+     * @param affineJTransform Affine transform to apply
+     * @return This object
+     */
+    T applyAffineTransform(AffineJTransform affineJTransform);
+
     /**
      * Shift object with the given vector
      *

@@ -84,7 +84,7 @@ public class Scalar extends Constructible<Scalar> implements hasScalarParameter{
     }
 
     @Override
-    public Scalar applyAffineTransform(AffineJTransform transform) {
+    public Scalar applyAffineTransform(AffineJTransform affineJTransform) {
         return this;
     }
 

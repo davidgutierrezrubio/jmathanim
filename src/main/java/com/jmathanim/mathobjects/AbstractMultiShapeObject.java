@@ -280,11 +280,11 @@ public abstract class AbstractMultiShapeObject<
 
     @SuppressWarnings("unchecked")
     @Override
-    public S applyAffineTransform(AffineJTransform tr) {
+    public S applyAffineTransform(AffineJTransform affineJTransform) {
         for (T sh : shapes) {
-            sh.applyAffineTransform(tr);
+            sh.applyAffineTransform(affineJTransform);
         }
-        tr.applyTransformsToDrawingProperties(this);
+        affineJTransform.applyTransformsToDrawingProperties(this);
         return (S) this;
     }
 

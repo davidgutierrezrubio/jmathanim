@@ -208,7 +208,7 @@ public class DensityPlot extends AbstractJMImage implements hasScalarParameter {
     }
 
     @Override
-    public DensityPlot applyAffineTransform(AffineJTransform tr) {
+    public DensityPlot applyAffineTransform(AffineJTransform affineJTransform) {
         // TODO: Apply model matrix
         return this;
     }

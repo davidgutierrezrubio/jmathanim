@@ -617,14 +617,14 @@ public class Arrow extends Constructible<Arrow> {
     }
 
     @Override
-    public Arrow applyAffineTransform(AffineJTransform tr) {
+    public Arrow applyAffineTransform(AffineJTransform affineJTransform) {
         if (isFreeMathObject())
-            super.applyAffineTransform(tr);
+            super.applyAffineTransform(affineJTransform);
 //        Acopy.applyAffineTransform(tr);
 //        Bcopy.applyAffineTransform(tr);
         if (!isFreeMathObject()) {
-            A.getVec().applyAffineTransform(tr);
-            B.getVec().applyAffineTransform(tr);
+            A.getVec().applyAffineTransform(affineJTransform);
+            B.getVec().applyAffineTransform(affineJTransform);
         }
 //        rebuildShape();
         return this;

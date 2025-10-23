@@ -72,8 +72,8 @@ public class RigidBox extends MathObject<RigidBox> {
         isCopyToDrawTransformedByMatrix = true;
     }
 
-    public RigidBox applyAffineTransform(AffineJTransform transform) {
-        AffineJTransform compose = modelMatrix.compose(transform);
+    public RigidBox applyAffineTransform(AffineJTransform affineJTransform) {
+        AffineJTransform compose = modelMatrix.compose(affineJTransform);
         modelMatrix.copyFrom(compose);
         isCopyToDrawTransformedByMatrix = false;
         return this;

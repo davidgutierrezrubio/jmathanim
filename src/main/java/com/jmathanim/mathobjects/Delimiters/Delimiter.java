@@ -165,7 +165,6 @@ public abstract class Delimiter extends Constructible<Delimiter> {
     }
 
 
-
     public Vec getA() {
         return A.getVec();
     }

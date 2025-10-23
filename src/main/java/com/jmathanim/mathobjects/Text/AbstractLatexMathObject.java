@@ -98,9 +98,9 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
     }
 
     @Override
-    public T applyAffineTransform(AffineJTransform transform) {
-        super.applyAffineTransform(transform);
-        AffineJTransform compose = modelMatrix.compose(transform);
+    public T applyAffineTransform(AffineJTransform affineJTransform) {
+        super.applyAffineTransform(affineJTransform);
+        AffineJTransform compose = modelMatrix.compose(affineJTransform);
         modelMatrix.copyFrom(compose);
         return (T) this;
     }

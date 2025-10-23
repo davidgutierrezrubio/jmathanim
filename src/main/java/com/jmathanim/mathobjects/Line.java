@@ -85,10 +85,10 @@ public class Line extends AbstractShape<Line> implements HasDirection, shouldUdp
     }
 
     @Override
-    public Line applyAffineTransform(AffineJTransform transform) {
-        p1.getVec().applyAffineTransform(transform);
-        p2.getVec().applyAffineTransform(transform);
-        transform.applyTransformsToDrawingProperties(this);
+    public Line applyAffineTransform(AffineJTransform affineJTransform) {
+        p1.getVec().applyAffineTransform(affineJTransform);
+        p2.getVec().applyAffineTransform(affineJTransform);
+        affineJTransform.applyTransformsToDrawingProperties(this);
         rebuildShape();
         return this;
     }
