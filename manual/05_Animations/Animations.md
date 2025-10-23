@@ -389,7 +389,7 @@ Note that the `transform` animation also interpolates drawing parameters as thic
 
 The general procedure when the transformation from A to B is complete is to delete A from the scene and add B, so you should be using B from now on.
 
-With this code, you can see the intermediate steps, in this case, when we are transforming a regular triangle into a regular pentagon:
+With this code, you can see the intermediate steps, in this case, when we are transforming an isosceles triangle into a regular pentagon:
 
 ```java
 @Override
