@@ -340,17 +340,17 @@ public class TransformMathExpression extends Animation {
         AnimationWithEffects transform = null;
         switch (par.getTransformStyle()) {
             case INTERPOLATION:
-                transform = new Transform(runTime, sh, sh2);
+                transform = Transform.make(runTime, sh, sh2);
                 removeThisAtTheEnd.add(sh2);//Workaround, this shoul'd be necessary
                 break;
             case FLIP_HORIZONTALLY:
-                transform = new FlipTransform(runTime, OrientationType.HORIZONTAL, sh, sh2);
+                transform = FlipTransform.make(runTime, OrientationType.HORIZONTAL, sh, sh2);
                 break;
             case FLIP_VERTICALLY:
-                transform = new FlipTransform(runTime, OrientationType.VERTICAL, sh, sh2);
+                transform = FlipTransform.make(runTime, OrientationType.VERTICAL, sh, sh2);
                 break;
             case FLIP_BOTH:
-                transform = new FlipTransform(runTime, OrientationType.BOTH, sh, sh2);
+                transform = FlipTransform.make(runTime, OrientationType.BOTH, sh, sh2);
                 break;
         }
         if (lambda == null) {

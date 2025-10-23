@@ -161,8 +161,8 @@ class GeogebraCommandParser {
             int g = Integer.valueOf(objColor.getAttribute("g"));
             int b = Integer.valueOf(objColor.getAttribute("b"));
             double alpha = Double.valueOf(objColor.getAttribute("alpha"));
-            JMColor col = JMColor.rgbInt(r, g, b, 255);
-            JMColor colFill = JMColor.rgbInt(r, g, b, 255);
+            JMColor col = JMColor.rgbaInt(r, g, b, 255);
+            JMColor colFill = JMColor.rgbaInt(r, g, b, 255);
             colFill.setAlpha(alpha);
 
             resul.setDrawColor(col);
@@ -502,7 +502,7 @@ class GeogebraCommandParser {
         vertices.add((CTAbstractPoint<?>) objs[0]);
         vertices.add((CTAbstractPoint<?>) objs[1]);
         for (int k = sides + 1; k <= 2 * sides - 2; k++) {
-            CTAbstractPoint<?> P = CTPoint.at(new Point());//Should be computed in the constructor
+            CTAbstractPoint<?> P = CTPoint.at(Vec.to(0,0));//Should be computed in the constructor
             vertices.add(P);
             registerGeogebraElement(outputs[k], P);
             JMathAnimScene.logger.debug("Generated Point {}", outputs[k]);

@@ -47,6 +47,14 @@ public class JMColor extends PaintStyle<JMColor> {
     private double blue;
     private double alpha;
 
+
+    protected JMColor(double red, double green, double blue, double alpha) {
+        this.setRed(red);
+        this.setGreen(green);
+        this.setBlue(blue);
+        this.alpha = alpha;
+    }
+
     /**
      * Creates a new JMColor with the specified red, green, blue, and alpha
      * components, from 0 to 1.
@@ -56,16 +64,14 @@ public class JMColor extends PaintStyle<JMColor> {
      * @param blue Blue component 0-1
      * @param alpha Alpha component 0-1
      */
-    public JMColor(double red, double green, double blue, double alpha) {
-        this.setRed(red);
-        this.setGreen(green);
-        this.setBlue(blue);
-        this.alpha = alpha;
+    public static JMColor rgba(double red, double green, double blue, double alpha) {
+        return new JMColor(red, green, blue, alpha);
     }
 
+
     /**
-     * Creates a new JMColor with the specified red, green, blue, and alha
-     * components, from 0 to 256.
+     * Creates a new JMColor with the specified red, green, blue, and alpha
+     * components, represented by integers from 0 to 255.
      *
      * @param r Red component 0-255
      * @param g Green component 0-255
@@ -73,7 +79,7 @@ public class JMColor extends PaintStyle<JMColor> {
      * @param alpha Alpha component 0-255
      * @return The new JMcolor
      */
-    public static JMColor rgbInt(int r, int g, int b, int alpha) {
+    public static JMColor rgbaInt(int r, int g, int b, int alpha) {
         return new JMColor(r * 1.f / 255, g * 1.f / 255, b * 1.f / 255, alpha * 1.f / 255);
     }
 
@@ -280,7 +286,7 @@ public class JMColor extends PaintStyle<JMColor> {
                     alpha = 255;
                 }
 
-                return JMColor.rgbInt(red, green, blue, alpha);
+                return JMColor.rgbaInt(red, green, blue, alpha);
             } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
                 //Try to parse double values
                 try {

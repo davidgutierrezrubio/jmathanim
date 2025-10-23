@@ -476,7 +476,7 @@ public class JavaFXRenderer extends Renderer {
     public Vec defaultToFixedCamera(Vec v) {
         double[] ms = camera.mathToScreenFX(v);
         double[] coords = fixedCamera.screenToMath(ms[0], ms[1]);
-        return new Vec(coords[0], coords[1]);
+        return Vec.to(coords[0], coords[1]);
 
     }
 

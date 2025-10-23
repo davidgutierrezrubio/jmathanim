@@ -45,7 +45,7 @@ public class Transform extends AnimationWithEffects {
      * @param originObject  Origin object
      * @param destinyObject Destiny object
      */
-    public Transform(double runTime, MathObject<?> originObject, MathObject<?> destinyObject) {
+    protected Transform(double runTime, MathObject<?> originObject, MathObject<?> destinyObject) {
         super(runTime);
         setDebugName("Transform");
         mobjTransformed = originObject;
@@ -56,8 +56,7 @@ public class Transform extends AnimationWithEffects {
 
     /**
      * Static constructor. Creates a new Transform animation. Chooses the best strategy to transform origin into
-     * destiny. After the transformation is done, origin is removed from scene and destiny is added. In most cases,
-     * origin object becomes unusable.
+     * destiny. After the transformation is done, origin is removed from scene and destiny is added.
      *
      * @param runTime Duration in seconds
      * @param ob1     Origin object
@@ -170,16 +169,18 @@ public class Transform extends AnimationWithEffects {
                 transformMethod = TransformMethod.GENERAL_AFFINE_TRANSFORM;
                 return;
             }
-            //Default case for 2 shapes
-            transformMethod = TransformMethod.INTERPOLATE_POINT_BY_POINT;
-            return;
+            //Case for 2 shapes. If the 2 shapes are simple, use its own method
+//
 
-//            // If 2 simple, closed curves, I have something simpler in mind...
-//            if ((shTr.getPath().getNumberOfConnectedComponents() == 1)
-//                    && (shDst.getPath().getNumberOfConnectedComponents() == 1)) {
-//                transformMethod = TransformMethod.INTERPOLATE_SIMPLE_SHAPES_BY_POINT;
-//                return;
-//            }
+            if ((shTr.getPath().getNumberOfConnectedComponents() == 0)
+                    && (shDst.getPath().getNumberOfConnectedComponents() == 0)) {
+                transformMethod = TransformMethod.INTERPOLATE_SIMPLE_SHAPES_BY_POINT;
+                return;
+            } else
+            {
+                transformMethod = TransformMethod.INTERPOLATE_POINT_BY_POINT;
+                return;
+            }
         }
         // Nothing previous worked...try with the most general method
         JMathAnimScene.logger.warn("Don't know how to transform " + mobjTransformed.getClass().getSimpleName() + " to " + mobjDestiny.getClass().getSimpleName() + ". Using default flip transform");
@@ -245,7 +246,7 @@ public class Transform extends AnimationWithEffects {
                 JMathAnimScene.logger.debug("Transform method: MathObjectGroup transform");
                 break;
             case FLIP_TRANSFORM:
-                transformStrategy = new FlipTransform(runTime, OrientationType.BOTH, mobjTransformed, mobjDestiny);
+                transformStrategy = FlipTransform.make(runTime, OrientationType.BOTH, mobjTransformed, mobjDestiny);
                 JMathAnimScene.logger.debug("Transform method: Flip transform");
                 break;
 

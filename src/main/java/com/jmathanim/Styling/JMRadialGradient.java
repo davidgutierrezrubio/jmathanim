@@ -33,7 +33,7 @@ import java.util.TreeMap;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 
-public class JMRadialGradient extends PaintStyle<JMRadialGradient>{
+public class JMRadialGradient extends PaintStyle<JMRadialGradient> {
 
     protected Vec center;
     protected double focusAngle;
@@ -44,11 +44,7 @@ public class JMRadialGradient extends PaintStyle<JMRadialGradient>{
     protected boolean relativeToShape;
     protected CycleMethod cycleMethod;
 
-    public JMRadialGradient(Coordinates<?> center, double radius) {
-        this(center, 0, 0, radius);
-    }
-
-    public JMRadialGradient(Coordinates<?> center, double focusAngle, double focusDistance, double radius) {
+    protected JMRadialGradient(Coordinates<?> center, double focusAngle, double focusDistance, double radius) {
         super();
         this.center = center.getVec();
         this.focusAngle = focusAngle;
@@ -60,9 +56,17 @@ public class JMRadialGradient extends PaintStyle<JMRadialGradient>{
         cycleMethod = CycleMethod.NO_CYCLE;
     }
 
+    public static JMRadialGradient make(Coordinates<?> center, double radius, double focusAngle, double focusDistance) {
+        return new JMRadialGradient(center, focusAngle, focusDistance, radius);
+    }
+
+    public static JMRadialGradient make(Coordinates<?> center, double radius) {
+        return new JMRadialGradient(center, 0, 0, radius);
+    }
+
     @Override
     public JMRadialGradient copy() {
-        JMRadialGradient resul = new JMRadialGradient(center.copy(), focusAngle, focusDistance, radius);
+        JMRadialGradient resul = JMRadialGradient.make(center.copy(), focusAngle, focusDistance, radius);
         resul.copyFrom(this);
         return resul;
     }
@@ -166,18 +170,16 @@ public class JMRadialGradient extends PaintStyle<JMRadialGradient>{
     /**
      * Retusn the relative to shape flag
      *
-     * @return If true, center, radius and focusDistance are computed relative
-     * to the bounding box of the shape to paint. If false, are computed in math
-     * coordinates.
+     * @return If true, center, radius and focusDistance are computed relative to the bounding box of the shape to
+     * paint. If false, are computed in math coordinates.
      */
     public boolean isRelativeToShape() {
         return relativeToShape;
     }
 
     /**
-     * Sets the relative to shape flag. If true, center, radius and
-     * focusDistance are computed relative to the bounding box of the shape to
-     * paint.If false, are computed in math coordinates.
+     * Sets the relative to shape flag. If true, center, radius and focusDistance are computed relative to the bounding
+     * box of the shape to paint.If false, are computed in math coordinates.
      *
      * @param relativeToShape Relative flag, a boolean value
      * @return This object
@@ -197,10 +199,9 @@ public class JMRadialGradient extends PaintStyle<JMRadialGradient>{
     }
 
     /**
-     * Overloaded method. Adds a color mark for this gradient at specified
-     * parameter.
+     * Overloaded method. Adds a color mark for this gradient at specified parameter.
      *
-     * @param t Position to add the gradient, from 0 to 1
+     * @param t      Position to add the gradient, from 0 to 1
      * @param strCol A string with a valid color declaration to parse.
      * @return This object
      */
@@ -212,7 +213,7 @@ public class JMRadialGradient extends PaintStyle<JMRadialGradient>{
     /**
      * Adds a color mark for this gradient at specified parameter.
      *
-     * @param t Position to add the gradient, from 0 to 1
+     * @param t   Position to add the gradient, from 0 to 1
      * @param col JMColor to add
      * @return This object
      */
@@ -235,20 +236,17 @@ public class JMRadialGradient extends PaintStyle<JMRadialGradient>{
     /**
      * Returns the currently cycle method, a JavaFX cycle for gradients
      *
-     * @return A cycle method, a value from the enum
-     * javafx.scene.paint.CycleMethod
+     * @return A cycle method, a value from the enum javafx.scene.paint.CycleMethod
      */
     public CycleMethod getCycleMethod() {
         return cycleMethod;
     }
 
     /**
-     * Sets the cycle method for this gradient. The default cycle method is
-     * NO_CYCLE.
+     * Sets the cycle method for this gradient. The default cycle method is NO_CYCLE.
      *
      * @param cycleMethod
-     * @return A cycle method, a value from the enum
-     * javafx.scene.paint.CycleMethod
+     * @return A cycle method, a value from the enum javafx.scene.paint.CycleMethod
      */
     public JMRadialGradient setCycleMethod(CycleMethod cycleMethod) {
         this.cycleMethod = cycleMethod;

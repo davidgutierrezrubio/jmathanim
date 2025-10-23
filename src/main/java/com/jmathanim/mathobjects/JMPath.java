@@ -344,7 +344,7 @@ public class JMPath implements Boxable, Iterable<JMPathPoint>, AffineTransformab
 //            pointAt = H.interpolate(J, alpha); //Interpolation point
 //        } else {
 //            //Straight interpolation
-//            pointAt = new Point(jmp1.p.v.interpolate(jmp2.p.v, alpha));
+//            pointAt = Point.at(jmp1.p.v.interpolate(jmp2.p.v, alpha));
 //        }
 //        
 //        return pointAt;
@@ -397,7 +397,7 @@ public class JMPath implements Boxable, Iterable<JMPathPoint>, AffineTransformab
         } else {
             // Straight interpolation
             Vec interpolate1 = jmp1.getV().interpolate(jmp2.getV(), alpha);
-            Point interP = new Point(interpolate1.x, interpolate1.y);
+            Point interP = Point.at(interpolate1.x, interpolate1.y);
             // Interpolation point is visible iff v2 is visible
             // Control points are by default the same as v1 and v2 (straight line)
             interpolate = new JMPathPoint(interP, jmp2.isSegmentToThisPointVisible());

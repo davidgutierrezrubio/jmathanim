@@ -34,7 +34,7 @@ public interface AffineTransformable <T extends AffineTransformable<T>>  extends
      * @return The same object, after shifting
      */
     default T shift(double x, double y) {
-        return shift(new Vec(x, y));
+        return shift(Vec.to(x, y));
     }
 
     /**
@@ -46,7 +46,7 @@ public interface AffineTransformable <T extends AffineTransformable<T>>  extends
      * @return The same object, after shifting
      */
     default T shift(double x, double y, double z) {
-        return shift(new Vec(x, y, z));
+        return shift(Vec.to(x, y, z));
     }
 
     /**

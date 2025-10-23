@@ -247,12 +247,12 @@ public class FunctionGraph extends AbstractShape<FunctionGraph> implements hasSc
                     deltaX = 0;
                     slope = 0;
                 }
-                Vec v = new Vec(deltaX, slope * deltaX);
+                Vec v = Vec.to(deltaX, slope * deltaX);
                 jmp.getVExit().copyCoordinatesFrom(jmp.getV().add(v));
             }
             if (n > 0) {
                 final double deltaX = .3 * (xPoints.get(n - 1) - x);
-                Vec v = new Vec(deltaX, getSlope(x, -1) * deltaX);
+                Vec v = Vec.to(deltaX, getSlope(x, -1) * deltaX);
                 jmp.getVEnter().copyCoordinatesFrom(jmp.getV().add(v));
                 double h = x - xPoints.get(n - 1);
                 double deriv = (getFunctionValue(x, this.w) - getFunctionValue(xPoints.get(n - 1), this.w)) / h;

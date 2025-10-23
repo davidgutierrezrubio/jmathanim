@@ -444,7 +444,7 @@ public class Camera implements Boxable {
     }
 
     public Vec getGaps() {
-        return new Vec(hgap, vgap);
+        return Vec.to(hgap, vgap);
     }
 
     public void initialize(double xmin, double xmax, double ycenter) {

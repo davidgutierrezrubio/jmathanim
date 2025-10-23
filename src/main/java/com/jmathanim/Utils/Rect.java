@@ -169,7 +169,7 @@ public class Rect implements Boxable {// TODO: Adjust this to 3D coordinates
 
         Vec v1, v2, v3, v4;
         double sc1, sc2, sc3, sc4;
-        Vec vRect = new Vec(x2 - x1, y2 - y1);
+        Vec vRect = Vec.to(x2 - x1, y2 - y1);
         double lambda1, lambda2;
         // Particular cases:
         // Line lines in the left side
@@ -197,10 +197,10 @@ public class Rect implements Boxable {// TODO: Adjust this to 3D coordinates
         double intery1 = ymin;
         double intery2 = ymax;
 
-        v1 = new Vec(xmin - x1, ymin - y1);
-        v2 = new Vec(xmin - x1, ymax - y1);
-        v3 = new Vec(xmax - x1, ymax - y1);
-        v4 = new Vec(xmax - x1, ymin - y1);
+        v1 = Vec.to(xmin - x1, ymin - y1);
+        v2 = Vec.to(xmin - x1, ymax - y1);
+        v3 = Vec.to(xmax - x1, ymax - y1);
+        v4 = Vec.to(xmax - x1, ymin - y1);
         sc1 = vRect.cross(v1).z;
         sc2 = vRect.cross(v2).z;
         sc3 = vRect.cross(v3).z;
@@ -317,8 +317,8 @@ public class Rect implements Boxable {// TODO: Adjust this to 3D coordinates
 
         // Now, determines the correct order of the solution
         double[] resul;
-        v1 = new Vec(interx1 - x1, intery1 - y1);
-        v2 = new Vec(interx2 - x1, intery2 - y1);
+        v1 = Vec.to(interx1 - x1, intery1 - y1);
+        v2 = Vec.to(interx2 - x1, intery2 - y1);
         if (vRect.dot(v1) > 0) {
             // In this case, interx1,intery2 is closer to x2,y2
             resul = new double[]{interx2, intery2, interx1, intery1};

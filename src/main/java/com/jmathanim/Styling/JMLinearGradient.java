@@ -48,7 +48,11 @@ public class JMLinearGradient extends PaintStyle<JMLinearGradient> {
      * @param start Starting point
      * @param end Ending point
      */
-    public JMLinearGradient(Coordinates<?> start, Coordinates<?> end) {
+    public static JMLinearGradient make(Coordinates<?> start, Coordinates<?> end) {
+        return new JMLinearGradient(start, end);
+    }
+
+    protected JMLinearGradient(Coordinates<?> start, Coordinates<?> end) {
         super();
         this.start = start.getVec();
         this.end = end.getVec();
@@ -59,7 +63,7 @@ public class JMLinearGradient extends PaintStyle<JMLinearGradient> {
 
     @Override
     public JMLinearGradient copy() {
-        JMLinearGradient resul = new JMLinearGradient(start.copy(), end.copy());
+        JMLinearGradient resul = JMLinearGradient.make(start.copy(), end.copy());
         resul.copyFrom(this);
         return resul;
     }

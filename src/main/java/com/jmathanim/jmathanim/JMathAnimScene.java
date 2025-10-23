@@ -672,7 +672,7 @@ public abstract class JMathAnimScene {
     }
 
     public void formulaHelper(LatexMathObject... texes) {
-        MathObjectGroup group = new MathObjectGroup();
+        MathObjectGroup group = MathObjectGroup.make();
         for (LatexMathObject lat : texes) {
             int k = 0;
             for (LatexShape sh : lat) {

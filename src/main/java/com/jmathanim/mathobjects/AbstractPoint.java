@@ -52,7 +52,7 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
 
     @Override
     public Vec getCenter() {
-        return new Vec(v.x, v.y, v.z);
+        return Vec.to(v.x, v.y, v.z);
     }
 
     @Override

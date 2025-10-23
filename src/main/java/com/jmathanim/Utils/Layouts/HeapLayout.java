@@ -22,7 +22,6 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.AbstractMathGroup;
 import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.Point;
 
 import java.util.ArrayList;
 
@@ -51,7 +50,7 @@ public class HeapLayout extends GroupLayout {
 	 * @param vgap Vertical gap
 	 */
 	protected HeapLayout(Coordinates<?> base, double hgap, double vgap) {
-		center = new MathObjectGroup();
+		center = MathObjectGroup.make();
 		rightSide = new ArrayList<>();
 		leftSide = new ArrayList<>();
 		this.base = base;
@@ -77,7 +76,7 @@ public class HeapLayout extends GroupLayout {
 		int colIndex = 1;
 		while (colIndex * colIndex < n) {// first element of this column is colIndex*colIndex
 			k = colIndex * colIndex;
-			MathObjectGroup col = new MathObjectGroup();
+			MathObjectGroup col = MathObjectGroup.make();
 			step = (colIndex + 1) * 2;
 			while (k < n) {
 				col.add(group.get(k));
@@ -91,7 +90,7 @@ public class HeapLayout extends GroupLayout {
 		colIndex = 2;// Begins at 2
 		while (colIndex * colIndex - 1 < n) {// first element of this column is colIndex*colIndex-1
 			k = colIndex * colIndex - 1;
-			MathObjectGroup col = new MathObjectGroup();
+			MathObjectGroup col = MathObjectGroup.make();
 			step = (colIndex) * 2;
 			while (k < n) {
 				col.add(group.get(k));

@@ -28,15 +28,15 @@ import java.util.Arrays;
  */
 public class MathObjectGroup extends AbstractMathGroup<MathObjectGroup> {
 
-    public MathObjectGroup() {
+    protected MathObjectGroup() {
         super();
     }
 
-    public MathObjectGroup(MathObject<?>... objects) {
+    protected MathObjectGroup(MathObject<?>... objects) {
         this(new ArrayList<>(Arrays.asList(objects)));
     }
 
-    public MathObjectGroup(ArrayList<MathObject<?>> objects) {
+    protected MathObjectGroup(ArrayList<MathObject<?>> objects) {
         super(objects);
 
     }
@@ -47,6 +47,10 @@ public class MathObjectGroup extends AbstractMathGroup<MathObjectGroup> {
     }
 
     public static MathObjectGroup make(MathObject<?>... objects) {
+        return new MathObjectGroup(objects);
+    }
+
+    public static MathObjectGroup make(ArrayList<MathObject<?>> objects) {
         return new MathObjectGroup(objects);
     }
 

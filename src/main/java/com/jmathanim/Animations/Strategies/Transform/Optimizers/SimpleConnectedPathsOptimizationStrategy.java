@@ -42,7 +42,9 @@ public class SimpleConnectedPathsOptimizationStrategy implements OptimizePathsSt
 		JMPath pa2 = shape2.getPath();
 		int direction = pa1c.getOrientation() * pa2.getOrientation();
 
+
 		ArrayList<Double> dists = new ArrayList<>();
+        dists.add(SumDistancesBetweenPaths(pa1c, pa2));
 		for (int n = 1; n < pa1c.size(); n++) {
 			pa1c.cyclePoints(1, (direction<0));
 			double d = SumDistancesBetweenPaths(pa1c, pa2);
@@ -51,7 +53,7 @@ public class SimpleConnectedPathsOptimizationStrategy implements OptimizePathsSt
 //            double d = varDistancesBetweenPaths(pa1c, pa2);
 			dists.add(d);
 		}
-		int cycleMin = dists.indexOf(Collections.min(dists)) + 1;
+		int cycleMin = dists.indexOf(Collections.min(dists)) ;
 
 		shape1.getPath().cyclePoints(cycleMin, (direction<0));
 	}
@@ -59,7 +61,7 @@ public class SimpleConnectedPathsOptimizationStrategy implements OptimizePathsSt
 	private double SumDistancesBetweenPaths(JMPath pa1, JMPath pa2) {
 		double dist = 0;
 		for (int n = 0; n < pa1.size(); n++) {
-			dist += pa1.getJmPathPoints().get(n).getV().to(pa2.getJmPathPoints().get(n).getV()).norm();
+			dist += pa1.get(n).to(pa2.get(n)).norm();
 		}
 		return dist;
 	}

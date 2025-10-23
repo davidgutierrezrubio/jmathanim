@@ -55,7 +55,7 @@ public class Shape extends AbstractShape<Shape> {
     }
 
     public static Shape square(Point A, double side) {
-        return Shape.rectangle(A, A.add(new Vec(side, side)));
+        return Shape.rectangle(A, A.add(Vec.to(side, side)));
     }
 //    public Shape(JMPath jmpath, MODrawProperties mp) {
 //        super(jmpath,mp);
@@ -212,7 +212,7 @@ public class Shape extends AbstractShape<Shape> {
         Vec newPoint = Vec.to(0,0);
         for (int n = 0; n < numsides; n++) {
             double alpha = 2 * n * Math.PI / numsides;
-            Vec moveVector = new Vec(Math.cos(alpha), Math.sin(alpha));
+            Vec moveVector = Vec.to(Math.cos(alpha), Math.sin(alpha));
             newPoint = newPoint.add(moveVector);
             JMPathPoint p = JMPathPoint.lineTo(newPoint);
             obj.getPath().addJMPoint(p);

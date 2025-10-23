@@ -42,7 +42,7 @@ public class PointOnFunctionGraph extends AbstractPoint<PointOnFunctionGraph> {
      * @param x  The initial x component of the point
      * @param fg Function graph
      */
-    public PointOnFunctionGraph (double x, FunctionGraph fg) {
+    protected PointOnFunctionGraph (double x, FunctionGraph fg) {
         super(Vec.to(x, 0));
         this.fg = fg;
         slopePointRight = Vec.to(x, 0);

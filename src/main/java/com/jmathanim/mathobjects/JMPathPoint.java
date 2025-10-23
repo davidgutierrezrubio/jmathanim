@@ -255,7 +255,7 @@ public class JMPathPoint implements
         } else {
             // Straight interpolation
             Vec vInterp = this.getV().interpolate(q.getV(), alpha);
-            Point interP = new Point(vInterp.x, vInterp.y);
+            Point interP = Point.at(vInterp.x, vInterp.y);
             // Interpolation point is visible iff v2 is visible
             // Control points are by default the same as v1 and v2 (straight line)
             interpolate = new JMPathPoint(interP, q.isSegmentToThisPointVisible());

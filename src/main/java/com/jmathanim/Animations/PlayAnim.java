@@ -18,7 +18,6 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.ScreenAnchor;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.*;
@@ -377,7 +376,7 @@ public class PlayAnim {
      * @param destiny     Object destiny
      */
     public void transform(double runTime, MathObject transformed, MathObject destiny) {
-        scene.playAnimation(new Transform(runTime, transformed, destiny));
+        scene.playAnimation(Transform.make(runTime, transformed, destiny));
     }
 
 
@@ -534,7 +533,7 @@ public class PlayAnim {
      * @param y       y coordinate of shift vector
      */
     public void cameraShift(double runTime, double x, double y) {
-        cameraShift(runTime, new Vec(x, y), scene.getCamera());
+        cameraShift(runTime, Vec.to(x, y), scene.getCamera());
     }
 
     /**
@@ -675,19 +674,19 @@ public class PlayAnim {
         scene.playAnimation(Commands.setStyle(runtime, styleName, mobjects));
     }
 
-    /**
-     * Plays an animated version of the stackTo method. If several objects are animated, the second will be stacked to
-     * the first, and so on
-     *
-     * @param runtime    time in seconds
-     * @param dst        Destiny Coordinates to stack
-     * @param anchorType Type of stack, a value of Type enum
-     * @param gap        Gap between the stacked objects
-     * @param mobjects   Mathobjects to animate
-     */
-    public void stackTo(double runtime, Coordinates<?> dst, AnchorType anchorType, double gap, MathObject<?>... mobjects) {
-        scene.playAnimation(Commands.stackTo(runtime, dst, anchorType, gap, mobjects));
-    }
+//    /**
+//     * Plays an animated version of the stackTo method. If several objects are animated, the second will be stacked to
+//     * the first, and so on
+//     *
+//     * @param runtime    time in seconds
+//     * @param dst        Destiny Coordinates to stack
+//     * @param anchorType Type of stack, a value of Type enum
+//     * @param gap        Gap between the stacked objects
+//     * @param mobjects   Mathobjects to animate
+//     */
+//    public void stackTo(double runtime, Coordinates<?> dst, AnchorType anchorType, double gap, MathObject<?>... mobjects) {
+//        scene.playAnimation(Commands.stackTo(runtime, dst, anchorType, gap, mobjects));
+//    }
 
     /**
      * Plays an animation that hightlights the contour of a Shape object, with the duration of defaultRunTimeHighlight

@@ -53,7 +53,7 @@ public class Surface extends MathObject<Surface> {
     }
 
     public Surface(ArrayList<Point> vertices, ArrayList<HalfEdge> halfEdges, ArrayList<Face> faces) {
-        this.vertices = new MathObjectGroup();
+        this.vertices = MathObjectGroup.make();
         this.vertices.getObjects().addAll(vertices);
         this.halfEdges = halfEdges;
         this.faces = faces;

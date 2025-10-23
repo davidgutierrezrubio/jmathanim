@@ -94,7 +94,7 @@ public class MultiShapeTransform extends TransformStrategy<AbstractMultiShapeObj
         }
 
         for (int n = 0; n < numAnims; n++) {
-            Transform transformAnim = new Transform(this.runTime, originShapes.get(n), destinyShapes.get(n));
+            Transform transformAnim = Transform.make(this.runTime, originShapes.get(n), destinyShapes.get(n));
             this.copyEffectParametersTo(transformAnim);
             anim.add(transformAnim);
             anim.setLambda(getTotalLambda());

@@ -42,7 +42,7 @@ public class Centroid extends Point implements Updateable {
     @Override
     public void update(JMathAnimScene scene) {
         super.update(scene);
-        Vec resul = new Vec(0, 0);
+        Vec resul = Vec.to(0, 0);
         for (int n = 0; n < shape.size(); n++) {
             resul.addInSite(shape.get(n).getV());
         }

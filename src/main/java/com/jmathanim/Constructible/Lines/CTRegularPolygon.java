@@ -21,10 +21,10 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Points.CTAbstractPoint;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Coordinates;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ public class CTRegularPolygon extends Constructible<CTRegularPolygon> {
         vertices.add(CTPoint.at(A.getVec()));
         vertices.add(CTPoint.at(B.getVec()));
         for (int i = 0; i < nSides - 2; i++) {
-            vertices.add(CTPoint.at(new Point()));
+            vertices.add(CTPoint.at(Vec.to(0,0)));
         }
         CTRegularPolygon resul = makeFromPointList(vertices);
         resul.rebuildShape();

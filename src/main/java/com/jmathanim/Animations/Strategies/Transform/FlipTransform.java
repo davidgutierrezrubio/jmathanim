@@ -28,7 +28,7 @@ import com.jmathanim.mathobjects.MathObject;
  */
 public class FlipTransform extends TransformStrategy<MathObject<?>> {
 
-//    /**
+    //    /**
 //     * Flip type
 //     */
 //    public enum FlipType {
@@ -53,17 +53,15 @@ public class FlipTransform extends TransformStrategy<MathObject<?>> {
     private Vec dstCenter;
 
     /**
-     * Creates a new FlipTransform animation, that flips the original object
-     * horizontally or vertically to become the destiny object. When finished
-     * the animation, original object is removed and destiniy object is added to
-     * scene.
+     * Creates a new FlipTransform animation, that flips the original object horizontally or vertically to become the
+     * destiny object. When finished the animation, original object is removed and destiniy object is added to scene.
      *
-     * @param runTime Duration in seconds
+     * @param runTime  Duration in seconds
      * @param flipType Flip type, a value of the enum variable FlipType
-     * @param objOrig Original object
-     * @param objDst Destiny object
+     * @param objOrig  Original object
+     * @param objDst   Destiny object
      */
-    public FlipTransform(double runTime, OrientationType flipType, MathObject<?> objOrig, MathObject<?> objDst) {
+    protected FlipTransform(double runTime, OrientationType flipType, MathObject<?> objOrig, MathObject<?> objDst) {
         super(runTime);
         setDebugName("FlipTransform");
         this.flipType = flipType;
@@ -73,39 +71,16 @@ public class FlipTransform extends TransformStrategy<MathObject<?>> {
     }
 
     /**
-     * Static method to build a horizontal flip animation
-     *
-     * @param runTime Duration in seconds
-     * @param objOrig Original object
-     * @param objDst Destiny object
-     * @return The animation to play with the playAnim method
-     */
-    public static FlipTransform HFlip(double runTime, MathObject<?> objOrig, MathObject<?> objDst) {
-        return new FlipTransform(runTime, OrientationType.HORIZONTAL, objOrig, objDst);
-    }
-
-    /**
-     * Static method to build a vertical flip animation
-     *
-     * @param runTime Duration in seconds
-     * @param objOrig Original object
-     * @param objDst Destiny object
-     * @return The animation to play with the playAnim method
-     */
-    public static FlipTransform VFlip(double runTime, MathObject<?> objOrig, MathObject<?> objDst) {
-        return new FlipTransform(runTime, OrientationType.VERTICAL, objOrig, objDst);
-    }
-
-    /**
      * Static method to build a flip animation both vertically and horizontally
      *
      * @param runTime Duration in seconds
+     * @param orientationType Orientation to flip, vertically, horizontally, or bot
      * @param objOrig Original object
-     * @param objDst Destiny object
+     * @param objDst  Destiny object
      * @return The animation to play with the playAnim method
      */
-    public static FlipTransform Flip(double runTime, MathObject<?> objOrig, MathObject<?> objDst) {
-        return new FlipTransform(runTime, OrientationType.BOTH, objOrig, objDst);
+    public static FlipTransform make(double runTime, OrientationType orientationType, MathObject<?> objOrig, MathObject<?> objDst) {
+        return new FlipTransform(runTime, orientationType, objOrig, objDst);
     }
 
     @Override
@@ -194,8 +169,8 @@ public class FlipTransform extends TransformStrategy<MathObject<?>> {
     }
 
     /**
-     * Returns the intermediate transformed object. It is either an instance of
-     * origin object or destiny object depending on the actual animation time.
+     * Returns the intermediate transformed object. It is either an instance of origin object or destiny object
+     * depending on the actual animation time.
      *
      * @return The currently object being animated (origin or destiny)
      */

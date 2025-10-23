@@ -594,7 +594,7 @@ public class ConfigLoader {
         x = Double.valueOf(end.getAttribute("x"));
         y = Double.valueOf(end.getAttribute("y"));
         Vec endP = Vec.to(x, y);
-        JMLinearGradient resul = new JMLinearGradient(startP, endP);
+        JMLinearGradient resul = JMLinearGradient.make(startP, endP);
 
         //Now process the stops
         NodeList stopList = gradientElement.getElementsByTagName("stops");
@@ -655,7 +655,7 @@ public class ConfigLoader {
         NodeList radiuses = gradientElement.getElementsByTagName("radius");
         Element radiusEl = (Element) radiuses.item(0);
         double radius = Double.parseDouble(radiusEl.getTextContent());
-        JMRadialGradient resul = new JMRadialGradient(centerP, radius);
+        JMRadialGradient resul = JMRadialGradient.make(centerP, radius);
 
         //Now process the stops
         NodeList stopList = gradientElement.getElementsByTagName("stops");

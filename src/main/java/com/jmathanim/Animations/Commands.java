@@ -57,7 +57,7 @@ public class Commands {
      * @return
      */
     public static ShiftAnimation shift(double runtime, double dx, double dy, AffineTransformable<?>... objects) {
-        return shift(runtime, new Vec(dx, dy), objects);
+        return shift(runtime, Vec.to(dx, dy), objects);
     }
 
     public static ShiftAnimation shift(double runtime, Vec sv, AffineTransformable<?>... objects) {
@@ -1777,7 +1777,7 @@ public class Commands {
      * @return The animation
      */
     public static FlipTransform flipTransform(double runtime, boolean horizontal, MathObject ob1, MathObject ob2) {
-        return new FlipTransform(runtime,
+        return FlipTransform.make(runtime,
                 (horizontal ? OrientationType.HORIZONTAL : OrientationType.VERTICAL), ob1, ob2);
     }
 
@@ -1809,37 +1809,38 @@ public class Commands {
         return resul;
     }
 
-    /**
-     * Animated version of the stackTo method.The destination point is computed at the initialize() method so it cab ne
-     * safely concatenated. If several objects are animated, the second will be stacked to the first, and so on
-     *
-     * @param runtime     time in seconds
-     * @param dst         Destiny coordinates to stack
-     * @param anchorType  Type of stack, a value of Type enum
-     * @param gap         Gap between the stacked objects
-     * @param mathobjects Mathobjects to animate
-     * @return The created animation
-     */
-    public static ShiftAnimation stackTo(double runtime, Coordinates<?> dst, AnchorType anchorType, double gap,
-                                         MathObject<?>... mathobjects) {
-        ShiftAnimation resul = new ShiftAnimation(runtime, mathobjects) {
-            @Override
-            public boolean doInitialization() {
-                super.doInitialization();
-                AnchorType reverse = Anchor.reverseAnchorPoint(anchorType);
-                Coordinates<?> previous = dst;
-
-                for (MathObject<?> obj : mathobjects) {
-                    Vec objAnchor = Anchor.getAnchorPoint(obj, reverse);
-                    setShiftVector(obj, objAnchor.to(previous));
-                    previous = Anchor.getAnchorPoint(obj, anchorType);
-                }
-                return true;
-            }
-        };
-        resul.setDebugName("stackTo for " + mathobjects.length + " object(s)");
-        return resul;
-    }
+//    /**
+//     * Animated version of the stackTo method.The destination point is computed at the initialize() method so it cab ne
+//     * safely concatenated. If several objects are animated, the second will be stacked to the first, and so on
+//     *
+//     * @param runtime     time in seconds
+//     * @param dst         Destiny object to stack
+//     * @param anchorType  Type of stack, a value of Type enum
+//     * @param gap         Gap between the stacked objects
+//     * @param objects  Objects to animate
+//     * @return The created animation
+//     */
+//    public static ShiftAnimation stackTo(double runtime, Boxable dst, AnchorType anchorType, double gap,
+//                                         AffineTransformable<?>... objects) {
+//        ShiftAnimation resul = new ShiftAnimation(runtime, objects) {
+//            @Override
+//            public boolean doInitialization() {
+//                super.doInitialization();
+//                AnchorType reverse = Anchor.reverseAnchorPoint(anchorType);
+//                Boxable previous = dst;
+//
+//                for (AffineTransformable<?> obj : objects) {
+//                    Vec objAnchor = Anchor.getAnchorPoint(obj, reverse);
+//                    setShiftVector(obj, objAnchor.to(Anchor.getAnchorPoint(previous,anchorType)));
+////                    previous = Anchor.getAnchorPoint(obj, anchorType);
+//                    previous=obj;
+//                }
+//                return true;
+//            }
+//        };
+//        resul.setDebugName("stackTo for " + objects.length + " object(s)");
+//        return resul;
+//    }
 
     /**
      * Animates a crossout. The size of the crossout is computed from the bounding box of the crossed object

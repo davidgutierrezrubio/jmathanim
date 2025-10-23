@@ -57,7 +57,7 @@ public class Ray extends AbstractShape<Ray> implements HasDirection {
         this.p2 = p2.getVec();
         boundaryPoint1 = new JMPathPoint(this.p1, true);// trivial boundary points, just to
         // initialize objects
-        boundaryPoint2 = new JMPathPoint(new Point(0, 0), true);// trivial boundary points, just to
+        boundaryPoint2 = new JMPathPoint(Point.at(0, 0), true);// trivial boundary points, just to
         // initialize objects
         getPath().addJMPoint(boundaryPoint1, boundaryPoint2);
         get(0).setSegmentToThisPointVisible(false);
@@ -66,27 +66,27 @@ public class Ray extends AbstractShape<Ray> implements HasDirection {
 
 
     public static Ray XAxisPositive() {
-        return new Ray(new Point(0, 0), new Point(1, 0));
+        return new Ray(Point.at(0, 0), Point.at(1, 0));
     }
 
     public static Ray XAxisNegative() {
-        return new Ray(new Point(0, 0), new Point(-1, 0));
+        return new Ray(Point.at(0, 0), Point.at(-1, 0));
     }
 
     public static Ray XYBisectorPositive() {
-        return new Ray(new Point(0, 0), new Point(1, 1));
+        return new Ray(Point.at(0, 0), Point.at(1, 1));
     }
 
     public static Ray XYBisectorNegative() {
-        return new Ray(new Point(0, 0), new Point(-1, -1));
+        return new Ray(Point.at(0, 0), Point.at(-1, -1));
     }
 
     public static Ray YAxisPositive() {
-        return new Ray(new Point(0, 0), new Point(0, 1));
+        return new Ray(Point.at(0, 0), Point.at(0, 1));
     }
 
     public static Ray YAxisNegative() {
-        return new Ray(new Point(0, 0), new Point(0, -1));
+        return new Ray(Point.at(0, 0), Point.at(0, -1));
     }
 
     /**

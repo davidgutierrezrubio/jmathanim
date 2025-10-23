@@ -17,7 +17,6 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
 
@@ -34,41 +33,41 @@ public class Point extends AbstractPoint<Point> {
     /**
      * Creates a new Point with coordinates (0,0,0), with default style.
      */
-    public Point() {
-        this(0, 0, 0);
+    protected Point() {
+        this(Vec.to(0,0));
     }
-
-
+//
+//
     /**
      * Creates a new point linking coordinates from given vector, with default style.
      *
      * @param v Vector with coordinates
      */
-    public Point(Vec v) {
+    protected Point(Vec v) {
         super(v);
     }
+//
+//    /**
+//     * Overloaded method. Creates a new Point with coordinates x,y, with default style. The z coordinates is set to 0.
+//     *
+//     * @param x x coordinate
+//     * @param y y coordinate
+//     */
+//    public Point(double x, double y) {
+//        this(x, y, 0);
+//    }
 
-    /**
-     * Overloaded method. Creates a new Point with coordinates x,y, with default style. The z coordinates is set to 0.
-     *
-     * @param x x coordinate
-     * @param y y coordinate
-     */
-    public Point(double x, double y) {
-        this(x, y, 0);
-    }
 
-
-    /**
-     * Creates a new Point with coordinates x,y,z, with default style.
-     *
-     * @param x x coordinate
-     * @param y y coordinate
-     * @param z z coordinate
-     */
-    public Point(double x, double y, double z) {
-        super(new Vec(x, y, z));
-    }
+//    /**
+//     * Creates a new Point with coordinates x,y,z, with default style.
+//     *
+//     * @param x x coordinate
+//     * @param y y coordinate
+//     * @param z z coordinate
+//     */
+//    protected Point(double x, double y, double z) {
+//        super(Vec.to(x, y, z));
+//    }
 
     /**
      * Static method. Returns a new point at (0,0), with default style
@@ -102,21 +101,7 @@ public class Point extends AbstractPoint<Point> {
     }
 
     public static Point unitZ() {
-        return new Point(0, 0, 1);
-    }
-
-    public static Vec segmentIntersection(Coordinates A, Coordinates B, Coordinates C, Coordinates D) {
-        AffineJTransform tr = AffineJTransform.createAffineTransformation(A, B, C, Point.unitX(), Point.unitY(),
-                Point.origin(), 1);
-        Vec P = D.getVec().copy().applyAffineTransform(tr);
-        double r = P.x + P.y;
-        if ((r >= 1) & (P.x >= 0) & (P.y >= 0)) {
-            P.x /= r;
-            P.y /= r;
-            return P.applyAffineTransform(tr.getInverse());
-        } else {
-            return null;
-        }
+        return Point.at(0, 0, 1);
     }
 
     /**
@@ -127,7 +112,7 @@ public class Point extends AbstractPoint<Point> {
      * @return The created point
      */
     public static Point at(double x, double y) {
-        return new Point(x, y);
+        return Point.at(Vec.to(x, y));
     }
 
     /**
@@ -149,7 +134,7 @@ public class Point extends AbstractPoint<Point> {
      */
     public static Point atCopy(Coordinates<?> coords) {
         Vec v = coords.getVec().copy();
-        return new Point(v);
+        return Point.at(v);
     }
 
 
@@ -162,7 +147,7 @@ public class Point extends AbstractPoint<Point> {
      * @return The created point
      */
     public static Point at(double x, double y, double z) {
-        return new Point(x, y, z);
+        return Point.at(Vec.to(x, y, z));
     }
 
     /**
@@ -171,7 +156,7 @@ public class Point extends AbstractPoint<Point> {
      * @return The created point
      */
     public static Point random() {
-        return new Point(Vec.random());
+        return Point.at(Vec.random());
     }
 
     @Override
@@ -183,7 +168,7 @@ public class Point extends AbstractPoint<Point> {
 
     @Override
     public String toString() {
-        String pattern = "##0.####";
+        String pattern = "##0.##";
         DecimalFormat decimalFormat = new DecimalFormat(pattern);
         return objectLabel + "|Point(" + decimalFormat.format(getVec().x) + ",  " + decimalFormat.format(getVec().y) + ",  " + decimalFormat.format(getVec().z) + ")";
 
@@ -196,7 +181,7 @@ public class Point extends AbstractPoint<Point> {
      * @return The vector from this point to B
      */
     public Vec to(Point B) {
-        return new Vec(B.getVec().x - getVec().x, B.getVec().y - getVec().y, B.getVec().z - getVec().z);
+        return Vec.to(B.getVec().x - getVec().x, B.getVec().y - getVec().y, B.getVec().z - getVec().z);
     }
 
 

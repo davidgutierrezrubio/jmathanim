@@ -15,15 +15,13 @@ public abstract class CTAbstractPoint<T extends CTAbstractPoint<T>> extends Cons
     protected final Vec coordinatesOfPoint;
 
 
-    public CTAbstractPoint() {
-        super();
-        pointToShow = new Point();
-        coordinatesOfPoint = Vec.to(0, 0);
+    protected CTAbstractPoint() {
+       this(Vec.to(0, 0));
     }
 
-    public CTAbstractPoint(Coordinates<?> A) {
+    protected CTAbstractPoint(Coordinates<?> A) {
         super();
-        pointToShow = new Point();
+        pointToShow = Point.origin();
         coordinatesOfPoint = A.getVec();//Referenced
     }
 

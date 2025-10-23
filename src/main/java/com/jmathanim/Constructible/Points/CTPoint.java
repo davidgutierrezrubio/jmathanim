@@ -38,7 +38,7 @@ public class CTPoint extends CTAbstractPoint<CTPoint> {
         if (A instanceof Point) {
             buildPoint = (Point) A;
         } else {
-            buildPoint = new Point(A.getVec());
+            buildPoint = Point.at(A.getVec());
         }
         CTPoint resul = new CTPoint(buildPoint);
         resul.rebuildShape();
@@ -61,7 +61,7 @@ public class CTPoint extends CTAbstractPoint<CTPoint> {
 
     @Override
     public CTPoint copy() {
-        CTPoint copy = at(new Point(this.coordinatesOfPoint.x,this.coordinatesOfPoint.y));
+        CTPoint copy = at(Point.at(this.coordinatesOfPoint.x,this.coordinatesOfPoint.y));
         copy.setFreeMathObject(this.isFreeMathObject());
         copy.getMathObject().copyStateFrom(this.getMathObject());
         copy.getMp().copyFrom(this.getMp());

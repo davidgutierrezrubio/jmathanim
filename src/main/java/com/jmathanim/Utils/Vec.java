@@ -46,7 +46,7 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
      * @param x x coordinate
      * @param y y coordinate
      */
-    public Vec(double x, double y) {
+    protected Vec(double x, double y) {
         this(x, y, 0);
     }
 
@@ -57,7 +57,7 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
      * @param y y coordinate
      * @param z z coordinate
      */
-    public Vec(double x, double y, double z) {
+    protected Vec(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -70,6 +70,10 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
 
     public static Vec to(double x, double y) {
         return new Vec(x, y);
+    }
+
+    public static Vec origin() {
+        return new Vec(0, 0);
     }
 
 
