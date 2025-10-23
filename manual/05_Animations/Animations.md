@@ -302,12 +302,12 @@ LatexMathObject vcenter=LatexMathObject.make("vcenter");
 Shape center = Shape.square().scale(3).fillColor("lightblue");
 add(center);
 camera.adjustToAllObjects();
-ShiftAnimation anim1 = Commands.align(3, center, MathObject.Align.LEFT, left);
-ShiftAnimation anim2 = Commands.align(3, center,  MathObject.Align.RIGHT, right);
-ShiftAnimation anim3 = Commands.align(3, center,  MathObject.Align.UPPER, upper);
-ShiftAnimation anim4 = Commands.align(3, center,  MathObject.Align.LOWER, lower);
-ShiftAnimation anim5 = Commands.align(3, center, MathObject.Align.HCENTER, hcenter);
-ShiftAnimation anim6 = Commands.align(3, center, MathObject.Align.VCENTER, vcenter);
+ShiftAnimation anim1 = Commands.align(3, center, AlignType.LEFT, left);
+ShiftAnimation anim2 = Commands.align(3, center,  AlignType.RIGHT, right);
+ShiftAnimation anim3 = Commands.align(3, center,  AlignType.UPPER, upper);
+ShiftAnimation anim4 = Commands.align(3, center,  AlignType.LOWER, lower);
+ShiftAnimation anim5 = Commands.align(3, center, AlignType.HCENTER, hcenter);
+ShiftAnimation anim6 = Commands.align(3, center, AlignType.VCENTER, vcenter);
 playAnimation(anim1,anim2,anim3,anim4,anim5,anim6);
 waitSeconds(5);
 ```

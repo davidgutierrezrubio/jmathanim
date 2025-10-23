@@ -185,7 +185,7 @@ There is shortcut method if you want to simply put the object at the center of t
 
 ## Aligning objects
 
-The `MathObject`class has the method `align` which aligns the object with another one, using one of the aligns in the enum `Align: LEFT, RIGHT, UPPER, LOWER, HCENTER, VCENTER`.
+The `MathObject`class has the method `align` which aligns the object with another one, using one of the aligns in the enum `AlignType: LEFT, RIGHT, UPPER, LOWER, HCENTER, VCENTER`.
 
 ```java
 Line floor = Line.XAxis();
@@ -197,7 +197,7 @@ for (int n = 4; n < 10; n++) {
     Shape pol2 = pol.copy() //Creates a copy of the polygon...
         .fillColor(JMColor.random()) //fill it with a random color...
         .thickness(6) //With this thickness...
-        .align(floor, MathObject.Align.LOWER);//And align the bottom of the object with object floor
+        .align(floor, AlignType.LOWER);//And align the bottom of the object with object floor
     add(pol, pol2);
 }
 camera.adjustToAllObjects();//Everyone should appear in the photo
