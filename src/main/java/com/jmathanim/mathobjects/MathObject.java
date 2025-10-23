@@ -19,6 +19,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.DummyCamera;
+import com.jmathanim.Enum.AlignType;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Enum.ScreenAnchor;
@@ -605,7 +606,7 @@ public abstract class MathObject<T extends MathObject<T>> implements
      * @param type Align type, a value from the enum Align
      * @return This object
      */
-    public T align(Boxable obj, Align type) {
+    public T align(Boxable obj, AlignType type) {
         Vec shiftVector = Vec.to(0, 0);
         Rect thisBoundingBox = this.getBoundingBox();
         Rect objectBoundingBox = obj.getBoundingBox();
@@ -824,10 +825,6 @@ public abstract class MathObject<T extends MathObject<T>> implements
     @Override
     public RendererEffects getRendererEffects() {
         return rendererEffects;
-    }
-
-    public enum Align {
-        LEFT, RIGHT, UPPER, LOWER, HCENTER, VCENTER
     }
 
     //Overriden methods to ensure proper return value

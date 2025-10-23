@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Utils.Layouts;
 
+import com.jmathanim.Enum.AlignType;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.BoxDirection;
 import com.jmathanim.mathobjects.AbstractMathGroup;
@@ -113,26 +114,26 @@ public class FlowLayout extends AbstractBoxLayout {
 						.withDestinyAnchor(inRowStack)
 						.toObject(rowGroups.get(k).get(n - 1));
 			}
-			MathObject.Align align = null;
+			AlignType alignType = null;
 			switch (boxDirection) {
 			case RIGHT_UP:
 			case RIGHT_DOWN:
-				align = MathObject.Align.LEFT;
+				alignType = AlignType.LEFT;
 				break;
 			case LEFT_UP:
 			case LEFT_DOWN:
-				align = MathObject.Align.RIGHT;
+				alignType = AlignType.RIGHT;
 				break;
 			case UP_RIGHT:
 			case UP_LEFT:
-				align = MathObject.Align.LOWER;
+				alignType = AlignType.LOWER;
 				break;
 			case DOWN_RIGHT:
 			case DOWN_LEFT:
-				align = MathObject.Align.UPPER;
+				alignType = AlignType.UPPER;
 				break;
 			}
-			rowGroups.get(k).align(rowGroups.get(0), align);
+			rowGroups.get(k).align(rowGroups.get(0), alignType);
 		}
 	}
 

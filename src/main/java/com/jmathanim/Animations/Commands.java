@@ -21,6 +21,7 @@ import com.jmathanim.Animations.Strategies.Transform.FlipTransform;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Enum.AlignType;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.LayoutType;
 import com.jmathanim.Enum.ScreenAnchor;
@@ -1786,11 +1787,11 @@ public class Commands {
      *
      * @param runtime     time in seconds
      * @param dst         Destiny object to align with
-     * @param type        Type of align, a value of MathObject.Align enum
+     * @param type        Type of align, a value of Align enum
      * @param mathobjects Mathobjects to animate
      * @return The created animation
      */
-    public static ShiftAnimation align(double runtime, MathObject dst, MathObject.Align type,
+    public static ShiftAnimation align(double runtime, MathObject dst, AlignType type,
                                        MathObject<?>... mathobjects) {
         ShiftAnimation resul = new ShiftAnimation(runtime, mathobjects) {
             @Override

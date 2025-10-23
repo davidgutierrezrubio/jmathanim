@@ -1,6 +1,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Enum.AlignType;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRendererUtils;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.DrawStyleProperties;
@@ -69,7 +70,7 @@ AbstractShape<T extends AbstractShape<T>>
      * @return This object
      */
     @Override
-    public T align(Boxable obj, Align type) {
+    public T align(Boxable obj, AlignType type) {
         Vec shiftVector = Vec.to(0, 0);
         Rect thisBoundingBox = this.getBoundingBox();
         Rect objectBoundingBox = obj.getBoundingBox();
