@@ -29,7 +29,7 @@ public void runSketch() {
     double root2 = 0.767591879244;
 
     double xStart = -1;
-    PointOnFunctionGraph A = new PointOnFunctionGraph(xStart, cat);
+    PointOnFunctionGraph A = PointOnFunctionGraph.make(xStart, cat);
     A.style("redcircle");
 
     Line tangentLine = Line.make(A, A.getSlopePointRight()).drawColor("darkgreen");
@@ -114,8 +114,8 @@ public void runSketch() throws Exception {
     play.showCreation(taylor[1], texts[1], box);
     for (int n = 2; n < orderTaylor; n++) {
         add(taylor[n - 1].copy().thickness(1).drawColor(JMColor.GRAY));
-        Transform transformFunction = new Transform(2, taylor[n - 1], taylor[n]);
-        Transform transformText = new Transform(2, texts[n - 1], texts[n]);
+        Transform transformFunction = Transform.make(2, taylor[n - 1], taylor[n]);
+        Transform transformText = Transform.make(2, texts[n - 1], texts[n]);
         playAnimation(transformFunction, transformText);
     }
     waitSeconds(5);
@@ -188,7 +188,7 @@ double time = 10;
 for (double t = 0; t < time; t += dt) {
     final double t0 = PI * t / time;
     Vec v = trifolium.getFunctionValue(t0);
-    pointOnCurve.moveTo(new Point(v));
+    pointOnCurve.moveTo(Point.at(v));
     Vec deriv = trifolium.getTangentVector(t0, 1).normalize();
     Vec normal = deriv.copy().rotate(-90 * DEGREES);
     pointToTrail.copyStateFrom(pointOnCurve.add(normal));
@@ -474,7 +474,7 @@ double runtime = 5;
 
 //This shape hold the points where the numbers will lie
 Shape destiny = Shape.circle().scale(.75).rotate(90 * DEGREES);
-AnimationGroup wholeAnim = new AnimationGroup();
+AnimationGroup wholeAnim = AnimationGroup.make();
 for (int n = 1; n <= 12; n++) {
     //Take 12 points equally spaced inside the path 0, 1/12, 2/12,...11/12
     //We take them in reverse as the circle is built counterclockwise
@@ -482,7 +482,7 @@ for (int n = 1; n <= 12; n++) {
     //Each number begins centered at (0,0) and moves to a point of shape destiny, with a combined animation
     //of growing, shifting and rotating...
     LaTeXMathObject sq = LaTeXMathObject.make("" + n).center();
-    AnimationGroup singleNumberAnim = new AnimationGroup();
+    AnimationGroup singleNumberAnim = AnimationGroup.make();
     singleNumberAnim.add(Commands.growIn(runtime, sq));
     singleNumberAnim.add(Commands.shift(runtime , sv, sq).setUseObjectState(false));
     singleNumberAnim.add(Commands.rotate(runtime, sv.getAngle() - PI / 2, sq).setUseObjectState(false));
@@ -541,24 +541,24 @@ t6.setColor(colA, 0, 5, 8).setColor(colB, 1, 6).setColor(colC, 3, 9);
 double runtime = 2;
 camera.setGaps(.1, .1);
 camera.zoomToObjects(t1, t2, t3, t4, t5, t6);
-TransformMathExpression tr = new TransformMathExpression(runtime, t1, t2);
+TransformMathExpression tr = TransformMathExpression.make(runtime, t1, t2);
 tr.mapRange(0, 9, 0);
 playAnimation(tr);
 waitSeconds(1);
 
-tr = new TransformMathExpression(runtime, t2, t3);
+tr = TransformMathExpression.make(runtime, t2, t3);
 tr.mapRange(0, 9, 0);//t2 and t3 have the same number of shapes, one-to-one correspondence
 playAnimation(tr);
 waitSeconds(1);
 
-tr = new TransformMathExpression(runtime, t3, t4);
+tr = TransformMathExpression.make(runtime, t3, t4);
 tr.mapRange(0, 8, 0);
 tr.defineDstGroup("minus8", 9, 10);
 tr.map(9, "minus8");//The "3" maps into the 2 shapes "-8"
 playAnimation(tr);
 waitSeconds(1);
 
-tr = new TransformMathExpression(runtime, t4, t5);
+tr = TransformMathExpression.make(runtime, t4, t5);
 tr.map(0, 0);
 tr.defineDstGroup("frac1", 1, 2, 3);
 tr.map(1, "frac1").setTransformStyle(TransformMathExpression.TransformType.FLIP_VERTICALLY);
@@ -569,7 +569,7 @@ tr.mapRange(7, 10, 11);
 playAnimation(tr);
 waitSeconds(1);
 
-tr = new TransformMathExpression(runtime, t5, t6);
+tr = TransformMathExpression.make(runtime, t5, t6);
 tr.map(0, 0);
 tr.defineOrigGroup("frac1", 1, 2, 3);
 tr.map("frac1", 1);//The 3 shapes "1 / 2" maps into the shape "b"
@@ -787,7 +787,7 @@ MathObjectGroup[] circles = new MathObjectGroup[numberConcentricCircles];
 
 //Create the first MathObjectGroup, the outer circle
 double delta = 2 * PI / numberSmallSquares;
-circles[0] = new MathObjectGroup();
+circles[0] = MathObjectGroup.make();
 boolean useFirstColor = false;
 for (int n = 0; n < numberSmallSquares; n++) {
     Shape smallSquare = baseShape.copy().fillColor(useFirstColor ? col1 : col2);
@@ -856,7 +856,7 @@ public void runSketch() {
     add(truchets);
 
     //A radial gradient, centered at origin and relative to screen
-    JMRadialGradient grad = new JMRadialGradient(
+    JMRadialGradient grad = JMRadialGradient.make(
         truchets.getCenter(),
         truchets.getHeight() * .5);
     grad.setRelativeToShape(false);

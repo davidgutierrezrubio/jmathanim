@@ -181,7 +181,7 @@ So, we need an animation that maps shape 0 onto shape 0, shape 3 onto shape 1, e
 We create a new `TransformMathExpression` animation object, with the expected parameters:
 
 ```java
-TransformMathExpression tr=new TransformMathExpression(5, t1, t2);
+TransformMathExpression tr = TransformMathExpression.make(5, t1, t2);
 ```
 
 The `TransformMathExpression` objects admits several commands to define the precise transform we want to do. In this case, we want to transform the original shape 0 (x) to destiny shape 0 (x). This is stated with the command`map`
@@ -213,7 +213,7 @@ What about shape 4 (the "0" sign)? If we don't specify a destination, this shape
 ```java
 LatexMathObject t1=LatexMathObject.make("$x+2=0$");
 LatexMathObject t2=LatexMathObject.make("$x=-2$");
-TransformMathExpression tr=new TransformMathExpression(5, t1, t2);
+TransformMathExpression tr=TransformMathExpression.make(5, t1, t2);
 tr.map(0,0);//Transforms orig-shape 0 to dst-shape 0
 tr.map(1,2);//Transforms orig-shape 1 to dst-shape 2
 tr.map(2,3);
@@ -248,7 +248,7 @@ LatexMathObject t1 = LatexMathObject.make("$a^2=a\\cdot a$");
 LatexMathObject t2 = LatexMathObject.make("$3^2=3\\cdot 3$");
 t1.alignCenter(2, t2, 2);//Move t1 so its equal sign (glyph 2) matches the t2 equal sign (glyph 2)
 camera.zoomToObjects(t1, t2);
-TransformMathExpression tr = new TransformMathExpression(5, t1, t2);
+TransformMathExpression tr = TransformMathExpression.make(5, t1, t2);
 tr.map(0, 0).setTransformStyle(TransformMathExpression.TransformType.FLIP_HORIZONTALLY);//The first "a"
 tr.map(1, 1);
 tr.map(2, 2);

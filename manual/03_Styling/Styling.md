@@ -25,13 +25,13 @@ When added to the scene, it will show something like this:
 Here we can see the method `.parse` to define a color. All JavaFX color names are supported, as well as hexadecimal format `#RRGGBBAA` (8 hexadecimal digits), `#RRGGBB` (6 hexadecimal digits) and `#RGB` (4 hexadecimal digits) . Also, both methods to change colors are overloaded so that `drawColor(string)`is equivalent to `drawColor(JMColor.parse(string))`, and the same with `fillColor`.
 
 ```java
-JMColor col1 = new JMColor.parse(1,1,1,.5);//White color with 50% opacity
-JMColor col2 = JMColor.parse("#CDFA14");//Red: CD, Green: FA, Blue: 14 (hexadecimal), opacity 100% 
+JMColor col1 = JMColor.rgba(1,1,1,.5);//White color with 50% opacity
+JMColor col2 = JMColor.parse("#CDFA14");//Red: CD, Green: FA, Blue: 14 (hexadecimal), opacity 100%
 JMColor col3 = JMColor.parse("#CDFA14A6");//Red: CD, Green: FA, Blue: 14 (hexadecimal), opacity A6
 JMColor col4 = JMColor.parse("SNOW");//Color SNOW from the JavaFX palette
 ```
 
-The `LatexMathObject` has also the method `.setColor(JMColor col)` which changes both draw and fill colors, and a overloaded method which allows changing colors in specified glyphs (we will see this in the Mathematical Formulas chapter).
+The `LatexMathObject` has also the method `.color(JMColor col)` which changes both draw and fill colors, and a overloaded method which allows changing colors in specified glyphs (we will see this in the Mathematical Formulas chapter).
 
 The methods `.fillAlpha(double f)` and `.drawAlpha(double d)` sets directly the opacity of fill and draw colors. These methods, like most, can be nested:
 
@@ -47,7 +47,7 @@ Linear gradients can be defined in a similar way to the JavaFX syntax:
 
 ```java
 //A linear gradient from point (-1,0) to (1,0)
-JMLinearGradient gradientBG = new JMLinearGradient(Point.at(-1, 0), Point.at(1, 0));
+JMLinearGradient gradientBG = JMLinearGradient.make(Vec.to(-1, 0), Vec.to(1, 0));
 gradientBG.setRelativeToShape(false)
     .add(0d, "orange")//at t=0 (point (-1,0)), orange color
     .add(1d, "violet");//at t=1 (point (1,0)), violet color
@@ -56,7 +56,7 @@ config.setBackgroundColor(gradientBG);
 Shape circle = Shape.circle();
 
 //A radial gradient from relative point (.25,.75) and relative radius .75
-JMRadialGradient gradientCircle = new JMRadialGradient(Point.at(.25, .75), .5);
+JMRadialGradient gradientCircle = JMRadialGradient.make(Vec.to(.25, .75), .5);
 gradientCircle.setRelativeToShape(true)
     .add(0d, "white")//At center of (.25,.75), white color
     .add(1d, "steelblue");//With distance of the center >.5, steelblue color
@@ -71,12 +71,12 @@ You can apply gradients both to fill and draw colors:
 
 ```java
 Rect view = getMathView().getBoundingBox();
-JMLinearGradient functionGradient = new JMLinearGradient(view.getLower(), view.getUpper());
+JMLinearGradient functionGradient = JMLinearGradient.make(view.getLower(), view.getUpper());
 functionGradient.setRelativeToShape(false)
     .add(0d, "blue")
     .add(1d, "red");
 
-JMRadialGradient axesGradient = new JMRadialGradient(Point.origin(), 2);
+JMRadialGradient axesGradient = JMRadialGradient.make(Point.origin(), 2);
 axesGradient.setRelativeToShape(false)
     .add(0d, "black")
     .add(1d, "violet");
@@ -142,7 +142,10 @@ A concrete combination of drawing parameters can be saved in styles. The `config
 Shape triangle = Shape.regularPolygon(3).thickness(8).dashStyle(DashStyle.DASHED).fillColor("steelblue");
 //Creates style named solidRed
 config.createStyleFrom(triangle, "myStyle");
-Shape circle = Shape.circle().scale(.5).stackTo(triangle, Anchor.Type.LEFT);
+Shape circle = Shape.circle().scale(.5)
+    .stack()
+    .withDestinyAnchor(AnchorType.LEFT)
+    .toObject(triangle);
 //Apply style to circle
 circle.style("myStyle");
 add(triangle, circle);

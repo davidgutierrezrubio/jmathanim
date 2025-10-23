@@ -116,49 +116,24 @@ Shape circ3=circ1.copy();
 Shape circ4=circ1.copy();
 Shape sq=Shape.square().center().thickness(8);
 add(circ1,circ2,circ3,circ4);
-        
+
 //Stacks permanently the LEFT of circ1 with the RIGHT of sq
-registerUpdateable(new AnchoredMathObject(circ1, Anchor.Type.LEFT,sq, Anchor.Type.RIGHT));
+registerUpdateable(new AnchoredMathObject(circ1, AnchorType.LEFT,sq, AnchorType.RIGHT));
 
 //Stacks permanently the RIGHT of circ1 with the LEFT of sq
-registerUpdateable(new AnchoredMathObject(circ2, Anchor.Type.RIGHT,sq, Anchor.Type.LEFT));
+registerUpdateable(new AnchoredMathObject(circ2, AnchorType.RIGHT,sq, AnchorType.LEFT));
 
 //Stacks permanently the LOWER of circ1 with the UPPER of sq
-registerUpdateable(new AnchoredMathObject(circ3, Anchor.Type.LOWER,sq, Anchor.Type.UPPER));
+registerUpdateable(new AnchoredMathObject(circ3, AnchorType.LOWER,sq, AnchorType.UPPER));
 
 //Stacks permanently the UPPER of circ1 with the LOWER of sq
-registerUpdateable(new AnchoredMathObject(circ4, Anchor.Type.UPPER,sq, Anchor.Type.LOWER));
-        
+registerUpdateable(new AnchoredMathObject(circ4, AnchorType.UPPER,sq, AnchorType.LOWER));
+
 play.rotate(3, 90*DEGREES, sq);
 waitSeconds(3);
 ```
 
 ![Updater02](Updater02.gif)
-
-## Transformed path 
-
-A path that is always the image of another path, using an affine transformation.
-
-```java
-Shape sq = Shape.square().fillColor("seagreen").thickness(6);//The original path
-Point A = Point.at(0, 0); //A maps to D
-Point B = Point.at(1, 0); //B maps to E
-Point C = Point.at(0, 1); //C maps to F
-Point D = Point.at(1.5, -.5).dotStyle(DotSyle.CROSS);
-Point E = Point.at(2, 0).dotStyle(DotSyle.CROSS);
-Point F = Point.at(1.75, .75).dotStyle(DotSyle.CROSS);
-
-AffineJTransform transform = AffineJTransform.createAffineTransformation(A, B, C, D, E, F, 1);
-Shape sqTransformed = new TransformedJMPath(sq, transform);//The transformed path
-sqTransformed.fillColor("steelblue").thickness(6);
-add(sqTransformed, sq, A, B, C, D, E, F);
-
-camera.adjustToAllObjects();
-play.rotate(5, 90 * DEGREES, sq);
-waitSeconds(5);
-```
-
-![Updater03](Updater03.gif)
 
 ## Trail
 
@@ -169,7 +144,8 @@ double circleRadius = .25;
 Shape circle = Shape.circle()
     .scale(circleRadius)
     .fillColor("royalblue")
-    .stackToScreen(Anchor.Type.LEFT)
+    .stack()
+    .toScreen(ScreenAnchor.LEFT)
     .rotate(-90 * DEGREES);//Rotate it so that point 0 touches the floor
 
 //By default a circle shape has 4 point, so point 0 and 2 make a diameter
@@ -177,10 +153,13 @@ Shape diameter = Shape.segment(circle.getPoint(0), circle.getPoint(2)).layer(1).
 //Note that, as diameter is created with point instances of the Shape circle, we don't need to animate diameter, only circle
 
 //The "floor". An horizontal line that we put right under the circle
-Line floor = Line.XAxis().stackTo(circle, Anchor.Type.LOWER);
+Line floor = Line.XAxis()
+    .stack()
+    .withDestinyAnchor(AnchorType.LOWER)
+    .toObject(circle);
 add(floor, diameter);//Add everyhing (no need to add circle because it will automatically added with the shift and rotate animation)
 
-Trail trail = new Trail(circle.getPoint(0));//The Trail object
+Trail trail = Trail.make(circle.getPoint(0));//The Trail object
 trail.layer(1)
     .thickness(6)
     .drawColor(JMColor.parse("tomato"));

@@ -8,8 +8,7 @@
 The `Vec` class represents a 2D vector (although it includes the z-coordinate too). All coordinates in the math view are represented by this class. Several methods are implemented for this class. For example, methods `add` and `mult` add 2 vectors or multiply by a scalar, returning a new vector object with the result. These methods have the versions `addInSite` and `multInSite` which return `void` and change the original vector.
 
 ``` java
-Vec v=new Vec(1,3); //Creates a new vector.
-Vec u=Vec.to(4,5);//Another way, using a static constructor.
+Vec u=Vec.to(4,5);//Creates a vector with coordinates (4,5)
 double x=v.x;//The x-coordinate of the vector
 double y=v.y;//The x-coordinate of the vector
 double norm=v.norm();//returns the euclidean norm of the vector.
@@ -26,16 +25,17 @@ Everything that you can draw on the screen is a subclass of the `MathObject` cla
 The `Point` class is the most basic `MathObject` and, yes, you’re right, it represents a single point.
 
 ``` java
-Point p=new Point(1,1); //You can create a point using constructors
-Point q=Point.at(0,2);//Or using a static method
+Point p = Point.at(1,1); //You can create a point using statict constructors
+Point q = Point.origin();//Same as Point.at(0,0)
 ```
 
 A ` Point` object contains a `Vec` object which stores its coordinates.
 
 ``` java
-Vec v=p.v; //Coordinates of Point p
-double x=p.v.x; //x-coordinate of p
-double d=p.v.norm(); //Distance of p to the origin
+Vec v=p.getVec(); //Coordinates of Point p
+double x=p.getVec().x; //x-coordinate of p
+double d=p.getVec().norm(); //Distance of p to the origin
+Vec AB=A.to(B); //Vector from Point A to Point B
 ```
 
 A point can be represented in different styles, defined in the `DotStyle` enum, namely `CIRCLE, CROSS, PLUS,` etc,  which are shown as this:
@@ -429,7 +429,7 @@ JMImage img=JMImage.make("euler.jpg").center().rotate(-5*DEGREES);
 LatexMathObject text = LatexMathObject.make("All hail the great Euler!")
     .stack().withDestinyAnchor(AnchorType.LOWER).toObject(img);
 Animation anim = Commands.moveIn(2, ScreenAnchor.LEFT, img);
-playAnimation(anim,new ShowCreation(2 ,text));
+playAnimation(anim, ShowCreation.make(2 ,text));
 waitSeconds(3);
 ````
 

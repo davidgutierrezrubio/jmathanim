@@ -26,7 +26,7 @@ The `moveTo` command shifts the object so that its center is positioned at the g
 Shape r=Shape.regularPolygon(5).moveTo(3,3);//A pentagon, with its bounding box centered at (3,3)
 ```
 
-## StackTo
+## Stack()
 The stack() command allows us to position an object relative to another one. For example, the following code creates 4 circles and stacks them into a square in different ways:
 
 ``` java
@@ -99,7 +99,7 @@ Also, you’ll notice two new methods here: The `copy()` method returns a copy o
 
 Note that the `.moveTo(p)`method is equivalent to `.stack().toPoint(p)`
 
-With the `stackTo` command you can easily generate aligned objects:
+With the `stack()` command you can easily generate aligned objects:
 
 ``` java
 Shape previousPol = Shape.regularPolygon(3)
@@ -144,9 +144,9 @@ waitSeconds(3);
 
 
 
-## StackToScreen
+## Stack to screen
 
-This methods is similar to `stackTo`, but it positions the object relative to the current view.
+This methods is similar to `stack().toObject()`, but it positions the object relative to the current view.
 
 ``` java
 Shape square1 = Shape.square().scale(.5).style("solidblue");

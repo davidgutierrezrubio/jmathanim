@@ -28,7 +28,7 @@ Now the square properly shifts and rotates:
 
 # Adding effects to animations
 
-Several animations inherit from a subclass called `AnimationWithEffects` that allows you to apply certain effects. Currently, those animations are `Transform`, `FlipTransform`, `TransformMathExpression`, `shift`, `stackTo`, `align`, `moveIn`, `moveOut` and `setLayout`. We saw how to apply these effects in the `TransformMathExpression` animations in the math formulas chapter.
+Several animations inherit from a subclass called `AnimationWithEffects` that allows you to apply certain effects. Currently, those animations are `Transform`, `FlipTransform`, `TransformMathExpression`, `shift`, `stack`, `align`, `moveIn`, `moveOut` and `setLayout`. We saw how to apply these effects in the `TransformMathExpression` animations in the math formulas chapter.
 
 ## The jump effect
 
@@ -43,7 +43,7 @@ Shape triangle = Shape.regularPolygon(3)
     .scale(.5)
     .moveTo(Point.relAt(.75, .5))
     .fillColor("orange");
-FlipTransform anim = new FlipTransform(5, OrientationType.HORIZONTAL, hexagon, triangle);
+FlipTransform anim = FlipTransform.make(5, OrientationType.HORIZONTAL, hexagon, triangle);
 anim.addJumpEffect(.5); //adds a jump effect
 playAnimation(anim);
 ```
@@ -122,7 +122,7 @@ Shape circle = Shape.circle()
     .scale(.25)
     .moveTo(Point.relAt(.75, .5))
     .fillColor("firebrick");
-Transform anim = new Transform(5, square, circle);
+Transform anim = Transform.make(5, square, circle);
 anim.addRotationEffect(1)
     .addScaleEffect(.5)
     .addJumpEffect(.5, JumpType.FOLIUM);
@@ -134,11 +134,11 @@ waitSeconds(3);
 
 # Effects in shift animations
 
-The shifting-type animations (`shift`,  `stackTo`, `align`, `moveIn`, `moveOut` and `setLayout`)  all inherit from the `ShiftAnimation`class. These methods allow additional effects:
+The shifting-type animations (`shift`,  `stack`, `align`, `moveIn`, `moveOut` and `setLayout`)  all inherit from the `ShiftAnimation`class. These methods allow additional effects:
 
 ## Rotation by any angle
 
-Apart from the `.addRotationEffect` you can also use the method `.addRotationEffectByAngle` to specify an arbitrary rotation angle. However, keep in mind that animations like `setLayout` or `stackTo` compute the shifting vectors without taking this into account.
+Apart from the `.addRotationEffect` you can also use the method `.addRotationEffectByAngle` to specify an arbitrary rotation angle. However, keep in mind that animations like `setLayout` or `stack` compute the shifting vectors without taking this into account.
 
 ## Setting animations for individual objects
 
@@ -184,8 +184,7 @@ smallSquaresGroup.setLayout(centralSquare, LayoutType.LEFT, 0);
 add(smallSquaresGroup, centralSquare);
 waitSeconds(1);//wait 1 second please!
 ShiftAnimation anim = Commands.setLayout(5, centralSquare, LayoutType.UPPER, 0, smallSquaresGroup);
-anim.addDelayEffect(.5);
-//        anim.addRotationEffect(1);
+//anim.addDelayEffect(.5);
 playAnimation(anim);
 ```
 
@@ -231,7 +230,10 @@ public void runSketch() throws Exception {
         drawGraphFor(UsefulLambdas.backAndForthBounce1(), "{\\tt backAndForthBounce1()}"),
         drawGraphFor(UsefulLambdas.backAndForthBounce2(), "{\\tt backAndForthBounce2()}")
     );
-    functions.setLayout(new BoxLayout(Point.origin(), 4, BoxDirection.RIGHT_DOWN, .25, .25));
+    functions.setLayout(
+        BoxLayout.make(Vec.origin(), 4,  .25, .25)
+        .setDirection(BoxDirection.RIGHT_DOWN)
+    );
     add(functions);
     camera.zoomToAllObjects();
     saveImage("lambdaGraphs.png");//Save to a image
@@ -240,7 +242,7 @@ public void runSketch() throws Exception {
 
 private MathObjectGroup drawGraphFor(DoubleUnaryOperator lambda, String name) {
     MathObjectGroup resul = MathObjectGroup.make();
-    FunctionGraph fg = FunctionGraph.make(lambda, 0, 1).thickness(8).drawColor("darkblue");
+    FunctionGraph fg = FunctionGraph.make(lambda, 0, 1).thickness(15).drawColor("darkblue");
     LatexMathObject text = LatexMathObject.make(name)
         .scale(.5)
         .stack()
@@ -330,7 +332,7 @@ public void runSketch() {
     FunctionGraph fgShift = FunctionGraph.make(shiftLambda, 0, 1).drawColor("brown").thickness(6);
 
     //This is an updateable point permanently in the graph of the function
-    PointOnFunctionGraph pointFgShift = new PointOnFunctionGraph(0, fgShift)
+    PointOnFunctionGraph pointFgShift = PointOnFunctionGraph.make(0, fgShift)
         .drawColor("darkblue").thickness(40);
     LatexMathObject legendShift = LatexMathObject.make("shift").color("brown").scale(.5);
 
@@ -345,7 +347,7 @@ public void runSketch() {
     //We do the same for the graph of the rotate lambda
     FunctionGraph fgRotate = FunctionGraph.make(rotateLambda, 0, 1)
         .drawColor("orange").thickness(6);
-    PointOnFunctionGraph pointFgRotate = new PointOnFunctionGraph(0, fgRotate)
+    PointOnFunctionGraph pointFgRotate = PointOnFunctionGraph.make(0, fgRotate)
         .drawColor("darkred").thickness(40);
     MathObject legendRotate = LatexMathObject.make("rotate")
         .color("orange").scale(.5);

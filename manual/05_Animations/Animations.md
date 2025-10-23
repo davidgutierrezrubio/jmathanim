@@ -288,52 +288,7 @@ scene.waitSeconds(1);
 
 
 
-## Stacking and aligning
-
-The `stack()` method also has an animated version. A variable number of objects can be animated in the same animation. In this case, the second object will be stacked to the first, and so on. To illustrate this, we create 4 arrays of circles with random colors and stack them to a central square:
-
-```java
-Shape[] circles1 = new Shape[5];
-Shape[] circles2 = new Shape[5];
-Shape[] circles3 = new Shape[5];
-Shape[] circles4 = new Shape[5];
-for (int n = 0; n < 5; n++) {
-    //Creates a radial gradient with a random color
-    JMRadialGradient gr = new JMRadialGradient(Point.at(.25, .75), .8).setRelativeToShape(true);
-    JMColor col = (JMColor) JMColor.random();//Random color
-    gr.add(0, (JMColor) col.interpolate(JMColor.WHITE, .75));//The random color, but brighter
-    gr.add(1, col);
-    
-	//Base circle
-    Shape s = Shape.circle().scale(.25).fillColor(gr).thickness(2);
-    //Make 4 copies at random positions
-    circles1[n] = s.copy().shift(Point.random().v);
-    circles2[n] = s.copy().shift(Point.random().v);
-    circles3[n] = s.copy().shift(Point.random().v);
-    circles4[n] = s.copy().shift(Point.random().v);
-    add(circles1[n],
-        circles2[n],
-        circles3[n],
-        circles4[n]);
-}
-Shape center = Shape.square().center().scale(.5).fillColor(JMColor.random()).thickness(4);
-add(center);
-camera.adjustToAllObjects();
-ShiftAnimation anim1 = Commands.stackTo(3, center, Anchor.Type.UPPER, 0, circles1);
-ShiftAnimation anim2 = Commands.stackTo(3, center, Anchor.Type.LEFT, 0, circles2);
-ShiftAnimation anim3 = Commands.stackTo(3, center, Anchor.Type.LOWER, 0, circles3);
-ShiftAnimation anim4 = Commands.stackTo(3, center, Anchor.Type.RIGHT, 0, circles4);
-playAnimation(anim1, anim2, anim3, anim4);
-waitSeconds(5);
-```
-
-
-
-![stackToAnimation](stackToAnimation.gif)
-
-The same effect can be easily achieved using the `MathObjectGroup` class and the `setLayout` method.
-
-
+## Aligning
 
 The `Commands.align` animation works in a similar way than the method `Mathobject.align`
 
@@ -394,7 +349,7 @@ Let’s show it with an example. We use the short version with the `play` object
 Shape sq=Shape.square().fillColor("#87556f").center();
 play.showCreation(2,sq);//Creates sq in 2 seconds
 //The other way to do this:
-//ShowCreation sc=new ShowCreation(2, sq);
+//ShowCreation sc= ShowCreation.make(2, sq);
 //playAnimation(sc);
 waitSeconds(1);
 ```
@@ -437,55 +392,65 @@ The general procedure when the transformation from A to B is complete is to dele
 With this code, you can see the intermediate steps, in this case, when we are transforming a regular triangle into a regular pentagon:
 
 ```java
-//Regular triangle and pentagon
-Shape triangle = Shape.regularPolygon(3)
-    .drawColor("red")
-    .fillColor("gold")
-    .thickness(20);
-Shape pentagon = Shape.regularPolygon(5)
-    .drawColor("blue")
-    .fillColor("violet")
-    .thickness(20);
-//Stack the pentagon to the right of  the triangle, 5 units apart
-pentagon
-    .stack()
-    .withDestinyAnchor(AnchorType.RIGHT)
-    .withGaps(5)
-    .toObject(triangle);
-
-//Make sure everything is correctly centered at screen, adjusting the camera
-camera.centerAtObjects(triangle, pentagon);
-camera.zoomToObjects(triangle, pentagon);
-
-//Create an animation that transforms the triangle into the pentagon
-Transform anim = Transform.make(2, triangle, pentagon);
-
-//This makes sure that the animation has constant velocity
-anim.setLambda(t -> t);
-anim.initialize(this);
-int num = 6; //Number of intermediate steps to show
-for (int i = 0; i < num; i++) {
-    double t = 1d * i / (num - 1);
-
-    //Compute the animation at time t
-    anim.doAnim(t);
-
-    //The getIntermediateObject gives us the intermediate object used in the animation
-    MathObject intermediate = anim.getIntermediateObject().copy();
-
-    //Generate a descriptive text, located below the intermediate object
-    LatexMathObject lat = LatexMathObject.make("{\\tt t=" + t + "}")
-        .stack()
-        .withDestinyAnchor(AnchorType.LOWER)
-        .withRelativeGaps(0,.5)
-        .toObject(intermediate);
-
-    //Add both elements to the scene
-    add(intermediate, lat);
+@Override
+public void setupSketch() {
+    config.parseFile("#production.xml");// No screen preview, hd
+    config.parseFile("#light.xml");//Light style, white background
 }
 
-//And save it to a png file
-saveImage("intermediateSteps.png");
+public void runSketch() throws Exception {
+    Shape triangle = Shape.regularPolygon(3)
+        .scale(.5,1)
+        .rotate(PI / 6)
+        .drawColor("red")
+        .fillColor("gold")
+        .thickness(20);
+
+    Shape pentagon = Shape.regularPolygon(5)
+        .rotate(PI / 4)
+        .drawColor("blue")
+        .fillColor("violet")
+        .thickness(20);
+
+    //Stack the pentagon to the right of  the triangle, 5 units apart
+    pentagon
+        .stack()
+        .withDestinyAnchor(AnchorType.RIGHT)
+        .withGaps(5)
+        .toObject(triangle);
+
+    //Make sure everything is correctly centered at screen, adjusting the camera
+    camera.adjustToObjects(triangle, pentagon);
+
+    //Create an animation that transforms the triangle into the pentagon
+    Transform anim = Transform.make(2, triangle, pentagon);
+
+    //This makes sure that the animation has constant velocity
+    anim.setLambda(t -> t);
+    anim.initialize(this);
+    int num = 6; //Number of intermediate steps to show
+    for (int i = 0; i < num; i++) {
+        double t = 1d * i / (num - 1);
+
+        //Compute the animation at time t
+        anim.doAnim(t);
+
+        //The getIntermediateObject gives us the intermediate object used in the animation
+        MathObject intermediate = anim.getIntermediateObject().copy();
+        //Generate a descriptive text, located below the intermediate object
+        LatexMathObject lat = LatexMathObject.make("{\\tt t=" + t + "}")
+            .stack()
+            .withDestinyAnchor(AnchorType.LOWER)
+            .withRelativeGaps(0,.5)
+            .toObject(intermediate);
+
+        //Add both elements to the scene
+        add(intermediate, lat);
+    }
+
+    //And save it to a png file
+    saveImage("intermediateSteps.png");
+}
 ```
 
 Gives an image like this:
@@ -506,7 +471,7 @@ Shape pentagonDst = Shape.regularPolygon(5)
     .shift(.5,-.5)
     .rotate(45*DEGREES)
     .style("solidBlue");
-Transform tr = new Transform(3, pentagon, pentagonDst);
+Transform tr = Transform.make(3, pentagon, pentagonDst);
 playAnimation(tr);
 waitSeconds(1);
 ```
@@ -519,7 +484,7 @@ While both methods may seem equal, the isomorphic method ensures the object does
 
 Currently, the following strategies are implemented:
 
-1. `INTERPOLATE_SIMPLE_SHAPES_BY_POINT`, for 2 simple shapes, a point-by-point interpolation. A simple shape has only one connected component, like squares or circles.
+1. `INTERPOLATE_SIMPLE_SHAPES_BY_POINT`, for 2 simple shapes, a point-by-point interpolation. A simple shape has only one connected component, like squares or circles. This method allows more flexibility for preoptimizing the paths to get a smoother animation.
 2. `INTERPOLATE_POINT_BY_POINT`. A more general interpolation. The shape is converted in the so called canonical form. Applicable when the shapes have multiple components (for example the shape of a "B" letter has 3 components).
 3. `ISOMORPHIC_TRANSFORM` A direct isomorphism is created to transform the original shape into the destiny shape. The isomorphism is created so that the 2 first points of the origin shape transform into the 2 first points of the destiny shape.
 4. `ROTATE_AND_SCALEXY_TRANSFORM` Similar to isomorphism , but scaling is not homogeneous. This animation is used to transform any rectangle into another one, to prevent distortions.
@@ -533,7 +498,7 @@ To see the difference between one type or another, consider this code, where we 
 ```java
 Shape sq = Shape.square().center().style("solidRed");
 Shape sq2 = Shape.square().scale(.25,1).style("solidGreen").rotate(45 * DEGREES).moveTo(Point.at(1,0));
-Transform tr = new Transform(10, sq, sq2);//10 seconds so that you can see the details
+Transform tr = Transform.make(10, sq, sq2);//10 seconds so that you can see the details
 tr.setTransformMethod(Transform.TransformMethod.GENERAL_AFFINE_TRANSFORM);
 playAnimation(tr);
 waitSeconds(3);
@@ -565,7 +530,7 @@ LatexShape previous = null;
 int index = 0;
 for (LatexShape s : text) {
     if (previous != null) {
-        FlipTransform flipTransform = new FlipTransform(2, flips[index], previous, s);
+        FlipTransform flipTransform = FlipTransform.make(2, flips[index], previous, s);
         playAnimation(flipTransform);
         index = (index + 1) % 3;
     }
@@ -597,7 +562,7 @@ waitSeconds(1);
 playAnimation(Commands.setStyle(2, "solidorange", circle));
 
 //Animate change of fill to a gradient and draw to a fixed color
-JMRadialGradient gradient=new JMRadialGradient(Point.at(.25,.75),.5);
+JMRadialGradient gradient = JMRadialGradient.make(Vec.to(.25,.75),.5);
 gradient.setRelativeToShape(true)
     .add(0, "white")
     .add(1,"brown");
@@ -640,7 +605,7 @@ axes.thickness(6).drawColor("darkblue").layer(1);
 
 //Create a cartesian grid, a group of horizontal and vertical lines.
 //We do not use the CartesianGrid class as its elements cannot be transformed
-MathObjectGroup grid = new MathObjectGroup();
+MathObjectGroup grid = MathObjectGroup.make();
 for (int i = -5; i < 5; i++) {
     grid.add(Line.XAxis().shift(0, .5 * i).thickness(i % 2 == 0 ? 4 : 2));
     grid.add(Line.YAxis().shift(.5 * i, 0).thickness(i % 2 == 0 ? 4 : 2));
@@ -672,7 +637,7 @@ This animation, which works on any affine transform, simply interpolates element
 The animation `Commands.reflection(double runtime, Point A, Point B, MathObject… objects)` animates the reflection that maps point A into B. Note that the point A is also transformed, as it is an instance of a point of the shape.
 
 ```java
-MathObjectGroup grid = new MathObjectGroup();
+MathObjectGroup grid = MathObjectGroup.make();
 //Create a grid
 for (int i = -15; i < 15; i++) {
     grid.add(Line.XAxis().shift(0, .5 * i).thickness(i % 2 == 0 ? 4 : 2));
