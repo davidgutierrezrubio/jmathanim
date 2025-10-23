@@ -104,7 +104,7 @@ JMathAnim has some built-in updaters that maybe useful:
 With the `CameraAlwaysAdjusting`  updater, you can force the camera to show all objects in the scene. The camera will zoom out when needed, but not zoom in. Admits 3 parameters: the camera (currently there is only one), and the horizontal and vertical gaps. For example:
 
 ```java
-registerUpdateable(new CameraAlwaysAdjusting(camera, .1, .1));
+registerUpdateable(CameraAlwaysAdjusting.make(camera, .1, .1));
 ```
 
 ## Stacks permanently an object to another

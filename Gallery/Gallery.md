@@ -96,18 +96,18 @@ public void runSketch() throws Exception {
     final double xmin = -2 * PI - .2;
     final double xmax = 2 * PI + .2;
     FunctionGraph sinFunction = FunctionGraph.make(t -> Math.sin(t), xmin, xmax);
-    sinFunction.thickness(3).drawColor("#682c0e");
+    sinFunction.thickness(25).drawColor("#682c0e");
     camera.adjustToObjects(sinFunction);
 
     play.showCreation(sinFunction);
     waitSeconds(1);
 
     FunctionGraph[] taylor = new FunctionGraph[orderTaylor];
-    LaTeXMathObject[] texts = new LaTeXMathObject[orderTaylor];
+    LatexMathObject[] texts = new LatexMathObject[orderTaylor];
     for (int n = 1; n < orderTaylor; n++) {
-        taylor[n] = FunctionGraph.make(TaylorExpansionSin(n), xmin, xmax).drawColor("#153e90").thickness(4);
-        texts[n] = LaTeXMathObject.make("Taylor order " + n).scale(3).stackToScreen(AnchorType.ULEFT, .2, .2);
-        texts[n].setColor("#153e90").layer(2);
+        taylor[n] = FunctionGraph.make(TaylorExpansionSin(n), xmin, xmax).drawColor("#153e90").thickness(15);
+        texts[n] = LatexMathObject.make("Taylor order " + (2*n-1)).scale(3).stack().withGaps(.2).toScreen(ScreenAnchor.UPPER_LEFT);
+        texts[n].color("#153e90").layer(2);
     }
     final Rect r = texts[1].getBoundingBox().addGap(.1, .1);
     Shape box = Shape.rectangle(r).fillColor(JMColor.WHITE).thickness(3).layer(1);
@@ -155,8 +155,8 @@ add(Axes.make());
 ParametricCurve trifolium = ParametricCurve.makePolar(t -> 2 * Math.cos(t) * (4 * Math.sin(t) * Math.sin(t) - 1), t -> t, 0, PI);
 ParametricCurve nephroid = ParametricCurve.makePolar(t -> 1 + 2 * Math.sin(t / 2), t -> t, 0, 4 * PI);
 
-trifolium.drawColor("#153e90").thickness(3);
-nephroid.drawColor("#a05344").thickness(3);
+trifolium.drawColor("#153e90").thickness(15);
+nephroid.drawColor("#a05344").thickness(15);
 ParametricCurve trifoliumCopy = trifolium.copy();
 
 camera.adjustToObjects(trifolium, nephroid);
@@ -179,11 +179,11 @@ ParametricCurve trifolium = ParametricCurve.makePolar(t -> 2 * Math.cos(t) * (4 
 //prior to drawing the first frame.
 Point pointOnCurve = Point.at(0, 0).drawColor("darkblue");
 Point pointToTrail = Point.at(0, 0);
-Arrow arrow = Arrow.make(pointOnCurve, pointToTrail,Arrow.ArrowType.ARROW1).drawColor("darkblue").layer(1);
-add(trifolium.thickness(3), pointOnCurve, arrow);
-Shape derivedCurve = Trail.make(pointToTrail).drawColor("darkred").dashStyle(DashStyle.DASHED);
+Arrow arrow = Arrow.make(pointOnCurve, pointToTrail,ArrowType.ARROW1).drawColor("darkblue").layer(1);
+add(trifolium.thickness(15), pointOnCurve, arrow);
+Trail derivedCurve = Trail.make(pointToTrail).drawColor("darkred").dashStyle(DashStyle.DASHED);
 add(derivedCurve);
-registerUpdateable(new CameraAlwaysAdjusting(camera, .1, .1));
+registerUpdateable(CameraAlwaysAdjusting.make(camera, .1, .1));
 double time = 10;
 for (double t = 0; t < time; t += dt) {
     final double t0 = PI * t / time;
@@ -204,16 +204,19 @@ Here you have a GIF from the movie generated:
 ## The trail of the vertices of a square rotating over a line
 
 ```java
-Shape sq=Shape.square().scale(.2).stackToScreen(AnchorType.LEFT).shift(0,.1);
-add(Line.XAxis(),sq);
-int n=1;
-add(Trail.make(sq.getPoint(0)).drawColor(JMColor.RED).thickness(3)
-    ,Trail.make(sq.getPoint(1)).drawColor(JMColor.BLUE).thickness(3)
-    ,Trail.make(sq.getPoint(2)).drawColor(JMColor.GREEN).thickness(3)
-    ,Trail.make(sq.getPoint(3)).drawColor(JMColor.GRAY).thickness(3)
+Shape sq = Shape.square().scale(.2)
+    .stack()
+    .withOriginAnchor(AnchorType.LOWER_AND_ALIGNED_LEFT)
+    .toScreen(ScreenAnchor.LEFT);
+add(Line.XAxis(), sq);
+int n = 1;
+add(Trail.make(sq.getPoint(0)).drawColor(JMColor.RED).thickness(15)
+    , Trail.make(sq.getPoint(1)).drawColor(JMColor.BLUE).thickness(15)
+    , Trail.make(sq.getPoint(2)).drawColor(JMColor.GREEN).thickness(15)
+    , Trail.make(sq.getPoint(3)).drawColor(JMColor.GRAY).thickness(15)
    );
 for (int k = 0; k < 30; k++) {
-    play.rotate(.5, sq.getPoint(n),-90*DEGREES, sq);
+    play.rotate(.5, sq.getPoint(n), -90 * DEGREES, sq);
     n++;
 }
 waitSeconds(3);
@@ -246,15 +249,15 @@ public void runSketch() throws Exception {
 private Shape getNextKochIteration(Shape previousShape) {
     //A new iteration of the Koch curve is composed of 4 copies of the previous iteration
     //scaled 1/3.
-    Shape s1 = previousShape.copy().scale(previousShape.getPoint(0), 1d / 3, 1d / 3);
-    Shape s2 = s1.copy() //A copy of s1...
-        .rotate(s1.getPoint(0), PI / 3)//rotated 60 degrees around left point of s1...
-        .shift(s1.getPoint(0).to(s1.getPoint(-1)));//and moved to start at right point of s1...
-    Shape s3 = s1.copy()//A copy of s1...
-        .rotate(s1.getPoint(0), -PI / 3)//rotated -60 degress around left point of s1...
-        .shift(s1.getPoint(0).to(s2.getPoint(-1)));//and moved to start at right point of s2...
-    Shape s4 = s1.copy()//A copy of s1...
-        .shift(s1.getPoint(0).to(s3.getPoint(-1)));//moved to start at right point of s3..
+    Shape s1 = previousShape.copy().scale(previousShape.get(0), 1d / 3, 1d / 3);
+    JMPath s2 = s1.getPath().copy() //A copy of s1...
+        .rotate(s1.get(0), PI / 3)//rotated 60 degrees around left point of s1...
+        .shift(s1.get(0).to(s1.get(-1)));//and moved to start at right point of s1...
+    JMPath s3 = s1.getPath().copy()//A copy of s1...
+        .rotate(s1.get(0), -PI / 3)//rotated -60 degress around left point of s1...
+        .shift(s1.get(0).to(s2.get(-1)));//and moved to start at right point of s2...
+    JMPath s4 = s1.getPath().copy()//A copy of s1...
+        .shift(s1.get(0).to(s3.get(-1)));//moved to start at right point of s3..
     s1.merge(s2, true, false).merge(s3, true, false).merge(s4, true, false);//merge all
     return s1;
 }
@@ -270,10 +273,10 @@ public void runSketch() throws Exception {
     int numIters = 7;
     Shape unitSquare = Shape.square().center().scale(-1, 1);
     Shape hilbert = unitSquare.copy().scale(.5).rotate(-90 * DEGREES);
-    unitSquare.thickness(2).drawColor("#153e90").fillColor("#FDFDFD");
+    unitSquare.thickness(5).drawColor("#153e90").fillColor("#FDFDFD");
     camera.setGaps(.1, .1);
     camera.zoomToObjects(unitSquare);
-    hilbert.getJMPoint(0).isThisSegmentVisible = false;
+    hilbert.get(0).setSegmentToThisPointVisible(false);
     Shape previous = hilbert;
     add(unitSquare);
     for (int n = 0; n < numIters; n++) {
@@ -288,18 +291,24 @@ private Shape getNextHilbert(Shape box, Shape previous) {
     //Next iteration of hilbert is done scaling the previous to 50%,
     //making 4 copies and merging them properly rotated and positioned
 
-    Shape nextHilbert = previous.copy().scale(box.getPoint(1), .5, .5);
+    Shape nextHilbert = previous.copy().scale(box.get(1), .5, .5);
     //Creates a reflection about a diagonal of s1 and apply to it
-    AffineJTransform reflection1 = AffineJTransform.createReflectionByAxis(nextHilbert.getBoundingBox().getUR(), nextHilbert.getBoundingBox().getDL(), 1);
+    AffineJTransform reflection1 = AffineJTransform.createReflectionByAxis(
+        nextHilbert.getBoundingBox().getUpperRight(),
+        nextHilbert.getBoundingBox().getLowerLeft(),
+        1);
     reflection1.applyTransform(nextHilbert);
 
-    Shape s2 = previous.copy().scale(box.getPoint(2), .5, .5);
-    Shape s3 = previous.copy().scale(box.getPoint(3), .5, .5);
-    Shape s4 = previous.copy().scale(box.getPoint(0), .5, .5);
+    JMPath s2 = previous.getPath().copy().scale(box.get(2), .5, .5);
+    JMPath s3 = previous.getPath().copy().scale(box.get(3), .5, .5);
+    JMPath s4 = previous.getPath().copy().scale(box.get(0), .5, .5);
 
     //Creates a reflection about the other diagonal of s4 and apply to it
-    final AffineJTransform reflection2 = AffineJTransform.createReflectionByAxis(s4.getBoundingBox().getDR(), s4.getBoundingBox().getUL(), 1);
-    reflection2.applyTransform(s4);
+    final AffineJTransform reflection2 = AffineJTransform.createReflectionByAxis(
+        s4.getBoundingBox().getLowerRight(),
+        s4.getBoundingBox().getUpperLeft(),
+        1);
+    s4.applyAffineTransform(reflection2);
 
     //Now merge everything
     nextHilbert.merge(s2, true, false).merge(s3, true, false).merge(s4, true, false);
@@ -315,16 +324,16 @@ You can [see the video here](https://imgur.com/gallery/7ZRnq0I).
 int numPoints = 10;//Number of points/diameters to show
 
 //The outer circle
-Shape outerCircle = Shape.circle().thickness(4).drawColor(JMColor.BLUE);
+Shape outerCircle = Shape.circle().thickness(15).drawColor(JMColor.BLUE);
 
 //This shape (outerCircle scaled 50%) is the path that will follow the rotatingCircle group
 Shape path = outerCircle.copy().scale(.5);
 
 //Add the diameters
 for (int n = 0; n < numPoints * 2; n++) {
-    Point p1 = outerCircle.getPointAt(.5d * n / numPoints);
-    Point p2 = outerCircle.getPointAt(.5d * n / numPoints + .5);
-    add(Shape.segment(p1, p2).drawColor(JMColor.GRAY).thickness(.5));
+    Point p1 = Point.at(outerCircle.getVecAt(.5d * n / numPoints));
+    Point p2 = Point.at(outerCircle.getVecAt(.5d * n / numPoints + .5));
+    add(Shape.segment(p1, p2).drawColor(JMColor.GRAY).thickness(5));
 }
 
 //A group containing the rotating circle and the marker points
@@ -332,11 +341,11 @@ MathObjectGroup rotatingCircle = MathObjectGroup.make();
 //Circle that moves inside
 Shape circleSmall = Shape.circle()
     .scale(.5).shift(0, .5) //Scale, position...
-    .drawColor("olive").thickness(3);//Style...
+    .drawColor("olive").thickness(10);//Style...
 
 rotatingCircle.add(circleSmall);//Add to group
 for (int n = 0; n < numPoints; n++) {
-    Point p = circleSmall.getPointAt(1d * n / numPoints).style("redCircle");
+    Point p = Point.at(circleSmall.getVecAt(1d * n / numPoints)).style("redCircle");
     rotatingCircle.add(p);//Add to group
 }
 
@@ -358,7 +367,10 @@ Here you have a GIF from the generated movie :
 //Two rectangles
 Shape sq1 = Shape.square().scale(2.5, 1).style("solidblue");
 Shape sq2 = Shape.square().scale(1.75, 1).style("solidred");
-sq2.stackTo(sq1, AnchorType.RIGHT, .5);
+sq2.stack()
+    .withGaps(.5)
+    .withDestinyAnchor(AnchorType.RIGHT)
+    .toObject(sq1);
 add(sq1, sq2);
 
 //The colors chosen to the symbols a, b and c
@@ -368,46 +380,48 @@ JMColor colC = JMColor.parse("#6A2A5C");
 JMColor colArea = JMColor.parse("#B73A1C");
 
 //Brace delimiters
-Delimiter del1X = Delimiter.stackTo(sq1, AnchorType.LOWER, Delimiter.Type.BRACE, .1).setLabel("$b$", .1);
-Delimiter del1Y = Delimiter.stackTo(sq1, AnchorType.LEFT, Delimiter.Type.BRACE, .1).setLabel("$a$", .1);
-Delimiter del2X = Delimiter.stackTo(sq2, AnchorType.LOWER, Delimiter.Type.BRACE, .1).setLabel("$c$", .1);
-Delimiter del2Y = Delimiter.stackTo(sq2, AnchorType.RIGHT, Delimiter.Type.BRACE, .1).setLabel("$a$", .1);
+Delimiter del1X = Delimiter.makeStacked(sq1, AnchorType.LOWER, DelimiterType.BRACE, .1).addlabelTip("$b$", .1);
+Delimiter del1Y = Delimiter.makeStacked(sq1, AnchorType.LEFT, DelimiterType.BRACE, .1).addlabelTip("$a$", .1);
+Delimiter del2X = Delimiter.makeStacked(sq2, AnchorType.LOWER, DelimiterType.BRACE, .1).addlabelTip("$c$", .1);
+Delimiter del2Y = Delimiter.makeStacked(sq2, AnchorType.RIGHT, DelimiterType.BRACE, .1).addlabelTip("$a$", .1);
 
 //Need to declare this so that labels do not appear rotated (vertical delimiters)
-del1Y.setRotationType(Delimiter.Rotation.FIXED);
-del2Y.setRotationType(Delimiter.Rotation.FIXED);
+del1Y.setRotationType(RotationType.FIXED);
+del2Y.setRotationType(RotationType.FIXED);
 
 //Set the colors for labels only
 del1X.getLabel().color(colB);
 del1Y.getLabel().color(colA);
 del2X.getLabel().color(colC);
 del2Y.getLabel().color(colA);
-
-LaTeXMathObject textBC = LaTeXMathObject.make("$b+c$");
-textBC.setColor(colB, 0);//"b" glyph
-textBC.setColor(colC, 2);//"c" glyph
-Delimiter del12X = Delimiter.stackTo(
+LatexMathObject textBC = LatexMathObject.make("$b+c$");
+textBC.setColorsToIndices(colB, 0);//"b" glyph
+textBC.setColorsToIndices(colC, 2);//"c" glyph
+Delimiter del12X = Delimiter.makeStacked(
     MathObjectGroup.make(sq1, sq2),//We group these 2 rectangles so the brace adjust to the 2 combined
-    AnchorType.UPPER, Delimiter.Type.BRACE, .1)
-    .setLabel(textBC, .1);
+    AnchorType.UPPER, DelimiterType.BRACE, .1)
+    .addlabelTip(textBC, .1);
 
 //The upper formula  Area=a*b+a*c
-LaTeXMathObject formula1 = LaTeXMathObject.make("Area=$a\\cdot b+a\\cdot c$").scale(3);
+LatexMathObject formula1 = LatexMathObject.make("Area=$a\\cdot b+a\\cdot c$").scale(3);
 //Position formula .5 units above sq2...we will center it horizontally later
-formula1.stackTo(sq2, AnchorType.UPPER, .5);
+formula1.stack()
+    .withGaps(.5)
+    .withDestinyAnchor(AnchorType.UPPER)
+    .toObject(sq2);
 //Apply colors
-formula1.setColor(colArea, 0, 1, 2, 3);//"Area"
-formula1.setColor(colA, 5, 9);//The "a" glyphs
-formula1.setColor(colB, 7);//The "b" glyph
-formula1.setColor(colC, 11); //The "c" glyph
+formula1.setColorsToIndices(colArea, 0, 1, 2, 3);//"Area"
+formula1.setColorsToIndices(colA, 5, 9);//The "a" glyphs
+formula1.setColorsToIndices(colB, 7);//The "b" glyph
+formula1.setColorsToIndices(colC, 11); //The "c" glyph
 
 //The upper formula  Area=a*(b+c)
-LaTeXMathObject formula2 = LaTeXMathObject.make("Area=$a\\cdot(b+c)$").scale(3);
+LatexMathObject formula2 = LatexMathObject.make("Area=$a\\cdot(b+c)$").scale(3);
 //Apply colors
-formula2.setColor(colArea, 0, 1, 2, 3);//"Area"
-formula2.setColor(colA, 5);//The "a" glyphs
-formula2.setColor(colB, 8);//The "b" glyph
-formula2.setColor(colC, 10);//The "c" glyph
+formula2.setColorsToIndices(colArea, 0, 1, 2, 3);//"Area"
+formula2.setColorsToIndices(colA, 5);//The "a" glyphs
+formula2.setColorsToIndices(colB, 8);//The "b" glyph
+formula2.setColorsToIndices(colC, 10);//The "c" glyph
 
 add(del1X, del2X, del1Y, del2Y, formula1);
 camera.adjustToAllObjects();
@@ -417,13 +431,13 @@ formula1.hCenter();
 formula2.alignCenter(4, formula1, 4);//Align "=" sign of formula2 with that of the formula1
 
 //We make a copy of formula1 to make the inverse animation later
-LaTeXMathObject formula3 = formula1.copy();
+LatexMathObject formula3 = formula1.copy();
 
 waitSeconds(2);
 Animation shiftSquareAnim = Commands.shift(3, .5, 0, sq1);
 Animation fadeBraceAnim = Commands.fadeIn(3, del12X);
 
-TransformMathExpression changeFormulaAnim = new TransformMathExpression(3, formula1, formula2);
+TransformMathExpression changeFormulaAnim = TransformMathExpression.make(3, formula1, formula2);
 changeFormulaAnim.mapRange(0, 6, 0);//"Área=a\cdot"
 changeFormulaAnim.map(7, 8);//b -> b
 changeFormulaAnim.map(8, 9);//+ -> +
@@ -437,7 +451,7 @@ waitSeconds(3);
 shiftSquareAnim = Commands.shift(3, -.5, 0, sq1);
 fadeBraceAnim = Commands.fadeOut(3, del12X);
 
-changeFormulaAnim = new TransformMathExpression(3, formula2, formula3);
+changeFormulaAnim = TransformMathExpression.make(3, formula2, formula3);
 changeFormulaAnim.mapRange(0, 6, 0);
 changeFormulaAnim.map(8, 7);
 changeFormulaAnim.map(9, 8);
@@ -585,14 +599,14 @@ Here is a gif from the movie generated:
 A solution for a simple puzzle. Can you invert the triangle moving only 3 coins?
 
 ```java
-Shape coinBase = Shape.circle().fillColor("gold").thickness(8);
+Shape coinBase = Shape.circle().fillColor("gold").thickness(10);
 Shape[] coin = new Shape[10];
 for (int n = 0; n < 10; n++) {
     coin[n] = coinBase.copy();
 }
 double vertGap = Math.sqrt(3) - 2;//This negative gap is computed so that circles are tangent
 MathObjectGroup pyramid=MathObjectGroup.make(coin);
-pyramid.setLayout(PascalLayout.make(0, vertGap));
+pyramid.setLayout(PascalLayout.make(Vec.to(0,0),0, vertGap));
 add(pyramid);
 camera.adjustToAllObjects();
 camera.scale(2);
