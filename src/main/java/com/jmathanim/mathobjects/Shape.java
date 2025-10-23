@@ -100,7 +100,7 @@ public class Shape extends AbstractShape<Shape> {
         Coordinates<?>[] points = new Coordinates[numPoints];
         points[0] = A;
 
-        for (int i = 1; i < numPoints - 2; i++) {
+        for (int i = 1; i < numPoints - 1; i++) {
             points[i] = A.getVec().interpolate(B, 1d * i / (numPoints - 1));
         }
         points[numPoints - 1] = B;
