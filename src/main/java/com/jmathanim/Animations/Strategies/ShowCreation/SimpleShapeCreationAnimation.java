@@ -17,9 +17,9 @@
  */
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
-import com.jmathanim.mathobjects.AbstractShape;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.MathObjects.AbstractShape;
+import com.jmathanim.MathObjects.MathObject;
+import com.jmathanim.MathObjects.Shape;
 
 /**
  * An animation that draws a Shape

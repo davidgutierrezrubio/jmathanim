@@ -18,8 +18,8 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.Enum.AnchorType;
-import com.jmathanim.mathobjects.Coordinates;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.MathObjects.Point;
 
 import java.util.Arrays;
 import java.util.List;

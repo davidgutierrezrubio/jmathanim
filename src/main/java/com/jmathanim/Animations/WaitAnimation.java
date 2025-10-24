@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Animations;
 
-import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.MathObjects.MathObject;
 
 /**
  * Simple animation which does nothing

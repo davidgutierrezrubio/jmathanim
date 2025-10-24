@@ -18,6 +18,10 @@
 package com.jmathanim.Renderers;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.MathObjects.AbstractJMImage;
+import com.jmathanim.MathObjects.AbstractShape;
+import com.jmathanim.MathObjects.DebugTools;
+import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Styling.RendererEffects;
@@ -25,10 +29,6 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.AbstractJMImage;
-import com.jmathanim.mathobjects.AbstractShape;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.DebugTools;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

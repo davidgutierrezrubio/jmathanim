@@ -1,13 +1,13 @@
 package com.jmathanim.Renderers.SkijaRenderer;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.MathObjects.MathObject;
+import com.jmathanim.MathObjects.Shapes.JMPath;
+import com.jmathanim.MathObjects.Shapes.JMPathPoint;
 import com.jmathanim.Styling.*;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.MathObject;
 import io.github.humbleui.skija.*;
 
 import java.util.HashMap;

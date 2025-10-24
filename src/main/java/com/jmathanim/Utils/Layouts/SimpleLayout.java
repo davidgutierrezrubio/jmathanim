@@ -19,9 +19,9 @@ package com.jmathanim.Utils.Layouts;
 
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.LayoutType;
+import com.jmathanim.MathObjects.AbstractMathGroup;
+import com.jmathanim.MathObjects.Point;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.AbstractMathGroup;
-import com.jmathanim.mathobjects.Point;
 
 /**
  * A simple layout which allocates the objects using fixed styles

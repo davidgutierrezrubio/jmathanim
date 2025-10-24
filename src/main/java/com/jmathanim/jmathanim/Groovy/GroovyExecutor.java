@@ -1,23 +1,28 @@
 package com.jmathanim.jmathanim.Groovy;
 
 import ch.qos.logback.classic.Level;
-import com.jmathanim.Constructible.GeogebraLoader;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.jmathanim.LogUtils;
 import com.jmathanim.jmathanim.Scene2D;
-import com.jmathanim.mathobjects.MathObject;
 import groovy.lang.Binding;
 import groovy.lang.Closure;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 import javafx.application.Platform;
+import org.codehaus.groovy.control.CompilerConfiguration;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import static com.jmathanim.jmathanim.LogUtils.RESET;
 
@@ -26,6 +31,7 @@ public class GroovyExecutor extends Scene2D {
     private final GroovyExecutor scene;
     private final String groovyScriptFilename;
     private final Binding binding;
+    private final CompilerConfiguration compilerConfig;
     private final GroovyShell shell;
     private String userCodeOriginal;
     private String userCode;
@@ -40,16 +46,12 @@ public class GroovyExecutor extends Scene2D {
         super();
         this.groovyScriptFilename = groovyScriptFileName;
         scene = this;
-        binding = new Binding();
-        createBindings();
+        binding = createBindings();
+        compilerConfig = createCompilerConfiguration();
 
-
-        shell = new GroovyShell(binding);
+        shell = new GroovyShell(this.getClass().getClassLoader(), binding, compilerConfig);
 
         try {
-            //TODO:add parse errors log
-//            userCode = new String(Files.readAllBytes(Paths.get(args[0])));
-
             userCodeOriginal = new String(Files.readAllBytes(Paths.get(groovyScriptFileName)));
             userCode = GroovyUtils.processSourceCode(userCodeOriginal);
             script = shell.parse(userCode);
@@ -91,7 +93,43 @@ public class GroovyExecutor extends Scene2D {
         System.exit(0);
     }
 
+    private CompilerConfiguration createCompilerConfiguration() {
+        CompilerConfiguration compilerConfig = new CompilerConfiguration();
+        ImportCustomizer imports = new ImportCustomizer();
 
+        imports.addStarImports(
+                "com.jmathanim.Animations",
+                "com.jmathanim.Animations.MathTransform",
+                "com.jmathanim.Animations.Strategies",
+                "com.jmathanim.Animations.Strategies.ShowCreation",
+                "com.jmathanim.Animations.Strategies.Transform",
+                "com.jmathanim.Animations.Strategies.Transform.Optimizers",
+                "com.jmathanim.Cameras",
+                "com.jmathanim.Constructible",
+                "com.jmathanim.Constructible.Conics",
+                "com.jmathanim.Constructible.Lines",
+                "com.jmathanim.Constructible.Others",
+                "com.jmathanim.Constructible.Points",
+                "com.jmathanim.Constructible.Transforms",
+                "com.jmathanim.Enum",
+                "com.jmathanim.MathObjects",
+                "com.jmathanim.MathObjects.Axes",
+                "com.jmathanim.MathObjects.Delimiters",
+                "com.jmathanim.MathObjects.Shapes",
+                "com.jmathanim.MathObjects.Text",
+                "com.jmathanim.MathObjects.Text.TextUpdaters",
+                "com.jmathanim.MathObjects.Tippable",
+                "com.jmathanim.MathObjects.UpdateableObjects",
+                "com.jmathanim.MathObjects.Updaters",
+                "com.jmathanim.Utils",
+                "com.jmathanim.Styling"
+        );
+
+        addAllPackagesFromJar("com.jmathanim", imports);
+
+        compilerConfig.addCompilationCustomizers(imports);
+        return compilerConfig;
+    }
 
     @Override
     public void setupSketch() {
@@ -130,7 +168,7 @@ public class GroovyExecutor extends Scene2D {
         //these bindings have to be done in runSketch to ensure camera and fixedCamera are created
         binding.setVariable("camera", camera);
         binding.setVariable("fixedCamera", fixedCamera);
-        boolean hasRunSketch=false;
+        boolean hasRunSketch = false;
         try {
             for (Method method : script.getClass().getMethods()) {
                 if (method.getName().equals("runSketch") && method.getParameterCount() == 0) {
@@ -141,9 +179,7 @@ public class GroovyExecutor extends Scene2D {
 
             if (hasRunSketch) {
                 script.invokeMethod("runSketch", null);
-            }
-            else
-            {//If script does not have runSketch method, just run root code
+            } else {//If script does not have runSketch method, just run root code
                 script.run();
             }
 
@@ -156,9 +192,8 @@ public class GroovyExecutor extends Scene2D {
     }
 
 
-
-
-    private void createBindings() {
+    private Binding createBindings() {
+        Binding binding = new Binding();
         binding.setVariable("scene", scene);
 
         binding.setVariable("PI", PI);
@@ -167,39 +202,38 @@ public class GroovyExecutor extends Scene2D {
         binding.setVariable("play", play);
         binding.setVariable("config", config);
 
-
         //Creates Closure for add method
-        Closure<Void> addClosure = new Closure<Void>(this) {
-            public Void doCall(Object arg) {
-                if (arg instanceof MathObject) {
-                    scene.add((MathObject) arg);
-                } else if (arg instanceof MathObject[]) {
-                    scene.add((MathObject[]) arg);
-                } else if (arg instanceof GeogebraLoader) {
-                    scene.add((GeogebraLoader) arg);
-                } else {
-                    throw new IllegalArgumentException("Not supported for add(): " + arg.getClass());
-                }
-                return null;
-            }
-
-            public Void doCall(Object... args) {
-                if (args.length == 0) {
-                    throw new IllegalArgumentException("Se requiere al menos un argumento");
-                }
-                // Si todos los argumentos son MathObject, conviértelos a un array
-                if (Arrays.stream(args).allMatch(arg -> arg instanceof MathObject)) {
-                    MathObject[] objs = Arrays.stream(args)
-                            .map(arg -> (MathObject) arg)
-                            .toArray(MathObject[]::new);
-                    scene.add(objs);
-                } else {
-                    throw new IllegalArgumentException("Tipos no soportados en múltiples argumentos");
-                }
-                return null;
-            }
-
-        };
+//        Closure<Void> addClosure = new Closure<Void>(this) {
+//            public Void doCall(Object arg) {
+//                if (arg instanceof MathObject) {
+//                    scene.add((MathObject) arg);
+//                } else if (arg instanceof MathObject[]) {
+//                    scene.add((MathObject[]) arg);
+//                } else if (arg instanceof GeogebraLoader) {
+//                    scene.add((GeogebraLoader) arg);
+//                } else {
+//                    throw new IllegalArgumentException("Not supported for add(): " + arg.getClass());
+//                }
+//                return null;
+//            }
+//
+//            public Void doCall(Object... args) {
+//                if (args.length == 0) {
+//                    throw new IllegalArgumentException("Se requiere al menos un argumento");
+//                }
+//                // Si todos los argumentos son MathObject, conviértelos a un array
+//                if (Arrays.stream(args).allMatch(arg -> arg instanceof MathObject)) {
+//                    MathObject[] objs = Arrays.stream(args)
+//                            .map(arg -> (MathObject) arg)
+//                            .toArray(MathObject[]::new);
+//                    scene.add(objs);
+//                } else {
+//                    throw new IllegalArgumentException("Tipos no soportados en múltiples argumentos");
+//                }
+//                return null;
+//            }
+//
+//        };
 //        binding.setVariable("add", addClosure);
 
 
@@ -218,6 +252,47 @@ public class GroovyExecutor extends Scene2D {
             }
         };
 //        binding.setVariable("advanceFrame", advanceFrameClosure);
+        return binding;
     }
-}
 
+
+    private void addAllPackagesFromJar(String basePackage, ImportCustomizer imports) {
+        try {
+            // Obtiene la ubicación del jar actual
+            URL jarUrl = getClass().getProtectionDomain().getCodeSource().getLocation();
+            File jarFile = new File(jarUrl.toURI());
+
+            if (!jarFile.getName().endsWith(".jar")) {
+                JMathAnimScene.logger.warn("Not executing from JAR, using only manual imports");
+                imports.addStarImports(basePackage);
+                return;
+            }
+
+            try (JarFile jar = new JarFile(jarFile)) {
+                Set<String> packages = new HashSet<>();
+                String prefix = basePackage.replace('.', '/') + "/";
+
+                Enumeration<JarEntry> entries = jar.entries();
+                while (entries.hasMoreElements()) {
+                    JarEntry entry = entries.nextElement();
+                    String name = entry.getName();
+                    if (name.endsWith(".class") && name.startsWith(prefix)) {
+                        int lastSlash = name.lastIndexOf('/');
+                        if (lastSlash > 0) {
+                            String pkg = name.substring(0, lastSlash).replace('/', '.');
+                            packages.add(pkg);
+                        }
+                    }
+                }
+
+                for (String pkg : packages) {
+                    imports.addStarImports(pkg);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+}

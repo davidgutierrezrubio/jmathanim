@@ -17,12 +17,12 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.MathObjects.Copyable;
+import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.jmathanim.LogUtils;
-import com.jmathanim.mathobjects.Copyable;
-import com.jmathanim.mathobjects.MathObject;
 
 import java.util.Arrays;
 import java.util.HashMap;

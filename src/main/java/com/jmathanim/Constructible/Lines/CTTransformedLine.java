@@ -18,11 +18,11 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Points.CTAbstractPoint;
+import com.jmathanim.MathObjects.Scalar;
+import com.jmathanim.MathObjects.Shapes.Line;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.Scalar;
 
 /**
  *

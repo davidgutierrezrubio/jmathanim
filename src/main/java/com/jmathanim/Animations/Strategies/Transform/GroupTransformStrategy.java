@@ -18,7 +18,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.Transform;
-import com.jmathanim.mathobjects.MathObjectGroup;
+import com.jmathanim.MathObjects.MathObjectGroup;
 
 /**
  *

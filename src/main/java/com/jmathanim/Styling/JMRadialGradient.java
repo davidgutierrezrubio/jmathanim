@@ -18,9 +18,9 @@
 package com.jmathanim.Styling;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.Coordinates;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.RadialGradient;

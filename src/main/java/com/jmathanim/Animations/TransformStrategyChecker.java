@@ -17,10 +17,10 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.MathObjects.AbstractShape;
+import com.jmathanim.MathObjects.Shapes.JMPath;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.AbstractShape;
-import com.jmathanim.mathobjects.JMPath;
 import org.apache.commons.math3.linear.SingularMatrixException;
 
 /**

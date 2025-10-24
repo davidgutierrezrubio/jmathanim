@@ -20,9 +20,9 @@ package com.jmathanim.Utils;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.ScreenAnchor;
-import com.jmathanim.mathobjects.Coordinates;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.MathObjects.MathObject;
+import com.jmathanim.MathObjects.Point;
 
 /**
  * A class that manages relevant points of a MathObject, or any class that

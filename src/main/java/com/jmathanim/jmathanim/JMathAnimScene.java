@@ -27,14 +27,14 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Constructible.GeogebraLoader;
 import com.jmathanim.Enum.LayoutType;
 import com.jmathanim.Enum.LinkType;
+import com.jmathanim.MathObjects.*;
+import com.jmathanim.MathObjects.Text.LatexMathObject;
+import com.jmathanim.MathObjects.Text.LatexShape;
+import com.jmathanim.MathObjects.UpdateableObjects.Updateable;
 import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.*;
-import com.jmathanim.mathobjects.*;
-import com.jmathanim.mathobjects.Text.LatexMathObject;
-import com.jmathanim.mathobjects.Text.LatexShape;
-import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;

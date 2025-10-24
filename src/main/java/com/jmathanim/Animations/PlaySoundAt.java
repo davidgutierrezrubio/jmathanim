@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Animations;
 
-import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.MathObjects.MathObject;
 
 /**
  * An animation that plays a sound at a specific runtime

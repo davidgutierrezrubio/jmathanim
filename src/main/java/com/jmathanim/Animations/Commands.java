@@ -25,6 +25,7 @@ import com.jmathanim.Enum.AlignType;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.LayoutType;
 import com.jmathanim.Enum.ScreenAnchor;
+import com.jmathanim.MathObjects.*;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Styling.JMColor;
@@ -33,7 +34,6 @@ import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.*;
 import com.jmathanim.Utils.Layouts.GroupLayout;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.*;
 import javafx.scene.shape.StrokeLineCap;
 
 import java.util.*;

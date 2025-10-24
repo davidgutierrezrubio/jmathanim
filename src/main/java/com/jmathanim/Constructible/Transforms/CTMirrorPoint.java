@@ -22,10 +22,10 @@ import com.jmathanim.Constructible.Lines.CTAbstractLine;
 import com.jmathanim.Constructible.Lines.CTSegment;
 import com.jmathanim.Constructible.Points.CTAbstractPoint;
 import com.jmathanim.Constructible.Points.CTPoint;
+import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.MathObjects.Point;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Coordinates;
-import com.jmathanim.mathobjects.Point;
 
 /**
  * A Constructible object mirrored by a Line or Segment or Ray

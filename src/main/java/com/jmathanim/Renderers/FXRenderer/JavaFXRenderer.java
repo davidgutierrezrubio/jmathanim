@@ -18,6 +18,11 @@
 package com.jmathanim.Renderers.FXRenderer;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.MathObjects.AbstractJMImage;
+import com.jmathanim.MathObjects.AbstractShape;
+import com.jmathanim.MathObjects.DebugTools;
+import com.jmathanim.MathObjects.MathObject;
+import com.jmathanim.MathObjects.Shapes.JMPath;
 import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
@@ -26,7 +31,6 @@ import com.jmathanim.Styling.RendererEffects;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.jmathanim.LogUtils;
-import com.jmathanim.mathobjects.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;

@@ -19,9 +19,9 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.Transform;
-import com.jmathanim.mathobjects.AbstractMultiShapeObject;
-import com.jmathanim.mathobjects.AbstractShape;
-import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
+import com.jmathanim.MathObjects.AbstractMultiShapeObject;
+import com.jmathanim.MathObjects.AbstractShape;
+import com.jmathanim.MathObjects.Shapes.MultiShapeObject;
 
 import java.util.ArrayList;
 

@@ -28,11 +28,11 @@ import com.jmathanim.Constructible.Transforms.CTTranslatedPoint;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Enum.DotStyle;
+import com.jmathanim.MathObjects.*;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.*;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 

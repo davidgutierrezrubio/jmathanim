@@ -18,11 +18,11 @@
 package com.jmathanim.Utils.Layouts;
 
 import com.jmathanim.Enum.InnerAnchorType;
+import com.jmathanim.MathObjects.AbstractMathGroup;
+import com.jmathanim.MathObjects.MathObject;
+import com.jmathanim.MathObjects.MathObjectGroup;
+import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.Utils.Rect;
-import com.jmathanim.mathobjects.AbstractMathGroup;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.Shape;
 
 import java.util.ArrayList;
 

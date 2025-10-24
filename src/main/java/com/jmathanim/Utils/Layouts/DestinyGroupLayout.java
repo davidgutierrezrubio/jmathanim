@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Utils.Layouts;
 
-import com.jmathanim.mathobjects.AbstractMathGroup;
+import com.jmathanim.MathObjects.AbstractMathGroup;
 
 /**
  * A layout setting individual destiny locations for each object of the group

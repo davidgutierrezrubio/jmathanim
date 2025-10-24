@@ -18,9 +18,9 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Enum.JumpType;
-import com.jmathanim.mathobjects.AffineTransformable;
-import com.jmathanim.mathobjects.Coordinates;
-import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.MathObjects.AffineTransformable;
+import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.MathObjects.MathObject;
 
 /**
  *

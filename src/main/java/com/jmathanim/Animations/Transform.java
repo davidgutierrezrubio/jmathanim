@@ -19,11 +19,13 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Animations.Strategies.Transform.*;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.NullOptimizationStrategy;
+import com.jmathanim.MathObjects.*;
+import com.jmathanim.MathObjects.Delimiters.Arrow;
+import com.jmathanim.MathObjects.Shapes.Line;
+import com.jmathanim.MathObjects.Shapes.MultiShapeObject;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.OrientationType;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.*;
-import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
 
 /**
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com

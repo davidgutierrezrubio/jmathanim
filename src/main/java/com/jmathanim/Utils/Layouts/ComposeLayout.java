@@ -17,9 +17,9 @@
  */
 package com.jmathanim.Utils.Layouts;
 
-import com.jmathanim.mathobjects.AbstractMathGroup;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MathObjectGroup;
+import com.jmathanim.MathObjects.AbstractMathGroup;
+import com.jmathanim.MathObjects.MathObject;
+import com.jmathanim.MathObjects.MathObjectGroup;
 
 /**
  * A composition layout that allows to apply an internal layout inside of an

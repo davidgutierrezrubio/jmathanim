@@ -18,16 +18,16 @@
 package com.jmathanim.Constructible;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.MathObjects.DebugTools;
+import com.jmathanim.MathObjects.MathObject;
+import com.jmathanim.MathObjects.MathObjectGroup;
+import com.jmathanim.MathObjects.Stateable;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Styling.RendererEffects;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.DebugTools;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.Stateable;
 
 /**
  * This class representas a constructible object, derived from another ones. For example a circle that pass for 3 points

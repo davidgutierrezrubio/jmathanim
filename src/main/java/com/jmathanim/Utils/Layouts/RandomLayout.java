@@ -16,10 +16,10 @@
  */
 package com.jmathanim.Utils.Layouts;
 
+import com.jmathanim.MathObjects.AbstractMathGroup;
+import com.jmathanim.MathObjects.MathObject;
+import com.jmathanim.MathObjects.Point;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.AbstractMathGroup;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 
 import java.util.Random;
 

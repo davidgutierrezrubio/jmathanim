@@ -17,9 +17,9 @@
  */
 package com.jmathanim.Animations.Strategies.Transform.Optimizers;
 
-import com.jmathanim.mathobjects.AbstractShape;
-import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.JMPathPoint;
+import com.jmathanim.MathObjects.AbstractShape;
+import com.jmathanim.MathObjects.Shapes.JMPath;
+import com.jmathanim.MathObjects.Shapes.JMPathPoint;
 
 /**
  * Optimizes the paths when the transformed path has a number of connected

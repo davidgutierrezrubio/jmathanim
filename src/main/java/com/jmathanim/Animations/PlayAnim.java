@@ -19,12 +19,12 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Enum.ScreenAnchor;
+import com.jmathanim.MathObjects.*;
+import com.jmathanim.MathObjects.Shapes.MultiShapeObject;
+import com.jmathanim.MathObjects.Text.LatexMathObject;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.*;
-import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
-import com.jmathanim.mathobjects.Text.LatexMathObject;
 
 import java.util.ArrayList;
 

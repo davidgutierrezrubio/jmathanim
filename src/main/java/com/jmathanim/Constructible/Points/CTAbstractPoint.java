@@ -2,13 +2,13 @@ package com.jmathanim.Constructible.Points;
 
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Enum.DotStyle;
+import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.MathObjects.Interpolable;
+import com.jmathanim.MathObjects.Point;
+import com.jmathanim.MathObjects.Stateable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.LogUtils;
-import com.jmathanim.mathobjects.Coordinates;
-import com.jmathanim.mathobjects.Interpolable;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Stateable;
 
 public abstract class CTAbstractPoint<T extends CTAbstractPoint<T>> extends Constructible<T> implements Coordinates<T>, Interpolable<T> {
     protected final Point pointToShow;

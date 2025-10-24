@@ -18,9 +18,9 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Enum.ArrowType;
+import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.MathObjects.Delimiters.Arrow;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.Arrow;
-import com.jmathanim.mathobjects.Coordinates;
 
 /**
  * A constructible vector, which is draw as an Arrow2D MathObject

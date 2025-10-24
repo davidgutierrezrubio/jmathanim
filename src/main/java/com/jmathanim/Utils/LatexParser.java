@@ -17,8 +17,8 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.Enum.LatexTokenType;
+import com.jmathanim.MathObjects.Text.AbstractLatexMathObject;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Text.AbstractLatexMathObject;
 import org.scilab.forge.jlatexmath.*;
 
 import java.lang.reflect.Field;
@@ -617,7 +617,7 @@ public class LatexParser implements Iterable<LatexToken> {
                 .setString(name)
                 .setDelimiterDepth(this.delimiterDepth);
         token.activateSecondaryFlag(secondaryType);
-        token.takesStyleFromNext = this.takesStyleFromNextFlag;
+        token.setTakesStyleFromNext(this.takesStyleFromNextFlag);
         getTokens().add(token);
         previousToken = token;
     }

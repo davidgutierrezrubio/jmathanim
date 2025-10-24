@@ -17,12 +17,12 @@
  */
 package com.jmathanim.Renderers.JOGLRenderer;
 
+import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.JMLinearGradient;
 import com.jmathanim.Styling.JMRadialGradient;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.Shape;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL4;
 

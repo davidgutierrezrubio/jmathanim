@@ -21,10 +21,10 @@ import ch.qos.logback.classic.Level;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Enum.DotStyle;
+import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.MathObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;

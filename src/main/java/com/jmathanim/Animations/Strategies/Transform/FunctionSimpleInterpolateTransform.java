@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Animations.Strategies.Transform;
 
-import com.jmathanim.mathobjects.FunctionGraph;
+import com.jmathanim.MathObjects.FunctionGraph;
 
 import java.util.function.DoubleBinaryOperator;
 

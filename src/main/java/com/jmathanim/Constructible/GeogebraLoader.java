@@ -19,13 +19,13 @@ package com.jmathanim.Constructible;
 
 import com.jmathanim.Cameras.hasCameraParameters;
 import com.jmathanim.Constructible.Lines.CTLine;
+import com.jmathanim.MathObjects.MathObject;
+import com.jmathanim.MathObjects.NullMathObject;
+import com.jmathanim.MathObjects.Shapes.Line;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.jmathanim.LogUtils;
-import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.NullMathObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

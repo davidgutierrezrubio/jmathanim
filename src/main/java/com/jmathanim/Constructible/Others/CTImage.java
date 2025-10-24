@@ -19,9 +19,9 @@ package com.jmathanim.Constructible.Others;
 
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Points.CTAbstractPoint;
+import com.jmathanim.MathObjects.JMImage;
+import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.JMImage;
-import com.jmathanim.mathobjects.MathObject;
 
 /**
  *

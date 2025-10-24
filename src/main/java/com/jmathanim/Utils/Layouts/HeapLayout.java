@@ -18,10 +18,10 @@
 package com.jmathanim.Utils.Layouts;
 
 import com.jmathanim.Enum.LayoutType;
+import com.jmathanim.MathObjects.AbstractMathGroup;
+import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.MathObjects.MathObjectGroup;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.AbstractMathGroup;
-import com.jmathanim.mathobjects.Coordinates;
-import com.jmathanim.mathobjects.MathObjectGroup;
 
 import java.util.ArrayList;
 

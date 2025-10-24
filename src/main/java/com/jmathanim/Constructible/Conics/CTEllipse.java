@@ -19,13 +19,13 @@ package com.jmathanim.Constructible.Conics;
 
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Points.CTPoint;
+import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.MathObjects.Shape;
+import com.jmathanim.MathObjects.Shapes.JMPathPoint;
+import com.jmathanim.MathObjects.Stateable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Coordinates;
-import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.Shape;
-import com.jmathanim.mathobjects.Stateable;
 
 /**
  * Creates the only ellipse with 2 given focus that pass through a third point

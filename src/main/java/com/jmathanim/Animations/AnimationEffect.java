@@ -18,10 +18,11 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Enum.JumpType;
+import com.jmathanim.MathObjects.*;
+import com.jmathanim.MathObjects.Shapes.JMPath;
+import com.jmathanim.MathObjects.Shapes.MultiShapeObject;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.*;
-import com.jmathanim.mathobjects.*;
-import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
 
 import java.util.HashMap;
 

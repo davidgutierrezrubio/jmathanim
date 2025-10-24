@@ -19,11 +19,11 @@ package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.PointOwner;
+import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.MathObjects.MathObject;
+import com.jmathanim.MathObjects.Shapes.Line;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Coordinates;
-import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.MathObject;
 
 /**
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com

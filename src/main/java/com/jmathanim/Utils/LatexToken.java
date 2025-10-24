@@ -59,7 +59,7 @@ public class LatexToken {
     private Integer secondaryFlags;
 
     private String string;
-    public boolean takesStyleFromNext;
+    private boolean takesStyleFromNext;
     private Integer delimiterDepth;
 
     /**
@@ -532,4 +532,12 @@ public class LatexToken {
             "nwarrow",
             "implies", "iff"
     );
+
+    public boolean isTakesStyleFromNext() {
+        return takesStyleFromNext;
+    }
+
+    public void setTakesStyleFromNext(boolean takesStyleFromNext) {
+        this.takesStyleFromNext = takesStyleFromNext;
+    }
 }

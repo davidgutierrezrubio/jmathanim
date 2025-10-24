@@ -17,9 +17,9 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.Enum.LatexTokenType;
+import com.jmathanim.MathObjects.Text.AbstractLatexMathObject;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.PaintStyle;
-import com.jmathanim.mathobjects.Text.AbstractLatexMathObject;
 
 import java.util.ArrayList;
 

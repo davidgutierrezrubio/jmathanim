@@ -17,10 +17,10 @@
  */
 package com.jmathanim.Constructible.Lines;
 
+import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.MathObjects.UpdateableObjects.Updateable;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Coordinates;
-import com.jmathanim.mathobjects.updateableObjects.Updateable;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 

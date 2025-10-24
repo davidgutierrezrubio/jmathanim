@@ -18,12 +18,13 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Constructible.Points.CTAbstractPoint;
+import com.jmathanim.MathObjects.*;
+import com.jmathanim.MathObjects.Shapes.JMPath;
+import com.jmathanim.MathObjects.Shapes.MultiShapeObject;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.UsefulLambdas;
-import com.jmathanim.mathobjects.*;
-import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
 
 import java.util.ArrayList;
 

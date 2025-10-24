@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Utils;
 
-import com.jmathanim.mathobjects.Coordinates;
+import com.jmathanim.MathObjects.Coordinates;
 
 /**
  * Represents an empty rect. Should be returned and managed in special cases

@@ -17,8 +17,8 @@
  */
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
-import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.MathObjects.Shape;
+import com.jmathanim.MathObjects.Shapes.Line;
 
 /**
  * Animation to create infinite lines. Temporarily replaces the line with a

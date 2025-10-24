@@ -17,12 +17,12 @@
  */
 package com.jmathanim.Constructible.Conics;
 
+import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.MathObjects.Scalar;
+import com.jmathanim.MathObjects.Stateable;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Coordinates;
-import com.jmathanim.mathobjects.Scalar;
-import com.jmathanim.mathobjects.Stateable;
 
 /**
  * Represents a Circle imported from Geogebra with 2 points (center and another one in the perimeter)

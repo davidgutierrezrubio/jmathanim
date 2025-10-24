@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Animations.Strategies.Transform.Optimizers;
 
-import com.jmathanim.mathobjects.AbstractShape;
+import com.jmathanim.MathObjects.AbstractShape;
 
 /**
  * Interface to any class that implements a optimization strategy of paths prior

@@ -18,9 +18,9 @@
 package com.jmathanim.Styling;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.MathObjects.JMImage;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.JMImage;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 

@@ -1,9 +1,9 @@
 package com.jmathanim.Renderers.SkijaRenderer;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.MathObjects.AbstractShape;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.AbstractShape;
 import io.github.humbleui.skija.Surface;
 
 import javax.swing.*;

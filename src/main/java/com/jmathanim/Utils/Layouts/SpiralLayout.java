@@ -18,9 +18,9 @@
 package com.jmathanim.Utils.Layouts;
 
 import com.jmathanim.Enum.AnchorType;
+import com.jmathanim.MathObjects.AbstractMathGroup;
+import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.mathobjects.AbstractMathGroup;
-import com.jmathanim.mathobjects.Coordinates;
 
 /**
  * A Layout following a spiral form. The first object is the center of the

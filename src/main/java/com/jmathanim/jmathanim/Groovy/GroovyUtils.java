@@ -40,32 +40,12 @@ public class GroovyUtils {
 
     public static String processSourceCode(String userCode) {
 
-       String sourceCode= addImports(userCode);
+        //Groovy uses $ as escape code
+        String sourceCode=userCode.replace("$$", "\\$\\$");
+
         return removeFieldLines(sourceCode);
 
 
-    }
-
-    private static  String addImports(String userCode) {
-        String fullScript = "import com.jmathanim.mathobjects.*\n" +
-                "import com.jmathanim.mathobjects.Axes.*\n" +
-                "import com.jmathanim.mathobjects.Delimiters.*\n" +
-                "import com.jmathanim.mathobjects.Text.*\n" +
-                "import com.jmathanim.mathobjects.Tippable.*\n" +
-                "import com.jmathanim.mathobjects.updaters.*\n" +
-                "import com.jmathanim.Animations.*\n" +
-                "import com.jmathanim.Animations.MathTransform.*\n" +
-                "import com.jmathanim.Animations.Strategies.*\n" +
-                "import com.jmathanim.Animations.Strategies.ShowCreation.*\n" +
-                "import com.jmathanim.Animations.Strategies.Transform.*\n" +
-                "import com.jmathanim.Animations.Strategies.Transform.Optimizers.*\n" +
-                "import com.jmathanim.Cameras.*\n" +
-                "import com.jmathanim.Constructible.*\n" +
-                "import com.jmathanim.Styling.*\n" +
-                "import com.jmathanim.Utils.*\n" +
-                "import com.jmathanim.Utils.Layouts.*\n" +
-                userCode;
-        return fullScript;
     }
     public static String removeFieldLines(String script) {
         return script.lines()

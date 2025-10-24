@@ -17,9 +17,9 @@
  */
 package com.jmathanim.Animations.Strategies.Transform;
 
+import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.Utils.OrientationType;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.MathObject;
 
 /**
  * Transforms one object to another, animating a flip effect

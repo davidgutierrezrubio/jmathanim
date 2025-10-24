@@ -18,11 +18,11 @@ package com.jmathanim.Constructible.Others;
 
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Points.CTPoint;
+import com.jmathanim.MathObjects.Point;
+import com.jmathanim.MathObjects.Shape;
+import com.jmathanim.MathObjects.Shapes.JMPath;
+import com.jmathanim.MathObjects.Stateable;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Shape;
-import com.jmathanim.mathobjects.Stateable;
 
 /**
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com

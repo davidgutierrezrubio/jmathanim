@@ -20,8 +20,8 @@ package com.jmathanim.Utils.Layouts;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.BoxDirection;
 import com.jmathanim.Enum.RowAlignType;
+import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.Coordinates;
 
 /**
  * An abstract class to implement boxed-like layouts, like BoxLayout and

@@ -17,12 +17,12 @@
  */
 package com.jmathanim.Constructible.Conics;
 
+import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.MathObjects.Scalar;
+import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Coordinates;
-import com.jmathanim.mathobjects.Scalar;
-import com.jmathanim.mathobjects.Shape;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 

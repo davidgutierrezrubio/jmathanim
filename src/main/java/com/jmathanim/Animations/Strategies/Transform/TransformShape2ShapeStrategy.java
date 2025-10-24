@@ -1,6 +1,6 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
-import com.jmathanim.mathobjects.AbstractShape;
+import com.jmathanim.MathObjects.AbstractShape;
 
 public class TransformShape2ShapeStrategy<T extends AbstractShape<?>> extends TransformStrategy<T> {
     private T originShape;

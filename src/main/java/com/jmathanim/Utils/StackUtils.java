@@ -3,8 +3,8 @@ package com.jmathanim.Utils;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.ScreenAnchor;
-import com.jmathanim.mathobjects.Coordinates;
-import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.MathObjects.MathObject;
 
 public class StackUtils<T extends MathObject<T>> {
     private final T parent;

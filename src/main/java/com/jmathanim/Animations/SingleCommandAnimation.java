@@ -17,9 +17,9 @@
  */
 package com.jmathanim.Animations;
 
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Scalar;
-import com.jmathanim.mathobjects.Text.LatexMathObject;
+import com.jmathanim.MathObjects.MathObject;
+import com.jmathanim.MathObjects.Scalar;
+import com.jmathanim.MathObjects.Text.LatexMathObject;
 
 /**
  * This animation execute a single command. It is used to encapsulate ceratin

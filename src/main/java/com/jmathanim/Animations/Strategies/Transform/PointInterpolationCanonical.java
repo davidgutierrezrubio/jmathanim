@@ -19,9 +19,13 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.DivideOnSensiblePointsStrategy;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.SimpleConnectedPathsOptimizationStrategy;
+import com.jmathanim.MathObjects.AbstractShape;
+import com.jmathanim.MathObjects.CanonicalJMPath;
+import com.jmathanim.MathObjects.Shape;
+import com.jmathanim.MathObjects.Shapes.JMPath;
+import com.jmathanim.MathObjects.Shapes.JMPathPoint;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;

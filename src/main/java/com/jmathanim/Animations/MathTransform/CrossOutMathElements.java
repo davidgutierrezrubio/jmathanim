@@ -20,15 +20,15 @@ package com.jmathanim.Animations.MathTransform;
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.Commands;
 import com.jmathanim.Animations.ShiftAnimation;
+import com.jmathanim.MathObjects.AbstractMultiShapeObject;
+import com.jmathanim.MathObjects.Shape;
+import com.jmathanim.MathObjects.Shapes.JMPath;
+import com.jmathanim.MathObjects.Shapes.MultiShapeObject;
+import com.jmathanim.MathObjects.Text.AbstractLatexMathObject;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.AbstractMultiShapeObject;
-import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.Shape;
-import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
-import com.jmathanim.mathobjects.Text.AbstractLatexMathObject;
 
 import java.util.ArrayList;
 

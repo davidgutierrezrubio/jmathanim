@@ -17,8 +17,8 @@
  */
 package com.jmathanim.Animations;
 
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.hasScalarParameter;
+import com.jmathanim.MathObjects.MathObject;
+import com.jmathanim.MathObjects.hasScalarParameter;
 
 /**
  * Animates a Scalar object

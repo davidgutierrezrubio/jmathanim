@@ -19,10 +19,10 @@ package com.jmathanim.Utils.Layouts;
 
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.LayoutType;
+import com.jmathanim.MathObjects.*;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.*;
 
 /**
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com

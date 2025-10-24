@@ -20,10 +20,10 @@ package com.jmathanim.Constructible.Conics;
 import com.jmathanim.Constructible.Lines.CTAbstractLine;
 import com.jmathanim.Constructible.Lines.CTVector;
 import com.jmathanim.Constructible.Points.CTAbstractPoint;
+import com.jmathanim.MathObjects.Scalar;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Scalar;
 
 /**
  *

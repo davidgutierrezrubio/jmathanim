@@ -1,10 +1,10 @@
 package com.jmathanim.Utils.Layouts;
 
 import com.jmathanim.Enum.RotationType;
+import com.jmathanim.MathObjects.AbstractMathGroup;
+import com.jmathanim.MathObjects.Shapes.JMPath;
+import com.jmathanim.MathObjects.hasPath;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.AbstractMathGroup;
-import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.hasPath;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 

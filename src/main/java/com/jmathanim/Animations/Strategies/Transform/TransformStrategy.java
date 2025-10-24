@@ -19,7 +19,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.OptimizePathsStrategy;
-import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.MathObjects.MathObject;
 
 /**
  * @author David

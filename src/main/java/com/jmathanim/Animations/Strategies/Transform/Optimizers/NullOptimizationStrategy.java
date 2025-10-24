@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Animations.Strategies.Transform.Optimizers;
 
-import com.jmathanim.mathobjects.AbstractShape;
+import com.jmathanim.MathObjects.AbstractShape;
 
 /**
  * Null optimization. This class does nothing and it is implemented for

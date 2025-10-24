@@ -17,12 +17,12 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.Enum.LatexTokenType;
+import com.jmathanim.MathObjects.Text.AbstractLatexMathObject;
+import com.jmathanim.MathObjects.Text.LatexShape;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Text.AbstractLatexMathObject;
-import com.jmathanim.mathobjects.Text.LatexShape;
 
 import java.util.ArrayList;
 
@@ -195,7 +195,7 @@ public class LatexStyleItem {
 
             }
             for (int k = 1; k <= i; k++) {
-                if (tokens.get(i - k).takesStyleFromNext) {
+                if (tokens.get(i - k).isTakesStyleFromNext()) {
                     latex.get(i - k).getMp().copyFrom(latexShape.getMp());
                 } else {
                     break;

@@ -1,11 +1,11 @@
 package com.jmathanim.Renderers.SkijaRenderer;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.MathObjects.AbstractShape;
 import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.AbstractShape;
 import io.github.humbleui.skija.*;
 
 import java.awt.image.BufferedImage;

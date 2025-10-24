@@ -18,11 +18,11 @@ package com.jmathanim.Constructible.Others;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.MathObjects.FunctionGraph;
+import com.jmathanim.MathObjects.MathObject;
+import com.jmathanim.MathObjects.shouldUdpateWithCamera;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
-import com.jmathanim.mathobjects.FunctionGraph;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.shouldUdpateWithCamera;
 
 /**
  *

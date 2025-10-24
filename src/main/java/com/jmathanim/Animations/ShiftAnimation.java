@@ -18,10 +18,10 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Enum.JumpType;
+import com.jmathanim.MathObjects.AffineTransformable;
+import com.jmathanim.MathObjects.MathObject;
+import com.jmathanim.MathObjects.MathObjectGroup;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.AffineTransformable;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MathObjectGroup;
 
 import java.util.HashMap;
 

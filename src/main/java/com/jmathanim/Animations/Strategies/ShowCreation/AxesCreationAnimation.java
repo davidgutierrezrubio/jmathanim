@@ -19,11 +19,11 @@ package com.jmathanim.Animations.Strategies.ShowCreation;
 
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.ShowCreation;
+import com.jmathanim.MathObjects.Axes.Axes;
+import com.jmathanim.MathObjects.Axes.TickAxes;
+import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.Axes.Axes;
-import com.jmathanim.mathobjects.Axes.TickAxes;
-import com.jmathanim.mathobjects.Coordinates;
 
 /**
  * Animation to crate axes. This strategy is automatically chosen by the

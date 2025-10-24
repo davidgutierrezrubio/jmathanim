@@ -1,11 +1,11 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
+import com.jmathanim.MathObjects.AbstractShape;
+import com.jmathanim.MathObjects.Shape;
+import com.jmathanim.MathObjects.Shapes.JMPathPoint;
 import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.AbstractShape;
-import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.Shape;
 
 import java.util.function.DoubleUnaryOperator;
 

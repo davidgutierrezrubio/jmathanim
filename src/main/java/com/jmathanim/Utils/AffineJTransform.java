@@ -17,8 +17,8 @@
  */
 package com.jmathanim.Utils;
 
-import com.jmathanim.mathobjects.Coordinates;
-import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.MathObjects.MathObject;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;

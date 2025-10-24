@@ -17,13 +17,11 @@
  */
 package com.jmathanim.Constructible;
 
-import com.jmathanim.Constructible.Points.CTAbstractPoint;
-import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Enum.AnchorType;
+import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.MathObjects.Text.LatexMathObject;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Coordinates;
-import com.jmathanim.mathobjects.Text.LatexMathObject;
 
 /**
  * A constructible LaTeX expression, anchored to a CTPoint

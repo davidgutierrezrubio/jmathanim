@@ -17,9 +17,9 @@
  */
 package com.jmathanim.Animations.Strategies.Transform;
 
+import com.jmathanim.MathObjects.AbstractShape;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.AbstractShape;
 
 /**
  *

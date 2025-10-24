@@ -19,8 +19,12 @@ package com.jmathanim.Constructible.Conics;
 
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.PointOwner;
+import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.MathObjects.Scalar;
+import com.jmathanim.MathObjects.Shape;
+import com.jmathanim.MathObjects.Shapes.JMPath;
+import com.jmathanim.MathObjects.Stateable;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.*;
 
 /**
  * An abstract class representing a Constructible circle or similar

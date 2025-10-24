@@ -19,8 +19,8 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Commands;
+import com.jmathanim.MathObjects.Delimiters.Arrow;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.Arrow;
 
 /**
  * Transfom stratregy from one arrow to another. Currently only changes starting/ending points, not head transform is

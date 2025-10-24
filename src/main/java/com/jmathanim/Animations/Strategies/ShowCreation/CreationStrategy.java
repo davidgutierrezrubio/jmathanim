@@ -17,8 +17,8 @@
  */
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
+import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.Coordinates;
 
 /**
  *

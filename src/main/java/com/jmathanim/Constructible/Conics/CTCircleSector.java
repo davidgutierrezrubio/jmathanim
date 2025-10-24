@@ -18,10 +18,11 @@
 package com.jmathanim.Constructible.Conics;
 
 import com.jmathanim.Constructible.Points.CTPoint;
+import com.jmathanim.MathObjects.*;
+import com.jmathanim.MathObjects.Shapes.JMPathPoint;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.*;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 

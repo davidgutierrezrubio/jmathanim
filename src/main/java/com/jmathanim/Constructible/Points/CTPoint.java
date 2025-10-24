@@ -17,9 +17,9 @@
  */
 package com.jmathanim.Constructible.Points;
 
+import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.MathObjects.Point;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.Coordinates;
-import com.jmathanim.mathobjects.Point;
 
 /**
  *

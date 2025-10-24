@@ -19,10 +19,10 @@ package com.jmathanim.Styling;
 
 import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Enum.DotStyle;
+import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.LatexStyle;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.MathObject;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 

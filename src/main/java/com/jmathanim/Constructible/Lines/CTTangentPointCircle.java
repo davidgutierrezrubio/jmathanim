@@ -17,10 +17,10 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Conics.CTAbstractCircle;
+import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Coordinates;
 
 /**
  *

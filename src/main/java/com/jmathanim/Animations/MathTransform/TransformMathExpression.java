@@ -20,13 +20,13 @@ package com.jmathanim.Animations.MathTransform;
 import com.jmathanim.Animations.*;
 import com.jmathanim.Animations.Strategies.Transform.FlipTransform;
 import com.jmathanim.Enum.ScreenAnchor;
+import com.jmathanim.MathObjects.AbstractMultiShapeObject;
+import com.jmathanim.MathObjects.AbstractShape;
+import com.jmathanim.MathObjects.MathObject;
+import com.jmathanim.MathObjects.Shape;
+import com.jmathanim.MathObjects.Shapes.MultiShapeObject;
 import com.jmathanim.Utils.OrientationType;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.AbstractMultiShapeObject;
-import com.jmathanim.mathobjects.AbstractShape;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Shape;
-import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
 
 import java.util.*;
 

@@ -17,9 +17,9 @@
  */
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
+import com.jmathanim.MathObjects.Delimiters.Arrow;
+import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.Arrow;
-import com.jmathanim.mathobjects.MathObject;
 
 /**
  *

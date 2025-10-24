@@ -20,10 +20,10 @@ package com.jmathanim.Utils.Layouts;
 import com.jmathanim.Enum.AlignType;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.BoxDirection;
-import com.jmathanim.mathobjects.AbstractMathGroup;
-import com.jmathanim.mathobjects.Coordinates;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MathObjectGroup;
+import com.jmathanim.MathObjects.AbstractMathGroup;
+import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.MathObjects.MathObject;
+import com.jmathanim.MathObjects.MathObjectGroup;
 
 import java.util.ArrayList;
 import java.util.function.IntToDoubleFunction;

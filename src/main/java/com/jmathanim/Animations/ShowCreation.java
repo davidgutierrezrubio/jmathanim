@@ -20,14 +20,17 @@ package com.jmathanim.Animations;
 import com.jmathanim.Animations.Strategies.ShowCreation.*;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Enum.ShowCreationStrategy;
+import com.jmathanim.MathObjects.*;
+import com.jmathanim.MathObjects.Axes.Axes;
+import com.jmathanim.MathObjects.Delimiters.Arrow;
+import com.jmathanim.MathObjects.Delimiters.Delimiter;
+import com.jmathanim.MathObjects.Shapes.Line;
+import com.jmathanim.MathObjects.Shapes.MultiShapeObject;
+import com.jmathanim.MathObjects.Shapes.Ray;
+import com.jmathanim.MathObjects.Text.LatexMathObject;
+import com.jmathanim.MathObjects.Text.LatexShape;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.*;
-import com.jmathanim.mathobjects.Axes.Axes;
-import com.jmathanim.mathobjects.Delimiters.Delimiter;
-import com.jmathanim.mathobjects.Shapes.MultiShapeObject;
-import com.jmathanim.mathobjects.Text.LatexMathObject;
-import com.jmathanim.mathobjects.Text.LatexShape;
 
 import java.util.function.DoubleUnaryOperator;
 

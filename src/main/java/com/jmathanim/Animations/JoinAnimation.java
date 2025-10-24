@@ -17,8 +17,8 @@
  */
 package com.jmathanim.Animations;
 
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.MathObjects.MathObject;
+import com.jmathanim.MathObjects.Shape;
 
 import java.util.ArrayList;
 import java.util.Arrays;

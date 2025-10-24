@@ -17,8 +17,8 @@
  */
 package com.jmathanim.Constructible.Lines;
 
+import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.Coordinates;
 
 /**
  * A perpendicular bisector of a segment (perpendicular line that pass through midpoint)

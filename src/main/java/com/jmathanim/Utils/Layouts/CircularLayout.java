@@ -1,9 +1,9 @@
 package com.jmathanim.Utils.Layouts;
 
 import com.jmathanim.Enum.RotationType;
+import com.jmathanim.MathObjects.AbstractMathGroup;
+import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.AbstractMathGroup;
-import com.jmathanim.mathobjects.Coordinates;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI2;

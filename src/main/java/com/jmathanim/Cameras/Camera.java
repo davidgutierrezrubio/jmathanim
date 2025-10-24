@@ -17,15 +17,15 @@
  */
 package com.jmathanim.Cameras;
 
+import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.MathObjects.MathObject;
+import com.jmathanim.MathObjects.hasTrivialBoundingBox;
+import com.jmathanim.MathObjects.shouldUdpateWithCamera;
 import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.EmptyRect;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Coordinates;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.hasTrivialBoundingBox;
-import com.jmathanim.mathobjects.shouldUdpateWithCamera;
 
 import java.util.ArrayList;
 

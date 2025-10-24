@@ -21,8 +21,12 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Enum.DotStyle;
+import com.jmathanim.MathObjects.Point;
+import com.jmathanim.MathObjects.Shape;
+import com.jmathanim.MathObjects.Shapes.JMPath;
+import com.jmathanim.MathObjects.Shapes.JMPathPoint;
+import com.jmathanim.MathObjects.hasPath;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.*;
 
 import java.util.ArrayList;
 
