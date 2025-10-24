@@ -21,8 +21,10 @@ Manual
 What's new?
 ===========
 
-Version 0.9.13-SNAPSHOT (19/10/2025)
+Version 0.9.13-SNAPSHOT (24/10/2025)
 
+* Improved Groovy code execution.
+* Added maven directives to generate a "fat jar" to use as Groovy executor.
 * Big rewriting of code to improve efficiency.
 * Changed class structure to use generics.
 * Several syntax changes, which may get incompatibility with previous versions.
