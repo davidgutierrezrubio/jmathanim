@@ -58,6 +58,7 @@ public class GroovyExecutor extends Scene2D {
 
         } catch (IOException e) {
             logger.error("File not found: " + groovyScriptFileName);
+            e.printStackTrace();
             System.exit(1);
         }
     }
