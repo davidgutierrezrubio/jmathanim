@@ -91,7 +91,8 @@ public class JavaFXRenderer extends Renderer {
 //    public double FxCamerarotateY = 0;
 //    public double FxCamerarotateZ = 0;
     public double correctionThickness;
-    protected PerspectiveCamera fxCamera;
+//    protected PerspectiveCamera fxCamera;
+    protected ParallelCamera fxCamera;
     protected Scene fxScene;
     protected Group group;
     protected Group groupRoot;
@@ -188,7 +189,8 @@ public class JavaFXRenderer extends Renderer {
             fxScene.setFill(config.getBackgroundColor().getFXPaint(r, camera));
             StandaloneSnapshot.FXStarter.stage.setScene(fxScene);
             // Proof with perspective camera
-            fxCamera = new PerspectiveCamera();
+//            fxCamera = new PerspectiveCamera();
+            fxCamera = new ParallelCamera();
 //                fxCamera.setFieldOfView(.1);
 // These are 3d tests, maybe for the future...
 //                fxCamera.getTransforms().addAll(
