@@ -674,6 +674,17 @@
                             <mainClass>com.jmathanim.jmathanim.Groovy.GroovyExecutor</mainClass> <!-- cambia esto por tu clase -->
                         </transformer>
                     </transformers>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>javafx/**</exclude>
+                                <exclude>com/sun/javafx/**</exclude>
+                                <exclude>com/sun/glass/**</exclude>
+                                <exclude>com/sun/prism/**</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
                 </configuration>
             </execution>
         </executions>
