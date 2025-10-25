@@ -21,10 +21,7 @@ import com.jmathanim.Animations.Strategies.Transform.FlipTransform;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Constructible.Constructible;
-import com.jmathanim.Enum.AlignType;
-import com.jmathanim.Enum.AnchorType;
-import com.jmathanim.Enum.LayoutType;
-import com.jmathanim.Enum.ScreenAnchor;
+import com.jmathanim.Enum.*;
 import com.jmathanim.MathObjects.*;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.DrawStyleProperties;
@@ -35,7 +32,6 @@ import com.jmathanim.Utils.*;
 import com.jmathanim.Utils.Layouts.GroupLayout;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import javafx.scene.shape.StrokeLineCap;
 
 import java.util.*;
 

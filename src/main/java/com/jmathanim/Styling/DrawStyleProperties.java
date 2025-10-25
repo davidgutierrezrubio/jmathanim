@@ -19,9 +19,9 @@ package com.jmathanim.Styling;
 
 import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Enum.DotStyle;
+import com.jmathanim.Enum.StrokeLineCap;
+import com.jmathanim.Enum.StrokeLineJoin;
 import com.jmathanim.Utils.Vec;
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeLineJoin;
 
 /**
  * The {@code Stylable} interface provides a contract for objects that possess styling properties such as colors,

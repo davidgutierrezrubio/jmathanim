@@ -19,7 +19,6 @@ package com.jmathanim.Constructible;
 
 import com.jmathanim.Constructible.Conics.*;
 import com.jmathanim.Constructible.Lines.*;
-import com.jmathanim.Constructible.Others.CTFunctionGraph;
 import com.jmathanim.Constructible.Others.CTImage;
 import com.jmathanim.Constructible.Points.*;
 import com.jmathanim.Constructible.Transforms.CTMirrorPoint;
@@ -356,7 +355,8 @@ class GeogebraCommandParser {
     protected void processFunctionElement(Element el) {
         String label = el.getAttribute("label");
         String text = expressions.get(label);
-        registerGeogebraElement(label, CTFunctionGraph.make(text));
+        //TODO: Should implement math parsing library to import this
+//        registerGeogebraElement(label, CTFunctionGraph.make(text));
     }
 
     protected void processSegmentCommand(Element el) {

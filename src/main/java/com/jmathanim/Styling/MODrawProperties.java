@@ -19,17 +19,15 @@ package com.jmathanim.Styling;
 
 import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Enum.DotStyle;
+import com.jmathanim.Enum.StrokeLineCap;
+import com.jmathanim.Enum.StrokeLineJoin;
 import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeLineJoin;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * This class stores all drawing properties of a MathObject like color, thickness, alpha, etc.
@@ -45,7 +43,7 @@ public class MODrawProperties implements DrawStyleProperties {
     // If false, thickness is computed to be a percentage of the width
     // to ensure zoom or resolution doesn't affect the result
     private Boolean absoluteThickness = false;
-    private StrokeLineJoin linejoin;
+    private StrokeLineJoin linejoin=StrokeLineJoin.ROUND;
     private MathObject<?> parent;
     private Boolean visible = true;
     private DashStyle dashStyle = DashStyle.SOLID;
@@ -128,13 +126,6 @@ public class MODrawProperties implements DrawStyleProperties {
             JMathAnimScene.logger.error("Dot style {} not recognized, using default {}", str, resul);
         }
         return resul;
-    }
-
-    public static Color randomColor() {
-        int r = ThreadLocalRandom.current().nextInt(0, 255 + 1);
-        int g = ThreadLocalRandom.current().nextInt(0, 255 + 1);
-        int b = ThreadLocalRandom.current().nextInt(0, 255 + 1);
-        return new Color(r, g, b);
     }
 
     /**

@@ -48,10 +48,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Path;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeType;
+import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -374,8 +371,11 @@ public class JavaFXRenderer extends Renderer {
 
     private void applyDrawingStyles(Path path, AbstractShape<?> mobj) {
 
-        path.setStrokeLineCap(mobj.getMp().getLineCap());
-        path.setStrokeLineJoin(mobj.getMp().getLineJoin());
+        StrokeLineCap cap = strokeLineCapToFX(mobj);
+        StrokeLineJoin join = strokeJoinToFX(mobj);
+
+        path.setStrokeLineCap(cap);
+        path.setStrokeLineJoin(join);
         path.setStrokeType(StrokeType.CENTERED);
 //        path.setSmooth(false);
 
@@ -410,6 +410,38 @@ public class JavaFXRenderer extends Renderer {
                 path.setStrokeLineCap(StrokeLineCap.BUTT);
                 break;
         }
+    }
+
+    private static StrokeLineJoin strokeJoinToFX(AbstractShape<?> mobj) {
+        StrokeLineJoin join;
+        switch(mobj.getMp().getLineJoin()) {
+            case BEVEL:
+                join = StrokeLineJoin.BEVEL;
+                break;
+            case ROUND:
+                join = StrokeLineJoin.ROUND;
+                break;
+            default:
+                join = StrokeLineJoin.MITER;
+                break;
+        }
+        return join;
+    }
+
+    private static StrokeLineCap strokeLineCapToFX(AbstractShape<?> mobj) {
+        StrokeLineCap cap;
+        switch(mobj.getMp().getLineCap()) {
+            case BUTT:
+                cap = StrokeLineCap.BUTT;
+                break;
+            case ROUND:
+                cap = StrokeLineCap.ROUND;
+                break;
+            default:
+                cap = StrokeLineCap.SQUARE;
+                break;
+        }
+        return cap;
     }
 
     private void applyRendererEffects(Node node, RendererEffects rendererEffects) {

@@ -19,10 +19,7 @@ package com.jmathanim.MathObjects;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.DummyCamera;
-import com.jmathanim.Enum.AlignType;
-import com.jmathanim.Enum.AnchorType;
-import com.jmathanim.Enum.DashStyle;
-import com.jmathanim.Enum.ScreenAnchor;
+import com.jmathanim.Enum.*;
 import com.jmathanim.MathObjects.UpdateableObjects.Updateable;
 import com.jmathanim.MathObjects.Updaters.Updater;
 import com.jmathanim.Styling.MODrawProperties;
@@ -32,7 +29,6 @@ import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import javafx.scene.shape.StrokeLineCap;
 
 import java.util.*;
 

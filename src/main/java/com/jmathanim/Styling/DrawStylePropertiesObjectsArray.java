@@ -19,12 +19,12 @@ package com.jmathanim.Styling;
 
 import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Enum.DotStyle;
+import com.jmathanim.Enum.StrokeLineCap;
+import com.jmathanim.Enum.StrokeLineJoin;
 import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.Utils.LatexStyle;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimConfig;
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeLineJoin;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -23,7 +23,6 @@ import com.jmathanim.MathObjects.Shapes.JMPathPoint;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimConfig;
-import org.mariuszgromada.math.mxparser.Function;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -84,18 +83,18 @@ public class FunctionGraph extends AbstractShape<FunctionGraph> implements hasSc
     public DoubleBinaryOperator functionBase;
     private double w;
 
-    //TODO: Change this to Constructible subclass
-    public static FunctionGraph make(String function, double xmin, double xmax) {
-        Function f = new Function(function);
-        return make(x -> f.calculate(x), xmin, xmax);
-    }
+//    //TODO: Change this to Constructible subclass
+//    public static FunctionGraph make(String function, double xmin, double xmax) {
+//        Function f = new Function(function);
+//        return make(x -> f.calculate(x), xmin, xmax);
+//    }
 
-    public static FunctionGraph make(String function) {
-        Function f = new Function(function);
-        FunctionGraph resul = make(x -> f.calculate(x));
-        resul.setDynamicRange(true);
-        return resul;
-    }
+//    public static FunctionGraph make(String function) {
+//        Function f = new Function(function);
+//        FunctionGraph resul = make(x -> f.calculate(x));
+//        resul.setDynamicRange(true);
+//        return resul;
+//    }
 
     public static FunctionGraph make(DoubleBinaryOperator function) {
         Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();

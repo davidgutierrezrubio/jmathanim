@@ -21,8 +21,6 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.MathObjects.FunctionGraph;
 import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.MathObjects.shouldUdpateWithCamera;
-import com.jmathanim.Utils.Rect;
-import com.jmathanim.jmathanim.JMathAnimConfig;
 
 /**
  *
@@ -31,27 +29,27 @@ import com.jmathanim.jmathanim.JMathAnimConfig;
 public class CTFunctionGraph extends Constructible implements shouldUdpateWithCamera {
 
     FunctionGraph fg;
+//
+//    public static CTFunctionGraph make(String function) {
+//        Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
+//        CTFunctionGraph resul = new CTFunctionGraph(function, r.xmin, r.xmax);
+//        resul.setDynamicRange(true);
+//        resul.fg.updatePoints();
+//        resul.rebuildShape();
+//        return resul;
+//    }
+//
+//    public static CTFunctionGraph make(String function, double xmin, double xmax) {
+//        CTFunctionGraph resul = new CTFunctionGraph(function, xmin, xmax);
+//        resul.setDynamicRange(false);
+//        resul.fg.updatePoints();
+//        resul.rebuildShape();
+//        return resul;
+//    }
 
-    public static CTFunctionGraph make(String function) {
-        Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
-        CTFunctionGraph resul = new CTFunctionGraph(function, r.xmin, r.xmax);
-        resul.setDynamicRange(true);
-        resul.fg.updatePoints();
-        resul.rebuildShape();
-        return resul;
-    }
-
-    public static CTFunctionGraph make(String function, double xmin, double xmax) {
-        CTFunctionGraph resul = new CTFunctionGraph(function, xmin, xmax);
-        resul.setDynamicRange(false);
-        resul.fg.updatePoints();
-        resul.rebuildShape();
-        return resul;
-    }
-
-    private CTFunctionGraph(String function, double xmin, double xmax) {
-        fg = FunctionGraph.make(function, xmin, xmax);
-    }
+//    private CTFunctionGraph(String function, double xmin, double xmax) {
+//        fg = FunctionGraph.make(function, xmin, xmax);
+//    }
 
     @Override
     public Constructible copy() {
