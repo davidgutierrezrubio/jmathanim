@@ -17,7 +17,6 @@
  */
 package com.jmathanim.jmathanim;
 
-import ch.qos.logback.classic.Level;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Enum.DotStyle;
@@ -513,19 +512,19 @@ public class JMathAnimConfig {
         level = Math.max(level, 0);
         switch (level) {
             case 0:
-                logger.setLevel(Level.OFF);
+                logger.setLevel(ch.qos.logback.classic.Level.OFF);
                 break;
             case 1:
-                logger.setLevel(Level.ERROR);
+                logger.setLevel(ch.qos.logback.classic.Level.ERROR);
                 break;
             case 2:
-                logger.setLevel(Level.WARN);
+                logger.setLevel(ch.qos.logback.classic.Level.WARN);
                 break;
             case 3:
-                logger.setLevel(Level.INFO);
+                logger.setLevel(ch.qos.logback.classic.Level.INFO);
                 break;
             case 4:
-                logger.setLevel(Level.DEBUG);
+                logger.setLevel(ch.qos.logback.classic.Level.DEBUG);
                 break;
             default:
                 //Do nothing here
