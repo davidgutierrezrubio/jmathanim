@@ -291,7 +291,9 @@ public class JavaFXRenderer extends Renderer {
     public void finish(int frameCount) {
 
         JMathAnimScene.logger.info(
-                String.format("%d frames created, " + LogUtils.GREEN + "%.2fs" + LogUtils.RESET + " total time", frameCount, (1.f * frameCount) / config.getFps()));
+                String.format("%d frames created, "
+                        + LogUtils.GREEN + "%.2f" + LogUtils.RESET +"s"+
+                        " total time", frameCount, (1.f * frameCount) / config.getFps()));
         if (config.isCreateMovie()) {
             /**
              * Encoders, like decoders, sometimes cache pictures so it can do
@@ -299,7 +301,7 @@ public class JavaFXRenderer extends Renderer {
              * well. As with the decoders, the convention is to pass in a null
              * input until the output is not complete.
              */
-            JMathAnimScene.logger.info("Finishing movie...");
+            JMathAnimScene.logger.debug("Finishing movie...");
             videoEncoder.finish();
             if (videoEncoder.isFramesGenerated()) {
                 JMathAnimScene.logger.info("Movie created at " + saveFilePath);

@@ -253,10 +253,14 @@ public abstract class JMathAnimScene {
     private void initializeRenderer() {
         JMathAnimConfig.getConfig().setRenderer(createRenderer());
         status=SCENE_STATUS.PLAYING;
-        JMathAnimScene.logger.debug("Renderer initialized "
+        JMathAnimScene.logger.debug("Renderer "+
+                 LogUtils.CYAN+renderer.getClass().getSimpleName()+LogUtils.RESET+
+                " initialized "
                 +LogUtils.GREEN+camera.getScreenWidth()+LogUtils.RESET
-                                +" x "
+                                +"x"
                 +LogUtils.GREEN+camera.getScreenHeight()+LogUtils.RESET
+                +" at "
+                +LogUtils.GREEN+fps+LogUtils.RESET+" fps."
         );
     }
 
@@ -618,7 +622,9 @@ public abstract class JMathAnimScene {
             }
             anim.initialize(this);// Perform needed steps immediately before playing
             if (!"".equals(anim.getDebugName())) {
-                JMathAnimScene.logger.info("Begin animation: " + LogUtils.CYAN + anim.getDebugName() + LogUtils.RESET + " [" + LogUtils.GREEN + anim.getRunTime() + "s" + LogUtils.RESET + "]");
+                JMathAnimScene.logger.info("Begin animation: "
+                        + LogUtils.CYAN + anim.getDebugName() + LogUtils.RESET +
+                        " [" + LogUtils.GREEN + anim.getRunTime()  + LogUtils.RESET + " seconds]");
             }
 
             if (animationIsDisabled) {
@@ -653,7 +659,7 @@ public abstract class JMathAnimScene {
         if (animationIsDisabled) {
             return;
         }
-        JMathAnimScene.logger.info("Waiting " + LogUtils.GREEN + time + "s" + LogUtils.RESET);
+        JMathAnimScene.logger.info("Waiting " + LogUtils.GREEN + time + LogUtils.RESET+ " seconds" );
         int numFrames = (int) (time * fps);
         for (int n = 0; n < numFrames; n++) {
             try {
