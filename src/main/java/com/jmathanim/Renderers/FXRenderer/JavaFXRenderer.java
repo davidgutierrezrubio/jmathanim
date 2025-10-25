@@ -292,7 +292,7 @@ public class JavaFXRenderer extends Renderer {
 
         JMathAnimScene.logger.info(
                 String.format("%d frames created, "
-                        + LogUtils.GREEN + "%.2f" + LogUtils.RESET +"s"+
+                        + LogUtils.GREEN + "%.2f" + LogUtils.RESET +" seconds"+
                         " total time", frameCount, (1.f * frameCount) / config.getFps()));
         if (config.isCreateMovie()) {
             /**
