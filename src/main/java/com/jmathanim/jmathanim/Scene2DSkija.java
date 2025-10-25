@@ -18,6 +18,7 @@
 package com.jmathanim.jmathanim;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Renderers.SkijaRenderer.SkijaRenderer;
 
 import java.util.logging.Level;
@@ -38,7 +39,7 @@ public abstract class Scene2DSkija extends JMathAnimScene {
 	}
 
 	@Override
-	protected void createRenderer() {
+	protected Renderer createRenderer() {
 		fps = getConfig().fps;
 		dt = 1. / fps;
 		timeMillisPerFrame= (long) (1000d/fps);
@@ -48,9 +49,8 @@ public abstract class Scene2DSkija extends JMathAnimScene {
 		} catch (Exception ex) {
 			Logger.getLogger(Scene2DSkija.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		camera = renderer.getCamera();
-		fixedCamera = renderer.getFixedCamera();
 		super.renderer = renderer;
+        return renderer;
 	}
 
 }

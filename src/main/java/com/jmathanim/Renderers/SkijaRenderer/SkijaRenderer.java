@@ -9,8 +9,8 @@ import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.RendererEffects;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 import java.awt.image.BufferedImage;
@@ -33,11 +33,11 @@ public class SkijaRenderer extends Renderer {
 
     public SkijaRenderer(JMathAnimScene parentScene) {
         super(parentScene);//super method initializes config object
-        camera = new Camera(scene, config.mediaW, config.mediaH);
-        fixedCamera = new Camera(scene, config.mediaW, config.mediaH);
+                camera = new Camera(scene, config.getMediaWidth(), config.getMediaHeight());
+        fixedCamera = new Camera(scene, config.getMediaWidth(), config.getMediaHeight());
         camera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         fixedCamera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
-        correctionThickness = config.mediaW * 1d / 1066;//Correction factor for thickness
+        correctionThickness = config.getMediaWidth() * 1d / 1066;//Correction factor for thickness
         skijaHandler = new SkijaSwingHandler(JMathAnimConfig.getConfig(),keepRunning);
         //Gl handler is slow??
 //        skijaHandler = new SkijaGLHandler(JMathAnimConfig.getConfig(), keepRunning);
@@ -70,7 +70,7 @@ public class SkijaRenderer extends Renderer {
             File tempPath = new File(config.getOutputDir().getCanonicalPath());
             tempPath.mkdirs();
             saveFilePath = new File(config.getOutputDir().getCanonicalPath() + File.separator
-                    + config.getOutputFileName() + "_" + config.mediaH + ".mp4");
+                    + config.getOutputFileName() + "_" + config.getMediaHeight() + ".mp4");
             JMathAnimScene.logger.info("Creating movie encoder for {}", saveFilePath);
             config.setSaveFilePath(saveFilePath);
             videoEncoder.createEncoder(config);
@@ -121,7 +121,7 @@ public class SkijaRenderer extends Renderer {
     public void finish(int frameCount) {
 
         JMathAnimScene.logger.info(
-                String.format("%d frames created, %.2fs total time", frameCount, (1.f * frameCount) / config.fps));
+                String.format("%d frames created, %.2fs total time", frameCount, (1.f * frameCount) / config.getFps()));
 
         if (config.isCreateMovie()) {
             /**

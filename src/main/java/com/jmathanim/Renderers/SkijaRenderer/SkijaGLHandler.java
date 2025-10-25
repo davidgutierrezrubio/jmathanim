@@ -1,7 +1,7 @@
 //package com.jmathanim.Renderers.SkijaRenderer;
 //
 //import com.jmathanim.Cameras.Camera;
-//import com.jmathanim.Utils.JMathAnimConfig;
+//import com.jmathanim.jmathanim.JMathAnimConfig;
 //import com.jmathanim.mathobjects.Shape;
 //import io.github.humbleui.skija.*;
 //import org.lwjgl.glfw.GLFW;

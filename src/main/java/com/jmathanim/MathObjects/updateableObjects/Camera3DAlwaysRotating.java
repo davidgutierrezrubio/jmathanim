@@ -36,7 +36,7 @@ public class Camera3DAlwaysRotating implements  Updateable{
         if (scene instanceof SceneJOGL) {
             SceneJOGL sceneJOGL = (SceneJOGL) scene;
             camera=sceneJOGL.getRenderer().getCamera();
-            angle=2*PI/(sceneJOGL.getConfig().fps*spr);
+            angle=2*PI/(sceneJOGL.getConfig().getFps()*spr);
         }
 
     }

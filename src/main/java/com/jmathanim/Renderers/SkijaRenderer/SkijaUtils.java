@@ -5,9 +5,9 @@ import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.MathObjects.Shapes.JMPath;
 import com.jmathanim.MathObjects.Shapes.JMPathPoint;
 import com.jmathanim.Styling.*;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import io.github.humbleui.skija.*;
 
 import java.util.HashMap;
@@ -43,13 +43,13 @@ class SkijaUtils {
     protected Matrix33 createCameraView(Camera camera) {
         float width_math = 10f;
         com.jmathanim.Utils.Rect mathView = camera.getMathView();
-        float scale = (float) (config.mediaW / mathView.getWidth());
+        float scale = (float) (config.getMediaWidth() / mathView.getWidth());
 
         float centerX = (float) (.5 * (mathView.xmin + mathView.xmax));
         float centerY = (float) (.5 * (mathView.ymin + mathView.ymax));
         // Coordenadas del centro en píxeles después de escalar
-        float dx = config.mediaW / 2f - centerX * scale;
-        float dy = config.mediaH / 2f + centerY * scale; // + porque Y se invierte
+        float dx = config.getMediaWidth() / 2f - centerX * scale;
+        float dy = config.getMediaHeight() / 2f + centerY * scale; // + porque Y se invierte
         Matrix33 transform = Matrix33.makeTranslate(dx, dy)
                 .makeConcat(Matrix33.makeScale(scale, -scale));
         return transform;

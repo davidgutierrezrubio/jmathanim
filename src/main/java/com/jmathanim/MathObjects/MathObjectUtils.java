@@ -1,5 +1,7 @@
 package com.jmathanim.MathObjects;
 
+import com.jmathanim.Constructible.CTNullMathObject;
+
 public class MathObjectUtils {
     /**
      * Returns a null-safe copy of MathObject
@@ -9,7 +11,7 @@ public class MathObjectUtils {
      */
     public static MathObject getSafeCopyOf(MathObject obj) {
         if (obj == null) {
-            return new NullMathObject();
+            return new CTNullMathObject();
         } else {
             return obj.copy();
         }

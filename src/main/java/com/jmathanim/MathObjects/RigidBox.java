@@ -1,6 +1,7 @@
 package com.jmathanim.MathObjects;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Constructible.CTNullMathObject;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Utils.AffineJTransform;
@@ -32,7 +33,7 @@ public class RigidBox extends MathObject<RigidBox> {
 
     public void setMathObjectReference(MathObject<?> mathObjectReference) {
 
-        this.mathObjectReference = (mathObjectReference == null ? new NullMathObject() : mathObjectReference);
+        this.mathObjectReference = (mathObjectReference == null ? new CTNullMathObject() : mathObjectReference);
         this.mathObjectCopyToDraw = this.mathObjectReference.copy();
     }
 

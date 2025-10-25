@@ -1,9 +1,9 @@
 package com.jmathanim.MathObjects.Delimiters;
 
+import com.jmathanim.Constructible.CTNullMathObject;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.DelimiterType;
 import com.jmathanim.MathObjects.Coordinates;
-import com.jmathanim.MathObjects.NullMathObject;
 import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.UsefulLambdas;
@@ -56,7 +56,7 @@ public class LengthMeasure extends Delimiter {
         Shape verticalBar = Shape.polyLine(Vec.to(xOffset, -vCenter), Vec.to(0, 0), Vec.to(xOffset, vCenter));
         delimiterShapeToDraw.getPath().addJMPointsFrom(verticalBar.getPath());
 
-        if (getLabel() instanceof NullMathObject) {
+        if (getLabel() instanceof CTNullMathObject) {
 
             final Shape segment = Shape.segment(Vec.to(0, 0), Vec.to(width, 0));
             delimiterShapeToDraw.getPath().addJMPointsFrom(segment.getPath());

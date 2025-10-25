@@ -19,6 +19,7 @@ package com.jmathanim.MathObjects;
 
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Utils.*;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import javafx.scene.image.Image;
 
@@ -39,12 +40,17 @@ public class JMImage extends AbstractJMImage<JMImage> {
     private String filename;
     public JMImage(InputStream stream) {
         super();
-        this.stream = stream;
-        setCached(true);
-        this.filename = stream.toString();
         renderer = (JavaFXRenderer) JMathAnimConfig.getConfig().getRenderer();
-        this.bbox = renderer.createImage(stream);
-        double sc = renderer.getMediaHeight() * 1d / 1080d;// Scales it taking as reference 1920x1080 production output
+        this.stream = stream;
+        if (stream == null){
+            this.bbox = new EmptyRect();
+        }
+        else {
+            setCached(true);
+            this.filename = stream.toString();
+            this.bbox = renderer.createImage(stream);
+            double sc = renderer.getMediaHeight() * 1d / 1080d;// Scales it taking as reference 1920x1080 production output
+        }
 //        this.scale(sc);
     }
 
@@ -58,7 +64,7 @@ public class JMImage extends AbstractJMImage<JMImage> {
         } catch (IOException ex) {
             JMathAnimScene.logger.error("I/O error reading image " + filename);
         }
-        return null;
+        return new JMImage(null);
     }
 
     @Override

@@ -28,7 +28,7 @@ import javafx.scene.shape.StrokeLineJoin;
  * transparency, thickness, and other graphical attributes. It also supports state management, interpolation, and
  * hierarchical styling through child sub-properties.
  */
-public interface DrawStyleProperties extends Stylable {
+public interface DrawStyleProperties extends Stylable<DrawStyleProperties> {
 
     /**
      * Returns a copy of this object. All objects are raw-copied.
@@ -85,13 +85,13 @@ public interface DrawStyleProperties extends Stylable {
 
     DrawStyleProperties setLayer(int layer);
 
-    PaintStyle getDrawColor();
+    PaintStyle<?> getDrawColor();
 
-    DrawStyleProperties setDrawColor(PaintStyle drawColor);
+    DrawStyleProperties setDrawColor(PaintStyle<?> drawColor);
 
-    PaintStyle getFillColor();
+    PaintStyle<?> getFillColor();
 
-    DrawStyleProperties setFillColor(PaintStyle fillColor);
+    DrawStyleProperties setFillColor(PaintStyle<?> fillColor);
 
     StrokeLineCap getLineCap();
 

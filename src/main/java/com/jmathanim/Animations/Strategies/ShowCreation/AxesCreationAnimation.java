@@ -22,8 +22,8 @@ import com.jmathanim.Animations.ShowCreation;
 import com.jmathanim.MathObjects.Axes.Axes;
 import com.jmathanim.MathObjects.Axes.TickAxes;
 import com.jmathanim.MathObjects.Coordinates;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 
 /**
  * Animation to crate axes. This strategy is automatically chosen by the

@@ -18,6 +18,7 @@
 package com.jmathanim.MathObjects;
 
 import com.jmathanim.Utils.*;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import javafx.application.Platform;
 import javafx.scene.image.Image;

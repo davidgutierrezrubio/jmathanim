@@ -8,7 +8,11 @@ import com.jmathanim.Renderers.FXRenderer.JavaFXRendererUtils;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Styling.JMColor;
-import com.jmathanim.Utils.*;
+import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.Boxable;
+import com.jmathanim.Utils.Rect;
+import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import javafx.scene.shape.Path;
 

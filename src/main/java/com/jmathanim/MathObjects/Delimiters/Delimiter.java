@@ -1,5 +1,6 @@
 package com.jmathanim.MathObjects.Delimiters;
 
+import com.jmathanim.Constructible.CTNullMathObject;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.DelimiterType;
@@ -12,9 +13,9 @@ import com.jmathanim.MathObjects.Text.TextUpdaters.TextUpdaterFactory;
 import com.jmathanim.MathObjects.Updaters.Updater;
 import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 public abstract class Delimiter extends Constructible<Delimiter> {
@@ -66,7 +67,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
 
         labelMarkPoint = Vec.to(0, 0);
         this.rotationType = RotationType.SMART;
-        this.delimiterLabel = new NullMathObject();
+        this.delimiterLabel = new CTNullMathObject();
         delimiterLabelRigidBox=new RigidBox(this.delimiterLabel);
         this.mpDelimiter.add(delimiterLabelRigidBox);
 

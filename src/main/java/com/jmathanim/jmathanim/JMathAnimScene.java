@@ -50,6 +50,12 @@ import java.util.stream.Collectors;
  */
 public abstract class JMathAnimScene {
 
+
+    public enum SCENE_STATUS {CONFIG, PLAYING, DONE}
+    protected SCENE_STATUS status;
+    private static final double XMIN_DEFAULT = -2;
+    private static final double XMAX_DEFAULT = 2;
+
     /**
      * Logger class
      */
@@ -144,15 +150,25 @@ public abstract class JMathAnimScene {
      */
     private boolean animationIsDisabled;
     private long startTime;
+    protected final Camera camera;
+    protected final Camera fixedCamera;
 
     /**
      * Creates a new Scene with default settings.
      */
     public JMathAnimScene() {
         scene = this;
+        status = SCENE_STATUS.CONFIG;
         sceneObjects = new ArrayList<>();
         objectsAlreadydrawn = new HashSet<>();
+
+        camera = new Camera(scene, 800, 600);
+        fixedCamera = new Camera(scene, 800,600);
+        camera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
+        fixedCamera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
+
         config = JMathAnimConfig.getConfig();
+        config.setScene(this);
         config.setLowQuality();
         linksToBeDone = new ArrayList<>();
         objectsToBeUpdated = new ArrayList<>();
@@ -162,9 +178,13 @@ public abstract class JMathAnimScene {
         animationIsDisabled = false;
         styles = config.getStyles();
         Locale.setDefault(Locale.US);
+
     }
 
     public Renderer getRenderer() {
+        if (status==SCENE_STATUS.CONFIG) {
+            initializeRenderer();
+        }
         return renderer;
     }
 
@@ -175,12 +195,12 @@ public abstract class JMathAnimScene {
     /**
      * Preparation code for the animation should go here
      */
-    public abstract void setupSketch();
+    public void setupSketch()  {};
 
     /**
      * This method handles the creation of the renderer(s)
      */
-    abstract void createRenderer();
+    protected abstract Renderer createRenderer();
 
     /**
      * Execute the current scene
@@ -206,21 +226,12 @@ public abstract class JMathAnimScene {
         logger.setLevel(ch.qos.logback.classic.Level.INFO);//Default log level: INFO
         logger.info("Running sketch {} ", sketchName);
 
+
         setupSketch();
-        createRenderer();
-        JMathAnimConfig.getConfig().setRenderer(renderer);
+
         exitCode = 0;
         // In the global variable store Scene, Renderer and main Camera
         config.setScene(this);
-//        try {
-//            runSketch();
-//        } catch (Exception ex) {
-//            exitCode = 1;
-//            logger.error(ex.toString());
-//        } finally {
-//            // Try anyway to finish the rendering
-//            renderer.finish(frameCount);// Finish rendering jobs
-//        }
         try {
             runSketch();
             renderer.finish(frameCount);
@@ -229,14 +240,24 @@ public abstract class JMathAnimScene {
         }
         double secondsElapsed = (System.currentTimeMillis() - startTime) * 1d / 1000d;
         DecimalFormat df = new DecimalFormat("0.00");
-        logger.info("Elapsed time " + df.format(secondsElapsed)
+        logger.info("Elapsed time " + LogUtils.GREEN+df.format(secondsElapsed)+LogUtils.RESET
                 + " seconds ("
-                + df.format(frameCount * 1d / secondsElapsed)
+                + LogUtils.GREEN+df.format(frameCount * 1d / secondsElapsed)+LogUtils.RESET
                 + " fps)");
         if (exitCode != 0) {
-            logger.error("An error ocurred. Check the logs.");
+            logger.error("An error occurred. Check the logs.");
         }
         return exitCode;
+    }
+
+    private void initializeRenderer() {
+        JMathAnimConfig.getConfig().setRenderer(createRenderer());
+        status=SCENE_STATUS.PLAYING;
+        JMathAnimScene.logger.debug("Renderer initialized "
+                +LogUtils.GREEN+camera.getScreenWidth()+LogUtils.RESET
+                                +" x "
+                +LogUtils.GREEN+camera.getScreenHeight()+LogUtils.RESET
+        );
     }
 
     /**
@@ -338,7 +359,7 @@ public abstract class JMathAnimScene {
                 }
                 registerUpdateable(obj);
                 DebugTools.addToSceneHook(obj, this);
-                Camera cam = (obj.getCamera() == null ? renderer.getCamera() : obj.getCamera());
+                Camera cam = (obj.getCamera() == null ? getCamera() : obj.getCamera());
                 if (obj instanceof shouldUdpateWithCamera) {
                     cam.registerUpdateable((shouldUdpateWithCamera) obj);
                 }
@@ -390,7 +411,7 @@ public abstract class JMathAnimScene {
                 unregisterUpdateable(obj);
             }
             if (obj instanceof shouldUdpateWithCamera) {
-                renderer.getCamera().unregisterUpdateable((shouldUdpateWithCamera) obj);
+                getCamera().unregisterUpdateable((shouldUdpateWithCamera) obj);
             }
         }
     }
@@ -460,6 +481,9 @@ public abstract class JMathAnimScene {
      * Advance one frame, making all necessary drawings and saving frame
      */
     public final void advanceFrame() {
+       if (status==SCENE_STATUS.CONFIG) initializeRenderer();
+
+
         long now = System.currentTimeMillis();
 
 
@@ -652,7 +676,7 @@ public abstract class JMathAnimScene {
      * @return The camera
      */
     public Camera getCamera() {
-        return renderer.getCamera();
+        return camera;
     }
 
     /**
@@ -661,7 +685,7 @@ public abstract class JMathAnimScene {
      * @return The fixed camera
      */
     public Camera getFixedCamera() {
-        return renderer.getFixedCamera();
+        return fixedCamera;
     }
 
     public void formulaHelper(String... formulas) {
@@ -682,7 +706,7 @@ public abstract class JMathAnimScene {
             group.add(lat);
         }
         group.setLayout(LayoutType.LOWER, .2);
-        renderer.getCamera().zoomToObjects(group);
+        getCamera().zoomToObjects(group);
         add(group);
     }
 
@@ -708,7 +732,7 @@ public abstract class JMathAnimScene {
      * @return A Rect object with the visible area
      */
     public Rect getMathView() {
-        return renderer.getCamera().getMathView();
+        return getCamera().getMathView();
     }
 
     /**
@@ -784,8 +808,8 @@ public abstract class JMathAnimScene {
         for (Link link : linksToBeDone) {
             unregisterLink(link);
         }
-        renderer.getCamera().reset();
-        renderer.getFixedCamera().reset();
+        getCamera().reset();
+        getFixedCamera().reset();
     }
 
     public MODrawProperties getStyle(String name) {
@@ -895,6 +919,8 @@ public abstract class JMathAnimScene {
     public double getDt() {
         return dt;
     }
+
+
 
 
 }

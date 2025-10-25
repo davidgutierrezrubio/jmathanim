@@ -19,8 +19,8 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.MathObjects.Copyable;
 import com.jmathanim.MathObjects.MathObject;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.UsefulLambdas;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.jmathanim.LogUtils;
 
@@ -226,7 +226,7 @@ public abstract class Animation {
                 initRunnable.run();
             }
             if (doInitialization()) {//If initialization returned sucess...
-                setFps(scene.getConfig().fps);
+                setFps(scene.getConfig().getFps());
                 status = Status.INITIALIZED;
                 return true;
             } else {

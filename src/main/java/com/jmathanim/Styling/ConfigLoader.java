@@ -19,6 +19,7 @@ package com.jmathanim.Styling;
 
 import com.jmathanim.Enum.LatexTokenType;
 import com.jmathanim.Utils.*;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import javafx.scene.paint.CycleMethod;
 import org.w3c.dom.*;
@@ -135,11 +136,11 @@ public class ConfigLoader {
             switch (item.getNodeName()) {
                 case "size":
                     Element el = (Element) item;
-                    config.mediaW = Integer.parseInt(el.getAttribute("width"));
-                    config.mediaH = Integer.parseInt(el.getAttribute("height"));
-                    config.fps = Integer.parseInt(el.getAttribute("fps"));
-                    JMathAnimScene.logger.debug("Config read: Dimensions set to ({},{}), {} fps", config.mediaW,
-                            config.mediaH, config.fps);
+                    config.setMediaWidth(Integer.parseInt(el.getAttribute("width")));
+                    config.setMediaHeight(Integer.parseInt(el.getAttribute("height")));
+                    config.setFPS(Integer.parseInt(el.getAttribute("fps")));
+                    JMathAnimScene.logger.debug("Config read: Dimensions set to ({},{}), {} fps", config.getMediaWidth(),
+                            config.getMediaHeight(), config.getFps());
                     break;
                 case "createMovie":
                     final boolean createMovie = Boolean.parseBoolean(item.getTextContent());

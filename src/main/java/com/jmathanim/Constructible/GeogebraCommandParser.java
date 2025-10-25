@@ -28,7 +28,10 @@ import com.jmathanim.Constructible.Transforms.CTTranslatedPoint;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Enum.DotStyle;
-import com.jmathanim.MathObjects.*;
+import com.jmathanim.MathObjects.JMImage;
+import com.jmathanim.MathObjects.MathObject;
+import com.jmathanim.MathObjects.Point;
+import com.jmathanim.MathObjects.Scalar;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.Vec;
@@ -117,7 +120,7 @@ class GeogebraCommandParser {
         if (containsKey(key)) {
             return geogebraElements.get(key);
         } else {
-            return new NullMathObject();
+            return new CTNullMathObject();
         }
     }
 

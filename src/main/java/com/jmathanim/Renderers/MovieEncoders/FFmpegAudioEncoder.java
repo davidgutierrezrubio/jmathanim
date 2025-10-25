@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Renderers.MovieEncoders;
 
-import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import org.apache.commons.io.FileUtils;
 

@@ -20,9 +20,9 @@ package com.jmathanim.MathObjects;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.MathObjects.Shapes.JMPath;
 import com.jmathanim.MathObjects.Shapes.JMPathPoint;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import org.mariuszgromada.math.mxparser.Function;
 
 import java.util.ArrayList;

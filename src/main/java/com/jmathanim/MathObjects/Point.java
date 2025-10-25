@@ -17,8 +17,8 @@
  */
 package com.jmathanim.MathObjects;
 
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 
 import java.text.DecimalFormat;
 

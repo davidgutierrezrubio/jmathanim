@@ -23,9 +23,9 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Styling.DrawStylePropertiesArray;
 import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 import java.util.ArrayList;

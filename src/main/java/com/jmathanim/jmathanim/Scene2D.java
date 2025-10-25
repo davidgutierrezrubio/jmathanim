@@ -17,8 +17,8 @@
  */
 package com.jmathanim.jmathanim;
 
-import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
+import com.jmathanim.Renderers.Renderer;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,15 +30,13 @@ import java.util.logging.Logger;
 public abstract class Scene2D extends JMathAnimScene {
 
 	protected JavaFXRenderer renderer;
-	protected Camera camera;
-	protected Camera fixedCamera;
 
 	public Scene2D() {
 		super();
 	}
 
 	@Override
-	protected void createRenderer() {
+	protected Renderer createRenderer() {
 		fps = getConfig().fps;
 		dt = 1. / fps;
 		timeMillisPerFrame= (long) (1000d/fps);
@@ -50,9 +48,8 @@ public abstract class Scene2D extends JMathAnimScene {
 		} catch (Exception ex) {
 			Logger.getLogger(Scene2D.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		camera = renderer.getCamera();
-		fixedCamera = renderer.getFixedCamera();
 		super.renderer = renderer;
+        return renderer;
 	}
 	protected void addFXNode(javafx.scene.Node node) {
 		renderer.addJavaFXNode(node);

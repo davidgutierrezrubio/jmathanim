@@ -20,9 +20,9 @@ package com.jmathanim.Styling;
 import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.MathObjects.MathObject;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.LatexStyle;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 
@@ -48,7 +48,7 @@ import java.util.Arrays;
  * can be initialized with default properties or copied from existing objects, with
  * modifications propagating across associated entities.
  */
-public class DrawStylePropertiesObjectsArray implements DrawStyleProperties, Stylable {
+public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
 
     private final MODrawPropertiesLaTeX mpRef;
     private ArrayList<MathObject<?>> objects;

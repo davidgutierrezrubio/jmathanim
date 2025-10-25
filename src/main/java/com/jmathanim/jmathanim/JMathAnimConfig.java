@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.jmathanim.Utils;
+package com.jmathanim.jmathanim;
 
 import ch.qos.logback.classic.Level;
 import com.jmathanim.Cameras.Camera;
@@ -24,7 +24,10 @@ import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.*;
-import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.Utils.HashMapUpper;
+import com.jmathanim.Utils.LatexStyle;
+import com.jmathanim.Utils.ResourceLoader;
+import com.jmathanim.Utils.UsefulLambdas;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -41,6 +44,8 @@ import static com.jmathanim.jmathanim.JMathAnimScene.logger;
  */
 public class JMathAnimConfig {
 
+
+
     private static JMathAnimConfig singletonConfig;
     /**
      * A dictionary of the styles to be used in the objects
@@ -50,18 +55,31 @@ public class JMathAnimConfig {
      * A dictionary of the latexStyles to be used in LaTexMathObjects
      */
     private final HashMapUpper<String, LatexStyle> latexStyles;
+
+    public int getMediaWidth() {
+        return mediaWidth;
+    }
+
+    public int getMediaHeight() {
+        return mediaHeight;
+    }
+
+    public int getFps() {
+        return fps;
+    }
+
     /**
      * Width of media screen. Typically 800 or 1920.
      */
-    public int mediaW = 800;
+    protected int mediaWidth = 800;
     /**
      * Height of media screen. Typically 600 or 1080.
      */
-    public int mediaH = 600;
+    protected int mediaHeight = 600;
     /**
      * Frames per second to use in the video. Typically 30 or 60.
      */
-    public int fps = 30;
+    protected int fps = 30;
     public boolean delay = true;
     /**
      * If true, draw a shadow of objects over the background image
@@ -221,8 +239,8 @@ public class JMathAnimConfig {
      * Set low quality settings (854,480, 30fps). These are the default settings
      */
     public void setLowQuality() {
-        mediaW = 854;
-        mediaH = 480;
+        setMediaWidth(854);
+        setMediaHeight(480);
         fps = 30;
     }
 
@@ -230,8 +248,8 @@ public class JMathAnimConfig {
      * Set high quality settings (1920,1080, 60fps)
      */
     public void setMediumQuality() {
-        mediaW = 1280;
-        mediaH = 720;
+        setMediaWidth(1280);
+        setMediaHeight(720);
         fps = 30;
     }
 
@@ -243,8 +261,8 @@ public class JMathAnimConfig {
      * Set high quality settings (1920,1080, 60fps)
      */
     public void setHighQuality() {
-        mediaW = 1920;
-        mediaH = 1080;
+        setMediaWidth(1920);
+        setMediaHeight(1080);
         fps = 60;
     }
 
@@ -257,7 +275,7 @@ public class JMathAnimConfig {
     }
 
     public Renderer getRenderer() {
-        return renderer;
+        return scene.getRenderer();
     }
 
     public void setRenderer(Renderer renderer) {
@@ -265,11 +283,11 @@ public class JMathAnimConfig {
     }
 
     public Camera getFixedCamera() {
-        return renderer.getFixedCamera();
+        return scene.getFixedCamera();
     }
 
     public Camera getCamera() {
-        return renderer.getCamera();
+        return scene.getCamera();
     }
 
     public PaintStyle getBackgroundColor() {
@@ -370,6 +388,10 @@ public class JMathAnimConfig {
     }
 
     public void setCreateMovie(boolean createMovie) {
+        if (getStatus()!= JMathAnimScene.SCENE_STATUS.CONFIG) {
+            logger.warn("Cannot change this setting when the sketch is running.");
+            return;
+        }
         this.createMovie = createMovie;
     }
 
@@ -387,15 +409,31 @@ public class JMathAnimConfig {
         return createStyleFrom(obj.getMp(), styleName);
     }
 
-    public void setMediaW(int mediaW) {
-        this.mediaW = mediaW;
+    public void setMediaWidth(int mediaWidth) {
+        if (getStatus()!= JMathAnimScene.SCENE_STATUS.CONFIG) {
+            logger.warn("Cannot change media width while the sketch is running");
+            return;
+        }
+        this.mediaWidth = mediaWidth;
+        getCamera().setScreenWidth(mediaWidth);
+        getFixedCamera().setScreenWidth(mediaWidth);
     }
 
-    public void setMediaH(int mediaH) {
-        this.mediaH = mediaH;
+    public void setMediaHeight(int mediaHeight) {
+       if (getStatus()!= JMathAnimScene.SCENE_STATUS.CONFIG) {
+           logger.warn("Cannot change media height while the sketch is running");
+           return;
+       }
+        this.mediaHeight = mediaHeight;
+        getCamera().setScreenHeight(mediaHeight);
+        getFixedCamera().setScreenHeight(mediaHeight);
     }
 
     public void setFPS(int fps) {
+        if (getStatus()!= JMathAnimScene.SCENE_STATUS.CONFIG) {
+            logger.warn("Cannot change media fps while the sketch is running");
+            return;
+        }
         this.fps = fps;
     }
 
@@ -539,4 +577,7 @@ public class JMathAnimConfig {
     }
 
 
+    public JMathAnimScene.SCENE_STATUS getStatus() {
+        return scene.status;
+    }
 }

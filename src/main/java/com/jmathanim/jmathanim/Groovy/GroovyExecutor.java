@@ -166,8 +166,8 @@ public class GroovyExecutor extends Scene2D {
     @Override
     public void runSketch() throws Exception {
         //these bindings have to be done in runSketch to ensure camera and fixedCamera are created
-        binding.setVariable("camera", camera);
-        binding.setVariable("fixedCamera", fixedCamera);
+        binding.setVariable("camera", getCamera());
+        binding.setVariable("fixedCamera", getFixedCamera());
         boolean hasRunSketch = false;
         try {
             for (Method method : script.getClass().getMethods()) {

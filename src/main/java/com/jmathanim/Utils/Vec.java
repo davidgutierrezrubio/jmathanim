@@ -22,6 +22,7 @@ import com.jmathanim.MathObjects.AffineTransformable;
 import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.MathObjects.Interpolable;
 import com.jmathanim.MathObjects.Stateable;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;

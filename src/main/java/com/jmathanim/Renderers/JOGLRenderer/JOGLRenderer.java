@@ -52,8 +52,8 @@ public class JOGLRenderer extends Renderer {
 
     public JOGLRenderer(JMathAnimScene parentScene) {
         super(parentScene);
-        camera = new Camera3D(parentScene, config.mediaW, config.mediaH);
-        fixedCamera = new Camera3D(parentScene, config.mediaW, config.mediaH);
+        camera = new Camera3D(parentScene, config.getMediaWidth(), config.getMediaHeight());
+        fixedCamera = new Camera3D(parentScene, config.getMediaWidth(), config.getMediaHeight());
     }
 
     @Override
@@ -122,7 +122,7 @@ public class JOGLRenderer extends Renderer {
         caps.setStencilBits(3);
 
         glWindow = GLWindow.create(caps);
-        glWindow.setSize(config.mediaW, config.mediaH);
+        glWindow.setSize(config.getMediaWidth(), config.getMediaHeight());
         glWindow.setTitle("JMathAnim - " + config.getOutputFileName());
         glWindow.addGLEventListener(queue);
 //
@@ -170,7 +170,7 @@ public class JOGLRenderer extends Renderer {
     @Override
     public void finish(int frameCount) {
         JMathAnimScene.logger.info(
-                String.format("%d frames created, %.2fs total time", frameCount, (1.f * frameCount) / config.fps));
+                String.format("%d frames created, %.2fs total time", frameCount, (1.f * frameCount) / config.getFps()));
         if (config.isCreateMovie()) {
             /**
              * Encoders, like decoders, sometimes cache pictures so it can do

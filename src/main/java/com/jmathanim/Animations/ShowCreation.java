@@ -18,6 +18,7 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Animations.Strategies.ShowCreation.*;
+import com.jmathanim.Constructible.CTNullMathObject;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Enum.ShowCreationStrategy;
 import com.jmathanim.MathObjects.*;
@@ -392,7 +393,7 @@ public class ShowCreation extends Animation {
 
     @Override
     public MathObject<?> getIntermediateObject() {
-        if (creationStrategy == null) return new NullMathObject();
+        if (creationStrategy == null) return new CTNullMathObject();
         return creationStrategy.getIntermediateObject();
     }
 

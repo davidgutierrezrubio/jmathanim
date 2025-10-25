@@ -30,6 +30,7 @@ import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Styling.RendererEffects;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.*;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import javafx.scene.shape.StrokeLineCap;
 

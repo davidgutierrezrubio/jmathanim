@@ -23,6 +23,7 @@ import com.jmathanim.Enum.ScreenAnchor;
 import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.MathObjects.Point;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 
 /**
  * A class that manages relevant points of a MathObject, or any class that

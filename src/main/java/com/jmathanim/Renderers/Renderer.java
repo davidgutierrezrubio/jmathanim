@@ -25,9 +25,9 @@ import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Styling.RendererEffects;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 import javax.imageio.ImageIO;
@@ -73,7 +73,7 @@ public abstract class Renderer {
      * @return the width of media
      */
     public int getMediaWidth() {
-        return config.mediaW;
+        return config.getMediaWidth();
     }
 
     /**
@@ -82,7 +82,7 @@ public abstract class Renderer {
      * @return the height of media
      */
     public int getMediaHeight() {
-        return config.mediaH;
+        return config.getMediaHeight();
     }
 
     /**

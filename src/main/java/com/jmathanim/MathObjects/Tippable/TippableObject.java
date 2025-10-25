@@ -27,8 +27,8 @@ import com.jmathanim.MathObjects.Point;
 import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.MathObjects.Shapes.MultiShapeObject;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 

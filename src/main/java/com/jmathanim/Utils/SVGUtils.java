@@ -25,6 +25,7 @@ import com.jmathanim.MathObjects.Shapes.JMPathPoint;
 import com.jmathanim.MathObjects.Shapes.MultiShapeObject;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -88,7 +89,7 @@ public class SVGUtils {
         currentTransform = new AffineJTransform();
         width = 0;
         height = 0;
-        scene=JMathAnimConfig.getConfig().getScene();
+        scene= JMathAnimConfig.getConfig().getScene();
     }
 
 

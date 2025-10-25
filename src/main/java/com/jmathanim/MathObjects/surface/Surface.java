@@ -25,8 +25,8 @@ import com.jmathanim.MathObjects.Stateable;
 import com.jmathanim.Renderers.JOGLRenderer.JOGLRenderer;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawProperties;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 import java.util.ArrayList;

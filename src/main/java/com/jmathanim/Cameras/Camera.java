@@ -40,14 +40,8 @@ public class Camera implements Boxable {
     private final ArrayList<shouldUdpateWithCamera> updateableObjects;
     private final JMathAnimScene scene;
     public boolean perspective;
-    /**
-     * Screen width size to be displayed 800x600, 1920x1280, etc.
-     */
-    public int screenWidth;
-    /**
-     * Screen height size to be displayed 800x600, 1920x1280, etc.
-     */
-    public int screenHeight;
+    private int screenWidth;
+    private int screenHeight;
     public int upperLeftX;
     public int upperLeftY;
     /**
@@ -470,5 +464,29 @@ public class Camera implements Boxable {
 
     public void unregisterUpdateable(shouldUdpateWithCamera object) {
         updateableObjects.remove(object);
+    }
+
+    /**
+     * Screen width size to be displayed 800x600, 1920x1280, etc.
+     */
+    public int getScreenWidth() {
+        return screenWidth;
+    }
+
+    public void setScreenWidth(int screenWidth) {
+        this.screenWidth = screenWidth;
+        setMathXY(xmin,xmax, .5*(ymin+ymax));//Needed to recompute if proportions are altered
+    }
+
+    /**
+     * Screen height size to be displayed 800x600, 1920x1280, etc.
+     */
+    public int getScreenHeight() {
+        return screenHeight;
+    }
+
+    public void setScreenHeight(int screenHeight) {
+        this.screenHeight = screenHeight;
+        setMathXY(xmin,xmax, .5*(ymin+ymax));//Needed to recompute if proportions are altered
     }
 }

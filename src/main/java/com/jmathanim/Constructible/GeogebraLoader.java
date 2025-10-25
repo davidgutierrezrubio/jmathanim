@@ -20,7 +20,6 @@ package com.jmathanim.Constructible;
 import com.jmathanim.Cameras.hasCameraParameters;
 import com.jmathanim.Constructible.Lines.CTLine;
 import com.jmathanim.MathObjects.MathObject;
-import com.jmathanim.MathObjects.NullMathObject;
 import com.jmathanim.MathObjects.Shapes.Line;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.ResourceLoader;
@@ -318,7 +317,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
         if (cp.containsKey(key)) {
             return cp.get(key);
         } else {
-            return new NullMathObject();
+            return new CTNullMathObject();
         }
     }
 

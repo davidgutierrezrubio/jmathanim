@@ -28,7 +28,11 @@ import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.RendererEffects;
-import com.jmathanim.Utils.*;
+import com.jmathanim.Utils.EmptyRect;
+import com.jmathanim.Utils.Rect;
+import com.jmathanim.Utils.ResourceLoader;
+import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.jmathanim.LogUtils;
 import javafx.application.Application;
@@ -72,8 +76,7 @@ import java.util.logging.Logger;
  */
 public class JavaFXRenderer extends Renderer {
 
-    private static final double XMIN_DEFAULT = -2;
-    private static final double XMAX_DEFAULT = 2;
+
     private static final double MIN_THICKNESS = .2d;
     private static final double THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH=5000;
     public final JavaFXRendererUtils fXRendererUtilsJava;
@@ -82,8 +85,8 @@ public class JavaFXRenderer extends Renderer {
     protected final ArrayList<Node> javaFXNodes;
     private final HashMap<JMPath, Path> storedPaths;
     private final HashMap<String, Image> images;
-    public Camera camera;
-    public Camera fixedCamera;
+    public final Camera camera;
+    public final Camera fixedCamera;
 //    public double FxCamerarotateX = 0;
 //    public double FxCamerarotateY = 0;
 //    public double FxCamerarotateZ = 0;
@@ -106,16 +109,17 @@ public class JavaFXRenderer extends Renderer {
         images = new HashMap<>();
         storedPaths = new HashMap<>();
         fXRendererUtilsJava = new JavaFXRendererUtils();
-        camera = new Camera(scene, config.mediaW, config.mediaH);
-        fixedCamera = new Camera(scene, config.mediaW, config.mediaH);
-        correctionThickness = config.mediaW * 1d / THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH;//Correction factor for thickness
+        camera=parentScene.getCamera();
+        fixedCamera=parentScene.getFixedCamera();
+//        camera = new Camera(scene, config.mediaW, config.mediaH);
+//        fixedCamera = new Camera(scene, config.mediaW, config.mediaH);
+        correctionThickness = config.getMediaWidth() * 1d / THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH;//Correction factor for thickness
 
     }
 
     @Override
     public void initialize() {
-        camera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
-        fixedCamera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
+
         try {
             prepareEncoder();
         } catch (Exception ex) {
@@ -134,7 +138,7 @@ public class JavaFXRenderer extends Renderer {
             File tempPath = new File(config.getOutputDir().getCanonicalPath());
             tempPath.mkdirs();
             saveFilePath = new File(config.getOutputDir().getCanonicalPath() + File.separator
-                    + config.getOutputFileName() + "_" + config.mediaH + ".mp4");
+                    + config.getOutputFileName() + "_" + config.getMediaHeight() + ".mp4");
             JMathAnimScene.logger.info("Creating movie encoder for {}", saveFilePath);
             config.setSaveFilePath(saveFilePath);
             videoEncoder.createEncoder(config);
@@ -172,7 +176,7 @@ public class JavaFXRenderer extends Renderer {
             // Create background
             if (config.getBackGroundImage() != null) {
                 ImageView background = new ImageView(new Image(config.getBackGroundImage().openStream()));
-                Rectangle2D viewport = new Rectangle2D(0, 0, config.mediaW, config.mediaH);
+                Rectangle2D viewport = new Rectangle2D(0, 0, config.getMediaWidth(), config.getMediaHeight());
                 background.setViewport(viewport);
                 groupBackground.getChildren().clear();
                 groupBackground.getChildren().add(background);
@@ -180,7 +184,7 @@ public class JavaFXRenderer extends Renderer {
             groupRoot.getChildren().add(groupBackground);// Background image
             groupRoot.getChildren().add(group);// Mathobjects
             groupRoot.getChildren().add(groupDebug);// Debug things
-            fxScene = new Scene(groupRoot, config.mediaW, config.mediaH);
+            fxScene = new Scene(groupRoot, config.getMediaWidth(), config.getMediaHeight());
             fxScene.setFill(config.getBackgroundColor().getFXPaint(r, camera));
             StandaloneSnapshot.FXStarter.stage.setScene(fxScene);
             // Proof with perspective camera
@@ -198,8 +202,8 @@ public class JavaFXRenderer extends Renderer {
             if (config.isShowPreview()) {
                 JMathAnimScene.logger.debug("Creating preview window");
                 // TODO: This gaps to add to the window are os-dependent
-                StandaloneSnapshot.FXStarter.stage.setHeight(config.mediaH + 38);
-                StandaloneSnapshot.FXStarter.stage.setWidth(config.mediaW + 16);
+                StandaloneSnapshot.FXStarter.stage.setHeight(config.getMediaHeight() + 38);
+                StandaloneSnapshot.FXStarter.stage.setWidth(config.getMediaWidth() + 16);
                 StandaloneSnapshot.FXStarter.stage.show();
             }
             return 1;
@@ -240,7 +244,7 @@ public class JavaFXRenderer extends Renderer {
     @Override
     protected BufferedImage getRenderedImage(int frameCount) {
         WritableImage img2;
-        BufferedImage bi = new BufferedImage(config.mediaW, config.mediaH, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage bi = new BufferedImage(config.getMediaWidth(), config.getMediaHeight(), BufferedImage.TYPE_INT_ARGB);
         JavaFXRenderer r = this;
         FutureTask<WritableImage> task = new FutureTask<>(() -> {
             fxScene.setFill(config.getBackgroundColor().getFXPaint(r, camera));
@@ -248,15 +252,15 @@ public class JavaFXRenderer extends Renderer {
             groupDebug.getChildren().clear();
 
             fxCamera.getTransforms().clear();
-            fxCamera.getTransforms().addAll(new Translate(config.mediaW / 2, config.mediaH / 2, 0),
+            fxCamera.getTransforms().addAll(new Translate(config.getMediaWidth() / 2, config.getMediaHeight() / 2, 0),
 //                    new Rotate(FxCamerarotateX, Rotate.X_AXIS), new Rotate(FxCamerarotateY, Rotate.Y_AXIS),
 //                    new Rotate(FxCamerarotateZ, Rotate.Z_AXIS),
-                    new Translate(-config.mediaW / 2, -config.mediaH / 2, 0));
+                    new Translate(-config.getMediaWidth() / 2, -config.getMediaHeight() / 2, 0));
 
             // Add all elements
             group.getChildren().addAll(fxnodes);
             if (config.showFrameNumbers) {
-                showDebugFrame(frameCount, 1d * frameCount / config.fps);
+                showDebugFrame(frameCount, 1d * frameCount / config.getFps());
             }
             groupDebug.getChildren().addAll(debugFXnodes);
             groupDebug.getChildren().addAll(javaFXNodes);
@@ -266,7 +270,7 @@ public class JavaFXRenderer extends Renderer {
             // Snapshot parameters
             final SnapshotParameters params = new SnapshotParameters();
             params.setFill(config.getBackgroundColor().getFXPaint(r, camera));
-            params.setViewport(new Rectangle2D(0, 0, config.mediaW, config.mediaH));
+            params.setViewport(new Rectangle2D(0, 0, config.getMediaWidth(), config.getMediaHeight()));
             params.setCamera(fxScene.getCamera());
 
             return fxScene.getRoot().snapshot(params, null);
@@ -287,7 +291,7 @@ public class JavaFXRenderer extends Renderer {
     public void finish(int frameCount) {
 
         JMathAnimScene.logger.info(
-                String.format("%d frames created, " + LogUtils.GREEN + "%.2fs" + LogUtils.RESET + " total time", frameCount, (1.f * frameCount) / config.fps));
+                String.format("%d frames created, " + LogUtils.GREEN + "%.2fs" + LogUtils.RESET + " total time", frameCount, (1.f * frameCount) / config.getFps()));
         if (config.isCreateMovie()) {
             /**
              * Encoders, like decoders, sometimes cache pictures so it can do
@@ -354,7 +358,7 @@ public class JavaFXRenderer extends Renderer {
 //            }
             applyDrawingStyles(path, mobj);
             applyRendererEffects(path, mobj.getRendererEffects());
-            path.setClip(new Rectangle(cam.upperLeftX, cam.upperLeftY, cam.screenWidth, cam.screenHeight));
+            path.setClip(new Rectangle(cam.upperLeftX, cam.upperLeftY, cam.getScreenWidth(), cam.getScreenHeight()));
             fxnodes.add(path);
         }
         String debugText = DebugTools.getDebugText(mobj);

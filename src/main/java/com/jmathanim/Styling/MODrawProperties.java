@@ -20,8 +20,8 @@ package com.jmathanim.Styling;
 import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.MathObjects.MathObject;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
@@ -36,7 +36,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class MODrawProperties implements DrawStyleProperties, Stylable {
+public class MODrawProperties implements DrawStyleProperties {
 
     // When added a new property here, remember to include it in rawCopyFrom and
     // copyFrom

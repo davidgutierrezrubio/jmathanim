@@ -23,8 +23,8 @@ import com.jmathanim.MathObjects.*;
 import com.jmathanim.MathObjects.Delimiters.Arrow;
 import com.jmathanim.MathObjects.Shapes.Line;
 import com.jmathanim.MathObjects.Shapes.MultiShapeObject;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.OrientationType;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**

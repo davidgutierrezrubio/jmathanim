@@ -21,8 +21,8 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.MathObjects.FunctionGraph;
 import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.MathObjects.shouldUdpateWithCamera;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 
 /**
  *

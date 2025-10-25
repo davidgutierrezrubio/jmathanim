@@ -2,7 +2,7 @@ package com.jmathanim.Renderers.SkijaRenderer;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.MathObjects.AbstractShape;
-import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import io.github.humbleui.skija.Surface;
 
@@ -28,7 +28,7 @@ public class SkijaSwingHandler extends SkijaHandler {
     @Override
     protected void preparePreviewWindow() {
         if (config.isShowPreview()) { //Initialize preview window if flag config set, null otherwise
-            this.previewWindow = new SkijaSwingPreviewWindow(config.mediaW, config.mediaH, keepRunning, frameRef);
+            this.previewWindow = new SkijaSwingPreviewWindow(config.getMediaWidth(), config.getMediaHeight(), keepRunning, frameRef);
             previewWindow.show();
         } else {
             this.previewWindow = null;
@@ -39,7 +39,7 @@ public class SkijaSwingHandler extends SkijaHandler {
     public void initialize() {
         super.initialize();
         JMathAnimScene.logger.debug("Initializing Skija renderer");
-        this.surface = Surface.makeRasterN32Premul(config.mediaW, config.mediaH);
+        this.surface = Surface.makeRasterN32Premul(config.getMediaWidth(), config.getMediaHeight());
         this.canvas = surface.getCanvas();
 
         skijaUtils = new SkijaUtils(this);

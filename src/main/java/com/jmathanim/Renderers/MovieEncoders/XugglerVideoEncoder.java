@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Renderers.MovieEncoders;
 
-import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.xuggle.mediatool.IMediaWriter;
 import com.xuggle.mediatool.ToolFactory;
@@ -56,9 +56,9 @@ public class XugglerVideoEncoder extends VideoEncoder {
         FfmpegAudioEncoder = new FFmpegAudioEncoder(config);
         framesGenerated = false;
         writer = ToolFactory.makeWriter(config.getSaveFilePath().getCanonicalPath());
-        writer.addVideoStream(0, 0, ICodec.ID.CODEC_ID_H264, config.mediaW, config.mediaH);
+        writer.addVideoStream(0, 0, ICodec.ID.CODEC_ID_H264, config.getMediaWidth(), config.getMediaHeight());
         writer.addAudioStream(1, 0, NUM_CHANNELS, BITRATE);
-        fps = config.fps;
+        fps = config.getFps();
     }
 
     @Override

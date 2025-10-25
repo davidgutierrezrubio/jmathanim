@@ -28,7 +28,8 @@ import java.awt.*;
  */
 public class PreviewWindow extends Frame {
 
-	Renderer renderer;
+//	Renderer renderer;
+    JMathAnimConfig config;
 	public JPanel drawPanel;
 	public JPanel buttonsPanel;
 	public JLabel statusLabel;
@@ -36,17 +37,18 @@ public class PreviewWindow extends Frame {
 
 	public PreviewWindow(Renderer r) throws HeadlessException {
 		super();
-		this.renderer = r;
+//		this.renderer = r;
+        this.config=JMathAnimConfig.getConfig();
 
 	}
 
 	public void buildGUI() {
-		this.setSize(renderer.getMediaWidth() + 20, renderer.getMediaHeight() + 60);// TODO: Scale window to fixed size
+		this.setSize(config.getMediaWidth() + 20, config.getMediaHeight() + 60);// TODO: Scale window to fixed size
 //            frame.setLayout(new BasicSplitPaneUI.BasicVerticalLayoutManager());
 		this.setLayout(new BorderLayout(0, 10));
 		drawPanel = new JPanel();
 		buttonsPanel = new JPanel();
-		drawPanel.setBounds(0, 0, renderer.getMediaWidth(), renderer.getMediaHeight());// x axis, y axis, width, height
+		drawPanel.setBounds(0, 0, config.getMediaWidth(), config.getMediaHeight());// x axis, y axis, width, height
 		this.add(drawPanel, BorderLayout.CENTER);
 		statusLabel = new JLabel("");
 

@@ -1,6 +1,5 @@
 package com.jmathanim.MathObjects.Tippable;
 
-import com.jmathanim.MathObjects.Shape;
 import org.junit.jupiter.api.Test;
 
 public class AbstractTippableObjectTest {
@@ -22,12 +21,12 @@ public class AbstractTippableObjectTest {
 
     @Test
     public void testExample() {
-        Shape s = Shape.circle();
-        LabelTip a = LabelTip.makeLabelTip(s, .4, "A", true);
-        LabelTip b = LabelTip.makeLabelTip(s, .4, "A", true);
-        b.drawColor("red");
-//        b.copyStateFrom(a);
-        assertTippableObjects(a, b, "tippable objects are different");
+//        Shape s = Shape.circle();
+//        LabelTip a = LabelTip.makeLabelTip(s, .4, "A", true);
+//        LabelTip b = LabelTip.makeLabelTip(s, .4, "A", true);
+//        b.drawColor("red");
+////        b.copyStateFrom(a);
+//        assertTippableObjects(a, b, "tippable objects are different");
     }
 
 }

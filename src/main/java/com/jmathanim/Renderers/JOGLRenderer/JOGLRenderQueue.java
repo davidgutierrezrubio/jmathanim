@@ -27,9 +27,9 @@ import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.PaintStyle;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
@@ -164,7 +164,7 @@ public class JOGLRenderQueue implements GLEventListener {
             File tempPath = new File(config.getOutputDir().getCanonicalPath());
             tempPath.mkdirs();
             saveFilePath = new File(config.getOutputDir().getCanonicalPath() + File.separator
-                    + config.getOutputFileName() + "_" + config.mediaH + ".mp4");
+                    + config.getOutputFileName() + "_" + config.getMediaHeight() + ".mp4");
             JMathAnimScene.logger.info("Creating movie encoder for {}", saveFilePath);
             config.setSaveFilePath(saveFilePath);
             videoEncoder.createEncoder(config);
@@ -297,7 +297,7 @@ public class JOGLRenderQueue implements GLEventListener {
     private void activateScissors(Shape s) {
         Matrix4f mvpMatrix = new Matrix4f();
         projectionMatrix.mul(viewMatrix, mvpMatrix);
-        int[] viewport = new int[]{0, 0, config.mediaW, config.mediaH};
+        int[] viewport = new int[]{0, 0, config.getMediaWidth(), config.getMediaHeight()};
 
         int[] coords = computeScissorRegion(mvpMatrix, viewport, s);
 
@@ -443,7 +443,7 @@ public class JOGLRenderQueue implements GLEventListener {
 
     public BufferedImage screenshot(GL4 gl4, GLDrawable drawable) {
         AWTGLReadBufferUtil aa = new AWTGLReadBufferUtil(drawable.getGLProfile(), true);
-        BufferedImage img = aa.readPixelsToBufferedImage(gl4, 0, 0, config.mediaW, config.mediaH, true);
+        BufferedImage img = aa.readPixelsToBufferedImage(gl4, 0, 0, config.getMediaWidth(), config.getMediaHeight(), true);
         return img;
     }
 
