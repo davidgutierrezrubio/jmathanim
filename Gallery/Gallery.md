@@ -481,7 +481,7 @@ for (int n = 1; n <= 12; n++) {
     Vec sv = destiny.getPointAt((12 - n) / 12.d).v;
     //Each number begins centered at (0,0) and moves to a point of shape destiny, with a combined animation
     //of growing, shifting and rotating...
-    LaTeXMathObject sq = LaTeXMathObject.make("" + n).center();
+    LatexMathObject sq = LatexMathObject.make("" + n).center();
     AnimationGroup singleNumberAnim = AnimationGroup.make();
     singleNumberAnim.add(Commands.growIn(runtime, sq));
     singleNumberAnim.add(Commands.shift(runtime , sv, sq).setUseObjectState(false));
@@ -517,15 +517,15 @@ And here with the 40 first odd numbers...
 
 ## A property of powers
 
-The `map` parameters may seem confusing to read, but the creation was pretty straightforward, using the `formulaHelper` method before to show the indices of each LaTeXMathObject instance:
+The `map` parameters may seem confusing to read, but the creation was pretty straightforward, using the `formulaHelper` method before to show the indices of each LatexMathObject instance:
 
 ```java
-LaTeXMathObject t1 = LaTeXMathObject.make("$4^{2+3}=4^2\\cdot 4^3$");
-LaTeXMathObject t2 = LaTeXMathObject.make("$4^{7+3}=4^7\\cdot 4^3$").alignCenter(4, t1, 4);
-LaTeXMathObject t3 = LaTeXMathObject.make("$4^{7+1}=4^7\\cdot 4^1$").alignCenter(4, t1, 4);
-LaTeXMathObject t4 = LaTeXMathObject.make("$4^{7-2}=4^7\\cdot 4^{-2}$").alignCenter(4, t1, 4);
-LaTeXMathObject t5 = LaTeXMathObject.make("$4^{ {1\\over2}-2}=4^{1\\over2}\\cdot 4^{-2}$").alignCenter(6, t1, 4);
-LaTeXMathObject t6 = LaTeXMathObject.make("$a^{b+c}=a^{b}\\cdot a^{c}$").alignCenter(4, t1, 4);
+LatexMathObject t1 = LatexMathObject.make("$4^{2+3}=4^2\\cdot 4^3$");
+LatexMathObject t2 = LatexMathObject.make("$4^{7+3}=4^7\\cdot 4^3$").alignCenter(4, t1, 4);
+LatexMathObject t3 = LatexMathObject.make("$4^{7+1}=4^7\\cdot 4^1$").alignCenter(4, t1, 4);
+LatexMathObject t4 = LatexMathObject.make("$4^{7-2}=4^7\\cdot 4^{-2}$").alignCenter(4, t1, 4);
+LatexMathObject t5 = LatexMathObject.make("$4^{ {1\\over2}-2}=4^{1\\over2}\\cdot 4^{-2}$").alignCenter(6, t1, 4);
+LatexMathObject t6 = LatexMathObject.make("$a^{b+c}=a^{b}\\cdot a^{c}$").alignCenter(4, t1, 4);
 
 //Colors
 JMColor colA = JMColor.parse("darkgreen");
