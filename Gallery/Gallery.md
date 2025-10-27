@@ -478,19 +478,19 @@ AnimationGroup wholeAnim = AnimationGroup.make();
 for (int n = 1; n <= 12; n++) {
     //Take 12 points equally spaced inside the path 0, 1/12, 2/12,...11/12
     //We take them in reverse as the circle is built counterclockwise
-    Vec sv = destiny.getPointAt((12 - n) / 12.d).v;
+    Vec sv = destiny.getVecAt(1d*(12 - n) / 12);
     //Each number begins centered at (0,0) and moves to a point of shape destiny, with a combined animation
     //of growing, shifting and rotating...
     LatexMathObject sq = LatexMathObject.make("" + n).center();
     AnimationGroup singleNumberAnim = AnimationGroup.make();
-    singleNumberAnim.add(Commands.growIn(runtime, sq));
-    singleNumberAnim.add(Commands.shift(runtime , sv, sq).setUseObjectState(false));
+    singleNumberAnim.add(Commands.shift(runtime , sv, sq));
     singleNumberAnim.add(Commands.rotate(runtime, sv.getAngle() - PI / 2, sq).setUseObjectState(false));
     singleNumberAnim.setLambda(UsefulLambdas.smooth());
     wholeAnim.add(singleNumberAnim);
 }
 wholeAnim.addDelayEffect(.2);
-
+//You can experiment changing the lambda, for example
+//wholeAnim.setLambda(UsefulLambdas.bounce2())
 playAnimation(wholeAnim);
 waitSeconds(3);
 ```
