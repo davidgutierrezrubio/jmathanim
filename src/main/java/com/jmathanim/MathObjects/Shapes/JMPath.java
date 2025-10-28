@@ -1166,17 +1166,23 @@ public class JMPath implements Boxable, Iterable<JMPathPoint>, AffineTransformab
     }
 
     /**
-     * Closes the path and removes redundant points if necessary
+     * Closes the path
      */
     public void closePath() {
         if (isEmpty()) {
             return;//Nothing to close
         }
         final JMPathPoint jmp = getJmPathPoints().get(0);
+
+        if (get(-1).isEquivalentTo(get(0), .000001)) {//Last point is the same as first point so its redundant
+            jmPathPoints.remove(-1);
+        }
+
+
         jmp.setSegmentToThisPointVisible(true);
         jmp.getVEnter().copyCoordinatesFrom(jmp.getV());
         getJmPathPoints().get(-1).getVExit().copyCoordinatesFrom(getJmPathPoints().get(-1).getV());
-        distille();
+//        distille();
     }
 
     /**
