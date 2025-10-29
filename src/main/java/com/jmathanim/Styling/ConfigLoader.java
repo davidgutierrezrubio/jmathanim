@@ -21,6 +21,7 @@ import com.jmathanim.Enum.LatexTokenType;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.jmathanim.LogUtils;
 import javafx.scene.paint.CycleMethod;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
@@ -34,9 +35,6 @@ import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static com.jmathanim.jmathanim.LogUtils.RESET;
-import static com.jmathanim.jmathanim.LogUtils.YELLOW;
 
 /**
  * The ConfigLoader class provides methods for loading and parsing XML configuration files
@@ -64,7 +62,7 @@ public class ConfigLoader {
         try {
             JMathAnimConfig config = JMathAnimConfig.getConfig();
             URL configURL = resourceLoader.getResource(filename, "config");
-            JMathAnimScene.logger.info("Loading config file "+YELLOW+"{}"+RESET, filename);
+            JMathAnimScene.logger.info("Loading config file "+ LogUtils.fileName("{}"), filename);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             dbFactory.setValidating(false);
             dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
@@ -707,7 +705,7 @@ public class ConfigLoader {
      *                contain the file path of the configuration file to be included as its content.
      */
     private static void parseLoadConfigOptions(Element include) {
-        JMathAnimScene.logger.debug("Including file {}", include.getTextContent());
+        JMathAnimScene.logger.debug("Including file "+ LogUtils.fileName("{}"), include.getTextContent());
         ConfigLoader.parseFile(include.getTextContent());
     }
 }

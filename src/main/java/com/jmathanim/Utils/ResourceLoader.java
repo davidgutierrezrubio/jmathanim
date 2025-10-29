@@ -19,6 +19,7 @@ package com.jmathanim.Utils;
 
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.jmathanim.LogUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -42,17 +43,13 @@ public class ResourceLoader {
     }
 
     /**
-     * Returns an URL pointing the
-     * resource.loadResource(&quot;c:/config/config.xml&quot;) will return an
-     * URL pointing to external file
-     * loadResource(&quot;#config/config.xml&quot;) will return an URL pointing
-     * to internal file located at src/resources/config/config.xml
+     * Returns an URL pointing the resource.loadResource(&quot;c:/config/config.xml&quot;) will return an URL pointing
+     * to external file loadResource(&quot;#config/config.xml&quot;) will return an URL pointing to internal file
+     * located at src/resources/config/config.xml
      *
-     *
-     * @param resource String with the path of the resource. If this string
-     * begins with &quot;#&quot; it denotes an internal file located at resources
-     * directory or null if such resource does not exist.
-     * @param folder Folder where to look at (config, arrows,...)
+     * @param resource String with the path of the resource. If this string begins with &quot;#&quot; it denotes an
+     *                 internal file located at resources directory or null if such resource does not exist.
+     * @param folder   Folder where to look at (config, arrows,...)
      * @return URL with the resource location
      */
     public URL getResource(String resource, String folder) throws FileNotFoundException {
@@ -67,64 +64,87 @@ public class ResourceLoader {
         }
     }
 
+    public String getFullPath(String resource, String folder) {
+        if (resource.startsWith("!")) {
+            return resource.substring(1);
+        }
+
+        if (resource.startsWith("#")) {
+            return resource;
+        } else {
+
+            try {
+                File resourcesDir = JMathAnimConfig.getConfig().getResourcesDir();
+                return resourcesDir.getCanonicalPath() + File.separator + folder + File.separator + resource;
+            } catch (IOException e) {
+                //Strange, this only should happen if resourcesDir is not set...
+              return resource;
+            }
+
+        }
+    }
+
+
     /**
-     * Parses a relative external resource file path and converts it into a URL object.
-     * The resource is resolved within the specified subfolder of the configured resources directory.
-     * If the resource cannot be loaded due to IO errors or a malformed URL, the method logs the error
-     * and returns null.
+     * Parses a relative external resource file path and converts it into a URL object. The resource is resolved within
+     * the specified subfolder of the configured resources directory. If the resource cannot be loaded due to IO errors
+     * or a malformed URL, the method logs the error and returns null.
      *
-     * @param resource The name of the resource file to be loaded. This is expected to be
-     *                 a relative file name within the folder.
-     * @param folder The folder within the resources directory where the resource file is expected
-     *               to reside.
-     * @return A URL object representing the location of the resource, or null if the resource
-     *         could not be loaded or resolved.
+     * @param resource The name of the resource file to be loaded. This is expected to be a relative file name within
+     *                 the folder.
+     * @param folder   The folder within the resources directory where the resource file is expected to reside.
+     * @return A URL object representing the location of the resource, or null if the resource could not be loaded or
+     * resolved.
      */
-    private URL parseExternalRelativeResource(String resource, String folder) {
+    private URL parseExternalRelativeResource(String resource, String folder) throws FileNotFoundException {
         URL externalResource = null;
         String baseFileName = "";
+
+        File resourcesDir = JMathAnimConfig.getConfig().getResourcesDir();
         try {
-            File resourcesDir = JMathAnimConfig.getConfig().getResourcesDir();
             baseFileName = resourcesDir.getCanonicalPath() + File.separator + folder + File.separator + resource;
             File file = new File(baseFileName);
+            if (!file.exists()) throw new FileNotFoundException("File not found: " + LogUtils.fileName(baseFileName));
             externalResource = file.toURI().toURL();
+
         } catch (MalformedURLException ex) {
-            JMathAnimScene.logger.error("Couldn't load resource " + baseFileName);
-        } catch (IOException ex) {
-            JMathAnimScene.logger.error("An unknown I/O error. Maybe you don't have permissions"
-                    + "to access files on your working directory or simply this file doesn't exists at all!");
-            JMathAnimScene.logger.error("Couldn't load resource " + baseFileName);
+            JMathAnimScene.logger.error("Invalid URL for resource " + LogUtils.fileName(baseFileName));
+        }
+        catch (FileNotFoundException ex) {
+            throw new FileNotFoundException("File not found: " + LogUtils.fileName(baseFileName));
+        }
+        catch (IOException ex) {
+            JMathAnimScene.logger.error("I/O error while resolving path for " + LogUtils.fileName(baseFileName));
         }
         return externalResource;
     }
 
+
     /**
-     * Resolves and retrieves a URL pointing to an internal resource located within the
-     * specified internal folder of the project's resources directory.
+     * Resolves and retrieves a URL pointing to an internal resource located within the specified internal folder of the
+     * project's resources directory.
      *
-     * @param resource The name of the internal resource to locate. This should not include
-     *                 the starting character "#" as it is already assumed to be an internal file.
-     * @param folder The folder in the resources directory where the resource is expected to reside.
-     * @return A URL object pointing to the resolved internal resource, or null if the resource
-     *         could not be located.
+     * @param resource The name of the internal resource to locate. This should not include the starting character "#"
+     *                 as it is already assumed to be an internal file.
+     * @param folder   The folder in the resources directory where the resource is expected to reside.
+     * @return A URL object pointing to the resolved internal resource, or null if the resource could not be located.
      */
-    private URL parseInternalResource(String resource, String folder) throws FileNotFoundException{
+    private URL parseInternalResource(String resource, String folder) throws FileNotFoundException {
         String urlStr = folder + "/" + resource;
 
         URL resul = this.getClass().getClassLoader().getResource(urlStr);
-        if (resul==null) throw new FileNotFoundException();
+        if (resul == null) throw new FileNotFoundException();
         return resul;
     }
 
     /**
-     * Parses the provided absolute file path and converts it into a URL.
-     * This method is specifically used for handling external resources located
-     * outside of the application.
+     * Parses the provided absolute file path and converts it into a URL. This method is specifically used for handling
+     * external resources located outside of the application.
      *
-     * @param resource A string representing the absolute file path of the resource.
-     *                 The path must point to an existing file on the system.
-     * @return A {@code URL} object representing the parsed resource location,
-     *         or {@code null} if the file path is malformed or cannot be converted.
+     * @param resource A string representing the absolute file path of the resource. The path must point to an existing
+     *                 file on the system.
+     * @return A {@code URL} object representing the parsed resource location, or {@code null} if the file path is
+     * malformed or cannot be converted.
      */
     private URL parseExternalAbsoluteResource(String resource) {
         URL externalResource = null;

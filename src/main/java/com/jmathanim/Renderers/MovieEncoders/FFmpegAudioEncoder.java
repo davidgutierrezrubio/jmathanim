@@ -58,10 +58,16 @@ public class FFmpegAudioEncoder {
          if (soundItems.isEmpty()) {
             return;
         }
+         //If user defined, use this. If not, try to guess...
+         if ("".equals(config.getFfmpegBinExecutable())) {//value not set, try to guess
+             config.setFfmpegExecutable(findFfmpegDefaultPaths());
+         }
+
         File ffmpegExecFile = new File(config.getFfmpegBinExecutable());
         if (!ffmpegExecFile.exists()) {
             JMathAnimScene.logger.warn("ffmpeg executable not found. Sounds will not be processed.");
-            JMathAnimScene.logger.warn("Set the ffmpeg executable location with config.setFfmpegExecutable in the setupSketch method");
+            JMathAnimScene.logger.warn("Set the ffmpeg executable location with " +
+                    "config.setFfmpegExecutable(path) method");
             return;
         }
         String tempVideoFileName = "";
@@ -186,12 +192,47 @@ public class FFmpegAudioEncoder {
     }
 
     private void runFfmpegProcess(final String cmd) throws IOException, InterruptedException {
-        String[] c={"sh","-c",cmd};
-        Process process = Runtime.getRuntime().exec(c);
+        String os = System.getProperty("os.name").toLowerCase();
+        String[] command;
+
+        if (os.contains("win")) {//Windows
+            command = new String[]{"cmd.exe", "/c", cmd};
+        } else {//Linux and mac
+            command = new String[]{"sh", "-c", cmd};
+        }
+
+        Process process = Runtime.getRuntime().exec(command);
         process.waitFor();
         //This return value gives problems as it differs from OS
 //        if (process.exitValue() != 0) {
 //            conversionOk = false;
 //        }
     }
+    private String findFfmpegDefaultPaths() {
+        String os = System.getProperty("os.name").toLowerCase();
+        String[] paths;
+
+        if (os.contains("win")) {
+            paths = new String[]{
+                    "C:\\ffmpeg\\bin\\ffmpeg.exe",
+                    "C:\\Program Files\\ffmpeg\\bin\\ffmpeg.exe"
+            };
+        } else {
+            paths = new String[]{
+                    "/usr/bin/ffmpeg",
+                    "/usr/local/bin/ffmpeg"
+            };
+        }
+
+        for (String path : paths) {
+            if (new File(path).exists()) {
+                return path;
+            }
+        }
+
+        return "";
+    }
+
+
+
 }

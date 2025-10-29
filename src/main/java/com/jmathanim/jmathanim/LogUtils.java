@@ -11,6 +11,7 @@ public class LogUtils {
     public static final String PURPLE = "\u001B[35m";
     public static final String CYAN = "\u001B[36m";
     public static final String WHITE = "\u001B[37m";
+    public static final String BOLD = "\u001B[1m";
 
     public static void printProgressBar(double t) {
         int width = 50;
@@ -23,4 +24,18 @@ public class LogUtils {
         System.out.print(bar);  // Usa print (no println) para evitar saltos de línea
         if (t == 1) System.out.println();  // Salto final
     }
+
+    public static String number(double number, int numDecimals) {
+        return String.format(String.format("%s%s%%.%df%s", BOLD, GREEN, numDecimals, RESET), number);
+    }
+
+    public static String method(String method) {
+        return String.format("%s%s%s%s", BOLD, CYAN, method,RESET);
+    }
+
+    public static String fileName(String fileName) {
+        return String.format("%s%s%s%s", BOLD, YELLOW, fileName,RESET);
+    }
+
+
 }

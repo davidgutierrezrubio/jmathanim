@@ -137,7 +137,7 @@ public class JavaFXRenderer extends Renderer {
             tempPath.mkdirs();
             saveFilePath = new File(config.getOutputDir().getCanonicalPath() + File.separator
                     + config.getOutputFileName() + "_" + config.getMediaHeight() + ".mp4");
-            JMathAnimScene.logger.info("Creating movie encoder for {}", saveFilePath);
+            JMathAnimScene.logger.info("Creating movie encoder for "+ LogUtils.fileName("{}"), saveFilePath);
             config.setSaveFilePath(saveFilePath);
             videoEncoder.createEncoder(config);
         }
@@ -290,9 +290,11 @@ public class JavaFXRenderer extends Renderer {
     public void finish(int frameCount) {
 
         JMathAnimScene.logger.info(
-                String.format("%d frames created, "
-                        + LogUtils.GREEN + "%.2f" + LogUtils.RESET +" seconds"+
-                        " total time", frameCount, (1.f * frameCount) / config.getFps()));
+                LogUtils.number(frameCount,0)+
+                " frames created, "
+                        +  LogUtils.number((1.f * frameCount) / config.getFps(),2)
+                        +" seconds "
+                        + " total time");
         if (config.isCreateMovie()) {
             /**
              * Encoders, like decoders, sometimes cache pictures so it can do
@@ -303,7 +305,7 @@ public class JavaFXRenderer extends Renderer {
             JMathAnimScene.logger.debug("Finishing movie...");
             videoEncoder.finish();
             if (videoEncoder.isFramesGenerated()) {
-                JMathAnimScene.logger.info("Movie created at " + saveFilePath);
+                JMathAnimScene.logger.info("Movie created at " + LogUtils.fileName("{}"), saveFilePath);
             }
 
         }

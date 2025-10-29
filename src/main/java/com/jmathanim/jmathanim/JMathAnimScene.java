@@ -51,11 +51,6 @@ import java.util.stream.Collectors;
 public abstract class JMathAnimScene {
 
 
-    public enum SCENE_STATUS {CONFIG, PLAYING, DONE}
-    protected SCENE_STATUS status;
-    private static final double XMIN_DEFAULT = -2;
-    private static final double XMAX_DEFAULT = 2;
-
     /**
      * Logger class
      */
@@ -76,11 +71,15 @@ public abstract class JMathAnimScene {
      * Constant to specify easily angles by degrees, like 45*DEGREES
      */
     public static final double DEGREES = PI / 180;
+    private static final double XMIN_DEFAULT = -2;
+    private static final double XMAX_DEFAULT = 2;
     /**
      * This class is used to easily access to most common animations
      */
     public final PlayAnim play;
     protected final JMathAnimScene scene;
+    protected final Camera camera;
+    protected final Camera fixedCamera;
     /**
      * List of sceneObjects which needs to be updated (not necessarily drawn)
      */
@@ -114,6 +113,7 @@ public abstract class JMathAnimScene {
      * Previous nanotime in the last measure, used to control frame rate in preview window
      */
     public long previousNanoTime;
+    protected SCENE_STATUS status;
     /**
      * Renderer to perform drawings
      */
@@ -127,32 +127,26 @@ public abstract class JMathAnimScene {
      */
     protected double fps;
     /**
+     * Exit code of program
+     */
+    /**
      * Time step.
      */
     protected double dt;
     /**
-     * Exit code of program
-     */
-
-    /**
      * Time in milliseconds per frame
      */
     protected long timeMillisPerFrame;
-
     /**
      * Last time in milliseconds. Used to control fps
      */
     protected long lastTimeMillis;
-
     private int exitCode;
     /**
      * If true, frames are not generated and animations are instantly processed
      */
     private boolean animationIsDisabled;
     private long startTime;
-    protected final Camera camera;
-    protected final Camera fixedCamera;
-
     /**
      * Creates a new Scene with default settings.
      */
@@ -163,7 +157,7 @@ public abstract class JMathAnimScene {
         objectsAlreadydrawn = new HashSet<>();
 
         camera = new Camera(scene, 800, 600);
-        fixedCamera = new Camera(scene, 800,600);
+        fixedCamera = new Camera(scene, 800, 600);
         camera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         fixedCamera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
 
@@ -182,7 +176,7 @@ public abstract class JMathAnimScene {
     }
 
     public Renderer getRenderer() {
-        if (status==SCENE_STATUS.CONFIG) {
+        if (status == SCENE_STATUS.CONFIG) {
             initializeRenderer();
         }
         return renderer;
@@ -195,12 +189,15 @@ public abstract class JMathAnimScene {
     /**
      * Preparation code for the animation should go here
      */
-    public void setupSketch()  {};
+    public void setupSketch() {
+    }
 
     /**
      * This method handles the creation of the renderer(s)
      */
     protected abstract Renderer createRenderer();
+
+    ;
 
     /**
      * Execute the current scene
@@ -240,10 +237,15 @@ public abstract class JMathAnimScene {
         }
         double secondsElapsed = (System.currentTimeMillis() - startTime) * 1d / 1000d;
         DecimalFormat df = new DecimalFormat("0.00");
-        logger.info("Elapsed time " + LogUtils.GREEN+df.format(secondsElapsed)+LogUtils.RESET
+        logger.info("Elapsed time "
+//                + LogUtils.GREEN+df.format(secondsElapsed)+LogUtils.RESET
+                + LogUtils.number(secondsElapsed, 0)
                 + " seconds ("
-                + LogUtils.GREEN+df.format(frameCount * 1d / secondsElapsed)+LogUtils.RESET
+                + LogUtils.number(frameCount * 1d / secondsElapsed, 2)
+//                + LogUtils.GREEN+df.format(frameCount * 1d / secondsElapsed)+LogUtils.RESET
                 + " fps)");
+
+
         if (exitCode != 0) {
             logger.error("An error occurred. Check the logs.");
         }
@@ -252,15 +254,15 @@ public abstract class JMathAnimScene {
 
     private void initializeRenderer() {
         JMathAnimConfig.getConfig().setRenderer(createRenderer());
-        status=SCENE_STATUS.PLAYING;
-        JMathAnimScene.logger.debug("Renderer "+
-                 LogUtils.CYAN+renderer.getClass().getSimpleName()+LogUtils.RESET+
+        status = SCENE_STATUS.PLAYING;
+        JMathAnimScene.logger.debug("Renderer " +
+                LogUtils.method(renderer.getClass().getSimpleName())+
                 " initialized "
-                +LogUtils.GREEN+camera.getScreenWidth()+LogUtils.RESET
-                                +"x"
-                +LogUtils.GREEN+camera.getScreenHeight()+LogUtils.RESET
-                +" at "
-                +LogUtils.GREEN+fps+LogUtils.RESET+" fps."
+                +LogUtils.number(camera.getScreenWidth(),0)
+                + "x"
+                +LogUtils.number(camera.getScreenHeight(),0)
+                + " at "
+                +LogUtils.number(fps,2)+ " fps."
         );
     }
 
@@ -349,7 +351,7 @@ public abstract class JMathAnimScene {
                         for (MathObject<?> subobj : ((MathObjectGroup) obj).getObjects()) {
                             add(subobj);
                         }
-                    } else if (obj instanceof AbstractMultiShapeObject<?,?>) {
+                    } else if (obj instanceof AbstractMultiShapeObject<?, ?>) {
 //                        MultiShapeObject msh = (MultiShapeObject) obj;
 //                        msh.isAddedToScene = true;
 //                        for (Shape sh : msh) {
@@ -392,10 +394,10 @@ public abstract class JMathAnimScene {
     public synchronized final void remove(MathObject<?>... objs) {
         for (MathObject<?> obj : objs) {
             if (obj != null) {
-                if (obj instanceof AbstractMultiShapeObject<?,?>) {
+                if (obj instanceof AbstractMultiShapeObject<?, ?>) {
                     sceneObjects.remove(obj);
                     unregisterUpdateable(obj);
-                    AbstractMultiShapeObject<?,?> msh = (AbstractMultiShapeObject<?,?>) obj;
+                    AbstractMultiShapeObject<?, ?> msh = (AbstractMultiShapeObject<?, ?>) obj;
                     msh.isAddedToScene = false;
                     for (AbstractShape<?> o : msh) {
                         this.remove(o);
@@ -474,10 +476,11 @@ public abstract class JMathAnimScene {
             obj.update(this);
         }
     }
+
     public void printUpdateables() {
         objectsToBeUpdated.sort(Comparator.comparingInt(Updateable::getUpdateLevel));
         for (Updateable obj : objectsToBeUpdated) {
-            System.out.println(obj.getUpdateLevel()+"   "+obj);
+            System.out.println(obj.getUpdateLevel() + "   " + obj);
         }
     }
 
@@ -485,7 +488,7 @@ public abstract class JMathAnimScene {
      * Advance one frame, making all necessary drawings and saving frame
      */
     public final void advanceFrame() {
-       if (status==SCENE_STATUS.CONFIG) initializeRenderer();
+        if (status == SCENE_STATUS.CONFIG) initializeRenderer();
 
 
         long now = System.currentTimeMillis();
@@ -579,11 +582,11 @@ public abstract class JMathAnimScene {
         try {
             soundURL = rl.getResource(soundName, "sounds");
         } catch (FileNotFoundException e) {
-            JMathAnimScene.logger.error("File " + LogUtils.CYAN+soundName+LogUtils.RESET + " not found.");
+            JMathAnimScene.logger.error("File " + LogUtils.fileName(rl.getFullPath(soundName, "sounds")) + " not found.");
             return;
         }
 
-        JMathAnimScene.logger.debug("Playing sound " + soundName + " with pitch " + pitch);
+        JMathAnimScene.logger.info("Playing sound " + LogUtils.fileName(soundName) + " with pitch " + LogUtils.number(pitch,2));
         long miliSeconds = (frameCount * 1000L) / config.fps;
 
         SoundItem soundItem = SoundItem.make(soundURL, miliSeconds, pitch);
@@ -623,8 +626,13 @@ public abstract class JMathAnimScene {
             anim.initialize(this);// Perform needed steps immediately before playing
             if (!"".equals(anim.getDebugName())) {
                 JMathAnimScene.logger.info("Begin animation: "
-                        + LogUtils.CYAN + anim.getDebugName() + LogUtils.RESET +
-                        " [" + LogUtils.GREEN + anim.getRunTime()  + LogUtils.RESET + " seconds]");
+//                        + LogUtils.CYAN + anim.getDebugName() + LogUtils.RESET +
+                        + LogUtils.method(anim.getDebugName())+
+                        " [" +
+//                        LogUtils.GREEN + anim.getRunTime() + LogUtils.RESET
+                        LogUtils.number(anim.getRunTime(),1)
+                        +
+                        " seconds]");
             }
 
             if (animationIsDisabled) {
@@ -645,7 +653,7 @@ public abstract class JMathAnimScene {
                 }
             }
 //            if (!finished) {//If all animations are finished, no need to advance frame
-                advanceFrame();
+            advanceFrame();
 //            }
         }
     }
@@ -659,7 +667,10 @@ public abstract class JMathAnimScene {
         if (animationIsDisabled) {
             return;
         }
-        JMathAnimScene.logger.info("Waiting " + LogUtils.GREEN + time + LogUtils.RESET+ " seconds" );
+        JMathAnimScene.logger.info("Waiting " +
+//                LogUtils.GREEN + time + LogUtils.RESET +
+                LogUtils.number(time,1) +
+                " seconds");
         int numFrames = (int) (time * fps);
         for (int n = 0; n < numFrames; n++) {
             try {
@@ -926,7 +937,7 @@ public abstract class JMathAnimScene {
         return dt;
     }
 
-
+    public enum SCENE_STATUS {CONFIG, PLAYING, DONE}
 
 
 }

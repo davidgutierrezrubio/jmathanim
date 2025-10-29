@@ -20,6 +20,7 @@ package com.jmathanim.jmathanim;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Enum.DotStyle;
+import com.jmathanim.Enum.LogLevel;
 import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.*;
@@ -507,23 +508,21 @@ public class JMathAnimConfig {
      *
      * @param level Debug level:  0=OFF, 1=Only errors, 2=Warnings, 3=Info messages, 4=Debug messages
      */
-    public void setLoggingLevel(int level) {
-        level = Math.min(level, 4);
-        level = Math.max(level, 0);
+    public void setLoggingLevel(LogLevel level) {
         switch (level) {
-            case 0:
+            case OFF_0:
                 logger.setLevel(ch.qos.logback.classic.Level.OFF);
                 break;
-            case 1:
+            case ERROR_1:
                 logger.setLevel(ch.qos.logback.classic.Level.ERROR);
                 break;
-            case 2:
+            case WARN_2:
                 logger.setLevel(ch.qos.logback.classic.Level.WARN);
                 break;
-            case 3:
+            case INFO_3:
                 logger.setLevel(ch.qos.logback.classic.Level.INFO);
                 break;
-            case 4:
+            case DEBUG_4:
                 logger.setLevel(ch.qos.logback.classic.Level.DEBUG);
                 break;
             default:

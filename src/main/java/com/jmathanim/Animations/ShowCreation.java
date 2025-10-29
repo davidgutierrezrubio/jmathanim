@@ -262,23 +262,23 @@ public class ShowCreation extends Animation {
                 break;
             case GROUP_CREATION:
                 creationStrategy = new GroupCreationAnimation(this.runTime, (MathObjectGroup) mobj);
-                JMathAnimScene.logger.debug("ShowCreation method: "+ LogUtils.CYAN+"GroupCreationStrategy"+LogUtils.RESET);
+                JMathAnimScene.logger.debug("ShowCreation method: "+ LogUtils.method("GroupCreationStrategy"));
                 break;
             case LINE_CREATION:
 //                final Shape lineToCreate = ((Line) mobj).toSegment(mobj.getCamera());
 //                removeThisAtTheEnd.add(lineToCreate);
                 creationStrategy = new LineCreationAnimation(this.runTime, (Line) mobj);
-                JMathAnimScene.logger.debug("ShowCreation method: "+ LogUtils.CYAN+"LineCreationStrategy"+LogUtils.RESET);
+                JMathAnimScene.logger.debug("ShowCreation method: "+ LogUtils.method("LineCreationStrategy"));
                 break;
             case RAY_CREATION:
 //                final Shape rayToCreate = ((Ray) mobj).toSegment(mobj.getCamera());
 //                removeThisAtTheEnd.add(rayToCreate);
                 creationStrategy = new SimpleShapeCreationAnimation(this.runTime, (Ray) mobj);
-                JMathAnimScene.logger.debug("ShowCreation method: "+ LogUtils.CYAN+"RayCreationStrategy"+LogUtils.RESET);
+                JMathAnimScene.logger.debug("ShowCreation method: "+ LogUtils.method("RayCreationStrategy"));
                 break;
             case ARROW_CREATION:
                 creationStrategy = new ArrowCreationAnimation(this.runTime, (Arrow) origObj);
-                JMathAnimScene.logger.debug("ShowCreation method: "+ LogUtils.CYAN+"ArrowCreationStrategy"+LogUtils.RESET);
+                JMathAnimScene.logger.debug("ShowCreation method: "+ LogUtils.method("ArrowCreationStrategy"));
                 break;
             case DELIMITER_CREATION:
                 Delimiter del = (Delimiter) mobj;
@@ -313,30 +313,32 @@ public class ShowCreation extends Animation {
                         addObjectsToscene(del);
                     }
                 };
-                JMathAnimScene.logger.debug("ShowCreation method: "+ LogUtils.CYAN+"Delimiter (growIn)"+LogUtils.RESET);
+                JMathAnimScene.logger.debug("ShowCreation method: "+ LogUtils.method("Delimiter (growIn)"));
+
                 break;
 
             case SIMPLE_SHAPE_CREATION:
                 creationStrategy = new SimpleShapeCreationAnimation(runTime, (AbstractShape<?>) mobj);
-                JMathAnimScene.logger.debug("ShowCreation method: "+ LogUtils.CYAN+"SimpleShapeCreationStrategy"+LogUtils.RESET);
+                JMathAnimScene.logger.debug("ShowCreation method: "+ LogUtils.method("SimpleShapeCreationStrategy"));
+
                 break;
             case MULTISHAPE_CREATION:
                 MultiShapeObject msh = (MultiShapeObject) mobj;
                 removeThisAtTheEnd.addAll(msh.getShapes());
                 addThisAtTheEnd.add(mobj);
                 creationStrategy = new FirstDrawThenFillAnimation(runTime, msh);
-                JMathAnimScene.logger.debug("ShowCreation method: "+ LogUtils.CYAN+"MultiShapeCreationStrategy"+LogUtils.RESET);
+                JMathAnimScene.logger.debug("ShowCreation method: "+ LogUtils.method("MultiShapeCreationStrategy"));
                 break;
             case FIRST_DRAW_AND_THEN_FILL:
                 creationStrategy = new FirstDrawThenFillAnimation(runTime, convertToMultiShapeObject(mobj));
-                JMathAnimScene.logger.debug("ShowCreation method: "+ LogUtils.CYAN+"FirstDrawThenFillStrategy"+LogUtils.RESET);
+                JMathAnimScene.logger.debug("ShowCreation method: "+ LogUtils.method("FirstDrawThenFillStrategy"));
                 break;
             case LATEX_CREATION:
                 LatexMathObject lat = (LatexMathObject) mobj;
                 removeThisAtTheEnd.addAll(lat.getShapes());
                 addThisAtTheEnd.add(mobj);
                 creationStrategy = new FirstDrawThenFillAnimation(runTime, lat);
-                JMathAnimScene.logger.debug("ShowCreation method: "+ LogUtils.CYAN+"FirstDrawThenFillStrategy (LaTeXMathObject)"+LogUtils.RESET);
+                JMathAnimScene.logger.debug("ShowCreation method: "+ LogUtils.method("FirstDrawThenFillStrategy (LaTeXMathObject)"));
                 break;
             case AXES_CREATION:
                 creationStrategy = new AxesCreationAnimation(runTime, (Axes) mobj);
