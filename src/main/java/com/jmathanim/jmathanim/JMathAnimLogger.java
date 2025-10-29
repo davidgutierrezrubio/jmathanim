@@ -7,7 +7,7 @@ import java.lang.System.Logger;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static com.jmathanim.jmathanim.LogUtils.*;
+import static com.jmathanim.jmathanim.LogUtils.RESET;
 
 public class JMathAnimLogger {
     public static final Logger logger = System.getLogger(JMathAnimLogger.class.getName());
@@ -80,13 +80,13 @@ public class JMathAnimLogger {
     private String levelToString(LogLevel level) {
         switch (level) {
             case DEBUG:
-                return "DEBUG";
+                return LogUtils.DEBUG+"DEBUG"+RESET;
             case INFO:
-                return BLUE+"INFO"+RESET;
+                return LogUtils.INFO+"INFO"+RESET;
             case WARN:
-                return YELLOW+"WARN"+RESET;
+                return LogUtils.WARN+"WARN"+RESET;
             case ERROR:
-                return RED+"ERROR"+RESET;
+                return LogUtils.ERROR+"ERROR"+RESET;
             case OFF:
                 return "OFF";
         }

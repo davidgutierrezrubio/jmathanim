@@ -11,7 +11,12 @@ public class LogUtils {
     public static final String PURPLE = "\u001B[35m";
     public static final String CYAN = "\u001B[36m";
     public static final String WHITE = "\u001B[37m";
+    public static final String MAGENTA = "\u001B[38;5;141m";
     public static final String BOLD = "\u001B[1m";
+    public static final String DEBUG = "\u001B[96m";
+    public static final String INFO = "\u001B[32m";
+    public static final String WARN = "\u001B[33m";
+    public static final String ERROR = "\u001B[31;1m";
 
     public static void printProgressBar(double t) {
         int width = 50;
@@ -26,14 +31,14 @@ public class LogUtils {
     }
 
     public static String number(double number, int numDecimals) {
-        return String.format(String.format("%s%s%%.%df%s", BOLD, GREEN, numDecimals, RESET), number);
+        return String.format(String.format("%s%s%%.%df%s", RESET, MAGENTA, numDecimals, RESET), number);
     }
 
     public static String method(String method) {
-        return String.format("%s%s%s%s", BOLD, CYAN, method,RESET);
+        return String.format("%s%s%s%s", BOLD, BLUE, method,RESET);
     }
     public static String method(boolean method) {
-        return String.format("%s%s%s%s", BOLD, CYAN, (method ? "true" : "false"),RESET);
+        return String.format("%s%s%s%s", BOLD, BLUE, (method ? "true" : "false"),RESET);
     }
 
 
