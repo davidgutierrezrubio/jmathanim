@@ -188,6 +188,8 @@ config.setDrawShadow(true); //Apply shadow effect to the scene, using javafx sha
 config.setShadowParameters(10,15,15,.5f);//Sets shadow parameters (kernel 10, offsets 15 and 15, shadow alpha .5f)
 
 config.setResourcesDir("c:\\resources");//Specifies resources directory at absolute path c:\resources
+config.setLoggingLevel(LogLevel.DEBUG);//Sets the logging level to DEBUG, showing more messages to the console
+config.setLoggingLevel(4);//Sets the logging level using numbers. 0=No log, 1=Errors, 2=Warnings, 3=Info, 4=Debug
 ```
 
 # The configuration files

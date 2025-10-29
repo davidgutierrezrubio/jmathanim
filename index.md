@@ -23,6 +23,9 @@ What's new?
 
 Version 0.9.13-SNAPSHOT (24/10/2025)
 
+* Migrated from the classpath to the modular path (module-info.java)
+* Changed logging system from LogBack to System.Logger
+* Improved logging system
 * Improved Groovy code execution.
 * Added maven directives to generate a "fat jar" to use as Groovy executor.
 * Big rewriting of code to improve efficiency.
@@ -196,7 +199,7 @@ Version 0.9.0:
 
 Currently, the library is tested on
 
--   Windows 10 with Apache Netbeans 12.1 and Oracle JDK 1.8.0_261
+-   Windows 11 with Apache Netbeans 12.1 and Oracle JDK 1.8.0_261
 
 -   LUbuntu 20.04, with Apache Netbeans 12.1 and openjdk 11.0.7
 
@@ -207,7 +210,7 @@ This library is [Maven](https://maven.apache.org/) based, which means it is very
 easy, using a modern Java IDE, to create a project that automatically downloads
 all needed dependencies to run your animations. A detailed step-by-step tutorial
 to create a project that uses JMathAnim is detailed
-[here](manual\00_Installing\Installing.html).
+[here](manual\00_Installing\Installing.html). You need a Java virtual machine with version 11 or higher to run JMathAnim.
 
 Limitations
 ===========
@@ -218,15 +221,12 @@ features.
 Dependencies
 ============
 
-This library uses the following 3rd party libraries: \*
-[JavaFX](https://openjfx.io/) for 2D graphics generation. \*
-[Xuggler](http://www.xuggle.com/xuggler/) for video creation. \*
-[JLatexMath](https://github.com/opencollab/jlatexmath) for LaTeX shapes
-generation (text and mathematical expressions). \* [Logback
-Project](http://logback.qos.ch/) For logging purposes. \* Optionally, a working
-LaTeX distribution accessible from your path can be used to generate texts and
-formulas as an alternative way to
-[JLatexMath](https://github.com/opencollab/jlatexmath)
+This library uses the following 3rd party libraries: 
+
+
+* [JavaFX](https://openjfx.io/) For the graphics part.
+* [Xuggler](http://www.xuggle.com/xuggler/) For creating videos.
+* [JLaTeXMath](https://github.com/opencollab/jlatexmath) For creating the LaTeX texts and mathematical expressions.
 
 License
 =======
