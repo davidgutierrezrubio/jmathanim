@@ -20,6 +20,7 @@ package com.jmathanim.Styling;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.jmathanim.LogUtils;
 import javafx.scene.paint.Paint;
 
 import java.lang.reflect.Field;
@@ -253,7 +254,7 @@ public class JMColor extends PaintStyle<JMColor> {
                 Field field = javafx.scene.paint.Color.class.getField(str.toUpperCase());
                 col = (javafx.scene.paint.Color) field.get(JMColor.class);
             } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-                JMathAnimScene.logger.warn("Color {} not recognized ", str);
+                JMathAnimScene.logger.warn("Color "+ LogUtils.method(str)+" is not recognized ");
             }
         }
         return JMColor.fromFXColor(col);

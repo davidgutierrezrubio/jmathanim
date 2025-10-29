@@ -27,6 +27,7 @@ import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.jmathanim.LogUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -39,6 +40,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,7 +69,8 @@ public class SVGUtils {
     private static double width;
 //
 //    public SVGUtils(JMathAnimScene scene) {
-////        this.scene = scene;
+
+    /// /        this.scene = scene;
 //        this.currentX = 0;
 //        this.currentY = 0;
 //        this.closeX = 0;
@@ -78,7 +81,6 @@ public class SVGUtils {
 //        this.width = 0;
 //        this.height = 0;
 //    }
-
     private static void resetParameters() {
         currentX = 0;
         currentY = 0;
@@ -89,7 +91,7 @@ public class SVGUtils {
         currentTransform = new AffineJTransform();
         width = 0;
         height = 0;
-        scene= JMathAnimConfig.getConfig().getScene();
+        scene = JMathAnimConfig.getConfig().getScene();
     }
 
 
@@ -138,38 +140,52 @@ public class SVGUtils {
 
     /**
      * Imports a SVG object and converts it into a MultiShapeObject
+     *
      * @param fileName Filename of the SVG file, with modifier tags
      * @return The MultiShapeObject created
      * @throws Exception
      */
-    public static MultiShapeObject importSVG(String fileName)  {
-        ResourceLoader rl=new ResourceLoader();
+    public static MultiShapeObject importSVG(String fileName) {
+        ResourceLoader rl = new ResourceLoader();
 
         try {
-            URL url = rl.getResource(fileName, "images");
+            URL url = rl.getExternalResource(fileName, "images");
             return importSVG(url, MODrawProperties.makeNullValues());
         } catch (Exception e) {
-            logger.error("An exception ocurred loading SVG file "+fileName+". Returning empty MultiShapeObject instead");
+            logger.error("An exception ocurred loading SVG file " + fileName + ". Returning empty MultiShapeObject instead");
             logger.error(e.getMessage());
             return MultiShapeObject.make();
         }
     }
 
-
+    public static MultiShapeObject importSVG(InputStream is) {
+        try {
+            return importSVG(is, MODrawProperties.makeNullValues());
+        } catch (Exception e) {
+            logger.error("An exception ocurred loading SVG file from inputStream. Returning empty MultiShapeObject instead");
+            logger.error(e.getMessage());
+            return MultiShapeObject.make();
+        }
+    }
     public static MultiShapeObject importSVG(URL urlSvg) {
         try {
             return importSVG(urlSvg, MODrawProperties.makeNullValues());
         } catch (Exception e) {
-            logger.error("An exception ocurred loading SVG file from url "+urlSvg.getPath()+". Returning empty MultiShapeObject instead");
+            logger.error("An exception ocurred loading SVG file from url " + urlSvg.getPath() + ". Returning empty MultiShapeObject instead");
             logger.error(e.getMessage());
             return MultiShapeObject.make();
         }
     }
 
     public static MultiShapeObject importSVG(URL urlSvg, MODrawProperties base) throws Exception {
+        JMathAnimScene.logger.debug("Importing SVG file " + LogUtils.fileName(urlSvg.toString()));
+        return importSVG(urlSvg.openStream(), base);
+    }
+
+    public static MultiShapeObject importSVG(InputStream is, MODrawProperties base) throws Exception {
         resetParameters();
         MultiShapeObject msh = MultiShapeObject.make();
-        JMathAnimScene.logger.debug("Importing SVG file {}", urlSvg.toString());
+
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         // Disabling these features will speed up the load of the svg
         dbFactory.setFeature("http://xml.org/sax/features/namespaces", false);
@@ -178,7 +194,7 @@ public class SVGUtils {
         dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        Document doc = dBuilder.parse(urlSvg.openStream());
+        Document doc = dBuilder.parse(is);
 
         // Look for svg elements in the root document
         currentTransform = new AffineJTransform();
@@ -208,8 +224,8 @@ public class SVGUtils {
         if (!el.getAttribute("viewBox").isEmpty()) {
             //format: viewBox="0 0 900 625.73422"
             ArrayList<String> tokens = getPointTokens(el.getAttribute("viewBox"));
-            width=Double.parseDouble(tokens.get(2));
-            height=Double.parseDouble(tokens.get(3));
+            width = Double.parseDouble(tokens.get(2));
+            height = Double.parseDouble(tokens.get(3));
         }
     }
 
@@ -244,7 +260,7 @@ public class SVGUtils {
                                 msh.add(shape);
                             }
                         } catch (Exception ex) {
-                            logger.error("Error processing SVG path "+ el.getAttribute("d") );
+                            logger.error("Error processing SVG path " + el.getAttribute("d"));
                         }
                         break;
                     case "polygon":
@@ -328,8 +344,8 @@ public class SVGUtils {
     }
 
     /**
-     * Takes a string of SVG Path commands and converts then into a JMPathObject
-     * Only fill attribute is parsed into the path
+     * Takes a string of SVG Path commands and converts then into a JMPathObject Only fill attribute is parsed into the
+     * path
      *
      * @param s The string of commands
      * @return The JMPathObject
@@ -709,9 +725,9 @@ public class SVGUtils {
     }
 
     /**
-     * Creates a quadratic Bézier path segment and adds it to the provided JMPath.
-     * This method calculates intermediate control points needed to approximate the quadratic Bézier
-     * curve using a cubic Bézier curve and then delegates the processing to a cubic Bezier method.
+     * Creates a quadratic Bézier path segment and adds it to the provided JMPath. This method calculates intermediate
+     * control points needed to approximate the quadratic Bézier curve using a cubic Bézier curve and then delegates the
+     * processing to a cubic Bezier method.
      *
      * @param pathResult    The JMPath to which the quadratic Bézier segment will be added.
      * @param previousPoint The previous point in the path, used as a reference for continuity.
@@ -756,9 +772,8 @@ public class SVGUtils {
     }
 
     /**
-     * Creates a cubic Bezier path segment and adds it to the provided JMPath.
-     * This method sets the control points for the cubic Bézier curve and adds
-     * the new point as a curved vertex to the path.
+     * Creates a cubic Bezier path segment and adds it to the provided JMPath. This method sets the control points for
+     * the cubic Bézier curve and adds the new point as a curved vertex to the path.
      *
      * @param path          The JMPath to which the cubic Bézier segment will be added.
      * @param previousPoint The previous point in the path, used to define the exit control point.
@@ -771,7 +786,7 @@ public class SVGUtils {
      * @return The last JMPathPoint created for this segment, representing its endpoint.
      */
     private static JMPathPoint pathCubicBezier(JMPath path, JMPathPoint previousPoint, double cx1, double cy1, double cx2,
-                                        double cy2, double x, double y) {
+                                               double cy2, double x, double y) {
         JMPathPoint point = new JMPathPoint(Vec.to(currentX, currentY), true);
         point.setSegmentToThisPointCurved(true);
         previousPoint.getVExit().x = cx1;
@@ -823,7 +838,7 @@ public class SVGUtils {
             height = 150;
         }
 //        double porc= th/width;//% de ancho pantalla
-        return th*scene.getFixedCamera().getMathView().getWidth()/width;
+        return th * scene.getFixedCamera().getMathView().getWidth() / width;
 
     }
 
@@ -923,7 +938,7 @@ public class SVGUtils {
                 } catch (ArrayIndexOutOfBoundsException ex) {
                     b = a;
                 }
-                resul = AffineJTransform.createScaleTransform(Vec.to(0,0), a, b);
+                resul = AffineJTransform.createScaleTransform(Vec.to(0, 0), a, b);
                 break;
             case "ROTATE":
                 //(a x y) or (a)
@@ -965,8 +980,8 @@ public class SVGUtils {
                 resul.setV2Img(c, d);
                 break;
         }
-        AffineJTransform sc1 = AffineJTransform.createScaleTransform(Vec.to(0,0), 1, -1);
-        AffineJTransform sc2 = AffineJTransform.createScaleTransform(Vec.to(0,0), 1, -1);
+        AffineJTransform sc1 = AffineJTransform.createScaleTransform(Vec.to(0, 0), 1, -1);
+        AffineJTransform sc2 = AffineJTransform.createScaleTransform(Vec.to(0, 0), 1, -1);
         resul = sc1.compose(resul).compose(sc2);
         return resul;
     }
@@ -1020,10 +1035,10 @@ public class SVGUtils {
 
         double rad;
         if (rx < ry) {
-            tr = tr.compose(AffineJTransform.createScaleTransform(O1, ry / rx, 1,1));
+            tr = tr.compose(AffineJTransform.createScaleTransform(O1, ry / rx, 1, 1));
             rad = ry;
         } else {
-            tr = tr.compose(AffineJTransform.createScaleTransform(O1, 1, rx / ry,1));
+            tr = tr.compose(AffineJTransform.createScaleTransform(O1, 1, rx / ry, 1));
             rad = rx;
         }
         O2.applyAffineTransform(tr);
@@ -1036,10 +1051,10 @@ public class SVGUtils {
         resul.applyAffineTransform(tr.getInverse());
         return resul;
     }
-    private static String extractNumbers(String input) {
-             return input.replaceAll("[^0-9.]", "");
-    }
 
+    private static String extractNumbers(String input) {
+        return input.replaceAll("[^0-9.]", "");
+    }
 
 
 }

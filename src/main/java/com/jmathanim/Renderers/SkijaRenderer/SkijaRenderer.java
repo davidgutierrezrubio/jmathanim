@@ -12,6 +12,7 @@ import com.jmathanim.Styling.RendererEffects;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.jmathanim.LogUtils;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -33,12 +34,12 @@ public class SkijaRenderer extends Renderer {
 
     public SkijaRenderer(JMathAnimScene parentScene) {
         super(parentScene);//super method initializes config object
-                camera = new Camera(scene, config.getMediaWidth(), config.getMediaHeight());
+        camera = new Camera(scene, config.getMediaWidth(), config.getMediaHeight());
         fixedCamera = new Camera(scene, config.getMediaWidth(), config.getMediaHeight());
         camera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         fixedCamera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         correctionThickness = config.getMediaWidth() * 1d / 1066;//Correction factor for thickness
-        skijaHandler = new SkijaSwingHandler(JMathAnimConfig.getConfig(),keepRunning);
+        skijaHandler = new SkijaSwingHandler(JMathAnimConfig.getConfig(), keepRunning);
         //Gl handler is slow??
 //        skijaHandler = new SkijaGLHandler(JMathAnimConfig.getConfig(), keepRunning);
         skijaHandler.setRenderer(this);
@@ -71,7 +72,7 @@ public class SkijaRenderer extends Renderer {
             tempPath.mkdirs();
             saveFilePath = new File(config.getOutputDir().getCanonicalPath() + File.separator
                     + config.getOutputFileName() + "_" + config.getMediaHeight() + ".mp4");
-            JMathAnimScene.logger.info("Creating movie encoder for {}", saveFilePath);
+            JMathAnimScene.logger.info("Creating movie encoder for " + LogUtils.fileName(saveFilePath.toString()));
             config.setSaveFilePath(saveFilePath);
             videoEncoder.createEncoder(config);
         }

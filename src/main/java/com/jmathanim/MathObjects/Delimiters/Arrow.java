@@ -38,6 +38,7 @@ import com.jmathanim.jmathanim.LogUtils;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.URL;
 
@@ -196,12 +197,12 @@ public class Arrow extends Constructible<Arrow> {
     }
 
     private static JMPath loadArrowHeadFile(String arrowSVGName, String arrowSerializedName, String folder, ResourceLoader rl) {
-        URL arrowUrl;
+        InputStream resource;
         JMPath headPath;
 
         try {
-            arrowUrl = rl.getResource(arrowSerializedName, folder);
-            ObjectInputStream in = new ObjectInputStream(arrowUrl.openStream());
+            resource = rl.getResource(arrowSerializedName, folder);
+            ObjectInputStream in = new ObjectInputStream(resource);
             headPath = (JMPath) in.readObject();
             logger.debug("Loader serialized arrow head " + arrowSerializedName);
             return headPath;
@@ -222,8 +223,8 @@ public class Arrow extends Constructible<Arrow> {
             );
         }
         try {
-            arrowUrl = rl.getResource(arrowSVGName, folder);
-            return SVGUtils.importSVG(arrowUrl).get(0).getPath();
+            resource = rl.getResource(arrowSVGName, folder);
+            return SVGUtils.importSVG(resource).get(0).getPath();
         } catch (FileNotFoundException ex) {
             logger.warn("FileNotFoundException when trying to load SVG internal object "
                     + LogUtils.YELLOW + arrowSVGName + LogUtils.RESET +
@@ -232,6 +233,15 @@ public class Arrow extends Constructible<Arrow> {
                 return loadArrowHeadPath(ArrowType.NONE_BUTT);
             } catch (Exception e) {
                 throw new RuntimeException(e);
+            }
+        } catch (IOException e) {
+            logger.warn("IOException when trying to load SVG internal object "
+                    + LogUtils.YELLOW + arrowSVGName + LogUtils.RESET +
+                    ". Switching to NONE_BUTT");
+            try {
+                return loadArrowHeadPath(ArrowType.NONE_BUTT);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
             }
         }
     }

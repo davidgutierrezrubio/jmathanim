@@ -25,6 +25,7 @@ import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.jmathanim.LogUtils;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -112,7 +113,7 @@ public class MODrawProperties implements DrawStyleProperties {
         try {
             resul = DashStyle.valueOf(dashPatternString.toUpperCase());
         } catch (IllegalArgumentException e) {
-            JMathAnimScene.logger.error("Dash pattern {} not recognized, using default {}", dashPatternString, resul);
+            JMathAnimScene.logger.error("Dash pattern "+ LogUtils.method(dashPatternString)+" not recognized, using default "+LogUtils.method(resul.name()));
         }
 
         return resul;
@@ -123,7 +124,7 @@ public class MODrawProperties implements DrawStyleProperties {
         try {
             resul = DotStyle.valueOf(str.toUpperCase());
         } catch (IllegalArgumentException e) {
-            JMathAnimScene.logger.error("Dot style {} not recognized, using default {}", str, resul);
+            JMathAnimScene.logger.error("Dot style "+ LogUtils.method(str)+" not recognized, using default "+LogUtils.method(resul.name()));
         }
         return resul;
     }
@@ -481,7 +482,7 @@ public class MODrawProperties implements DrawStyleProperties {
         if (styles.containsKey(name)) {
             this.copyFrom(styles.get(name));
         } else {
-            JMathAnimScene.logger.warn("No style with name {} found", name);
+            JMathAnimScene.logger.warn("No style with name "+LogUtils.method(name)+" found");
         }
         setHasBeenChanged(true);
     }

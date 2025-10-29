@@ -32,43 +32,38 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The ConfigLoader class provides methods for loading and parsing XML configuration files
- * for the JMathAnim framework. It processes configuration details such as video settings,
- * background options, styles, LaTeX configurations, and drawing properties, and applies them
- * to the provided JMathAnimConfig object. This class internally uses a resource loader
- * to resolve file references.
+ * The ConfigLoader class provides methods for loading and parsing XML configuration files for the JMathAnim framework.
+ * It processes configuration details such as video settings, background options, styles, LaTeX configurations, and
+ * drawing properties, and applies them to the provided JMathAnimConfig object. This class internally uses a resource
+ * loader to resolve file references.
  */
 public class ConfigLoader {
 
     private static ResourceLoader resourceLoader;
 
     /**
-     * Parses an XML configuration file specified by the filename parameter.
-     * The method reads the configuration file, validates its structure, and loads
-     * various configuration options such as video settings, background styles,
-     * and more, based on the XML elements present in the file.
+     * Parses an XML configuration file specified by the filename parameter. The method reads the configuration file,
+     * validates its structure, and loads various configuration options such as video settings, background styles, and
+     * more, based on the XML elements present in the file.
      *
-     * @param filename The name of the XML configuration file to parse. The file can be
-     *                 internally or externally located and is resolved using the
-     *                 {@code ResourceLoader} class.
+     * @param filename The name of the XML configuration file to parse. The file can be internally or externally located
+     *                 and is resolved using the {@code ResourceLoader} class.
      */
     public static void parseFile(String filename) {
         resourceLoader = new ResourceLoader();
         try {
             JMathAnimConfig config = JMathAnimConfig.getConfig();
-            URL configURL = resourceLoader.getResource(filename, "config");
-            JMathAnimScene.logger.info("Loading config file "+ LogUtils.fileName("{}"), filename);
+            InputStream stream = resourceLoader.getResource(filename, "config");
+            JMathAnimScene.logger.info("Loading config file " + LogUtils.fileName(filename));
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             dbFactory.setValidating(false);
             dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 
-            InputStream stream = configURL.openStream();
             Document doc = dBuilder.parse(stream);
             doc.getDocumentElement().normalize();
 
@@ -117,15 +112,14 @@ public class ConfigLoader {
     }
 
     /**
-     * Parses the video configuration options from the given XML element and sets the corresponding
-     * properties in the provided {@code JMathAnimConfig} object. The method processes various
-     * video-related attributes such as size, frame rate, output directory, and output file name.
+     * Parses the video configuration options from the given XML element and sets the corresponding properties in the
+     * provided {@code JMathAnimConfig} object. The method processes various video-related attributes such as size,
+     * frame rate, output directory, and output file name.
      *
      * @param config The {@code JMathAnimConfig} object where the video configuration will be set.
-     * @param video  The XML element representing the video configuration options. This element
-     *               contains child nodes with attributes like size, createMovie, saveToPNG,
-     *               previewWindow, outputDir, and outputFileName that are extracted and applied to
-     *               the provided {@code JMathAnimConfig}.
+     * @param video  The XML element representing the video configuration options. This element contains child nodes
+     *               with attributes like size, createMovie, saveToPNG, previewWindow, outputDir, and outputFileName
+     *               that are extracted and applied to the provided {@code JMathAnimConfig}.
      */
     private static void parseVideoOptions(JMathAnimConfig config, Element video) {
         NodeList videoChilds = video.getChildNodes();
@@ -137,56 +131,58 @@ public class ConfigLoader {
                     config.setMediaWidth(Integer.parseInt(el.getAttribute("width")));
                     config.setMediaHeight(Integer.parseInt(el.getAttribute("height")));
                     config.setFPS(Integer.parseInt(el.getAttribute("fps")));
-                    JMathAnimScene.logger.debug("Config read: Dimensions set to ({},{}), {} fps", config.getMediaWidth(),
-                            config.getMediaHeight(), config.getFps());
+                    JMathAnimScene.logger.debug("Config read: Dimensions set to (" +
+//                                    "{},{}), {} fps",
+                            LogUtils.number(config.getMediaWidth(), 0) + ", " +
+                            LogUtils.number(config.getMediaHeight(), 0) + "), " +
+                            LogUtils.number(config.getFps(), 2) + "fps.");
                     break;
                 case "createMovie":
                     final boolean createMovie = Boolean.parseBoolean(item.getTextContent());
                     config.setCreateMovie(createMovie);
-                    JMathAnimScene.logger.debug("Config read: Create movie set to {}", createMovie);
+                    JMathAnimScene.logger.debug("Config read: Create movie set to " + LogUtils.method(createMovie));
                     break;
                 case "saveToPNG":
                     final boolean saveToPNG = Boolean.parseBoolean(item.getTextContent());
                     config.setSaveToPNG(saveToPNG);
-                    JMathAnimScene.logger.debug("Config read: Save to PNG flag set to {}", saveToPNG);
+                    JMathAnimScene.logger.debug("Config read: Save to PNG flag set to "+ LogUtils.method(saveToPNG));
                     break;
                 case "showPreviewWindow":
                     final boolean previewWindow = Boolean.parseBoolean(item.getTextContent());
                     config.setShowPreviewWindow(previewWindow);
-                    JMathAnimScene.logger.debug("Config read: Show preview window set to {}", previewWindow);
+                    JMathAnimScene.logger.debug("Config read: Show preview window set to "+ LogUtils.method( previewWindow));
                     break;
                 case "limitFPS":
                     final boolean limitFPS = Boolean.parseBoolean(item.getTextContent());
                     config.setLimitFPS(limitFPS);
-                    JMathAnimScene.logger.debug("Config read: Limit FPS {}", limitFPS);
+                    JMathAnimScene.logger.debug("Config read: Limit FPS "+ LogUtils.method(limitFPS));
                     break;
                 case "printProgressBar":
                     final boolean printProgressBar = Boolean.parseBoolean(item.getTextContent());
                     config.setPrintProgressBar(printProgressBar);
-                    JMathAnimScene.logger.debug("Config read: Print progress bar {}", printProgressBar);
+                    JMathAnimScene.logger.debug("Config read: Print progress bar "+ LogUtils.method( printProgressBar));
                     break;
                 case "outputDir":
                     config.setOutputDir(item.getTextContent());
-                    JMathAnimScene.logger.debug("Config read: Output dir set to {}", item.getTextContent());
+                    JMathAnimScene.logger.debug("Config read: Output dir set to "+LogUtils.fileName( item.getTextContent()));
                     break;
                 case "outputFileName":
                     config.setOutputFileName(item.getTextContent());
-                    JMathAnimScene.logger.debug("Config read: Output filename set to {}", item.getTextContent());
+                    JMathAnimScene.logger.debug("Config read: Output filename set to "+LogUtils.fileName( item.getTextContent()));
                     break;
             }
         }
     }
 
     /**
-     * Parses the background configuration options from the given XML element and sets the corresponding
-     * properties in the provided {@code JMathAnimConfig} object. This method processes various background
-     * attributes such as color, shadows, and background image, found in the XML element.
+     * Parses the background configuration options from the given XML element and sets the corresponding properties in
+     * the provided {@code JMathAnimConfig} object. This method processes various background attributes such as color,
+     * shadows, and background image, found in the XML element.
      *
-     * @param config The {@code JMathAnimConfig} object to which the parsed background configuration
-     *               will be applied. This object holds the application-wide configuration settings.
-     * @param background The XML element representing the background configuration options. This element
-     *                   may contain child nodes like "color", "shadows", and "image" which designate
-     *                   specific background settings.
+     * @param config     The {@code JMathAnimConfig} object to which the parsed background configuration will be
+     *                   applied. This object holds the application-wide configuration settings.
+     * @param background The XML element representing the background configuration options. This element may contain
+     *                   child nodes like "color", "shadows", and "image" which designate specific background settings.
      * @throws IOException If an I/O error occurs while loading background-related resources, such as images.
      */
     private static void parseBackgroundOptions(JMathAnimConfig config, Element background) throws IOException {
@@ -197,7 +193,7 @@ public class ConfigLoader {
                 case "color":
                     String colorId = item.getTextContent();
                     config.setBackgroundColor(JMColor.parse(colorId));
-                    JMathAnimScene.logger.debug("Config read: Background color set to {}", colorId);
+                    JMathAnimScene.logger.debug("Config read: Background color set to "+ LogUtils.method(colorId));
                     break;
                 case "shadows":
                     config.drawShadow = Boolean.parseBoolean(item.getTextContent());
@@ -206,14 +202,14 @@ public class ConfigLoader {
                     config.shadowOffsetX = Integer.parseInt(el.getAttribute("offsetX"));
                     config.shadowOffsetY = Integer.parseInt(el.getAttribute("offsetY"));
                     config.shadowAlpha = Float.parseFloat(el.getAttribute("alpha"));
-                    JMathAnimScene.logger.debug("Config read: Draw shadows set to {}", config.drawShadow);
+                    JMathAnimScene.logger.debug("Config read: Draw shadows set to "+ LogUtils.method(config.drawShadow));
                     break;
                 case "image":
                     String backgroundFilename = item.getTextContent();
                     if (!"".equals(backgroundFilename)) {
-                        config.setBackGroundImage(resourceLoader.getResource(backgroundFilename, "images"));
+                        config.setBackGroundImage(resourceLoader.getExternalResource(backgroundFilename, "images"));
 //                        config.backGroundImage = config.getResourcesDir().getCanonicalPath() + File.pathSeparator + backgroundFilename;
-                        JMathAnimScene.logger.debug("Config read: Background image set to {}", backgroundFilename);
+                        JMathAnimScene.logger.debug("Config read: Background image set to "+LogUtils.fileName(backgroundFilename));
                     }
                     break;
             }
@@ -223,13 +219,14 @@ public class ConfigLoader {
 
     /**
      * Parses style elements from the provided XML configuration and maps them to the {@code JMathAnimConfig} object.
-     * The method processes all "style" elements within the given {@code styles} element, extracts their attributes,
-     * and creates corresponding {@code MODrawProperties} objects that are stored within the configuration's styles map.
-     * This allows for the dynamic application of styles throughout the animation framework based on predefined configurations.
+     * The method processes all "style" elements within the given {@code styles} element, extracts their attributes, and
+     * creates corresponding {@code MODrawProperties} objects that are stored within the configuration's styles map.
+     * This allows for the dynamic application of styles throughout the animation framework based on predefined
+     * configurations.
      *
      * @param config The {@code JMathAnimConfig} object to which the parsed styles will be added.
-     * @param styles The XML element containing "style" child elements. Each child element is expected to
-     *               have attributes such as "base" and "name" used for defining styles.
+     * @param styles The XML element containing "style" child elements. Each child element is expected to have
+     *               attributes such as "base" and "name" used for defining styles.
      */
     private static void parseStyles(JMathAnimConfig config, Element styles) {
         NodeList templChilds = styles.getElementsByTagName("style");
@@ -241,24 +238,22 @@ public class ConfigLoader {
                 MODrawProperties mp = parseMathObjectDrawingProperties(config, baseStyle, item);
                 String styleName = el.getAttribute("name").toUpperCase().trim();
                 config.getStyles().put(styleName, mp);
-                JMathAnimScene.logger.debug("Parsed style " + styleName);
+                JMathAnimScene.logger.debug("Parsed style " + LogUtils.method(styleName));
             }
 
         }
     }
 
     /**
-     * Parses LaTeX style elements from the provided XML configuration and maps them to
-     * the {@code JMathAnimConfig} object. The method processes all "latexStyle" elements
-     * within the given {@code latexStyles} element, extracts their attributes, and creates
-     * corresponding {@code LatexStyle} objects. These styles are stored in a map within
+     * Parses LaTeX style elements from the provided XML configuration and maps them to the {@code JMathAnimConfig}
+     * object. The method processes all "latexStyle" elements within the given {@code latexStyles} element, extracts
+     * their attributes, and creates corresponding {@code LatexStyle} objects. These styles are stored in a map within
      * the configuration and can be referenced by their names in uppercase.
      *
-     * @param config The {@code JMathAnimConfig} object where the parsed LaTeX styles
-     *               will be added. This object holds the application-wide configuration settings.
-     * @param latexStyles The XML element containing "latexStyle" child elements. Each child
-     *                    element is expected to have attributes such as "name" and
-     *                    "baseLatexStyle" used for defining the LaTeX styles.
+     * @param config      The {@code JMathAnimConfig} object where the parsed LaTeX styles will be added. This object
+     *                    holds the application-wide configuration settings.
+     * @param latexStyles The XML element containing "latexStyle" child elements. Each child element is expected to have
+     *                    attributes such as "name" and "baseLatexStyle" used for defining the LaTeX styles.
      */
     private static void parseLatexStyles(JMathAnimConfig config, Element latexStyles) {
         NodeList templChilds = latexStyles.getElementsByTagName("latexStyle");
@@ -276,16 +271,16 @@ public class ConfigLoader {
     }
 
     /**
-     * Parses a LaTeX style from the provided configuration, base style name, and XML element.
-     * This method creates a new LatexStyle object either by copying an existing style defined
-     * in the configuration or by instantiating a default style. It then iterates through child
-     * "latexStyleItem" elements in the parent XML element to add additional style items to the
-     * newly created LatexStyle object.
+     * Parses a LaTeX style from the provided configuration, base style name, and XML element. This method creates a new
+     * LatexStyle object either by copying an existing style defined in the configuration or by instantiating a default
+     * style. It then iterates through child "latexStyleItem" elements in the parent XML element to add additional style
+     * items to the newly created LatexStyle object.
      *
-     * @param config The JMathAnimConfig object containing predefined LaTeX styles and configuration settings.
-     * @param baseLatexStyle A string representing the name of the base LaTeX style to copy.
-     *                       If empty, a new default LatexStyle object is created.
-     * @param parent The XML element containing the parent "latexStyle" definition and its child "latexStyleItem" elements.
+     * @param config         The JMathAnimConfig object containing predefined LaTeX styles and configuration settings.
+     * @param baseLatexStyle A string representing the name of the base LaTeX style to copy. If empty, a new default
+     *                       LatexStyle object is created.
+     * @param parent         The XML element containing the parent "latexStyle" definition and its child
+     *                       "latexStyleItem" elements.
      * @return A LatexStyle object containing all the parsed style items.
      */
     private static LatexStyle parseLatexStyle(JMathAnimConfig config, String baseLatexStyle, Element parent) {
@@ -311,14 +306,14 @@ public class ConfigLoader {
     }
 
     /**
-     * Parses a LaTeX style item from the provided XML element and configuration object.
-     * This method reads the conditions and style details of a LaTeX style item, creates
-     * a new {@code LatexStyleItem} object, and configures it based on the parsed data.
+     * Parses a LaTeX style item from the provided XML element and configuration object. This method reads the
+     * conditions and style details of a LaTeX style item, creates a new {@code LatexStyleItem} object, and configures
+     * it based on the parsed data.
      *
-     * @param config The {@code JMathAnimConfig} object containing application-wide configuration
-     *               settings and existing styles.
-     * @param parent The parent XML element representing the LaTeX style item, which includes
-     *               child elements for conditions and style attributes.
+     * @param config The {@code JMathAnimConfig} object containing application-wide configuration settings and existing
+     *               styles.
+     * @param parent The parent XML element representing the LaTeX style item, which includes child elements for
+     *               conditions and style attributes.
      * @return A configured {@code LatexStyleItem} object based on the parsed XML data.
      */
     private static LatexStyleItem parseLatexStyleItem(JMathAnimConfig config, Element parent) {
@@ -349,17 +344,13 @@ public class ConfigLoader {
     }
 
     /**
-     * Parses a LaTeX token from the provided XML element. This method extracts
-     * and converts data from the XML node, including token type, subtype, string,
-     * and delimiter depth, to create a corresponding {@code LatexToken} object.
+     * Parses a LaTeX token from the provided XML element. This method extracts and converts data from the XML node,
+     * including token type, subtype, string, and delimiter depth, to create a corresponding {@code LatexToken} object.
      *
-     * @param el The XML element from which the LaTeX token details are extracted.
-     *           The element is expected to contain child nodes such as "type",
-     *           "subtype", "string", and "delimiterDepth".
-     *
-     * @return A {@code LatexToken} object created using the data extracted from
-     *         the provided XML element, or {@code null} if the input element is
-     *         {@code null}.
+     * @param el The XML element from which the LaTeX token details are extracted. The element is expected to contain
+     *           child nodes such as "type", "subtype", "string", and "delimiterDepth".
+     * @return A {@code LatexToken} object created using the data extracted from the provided XML element, or
+     * {@code null} if the input element is {@code null}.
      */
     private static LatexToken parseLatexToken(Element el) {
         if (el == null) {//No node, no token!
@@ -374,7 +365,7 @@ public class ConfigLoader {
 
         if (type != null) {
             //Convert String type to the corresponding enum value, catching possible errors
-            type=type.toUpperCase();
+            type = type.toUpperCase();
             try {
                 latexTokenType = LatexTokenType.valueOf(type);
             } catch (IllegalArgumentException e) {
@@ -388,7 +379,7 @@ public class ConfigLoader {
         if (subTypeStr != null) {
             tokenSubType = 0;
             for (String str : subTypeStr.split(",")) {
-                str=str.toUpperCase();
+                str = str.toUpperCase();
                 Field campo;
                 try {
                     campo = LatexToken.class.getField(str); //Get variable with that name
@@ -402,7 +393,7 @@ public class ConfigLoader {
 
             }
         }
-        Integer delimiterDepth=((delDepthStr==null)||("".equals(delDepthStr)) ? null: Integer.valueOf(delDepthStr));
+        Integer delimiterDepth = ((delDepthStr == null) || ("".equals(delDepthStr)) ? null : Integer.valueOf(delDepthStr));
         return LatexToken.make()
                 .setType(latexTokenType)
                 .setSecondaryTypeFlag(tokenSubType)
@@ -428,44 +419,42 @@ public class ConfigLoader {
     }
 
     /**
-     * Retrieves the first child element within the given parent element that matches the specified tag name.
-     * This method searches through the child nodes of the provided parent element and returns the first
-     * instance that is an {@code Element} and matches the given tag name.
+     * Retrieves the first child element within the given parent element that matches the specified tag name. This
+     * method searches through the child nodes of the provided parent element and returns the first instance that is an
+     * {@code Element} and matches the given tag name.
      *
-     * @param parent The parent {@code Element} whose child elements are to be searched.
-     *               This element provides the context for locating the desired child element.
-     * @param name   The tag name of the desired child element. This value is case-sensitive and
-     *               must match the tag name of the desired element exactly.
-     * @return The first {@code Element} that matches the specified tag name, or {@code null} if no such
-     *         child element is found.
+     * @param parent The parent {@code Element} whose child elements are to be searched. This element provides the
+     *               context for locating the desired child element.
+     * @param name   The tag name of the desired child element. This value is case-sensitive and must match the tag name
+     *               of the desired element exactly.
+     * @return The first {@code Element} that matches the specified tag name, or {@code null} if no such child element
+     * is found.
      */
     private static Element getFirstChildElementWithName(Element parent, String name) {
-    NodeList nodeList = parent.getElementsByTagName(name);
-    for (int i = 0; i < nodeList.getLength(); i++) {
-        Node child = nodeList.item(i);
-        if (child instanceof Element) {
-            return (Element) child;
+        NodeList nodeList = parent.getElementsByTagName(name);
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Node child = nodeList.item(i);
+            if (child instanceof Element) {
+                return (Element) child;
+            }
         }
+        return null;
     }
-    return null;
-}
-    
-    
+
+
     /**
-     * Parses drawing properties for a mathematical object from a provided XML configuration node.
-     * This method uses a base style, if specified, and overrides specific properties based on the
-     * children of the XML node. The resulting drawing properties are encapsulated in a
-     * {@code MODrawProperties} object.
+     * Parses drawing properties for a mathematical object from a provided XML configuration node. This method uses a
+     * base style, if specified, and overrides specific properties based on the children of the XML node. The resulting
+     * drawing properties are encapsulated in a {@code MODrawProperties} object.
      *
-     * @param config The {@code JMathAnimConfig} object, which contains styles and other
-     *               configuration settings needed for parsing.
-     * @param baseStyle A string representing the name of the base style to be applied.
-     *                  If empty, no base style is applied, and default properties are used.
-     * @param template The XML node containing the template for the drawing properties.
-     *                 Its child elements are parsed to determine individual property values,
-     *                 such as color, thickness, and layer.
-     * @return A {@code MODrawProperties} object containing the parsed drawing
-     *         properties based on the base style and the specified XML template.
+     * @param config    The {@code JMathAnimConfig} object, which contains styles and other configuration settings
+     *                  needed for parsing.
+     * @param baseStyle A string representing the name of the base style to be applied. If empty, no base style is
+     *                  applied, and default properties are used.
+     * @param template  The XML node containing the template for the drawing properties. Its child elements are parsed
+     *                  to determine individual property values, such as color, thickness, and layer.
+     * @return A {@code MODrawProperties} object containing the parsed drawing properties based on the base style and
+     * the specified XML template.
      */
     private static MODrawProperties parseMathObjectDrawingProperties(JMathAnimConfig config, String baseStyle, Node template) {
         MODrawProperties mp = MODrawProperties.makeNullValues();
@@ -518,7 +507,7 @@ public class ConfigLoader {
                 case "#comment":
                     break;
                 default:
-                    JMathAnimScene.logger.warn("Tag {} not recognized", name);
+                    JMathAnimScene.logger.warn("Tag "+LogUtils.method(name)+" not recognized");
 
             }
         }
@@ -567,19 +556,15 @@ public class ConfigLoader {
     }
 
     /**
-     * Parses a linear gradient configuration from an XML element and converts it into a
-     * JMLinearGradient object with the specified start and end points, stops, cycle method,
-     * and relative positioning.
+     * Parses a linear gradient configuration from an XML element and converts it into a JMLinearGradient object with
+     * the specified start and end points, stops, cycle method, and relative positioning.
      *
-     * @param config The JMathAnimConfig instance containing the application's configuration.
-     *               This parameter can be used to provide additional context or options while
-     *               parsing the gradient.
-     * @param gradientElement The XML element that represents the gradient. It should contain
-     *                        tags defining the start and end points, stops, and other attributes
-     *                        such as cycle and relative properties.
-     * @return A JMLinearGradient object configured according to the provided XML element. This
-     *         object describes the linear gradient with positions, color stops, and associated
-     *         properties.
+     * @param config          The JMathAnimConfig instance containing the application's configuration. This parameter
+     *                        can be used to provide additional context or options while parsing the gradient.
+     * @param gradientElement The XML element that represents the gradient. It should contain tags defining the start
+     *                        and end points, stops, and other attributes such as cycle and relative properties.
+     * @return A JMLinearGradient object configured according to the provided XML element. This object describes the
+     * linear gradient with positions, color stops, and associated properties.
      */
     private static JMLinearGradient parseLinearGradient(JMathAnimConfig config, Element gradientElement) {
         NodeList starts = gradientElement.getElementsByTagName("start");
@@ -635,14 +620,14 @@ public class ConfigLoader {
     }
 
     /**
-     * Parses a radial gradient definition from the given XML element and constructs a
-     * {@code JMRadialGradient} object based on the provided configuration and gradient data.
+     * Parses a radial gradient definition from the given XML element and constructs a {@code JMRadialGradient} object
+     * based on the provided configuration and gradient data.
      *
-     * @param config The configuration object that holds settings for parsing the gradient.
-     * @param gradientElement The XML element containing the radial gradient definition,
-     *                        including center, radius, stops, and other properties.
-     * @return A {@code JMRadialGradient} instance representing the parsed radial gradient
-     *         with its center, radius, color stops, cycle method, and relative-to-shape flag.
+     * @param config          The configuration object that holds settings for parsing the gradient.
+     * @param gradientElement The XML element containing the radial gradient definition, including center, radius,
+     *                        stops, and other properties.
+     * @return A {@code JMRadialGradient} instance representing the parsed radial gradient with its center, radius,
+     * color stops, cycle method, and relative-to-shape flag.
      */
     private static JMRadialGradient parseRadialGradient(JMathAnimConfig config, Element gradientElement) {
         NodeList starts = gradientElement.getElementsByTagName("center");
@@ -697,15 +682,15 @@ public class ConfigLoader {
     }
 
     /**
-     * Parses the "include" element in the XML configuration to load additional configuration options.
-     * This method reads the file path specified in the provided XML element and delegates the file
-     * parsing to the {@code ConfigLoader.parseFile()} method.
+     * Parses the "include" element in the XML configuration to load additional configuration options. This method reads
+     * the file path specified in the provided XML element and delegates the file parsing to the
+     * {@code ConfigLoader.parseFile()} method.
      *
-     * @param include The XML element containing the "include" directive. The element is expected to
-     *                contain the file path of the configuration file to be included as its content.
+     * @param include The XML element containing the "include" directive. The element is expected to contain the file
+     *                path of the configuration file to be included as its content.
      */
     private static void parseLoadConfigOptions(Element include) {
-        JMathAnimScene.logger.debug("Including file "+ LogUtils.fileName("{}"), include.getTextContent());
+        JMathAnimScene.logger.debug("Including file " + LogUtils.fileName(include.getTextContent()));
         ConfigLoader.parseFile(include.getTextContent());
     }
 }

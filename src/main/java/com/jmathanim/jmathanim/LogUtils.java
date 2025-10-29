@@ -32,6 +32,10 @@ public class LogUtils {
     public static String method(String method) {
         return String.format("%s%s%s%s", BOLD, CYAN, method,RESET);
     }
+    public static String method(boolean method) {
+        return String.format("%s%s%s%s", BOLD, CYAN, (method ? "true" : "false"),RESET);
+    }
+
 
     public static String fileName(String fileName) {
         return String.format("%s%s%s%s", BOLD, YELLOW, fileName,RESET);

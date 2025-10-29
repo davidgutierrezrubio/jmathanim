@@ -35,6 +35,7 @@ import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.jmathanim.LogUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -369,7 +370,7 @@ class GeogebraCommandParser {
         String label = firstElementWithTag(el, "output").getAttribute("a0");
         resul.objectLabel = label;
         registerGeogebraElement(label, resul);
-        JMathAnimScene.logger.debug("Generated segment {}", label);
+        JMathAnimScene.logger.debug("Generated segment "+ LogUtils.method(label));
     }
 
     protected void processLineCommand(Element el) {
@@ -508,14 +509,14 @@ class GeogebraCommandParser {
             CTAbstractPoint<?> P = CTPoint.at(Vec.to(0,0));//Should be computed in the constructor
             vertices.add(P);
             registerGeogebraElement(outputs[k], P);
-            JMathAnimScene.logger.debug("Generated Point {}", outputs[k]);
+            JMathAnimScene.logger.debug("Generated CTPoint "+ LogUtils.method(outputs[k]));
         }
 
         for (int k = 1; k <= sides; k++) {
             final CTSegment seg = CTSegment.make(vertices.get(k - 1), vertices.get(k % sides));
             segments.add(seg);
             registerGeogebraElement(outputs[k], seg);
-            JMathAnimScene.logger.debug("Generated segment {}", outputs[k]);
+            JMathAnimScene.logger.debug("Generated CTSegment "+ LogUtils.method(outputs[k]));
         }
 
         registerGeogebraElement(label, CTRegularPolygon.makeFromPointList(vertices));

@@ -17,16 +17,13 @@
  */
 package com.jmathanim.jmathanim;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.joran.spi.JoranException;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.PlayAnim;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Constructible.GeogebraLoader;
 import com.jmathanim.Enum.LayoutType;
 import com.jmathanim.Enum.LinkType;
+import com.jmathanim.Enum.LogLevel;
 import com.jmathanim.MathObjects.*;
 import com.jmathanim.MathObjects.Text.LatexMathObject;
 import com.jmathanim.MathObjects.Text.LatexShape;
@@ -35,7 +32,6 @@ import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.*;
-import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
 import java.net.URL;
@@ -54,7 +50,9 @@ public abstract class JMathAnimScene {
     /**
      * Logger class
      */
-    public final static Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.jmathanim.jmathanim.JMathAnimScene");
+//    public final static Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.jmathanim.jmathanim.JMathAnimScene");
+//    public static final Logger logger = System.getLogger(JMathAnimScene.class.getName());
+    public static final JMathAnimLogger logger = new JMathAnimLogger();
     /**
      * Our loved constant PI
      */
@@ -209,22 +207,10 @@ public abstract class JMathAnimScene {
         startTime = System.currentTimeMillis();
 
         String sketchName = this.getClass().getName();
-        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-        loggerContext.reset();
 
-        JoranConfigurator configurator = new JoranConfigurator();
-        configurator.setContext(loggerContext);
-        try {
-            URL url = this.getClass().getClassLoader().getResource("logback.xml");// Loads default config for logger
-            configurator.doConfigure(url);
-        } catch (JoranException ex) {
-            java.util.logging.Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        logger.setLevel(ch.qos.logback.classic.Level.INFO);//Default log level: INFO
-        logger.info("Running sketch {} ", sketchName);
-
-
+        logger.setLevel(LogLevel.INFO);//Default log level: INFO
         setupSketch();
+        logger.info("Running sketch "+LogUtils.method(sketchName));
 
         exitCode = 0;
         // In the global variable store Scene, Renderer and main Camera
@@ -233,7 +219,7 @@ public abstract class JMathAnimScene {
             runSketch();
             renderer.finish(frameCount);
         } catch (Exception ex) {
-            java.util.logging.Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
+           logger.error("An error ocurred. Please review the logs");
         }
         double secondsElapsed = (System.currentTimeMillis() - startTime) * 1d / 1000d;
         DecimalFormat df = new DecimalFormat("0.00");
@@ -558,7 +544,7 @@ public abstract class JMathAnimScene {
         try {
             renderer.saveFrame(frameCount);
         } catch (Exception ex) {
-            java.util.logging.Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JMathAnimScene.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
     }
 
@@ -580,7 +566,7 @@ public abstract class JMathAnimScene {
 
         URL soundURL;
         try {
-            soundURL = rl.getResource(soundName, "sounds");
+            soundURL = rl.getExternalResource(soundName, "sounds");
         } catch (FileNotFoundException e) {
             JMathAnimScene.logger.error("File " + LogUtils.fileName(rl.getFullPath(soundName, "sounds")) + " not found.");
             return;
@@ -834,7 +820,7 @@ public abstract class JMathAnimScene {
         if (styles.containsKey(name)) {
             return styles.get(name);
         } else {
-            JMathAnimScene.logger.warn("No style with name {} found, returning null style", name);
+            JMathAnimScene.logger.warn("No style with name "+LogUtils.method(name)+" found, returning null style");
             return MODrawProperties.makeNullValues();
         }
     }

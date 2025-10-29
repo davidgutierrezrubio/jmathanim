@@ -69,7 +69,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
         this.fileName=fileName;
         rl = new ResourceLoader();
         try {
-            url = rl.getResource(fileName, "geogebra");
+            url = rl.getExternalResource(fileName, "geogebra");
         } catch (FileNotFoundException e) {
            JMathAnimScene.logger.warn("Geogebra file "+ LogUtils.CYAN+fileName+LogUtils.RESET+" not found");
         }
@@ -97,14 +97,14 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
             File file = new File(url.getFile());
             Path filePath = file.toPath();
             if (!Files.exists(filePath)) {
-                JMathAnimScene.logger.error("File not found: {}", file);
+                JMathAnimScene.logger.error("File not found: "+LogUtils.fileName(file.toString()));
                 return;
             }
-            JMathAnimScene.logger.info("Loading Geogebra file {}", fileName);
+            JMathAnimScene.logger.info("Loading Geogebra file "+LogUtils.fileName(fileName));
             zipFile = new ZipFile(url.getFile());
             zipEntry = zipFile.getEntry("geogebra.xml");
             if (zipEntry == null) {
-                JMathAnimScene.logger.error("Error: Geogebra file '{}' does not contain entry 'geogebra.xml'.", fileName);
+                JMathAnimScene.logger.error("Error: Geogebra file "+LogUtils.fileName(fileName)+" does not contain entry 'geogebra.xml'.");
                 return;
             }
             inputStream = this.zipFile.getInputStream(zipEntry);

@@ -206,7 +206,7 @@ public class JMathAnimConfig {
         ResourceLoader rl = new ResourceLoader();
         URL image = null;
         try {
-            image = rl.getResource(name, "images");
+            image = rl.getExternalResource(name, "images");
             setBackGroundImage(image);
             logger.info("Background image set to " + image);
         } catch (FileNotFoundException e) {
@@ -400,7 +400,7 @@ public class JMathAnimConfig {
     }
 
     public MODrawProperties createStyleFrom(DrawStyleProperties mp, String styleName) {
-        logger.info("Creating style {}", styleName.toUpperCase());
+        logger.info("Creating style "+LogUtils.method(styleName.toUpperCase()));
         MODrawProperties mpO = mp.getFirstMP();
         return styles.put(styleName.toUpperCase(), mpO);
     }
@@ -509,25 +509,10 @@ public class JMathAnimConfig {
      * @param level Debug level:  0=OFF, 1=Only errors, 2=Warnings, 3=Info messages, 4=Debug messages
      */
     public void setLoggingLevel(LogLevel level) {
-        switch (level) {
-            case OFF_0:
-                logger.setLevel(ch.qos.logback.classic.Level.OFF);
-                break;
-            case ERROR_1:
-                logger.setLevel(ch.qos.logback.classic.Level.ERROR);
-                break;
-            case WARN_2:
-                logger.setLevel(ch.qos.logback.classic.Level.WARN);
-                break;
-            case INFO_3:
-                logger.setLevel(ch.qos.logback.classic.Level.INFO);
-                break;
-            case DEBUG_4:
-                logger.setLevel(ch.qos.logback.classic.Level.DEBUG);
-                break;
-            default:
-                //Do nothing here
-        }
+            logger.setLevel(level);
+    }
+    public void setLoggingLevel(int  level) {
+        logger.setLevel(level);
     }
 
     /**

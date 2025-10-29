@@ -355,9 +355,9 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
             File dviFile = new File(baseFileName + ".dvi");
             String od = outputDir.getCanonicalPath();
             runExternalCommand("latex -output-directory=" + od + " " + this.latexFile.getCanonicalPath());
-            JMathAnimScene.logger.debug("Done compiling {}", latexFile.getCanonicalPath());
+            JMathAnimScene.logger.debug("Done compiling "+LogUtils.fileName(latexFile.getCanonicalPath()));
             runExternalCommand("dvisvgm -n1 " + dviFile.getCanonicalPath());
-            JMathAnimScene.logger.debug("Done converting {}", dviFile.getCanonicalPath());
+            JMathAnimScene.logger.debug("Done converting "+ LogUtils.fileName(dviFile.getCanonicalPath()));
         }
         return svgFilename;
     }

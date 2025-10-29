@@ -57,7 +57,7 @@ public class JMImage extends AbstractJMImage<JMImage> {
     public static JMImage make(String filename) {
         try {
             ResourceLoader rl = new ResourceLoader();
-            URL urlImage = rl.getResource(filename, "images");
+            URL urlImage = rl.getExternalResource(filename, "images");
             return new JMImage(urlImage.openStream());
         } catch (MalformedURLException ex) {
             JMathAnimScene.logger.error("Malformed url for image " + filename);

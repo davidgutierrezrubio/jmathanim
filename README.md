@@ -72,8 +72,6 @@ This library uses the following 3rd party libraries:
 * [JavaFX](https://openjfx.io/) For the graphics part.
 * [Xuggler](http://www.xuggle.com/xuggler/) For creating videos.
 * [JLaTeXMath](https://github.com/opencollab/jlatexmath) For creating the LaTeX texts and mathematical expressions.
-* [Logback Project](http://logback.qos.ch/) For logging purposes.
-
 
 ## License
 
