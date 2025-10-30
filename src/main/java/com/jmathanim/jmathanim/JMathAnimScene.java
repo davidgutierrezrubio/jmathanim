@@ -219,14 +219,16 @@ public abstract class JMathAnimScene {
         try {
             runSketch();
             renderer.finish(frameCount);
-        } catch (Exception ex) {
-           logger.error("An error ocurred. Please review the logs");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+
+//           logger.error("An error ocurred. Please review the logs");
         double secondsElapsed = (System.currentTimeMillis() - startTime) * 1d / 1000d;
         DecimalFormat df = new DecimalFormat("0.00");
         logger.info("Elapsed time "
 //                + LogUtils.GREEN+df.format(secondsElapsed)+LogUtils.RESET
-                + LogUtils.number(secondsElapsed, 0)
+                + LogUtils.number(secondsElapsed, 2)
                 + " seconds ("
                 + LogUtils.number(frameCount * 1d / secondsElapsed, 2)
 //                + LogUtils.GREEN+df.format(frameCount * 1d / secondsElapsed)+LogUtils.RESET

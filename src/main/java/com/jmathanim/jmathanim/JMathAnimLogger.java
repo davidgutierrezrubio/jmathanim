@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 import static com.jmathanim.jmathanim.LogUtils.RESET;
 
 public class JMathAnimLogger {
-    public static final Logger logger = System.getLogger(JMathAnimLogger.class.getName());
+    private static final Logger logger = System.getLogger(JMathAnimLogger.class.getName());
 //    private LogLevel logLevel;
     private int numLogLevel;
     private static final PrintStream out = System.out;

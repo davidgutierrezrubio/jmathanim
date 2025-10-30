@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.Cameras.Camera;
 import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.MathObjects.Point;
 import com.jmathanim.MathObjects.Shape;
@@ -1055,6 +1056,78 @@ public class SVGUtils {
     private static String extractNumbers(String input) {
         return input.replaceAll("[^0-9.]", "");
     }
+
+
+
+    public static String shapeToSVGPath(Shape shape) {
+        JMPath path=shape.getPath();
+        StringBuilder svg=new StringBuilder();
+        svg.append("<path d=\"M ")
+                .append(path.get(0).getV().x)
+                .append(" ")
+                .append(path.get(0).getV().y)
+                .append(" ");
+        for (int i = 1; i <= path.size(); i++) {
+            JMPathPoint jmp = path.get(i);
+            JMPathPoint jmpPrev = path.get(i-1);
+            svg.append(jmp.isSegmentToThisPointVisible() ? "L " : "M ")
+                    .append(jmp.getV().x)
+                    .append(" ")
+                    .append(jmp.getV().y)
+                    .append(" ");
+        }
+        svg.append("\" ");
+        //Color attributes
+        svg.append(svgColorAttributes("stroke", (JMColor) shape.getMp().getDrawColor())).append(" ");
+        svg.append(svgColorAttributes("fill", (JMColor) shape.getMp().getFillColor())).append(" ");
+        svg.append(svgThickness(shape.getMp().getThickness(), shape.getCamera())).append(" ");
+        return svg.append("></path>").toString();
+    }
+
+
+
+    public static String generateSVGHeaderForSVGExport(JMathAnimScene scene
+    ) {
+        double minX=scene.getCamera().getMathView().xmin;
+        double maxX=scene.getCamera().getMathView().xmax;
+        double minY=scene.getCamera().getMathView().ymin;
+        double maxY=scene.getCamera().getMathView().ymax;
+        int widthPx=scene.getConfig().getMediaWidth();
+        int heightPx=scene.getConfig().getMediaHeight();
+        // Calculamos ancho y alto del viewBox en coordenadas matemáticas
+        double viewBoxWidth = maxX - minX;
+        double viewBoxHeight = maxY - minY;
+
+        // Translate necesario para corregir Y tras invertir el eje
+        double translateY = -viewBoxHeight;
+
+        // Generamos la cabecera SVG
+        String svgHeader = String.format(
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"%d\" height=\"%d\" viewBox=\"%f %f %f %f\">\n" +
+                        "  <g transform=\"scale(1,-1)\">\n",
+                widthPx, heightPx,
+                minX, minY, viewBoxWidth, viewBoxHeight
+        );
+
+        return svgHeader;
+    }
+
+    private static String svgColorAttributes(String name,JMColor color) {
+        double red=color.getRed();
+        double green=color.getGreen();
+        double blue=color.getBlue();
+        double alpha=color.getAlpha();
+        int r = (int) Math.round(red * 255);
+        int g = (int) Math.round(green * 255);
+        int b = (int) Math.round(blue * 255);
+        return String.format(name+"=\"rgb(%d,%d,%d)\" "+name+"-opacity=\"%.3f\"", r, g, b, alpha);
+    }
+
+    private static String svgThickness(double thickness, Camera camera) {
+        double w = camera.getMathView().getWidth();
+        return String.format("stroke-width=\"%.6f\"", thickness/5000*w);
+    }
+
 
 
 }

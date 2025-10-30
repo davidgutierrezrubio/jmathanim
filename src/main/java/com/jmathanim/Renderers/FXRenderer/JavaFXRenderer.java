@@ -127,12 +127,14 @@ public class JavaFXRenderer extends Renderer {
 
     public final void prepareEncoder() throws Exception {
 
-        JMathAnimScene.logger.debug("Preparing encoder");
+
 
         initializeJavaFXWindow();
 
         if (config.isCreateMovie()) {
             videoEncoder = new XugglerVideoEncoder();
+            JMathAnimScene.logger.debug("Preparing encoder "+LogUtils.method(videoEncoder.getClass().getSimpleName()));
+
             File tempPath = new File(config.getOutputDir().getCanonicalPath());
             tempPath.mkdirs();
             saveFilePath = new File(config.getOutputDir().getCanonicalPath() + File.separator
