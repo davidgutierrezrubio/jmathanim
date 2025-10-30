@@ -525,7 +525,6 @@ public class JavaFXRenderer extends Renderer {
         double[] ms = camera.mathToScreenFX(v);
         double[] coords = fixedCamera.screenToMath(ms[0], ms[1]);
         return Vec.to(coords[0], coords[1]);
-
     }
 
     @Override

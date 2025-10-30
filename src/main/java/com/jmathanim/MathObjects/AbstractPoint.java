@@ -60,6 +60,24 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
         return mpPoint;
     }
 
+    public Shape getDotShape() {
+        if (dotShape.isEmpty()) {
+            generateDotShape();
+            generateStyleForDot();
+            dotShape.setAbsoluteSize(v);
+        }
+        if (getMp().hasBeenChanged()) {
+            generateDotShape();
+            generateStyleForDot();
+            dotShape.setAbsoluteSize(v);
+            getMp().setHasBeenChanged(false);
+        }
+        if (!previousVecPosition.equals(v)) {
+            dotShape.shift(v.minus(previousVecPosition));
+            previousVecPosition.copyCoordinatesFrom(v);
+        }
+        return dotShape;
+    }
     @Override
     public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
         if (v.isNaN()) {
@@ -67,24 +85,7 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
             return;
         }
         if (isVisible()) {
-
-            if (dotShape.isEmpty()) {
-                generateDotShape();
-                generateStyleForDot();
-                dotShape.setAbsoluteSize(v);
-            }
-            if (getMp().hasBeenChanged()) {
-                generateDotShape();
-                generateStyleForDot();
-                dotShape.setAbsoluteSize(v);
-                getMp().setHasBeenChanged(false);
-            }
-
-            if (!previousVecPosition.equals(v)) {
-                dotShape.shift(v.minus(previousVecPosition));
-                previousVecPosition.copyCoordinatesFrom(v);
-            }
-
+            getDotShape();
             dotShape.draw(scene, r, cam);
         }
         scene.markAsAlreadydrawn(this);
@@ -293,4 +294,6 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
     protected String getDebugText() {
         return dotShape.getDebugText();
     }
+
+
 }

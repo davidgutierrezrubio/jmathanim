@@ -39,6 +39,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -1059,8 +1060,13 @@ public class SVGUtils {
     }
 
 
-    public static String shapeToSVGPath(AbstractShape<?> shape) {
+    public static String shapeToSVGPath(JMathAnimScene scene,AbstractShape<?> shape) {
         JMPath path = shape.getPath();
+        if (shape.getCamera()==scene.getFixedCamera()) {
+            AffineJTransform fixedToMedia = cameraToScreen(scene.getFixedCamera());
+            AffineJTransform cameraToMedia = cameraToScreen(scene.getCamera());
+            path=path.copy().applyAffineTransform(fixedToMedia.compose(cameraToMedia.getInverse()));
+        }
         StringBuilder svg = new StringBuilder();
         svg.append("<path d=\"M ")
                 .append(path.get(0).getV().x)
@@ -1120,7 +1126,7 @@ public class SVGUtils {
 
     public static String generateSVGHeaderForSVGExport(JMathAnimScene scene
     ) {
-        double minX = scene.getCamera().getMathView().xmin;
+        double minX = scene.getCamera().getMathView().xmin;//Should use rect of all objects instead?
         double maxX = scene.getCamera().getMathView().xmax;
         double minY = scene.getCamera().getMathView().ymin;
         double maxY = scene.getCamera().getMathView().ymax;
@@ -1138,7 +1144,7 @@ public class SVGUtils {
                 "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"%d\" height=\"%d\" viewBox=\"%f %f %f %f\">\n" +
                         "  <g transform=\"scale(1,-1) translate(0,%f)\">\n",
                 widthPx, heightPx,
-                minX, minY, viewBoxWidth, viewBoxHeight,-minY-maxY
+                minX, minY, viewBoxWidth, viewBoxHeight, -minY - maxY
         );
 
         return svgHeader;
@@ -1169,15 +1175,13 @@ public class SVGUtils {
     }
 
 
-    public static void saveSVGFile(JMathAnimScene scene,String fileName) {
+    public static void saveSVGFile(JMathAnimScene scene, File file) {
         try {
-            PrintWriter out = new PrintWriter(fileName);
+            PrintWriter out = new PrintWriter(file);
             out.println(generateSVGHeaderForSVGExport(scene));
 
             for (MathObject<?> mathObject : scene.getMathObjects()) {
-                if (mathObject instanceof AbstractShape<?>) {
-                out.println(shapeToSVGPath((AbstractShape<?>) mathObject));
-                }
+                process(scene,mathObject, out);
             }
             out.println("    </g></svg>");
             out.close();
@@ -1185,4 +1189,46 @@ public class SVGUtils {
             throw new RuntimeException(e);
         }
     }
+
+    private static void process(JMathAnimScene scene,MathObject<?> mathObject, PrintWriter out) {
+        if (mathObject instanceof AbstractShape<?>) {
+            out.println(shapeToSVGPath(scene,(AbstractShape<?>) mathObject));
+        }
+        if (mathObject instanceof AbstractMathGroup<?>) {
+            AbstractMathGroup<?> group = (AbstractMathGroup<?>) mathObject;
+            ArrayList<MathObject<?>> objects = group.getObjects();
+            for (int i = 0; i < objects.size(); i++) {
+                MathObject<?> g = objects.get(i);
+                process(scene,g, out);
+            }
+        }
+        if (mathObject instanceof AbstractMultiShapeObject<?, ?>) {
+            AbstractMultiShapeObject<?, ?> msh = (AbstractMultiShapeObject<?, ?>) mathObject;
+            for (int i = 0; i < msh.size(); i++) {
+                AbstractShape<?> g = msh.get(i);
+                process(scene,g, out);
+            }
+        }
+        if (mathObject instanceof AbstractPoint<?>) {
+            AbstractPoint<?> p = (AbstractPoint<?>) mathObject;
+            Shape dotShape = p.getDotShape().copy();
+            dotShape.setCamera(scene.getFixedCamera());
+            Vec anchor=p.v;
+            AffineJTransform fixedToMedia = cameraToScreen(scene.getFixedCamera());
+            AffineJTransform cameraToMedia = cameraToScreen(scene.getCamera());
+            Vec vFixed=anchor.copy().applyAffineTransform(cameraToMedia.compose(fixedToMedia.getInverse()));
+            dotShape.shift(vFixed.minus(anchor));
+
+            process(scene,dotShape, out);
+        }
+    }
+
+    private static AffineJTransform cameraToScreen(Camera camera) {
+        Rect r = camera.getMathView();
+        return AffineJTransform.createAffineTransformation(
+                r.getLowerLeft(), r.getUpperLeft(), r.getUpperRight(),
+                Vec.to(0, 0), Vec.to(0, camera.getScreenHeight()), Vec.to(camera.getScreenWidth(), camera.getScreenHeight()), 1);
+
+    }
+
 }

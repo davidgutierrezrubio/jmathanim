@@ -26,9 +26,11 @@ import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Styling.RendererEffects;
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.Utils.SVGUtils;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.jmathanim.LogUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -116,18 +118,33 @@ public abstract class Renderer {
     }
 
     public void saveImage(String filename, String format) {
+       if (format.equals("svg")) {
+           writeImageToSVG(filename);
+           return;
+       }
+       //Another bitmap format (usually png)
         int frameCount = config.getScene().getFrameCount();
         BufferedImage renderedImage = getRenderedImage(frameCount);
         writeImageToPNG(filename, renderedImage, format);
-        logger.info("Saved image " + filename);
     }
 
     protected void writeImageToPNG(String filename, BufferedImage renderedImage, String format) {
         try {
             File file = new File(config.getOutputDir().getCanonicalPath() + File.separator + filename);
             ImageIO.write(renderedImage, format, file);
+            logger.info("Saved image " + LogUtils.fileName(file.getPath()));
         } catch (IOException ex) {
             logger.error("Error saving png image "+filename);
+            Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    protected void writeImageToSVG(String filename) {
+        try {
+            File file = new File(config.getOutputDir().getCanonicalPath() + File.separator + filename);
+            SVGUtils.saveSVGFile(scene,file);
+            logger.info("Saved image " + LogUtils.fileName(file.getPath()));
+        } catch (IOException ex) {
+            logger.error("Error saving svg image "+filename);
             Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
