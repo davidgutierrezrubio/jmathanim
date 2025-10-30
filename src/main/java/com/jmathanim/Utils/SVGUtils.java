@@ -18,9 +18,7 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.MathObjects.Coordinates;
-import com.jmathanim.MathObjects.Point;
-import com.jmathanim.MathObjects.Shape;
+import com.jmathanim.MathObjects.*;
 import com.jmathanim.MathObjects.Shapes.JMPath;
 import com.jmathanim.MathObjects.Shapes.JMPathPoint;
 import com.jmathanim.MathObjects.Shapes.MultiShapeObject;
@@ -41,7 +39,9 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1059,7 +1059,7 @@ public class SVGUtils {
     }
 
 
-    public static String shapeToSVGPath(Shape shape) {
+    public static String shapeToSVGPath(AbstractShape<?> shape) {
         JMPath path = shape.getPath();
         StringBuilder svg = new StringBuilder();
         svg.append("<path d=\"M ")
@@ -1136,9 +1136,9 @@ public class SVGUtils {
         // Generamos la cabecera SVG
         String svgHeader = String.format(
                 "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"%d\" height=\"%d\" viewBox=\"%f %f %f %f\">\n" +
-                        "  <g transform=\"scale(1,-1)\">\n",
+                        "  <g transform=\"scale(1,-1) translate(0,%f)\">\n",
                 widthPx, heightPx,
-                minX, minY, viewBoxWidth, viewBoxHeight
+                minX, minY, viewBoxWidth, viewBoxHeight,-minY-maxY
         );
 
         return svgHeader;
@@ -1166,5 +1166,23 @@ public class SVGUtils {
         curved &= !jmpPrev.getVExit().isEquivalentTo(jmpPrev.getV(), .000001);
         curved &= !jmp.getVEnter().isEquivalentTo(jmp.getV(), .000001);
         return curved;
+    }
+
+
+    public static void saveSVGFile(JMathAnimScene scene,String fileName) {
+        try {
+            PrintWriter out = new PrintWriter(fileName);
+            out.println(generateSVGHeaderForSVGExport(scene));
+
+            for (MathObject<?> mathObject : scene.getMathObjects()) {
+                if (mathObject instanceof AbstractShape<?>) {
+                out.println(shapeToSVGPath((AbstractShape<?>) mathObject));
+                }
+            }
+            out.println("    </g></svg>");
+            out.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
