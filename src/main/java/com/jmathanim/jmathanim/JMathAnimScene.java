@@ -210,7 +210,8 @@ public abstract class JMathAnimScene {
 
         logger.setLevel(LogLevel.INFO);//Default log level: INFO
         setupSketch();
-        logger.info("Running sketch "+LogUtils.method(sketchName));
+        if (!sketchName.endsWith("Groovy.GroovyExecutor"))
+            logger.info("Running sketch "+LogUtils.method(sketchName));
 
         exitCode = 0;
         // In the global variable store Scene, Renderer and main Camera

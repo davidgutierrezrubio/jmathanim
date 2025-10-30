@@ -59,9 +59,15 @@
             <artifactId>xuggle-xuggler</artifactId>
             <version>5.4</version>
         </dependency>
+<!--        Xuggler needs slf4j-->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+            <version>2.0.17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
             <version>2.0.17</version>
         </dependency>
         <dependency>
@@ -244,7 +250,6 @@
         <activation>
             <activeByDefault>true</activeByDefault>
         </activation>
-        <!-- No hace falta redefinir nada, usa el build global -->
     </profile>
 
     <profile>

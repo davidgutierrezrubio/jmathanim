@@ -25,9 +25,7 @@
          <style name="arrowdefault">
             <drawColor>black</drawColor>
             <fillColor>black</fillColor>
-            <thickness>4</thickness>
-            <scaleArrowHead1>1</scaleArrowHead1>
-            <scaleArrowHead2>1</scaleArrowHead2>
+            <thickness>10</thickness>
         </style>
               <style name="solidRed">
             <drawColor>black</drawColor>
