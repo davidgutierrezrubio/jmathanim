@@ -168,6 +168,7 @@ public class SVGUtils {
             return MultiShapeObject.make();
         }
     }
+
     public static MultiShapeObject importSVG(URL urlSvg) {
         try {
             return importSVG(urlSvg, MODrawProperties.makeNullValues());
@@ -1058,10 +1059,9 @@ public class SVGUtils {
     }
 
 
-
     public static String shapeToSVGPath(Shape shape) {
-        JMPath path=shape.getPath();
-        StringBuilder svg=new StringBuilder();
+        JMPath path = shape.getPath();
+        StringBuilder svg = new StringBuilder();
         svg.append("<path d=\"M ")
                 .append(path.get(0).getV().x)
                 .append(" ")
@@ -1069,12 +1069,45 @@ public class SVGUtils {
                 .append(" ");
         for (int i = 1; i <= path.size(); i++) {
             JMPathPoint jmp = path.get(i);
-            JMPathPoint jmpPrev = path.get(i-1);
-            svg.append(jmp.isSegmentToThisPointVisible() ? "L " : "M ")
-                    .append(jmp.getV().x)
-                    .append(" ")
-                    .append(jmp.getV().y)
-                    .append(" ");
+            JMPathPoint jmpPrev = path.get(i - 1);
+
+            if (!jmp.isSegmentToThisPointVisible()) {
+                svg.append("M ");//Invisible, move to
+                svg.append(jmp.getV().x);
+                svg.append(" ");
+                svg.append(jmp.getV().y);
+            } else {
+                if ((jmp.isSegmentToThisPointCurved()) && (isEffectivelyCurved(jmpPrev, jmp))) {
+                    //Cubic Bezier
+                    svg.append("C ")
+                            .append(jmpPrev.getVExit().x)
+                            .append(" ")
+                            .append(jmpPrev.getVExit().y)
+                            .append(" ")
+                            .append(jmp.getVEnter().x)
+                            .append(" ")
+                            .append(jmp.getVEnter().y)
+                            .append(" ")
+                            .append(jmp.getV().x)
+                            .append(" ")
+                            .append(jmp.getV().y)
+                            .append(" ");
+                } else {
+                    svg.append("L ") //Straight line
+                            .append(jmp.getV().x)
+                            .append(" ")
+                            .append(jmp.getV().y)
+                            .append(" ");
+
+                }
+            }
+
+//
+//            svg.append(jmp.isSegmentToThisPointVisible() ? "L " : "M ")
+//                    .append(jmp.getV().x)
+//                    .append(" ")
+//                    .append(jmp.getV().y)
+//                    .append(" ");
         }
         svg.append("\" ");
         //Color attributes
@@ -1085,15 +1118,14 @@ public class SVGUtils {
     }
 
 
-
     public static String generateSVGHeaderForSVGExport(JMathAnimScene scene
     ) {
-        double minX=scene.getCamera().getMathView().xmin;
-        double maxX=scene.getCamera().getMathView().xmax;
-        double minY=scene.getCamera().getMathView().ymin;
-        double maxY=scene.getCamera().getMathView().ymax;
-        int widthPx=scene.getConfig().getMediaWidth();
-        int heightPx=scene.getConfig().getMediaHeight();
+        double minX = scene.getCamera().getMathView().xmin;
+        double maxX = scene.getCamera().getMathView().xmax;
+        double minY = scene.getCamera().getMathView().ymin;
+        double maxY = scene.getCamera().getMathView().ymax;
+        int widthPx = scene.getConfig().getMediaWidth();
+        int heightPx = scene.getConfig().getMediaHeight();
         // Calculamos ancho y alto del viewBox en coordenadas matemáticas
         double viewBoxWidth = maxX - minX;
         double viewBoxHeight = maxY - minY;
@@ -1112,22 +1144,27 @@ public class SVGUtils {
         return svgHeader;
     }
 
-    private static String svgColorAttributes(String name,JMColor color) {
-        double red=color.getRed();
-        double green=color.getGreen();
-        double blue=color.getBlue();
-        double alpha=color.getAlpha();
+    private static String svgColorAttributes(String name, JMColor color) {
+        double red = color.getRed();
+        double green = color.getGreen();
+        double blue = color.getBlue();
+        double alpha = color.getAlpha();
         int r = (int) Math.round(red * 255);
         int g = (int) Math.round(green * 255);
         int b = (int) Math.round(blue * 255);
-        return String.format(name+"=\"rgb(%d,%d,%d)\" "+name+"-opacity=\"%.3f\"", r, g, b, alpha);
+        return String.format(name + "=\"rgb(%d,%d,%d)\" " + name + "-opacity=\"%.3f\"", r, g, b, alpha);
     }
 
     private static String svgThickness(double thickness, Camera camera) {
         double w = camera.getMathView().getWidth();
-        return String.format("stroke-width=\"%.6f\"", thickness/5000*w);
+        return String.format("stroke-width=\"%.6f\"", thickness / 5000 * w);
     }
 
 
-
+    private static boolean isEffectivelyCurved(JMPathPoint jmpPrev, JMPathPoint jmp) {
+        boolean curved = true;
+        curved &= !jmpPrev.getVExit().isEquivalentTo(jmpPrev.getV(), .000001);
+        curved &= !jmp.getVEnter().isEquivalentTo(jmp.getV(), .000001);
+        return curved;
+    }
 }
