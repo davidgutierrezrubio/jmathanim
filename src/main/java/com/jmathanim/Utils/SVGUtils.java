@@ -44,6 +44,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -67,6 +68,7 @@ public class SVGUtils {
     private static double previousY;
     private static AffineJTransform currentTransform;
     private static double width;
+    private final static HashMap<String, Object> defsObjects = new HashMap<>();
 //
     /// /        this.scene = scene;
 //        this.currentX = 0;
@@ -90,6 +92,7 @@ public class SVGUtils {
         width = 0;
         height = 0;
         scene = JMathAnimConfig.getConfig().getScene();
+        defsObjects.clear();
     }
 
 
@@ -148,6 +151,7 @@ public class SVGUtils {
 
         try {
             URL url = rl.getExternalResource(fileName, "images");
+            logger.debug("Importing SVG file " + LogUtils.fileName(url.toString()));
             return importSVG(url, MODrawProperties.makeNullValues());
         } catch (Exception e) {
             logger.error("An exception ocurred loading SVG file " + fileName + ". Returning empty MultiShapeObject instead");
@@ -314,7 +318,7 @@ public class SVGUtils {
                         msh.add(shape);
                         break;
                     case "defs":
-                        //Nothing to do here yet...
+                      processDefs(el);
                         break;
                     case "metadata":
                         break;
@@ -324,6 +328,22 @@ public class SVGUtils {
             }
         }
     }
+
+    private static void processDefs(Element defNode) {
+        NodeList nList = defNode.getChildNodes();
+        // localMP holds the base MODrawProperties to apply to all childs
+        MODrawProperties mpCopy;
+        int length = nList.getLength();
+        for (int nchild = 0; nchild < length; nchild++) {
+            Node node = nList.item(nchild);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element el = (Element) node;
+                System.out.println(el.getTagName());
+
+            }
+        }
+    }
+
 
     private static Shape processPolygonPoints(String s, boolean polygon) {
         ArrayList<Vec> points = new ArrayList<>();
@@ -684,33 +704,6 @@ public class SVGUtils {
         resul.getJmPathPoints().addAll(arc.getPath().getJmPathPoints());
         return arc.get(-1);
     }
-//    private static @NotNull String sanitizeString(String s) {
-//        String t = s.replace("-", " -");// Avoid errors with strings like "142.11998-.948884"
-//        t = t.replace("e -", "e-");// Avoid errors with numbers in scientific format
-//        t = t.replace("E -", "E-");// Avoid errors with numbers in scientific format
-//        t = t.replace("M", " M ");// Adding spaces before and after to all commands helps me to differentiate
-//        // easily from coordinates
-//        t = t.replace("m", " m ");
-//        t = t.replace("H", " H ");
-//        t = t.replace("h", " h ");
-//        t = t.replace("V", " V ");
-//        t = t.replace("v", " v ");
-//        t = t.replace("C", " C ");
-//        t = t.replace("c", " c ");
-//        t = t.replace("S", " S ");
-//        t = t.replace("s", " s ");
-//        t = t.replace("L", " L ");
-//        t = t.replace("l", " l ");
-//        t = t.replace("Z", " Z ");
-//        t = t.replace("z", " z ");
-//        t = t.replace("q", " q ");
-//        t = t.replace("Q", " Q ");
-//        t = t.replace("a", " a ");
-//        t = t.replace("A", " A ");
-//        t = t.replaceAll(",", " ");// Replace all commas with spaces
-//        t = t.replaceAll("^ +| +$|( )+", "$1");// Removes duplicate spaces
-//        return t;
-//    }
 
     private static ArrayList<String> getPointTokens(String s) {
         String t = sanitizeString(s);

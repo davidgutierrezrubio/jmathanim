@@ -44,13 +44,13 @@ public class SVGExport {
 
     public String getSVGCode() {
         objects = getFlattenedListOfMathObjects();
-        svgCodeDefs.append("</defs>\n");
+
         svgCode.append(generateSVGHeaderForSVGExport());
         //get a flattened list of all objects in the scene
 
         //First, process all objects to look for different color and gradients
         populateStyles();
-
+        svgCodeDefs.append("</defs>\n");
         svgCode.append(svgCodeDefs);
 
         //Now process the objects!
