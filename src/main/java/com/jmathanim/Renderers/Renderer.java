@@ -117,10 +117,21 @@ public abstract class Renderer {
         int frameCount = config.getScene().getFrameCount();
         saveImage(config.getOutputFileName() + String.format("%06d", frameCount) + ".png", "png");
     }
-
+    /**
+     * Writes the current rendered image to a file in the specified image format.
+     * <p>
+     * This method handles both raster formats (e.g., PNG, JPG) and delegates
+     * to a specialized method for vector formats (SVG).
+     *
+     * @param filename The name of the file (including the extension) where the image will be saved.
+     * The file is stored within the configured output directory ({@code config.getOutputDir()}).
+     * @param format The output image format, such as "png", "jpg", or "gif".
+     * If "svg" is specified, the method delegates the saving process to
+     * the {@code saveSVGImage} method.
+     */
     public void saveImage(String filename, String format) {
        if (format.equals("svg")) {
-           writeImageToSVG(filename);
+           saveSVGImage(filename,true);
            return;
        }
        //Another bitmap format (usually png)
@@ -139,10 +150,23 @@ public abstract class Renderer {
             Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    protected void writeImageToSVG(String filename) {
+
+    /**
+     * Saves the current view of the scene to an SVG file.
+     * The SVG viewport (its coordinate system) is determined based on the
+     * value of {@code useMathView}.
+     * * @param filename The name of the SVG file (including the extension) to save the image to.
+     * It is saved within the configured output directory ({@code config.getOutputDir()}).
+     * @param useMathView If {@code true}, the SVG's bounding box is determined by
+     * the limits of the current mathematical view. If {@code false},
+     * the bounding box will be automatically computed to tightly fit all
+     * visible objects in the scene.
+     */
+    public void saveSVGImage(String filename, boolean useMathView) {
         try {
             File file = new File(config.getOutputDir().getCanonicalPath() + File.separator + filename);
             SVGExport svgExport = new SVGExport(config.getScene());
+            svgExport.setUseMathView(useMathView);
             String svgCode = svgExport.getSVGCode();
             PrintWriter pw = new PrintWriter(file);
             pw.print(svgCode);

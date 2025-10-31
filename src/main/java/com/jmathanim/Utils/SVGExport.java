@@ -1,6 +1,9 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Enum.GradientCycleMethod;
+import com.jmathanim.Enum.StrokeLineCap;
+import com.jmathanim.Enum.StrokeLineJoin;
 import com.jmathanim.MathObjects.*;
 import com.jmathanim.MathObjects.Shapes.JMPath;
 import com.jmathanim.MathObjects.Shapes.JMPathPoint;
@@ -17,33 +20,45 @@ public class SVGExport {
     StringBuilder svgCodeDefs;
     HashMap<PaintStyle<?>, String> paintStyleNames;
     int styleCounter;
-    private ArrayList<MathObject<?>> objects;
+    private MathObjectGroup objects;
+    private boolean useMathView;
 
     public SVGExport(JMathAnimScene scene) {
         this.scene = scene;
         svgCode = new StringBuilder();
         svgCodeDefs = new StringBuilder();
         svgCodeDefs.append("<defs>\n");
-        objects = new ArrayList<>();
+        objects = MathObjectGroup.make();
         styleCounter = 0;
         paintStyleNames = new HashMap<>();
+        useMathView=false;
+    }
+
+    public boolean isUseMathView() {
+        return useMathView;
+    }
+
+    public void setUseMathView(boolean useMathView) {
+        this.useMathView = useMathView;
     }
 
     public String getSVGCode() {
-        //get a flattened list of all objects in the scene
         objects = getFlattenedListOfMathObjects();
-        //First, process all objects to look for different color and gradients
-        populateStyles();
         svgCodeDefs.append("</defs>\n");
         svgCode.append(generateSVGHeaderForSVGExport());
+        //get a flattened list of all objects in the scene
+
+        //First, process all objects to look for different color and gradients
+        populateStyles();
+
         svgCode.append(svgCodeDefs);
 
         //Now process the objects!
-        for(MathObject<?> ob:objects) {
+        for (MathObject<?> ob : objects) {
             processObjectsToSVG(ob);
         }
 
-        svgCode.append("</svg>");
+        svgCode.append("</g>\n</svg>");
         return svgCode.toString();
     }
 
@@ -131,29 +146,31 @@ public class SVGExport {
             }
         }
         if (path.get(0).isSegmentToThisPointVisible()) {
-            svg.append("Z ");
+            svg.append("Z");
         }
 
         svg.append("\" ");
         //Color attributes
         PaintStyle<?> drawColor = shape.getMp().getDrawColor();
-        if (drawColor instanceof  JMColor) {
+        if (drawColor instanceof JMColor) {
             svg.append(svgJMColorAttributes("stroke", (JMColor) drawColor)).append(" ");
-        }else {
+        } else {
             //Must be a style stored in defs
             svg.append("stroke=\"url(#").append(paintStyleNames.get(drawColor)).append(")\" ");
         }
 
         PaintStyle<?> fillColor = shape.getMp().getFillColor();
-        if (fillColor instanceof  JMColor) {
+        if (fillColor instanceof JMColor) {
             svg.append(svgJMColorAttributes("fill", (JMColor) fillColor)).append(" ");
-        }else {
+        } else {
             //Must be a style stored in defs
             svg.append("fill=\"url(#").append(paintStyleNames.get(fillColor)).append(")\" ");
         }
 
 
         svg.append(svgThickness(shape.getMp().getThickness(), shape.getCamera())).append(" ");
+        svg.append(getSvgStrokeLineCap(shape.getMp().getLineCap())).append(" ");
+        svg.append(getSvgStrokeLineJoin(shape.getMp().getLineJoin())).append(" ");
         return svg.append("/>\n").toString();
     }
 
@@ -205,6 +222,7 @@ public class SVGExport {
         }
         if (paintStyle instanceof JMRadialGradient) {
             JMRadialGradient rg = (JMRadialGradient) paintStyle;
+            svgCodeDefs.append(jmRadialGradientToSVGDefinition(rg, styleName));
         }
 
         if (paintStyle instanceof JMImagePattern) {
@@ -214,7 +232,68 @@ public class SVGExport {
         styleCounter++;
     }
 
-    public String jmLinearGradientToSVGDefinition(JMLinearGradient lg, String name) {
+    private String getSvgStrokeLineCap(StrokeLineCap cap) {
+        String svgValue;
+        switch (cap) {
+            case SQUARE:
+                svgValue = "square";
+                break;
+            case BUTT:
+                svgValue = "butt";
+                break;
+            case ROUND:
+                svgValue = "round";
+                break;
+            default:
+                throw new IllegalArgumentException("StrokeLineCap not supported: " + cap);
+        }
+        return "stroke-linecap=\"" + svgValue + "\"";
+    }
+    private String getSvgStrokeLineJoin(StrokeLineJoin join) {
+        String svgValue;
+
+        switch (join) {
+            case MITER:
+                svgValue = "miter";
+                break;
+            case BEVEL:
+                svgValue = "bevel";
+                break;
+            case ROUND:
+                svgValue = "round";
+                break;
+            default:
+                throw new IllegalArgumentException("StrokeLineJoin not supported: " + join);
+        }
+
+        return "stroke-linejoin=\"" + svgValue + "\"";
+    }
+
+    private String jmRadialGradientToSVGDefinition(JMRadialGradient rg, String name) {
+        StringBuilder svg = new StringBuilder();
+        svg.append("<radialGradient id=\"").append(name)
+                .append("\" ")
+                .append("cx=\"")
+                .append(rg.getCenter().x * 100)
+                .append("%\" ")
+                .append("cy=\"")
+                .append((1 - rg.getCenter().y) *100)
+                .append("%\" ")
+                .append("r=\"")
+                .append(rg.getRadius() * 100)
+                .append("%\" ")
+                .append("gradientUnits=\"")
+                .append(rg.isRelativeToShape() ? "objectBoundingBox" : "userSpaceOnUse")
+                .append("\" ")
+                .append(getSvgSpreadMethod(rg.getCycleMethod()))
+                .append(">\n");
+        TreeMap<Double, JMColor> colors = rg.getStops().getColorTreeMap();
+        addStopsToGradientDefinition(colors, svg);
+        return svg.append("</radialGradient>\n").toString();
+    }
+
+
+    private String jmLinearGradientToSVGDefinition(JMLinearGradient lg, String name) {
         StringBuilder svg = new StringBuilder();
         svg.append("<linearGradient id=\"").append(name)
                 .append("\" ")
@@ -222,16 +301,25 @@ public class SVGExport {
                 .append(lg.getStart().x * 100)
                 .append("%\" ")
                 .append("y1=\"")
-                .append((1-lg.getStart().y) * 100)
+                .append((1 - lg.getStart().y) * 100)
                 .append("%\" ")
                 .append("x2=\"")
                 .append(lg.getEnd().x * 100)
                 .append("%\" ")
                 .append("y2=\"")
-                .append((1-lg.getEnd().y) * 100)
-                .append("%\">\n");
-        //<stop offset="0%" style="stop-color:rgb(255,0,0);stop-opacity:1" />
+                .append((1 - lg.getEnd().y) * 100)
+                .append("%\" ")
+                .append("gradientUnits=\"")
+                .append(lg.isRelativeToShape() ? "objectBoundingBox" : "userSpaceOnUse")
+                .append("\" ")
+                .append(getSvgSpreadMethod(lg.getCycleMethod()))
+                .append(">\n");
         TreeMap<Double, JMColor> colors = lg.getStops().getColorTreeMap();
+        addStopsToGradientDefinition(colors, svg);
+        return svg.append("</linearGradient>\n").toString();
+    }
+
+    private static void addStopsToGradientDefinition(TreeMap<Double, JMColor> colors, StringBuilder svg) {
         for (Double t : colors.keySet()) {
             JMColor col = colors.get(t);
             svg.append("<stop offset=\"")
@@ -247,19 +335,41 @@ public class SVGExport {
                     .append(col.getAlpha())
                     .append("\"/>\n");
         }
-        return svg.append("</linearGradient>\n").toString();
     }
 
+    private String getSvgSpreadMethod(GradientCycleMethod cycle) {
+        String svgValue;
 
-    private ArrayList<MathObject<?>> getFlattenedListOfMathObjects() {
-        ArrayList<MathObject<?>> resul = new ArrayList<>();
-        for (MathObject<?> mo : scene.getMathObjects()) {
-            getFlattenedListOfMathObjectsAux(mo, resul);
+        switch (cycle) {
+            case NO_CYCLE:
+                // NO_CYCLE corresponde al comportamiento por defecto de SVG: "pad"
+                svgValue = "pad";
+                break;
+            case REFLECT:
+                svgValue = "reflect";
+                break;
+            case REPEAT:
+                svgValue = "repeat";
+                break;
+            default:
+                throw new IllegalArgumentException("GradientCycleMethod not supported: " + cycle);
         }
-        return resul;
+
+        return "spreadMethod=\"" + svgValue + "\"";
     }
 
-    private void getFlattenedListOfMathObjectsAux(MathObject<?> mo, ArrayList<MathObject<?>> resul) {
+
+
+
+    private MathObjectGroup getFlattenedListOfMathObjects() {
+        MathObjectGroup mg=MathObjectGroup.make();
+        for (MathObject<?> mo : scene.getMathObjects()) {
+            getFlattenedListOfMathObjectsAux(mo, mg);
+        }
+        return mg;
+    }
+
+    private void getFlattenedListOfMathObjectsAux(MathObject<?> mo, MathObjectGroup resul) {
         if (mo instanceof AbstractMathGroup) {//This is not necessary, but just in case for future versions...
             AbstractMathGroup<?> abstractMathGroup = (AbstractMathGroup<?>) mo;
             for (MathObject<?> mo2 : abstractMathGroup.getObjects()) {
@@ -291,25 +401,49 @@ public class SVGExport {
 
 
     private String generateSVGHeaderForSVGExport() {
-        double minX = scene.getCamera().getMathView().xmin;//Should use rect of all objects instead?
-        double maxX = scene.getCamera().getMathView().xmax;
-        double minY = scene.getCamera().getMathView().ymin;
-        double maxY = scene.getCamera().getMathView().ymax;
-        int widthPx = scene.getConfig().getMediaWidth();
-        int heightPx = scene.getConfig().getMediaHeight();
+        double cminX = scene.getCamera().getMathView().xmin;//Should use rect of all objects instead?
+        double cmaxX = scene.getCamera().getMathView().xmax;
+        double cminY = scene.getCamera().getMathView().ymin;
+        double cmaxY = scene.getCamera().getMathView().ymax;
+        int cwidthPx = scene.getConfig().getMediaWidth();
+        int cheightPx = scene.getConfig().getMediaHeight();
+
+        double minX,minY,maxX,maxY,translateY;
+        int widthPx,heightPx;
+        if (useMathView) {
+            minX=cminX;
+            minY=cminY;
+            maxX=cmaxX;
+            maxY=cmaxY;
+            widthPx=cwidthPx;
+            heightPx=cheightPx;
+            translateY=-minY - maxY;
+        }else{
+            Rect r = objects.getBoundingBox();
+            minX=r.xmin;
+            minY=r.ymin;
+            maxX=r.xmax;
+            maxY=r.ymax;
+            widthPx= (int) (cwidthPx*(maxX-minX)/(cmaxX-cminX));
+            heightPx= (int) (cheightPx*(maxY-minY)/(cmaxY-cminY));
+            translateY=-minY - maxY;
+        }
+
+
+
+
         // Calculamos ancho y alto del viewBox en coordenadas matemáticas
         double viewBoxWidth = maxX - minX;
         double viewBoxHeight = maxY - minY;
 
-        // Translate necesario para corregir Y tras invertir el eje
-        double translateY = -viewBoxHeight;
+
 
         // Generamos la cabecera SVG
         String svgHeader = String.format(
                 "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"%d\" height=\"%d\" viewBox=\"%f %f %f %f\">\n" +
-                        "  <g transform=\"scale(1,-1) translate(0,%f)\"/>\n",
+                        "  <g transform=\"scale(1,-1) translate(0,%f)\">\n",
                 widthPx, heightPx,
-                minX, minY, viewBoxWidth, viewBoxHeight, -minY - maxY
+                minX, minY, viewBoxWidth, viewBoxHeight, translateY
         );
 
         return svgHeader;

@@ -48,7 +48,7 @@ public class JMRadialGradient extends PaintStyle<JMRadialGradient> {
         this.radius = radius;
 
         this.stops = new GradientStop();
-        relativeToShape = false;
+        relativeToShape = true;
         cycleMethod = GradientCycleMethod.NO_CYCLE;
     }
 

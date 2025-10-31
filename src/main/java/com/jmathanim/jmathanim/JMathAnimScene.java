@@ -535,8 +535,29 @@ public abstract class JMathAnimScene {
             format = extension.get();
             fn = filename;
         }
-
         renderer.saveImage(fn, format);
+    }
+    /**
+     * Saves the current view of the scene to an SVG file.
+     * The SVG viewport (its coordinate system) is determined based on the
+     * value of {@code useMathView}.
+     * * @param filename The name of the SVG file (including the extension) to save the image to.
+     * It is saved within the configured output directory ({@code config.getOutputDir()}).
+     * @param useMathView If {@code true}, the SVG's bounding box is determined by
+     * the limits of the current mathematical view. If {@code false},
+     * the bounding box will be automatically computed to tightly fit all
+     * visible objects in the scene.
+     */
+    public final void saveSVGImage(String filename,boolean useMathView) {
+        Optional<String> extension = Optional.ofNullable(filename).filter(f -> f.contains(".")).map(f -> f.substring(filename.lastIndexOf(".") + 1));
+        String fn;
+        if ("".equals(extension.toString())) {
+            //Add png as default extension
+            fn = filename + ".svg";
+        }else {
+            fn=filename;
+        }
+        renderer.saveSVGImage(fn,useMathView);
     }
 
     /**

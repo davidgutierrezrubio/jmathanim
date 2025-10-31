@@ -53,7 +53,7 @@ public class JMLinearGradient extends PaintStyle<JMLinearGradient> {
         this.start = start.getVec();
         this.end = end.getVec();
         this.stops = new GradientStop();
-        relativeToShape = false;
+        relativeToShape = true;
         cycleMethod = GradientCycleMethod.NO_CYCLE;
     }
 
