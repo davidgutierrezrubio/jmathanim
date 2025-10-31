@@ -1,9 +1,5 @@
 package com.jmathanim.Styling;
 
-import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
-import javafx.scene.paint.Paint;
-
 /**
  * This interface represents any style that can be applied to a fill or draw, currently a color, a fill or a pattern
  *
@@ -79,16 +75,6 @@ public abstract class PaintStyle<T extends PaintStyle<T>> {
 
     @Override
     public abstract int hashCode();
-
-    /**
-     * returns a valid Paint object to be used in JavaFX methods
-     *
-     * @param r   JavaFXrenderer instance to use
-     * @param cam Camera to compute math coordinates
-     * @return The Paint object to use in JavaFX
-     */
-    //TODO: Separate this in an independent class
-    public abstract Paint getFXPaint(JavaFXRenderer r, Camera cam);
 
     /**
      * Creates a copy of this PaintStyle

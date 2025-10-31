@@ -17,6 +17,7 @@
  */
 package com.jmathanim.MathObjects;
 
+import com.jmathanim.Renderers.FXRenderer.JavaFXRendererUtils;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -136,7 +137,7 @@ public class DensityPlot extends AbstractJMImage implements hasScalarParameter {
                 for (int j = 0; j < hRaster; j++) {
                     Vec p = bbox.getRelCoordinates(i * 1d / wRaster, 1 - j * 1d / hRaster);
                     double z = densityLambdaFunction.apply(p.x, p.y, getValue());
-                    pixelWriter.setColor(i, j, colorScale.getColorValue(z).getFXColor());
+                    pixelWriter.setColor(i, j, JavaFXRendererUtils.getFXColor(colorScale.getColorValue(z)));
                 }
             }
 

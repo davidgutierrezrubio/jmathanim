@@ -68,6 +68,7 @@ import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 /**
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -185,7 +186,7 @@ public class JavaFXRenderer extends Renderer {
             groupRoot.getChildren().add(group);// Mathobjects
             groupRoot.getChildren().add(groupDebug);// Debug things
             fxScene = new Scene(groupRoot, config.getMediaWidth(), config.getMediaHeight());
-            fxScene.setFill(config.getBackgroundColor().getFXPaint(r, camera));
+            fxScene.setFill(JavaFXRendererUtils.getFXPaint(config.getBackgroundColor(),r, camera));
             StandaloneSnapshot.FXStarter.stage.setScene(fxScene);
             // Proof with perspective camera
 //            fxCamera = new PerspectiveCamera();
@@ -248,7 +249,7 @@ public class JavaFXRenderer extends Renderer {
         BufferedImage bi = new BufferedImage(config.getMediaWidth(), config.getMediaHeight(), BufferedImage.TYPE_INT_ARGB);
         JavaFXRenderer r = this;
         FutureTask<WritableImage> task = new FutureTask<>(() -> {
-            fxScene.setFill(config.getBackgroundColor().getFXPaint(r, camera));
+            fxScene.setFill(JavaFXRendererUtils.getFXPaint(config.getBackgroundColor(),r, camera));
             group.getChildren().clear();
             groupDebug.getChildren().clear();
 
@@ -270,7 +271,7 @@ public class JavaFXRenderer extends Renderer {
             }
             // Snapshot parameters
             final SnapshotParameters params = new SnapshotParameters();
-            params.setFill(config.getBackgroundColor().getFXPaint(r, camera));
+            params.setFill(JavaFXRendererUtils.getFXPaint(config.getBackgroundColor(),r, camera));
             params.setViewport(new Rectangle2D(0, 0, config.getMediaWidth(), config.getMediaHeight()));
             params.setCamera(fxScene.getCamera());
 
@@ -384,7 +385,7 @@ public class JavaFXRenderer extends Renderer {
 //        path.setSmooth(false);
 
         // Stroke width and color
-        path.setStroke(mobj.getMp().getDrawColor().getFXPaint(this, camera));
+        path.setStroke(JavaFXRendererUtils.getFXPaint(mobj.getMp().getDrawColor(),this, camera));
         double th = computeThickness(mobj);
 
         // Compute thickness depending on camera
@@ -394,7 +395,7 @@ public class JavaFXRenderer extends Renderer {
         path.setStrokeWidth(th);
 
         // Fill color
-        path.setFill(mobj.getMp().getFillColor().getFXPaint(this, camera));
+        path.setFill(JavaFXRendererUtils.getFXPaint(mobj.getMp().getFillColor(),this, camera));
 
         // Dash pattern
         switch (mobj.getMp().getDashStyle()) {
@@ -458,7 +459,7 @@ public class JavaFXRenderer extends Renderer {
             dropShadow.setRadius(rendererEffects.getShadowKernelSize());
             dropShadow.setOffsetX(rendererEffects.getShadowOffsetX());
             dropShadow.setOffsetY(rendererEffects.getShadowOffsetY());
-            dropShadow.setColor(rendererEffects.getShadowColor().getFXColor());
+            dropShadow.setColor(JavaFXRendererUtils.getFXColor(rendererEffects.getShadowColor()));
             node.setEffect(dropShadow);
         }
 

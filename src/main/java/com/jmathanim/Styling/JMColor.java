@@ -17,11 +17,8 @@
  */
 package com.jmathanim.Styling;
 
-import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.jmathanim.LogUtils;
-import javafx.scene.paint.Paint;
 
 import java.lang.reflect.Field;
 import java.util.Iterator;
@@ -82,42 +79,6 @@ public class JMColor extends PaintStyle<JMColor> {
      */
     public static JMColor rgbaInt(int r, int g, int b, int alpha) {
         return new JMColor(r * 1.f / 255, g * 1.f / 255, b * 1.f / 255, alpha * 1.f / 255);
-    }
-
-    /**
-     * Return a {@link java.awt.Color} object representing the color.
-     *
-     * @return Color
-     */
-    public java.awt.Color getAwtColor() {
-        return new java.awt.Color((float) getRed(), (float) getGreen(), (float) getBlue(), (float) alpha);
-    }
-
-    /**
-     * Return a {@link java.awt.Color} object representing the color.
-     *
-     * @return Color
-     */
-    public javafx.scene.paint.Color getFXColor() {
-        setRed(getRed() < 0 ? 0 : getRed());
-        setGreen(getGreen() < 0 ? 0 : getGreen());
-        setBlue(getBlue() < 0 ? 0 : getBlue());
-
-        setRed(getRed() > 1 ? 1 : getRed());
-        setGreen(getGreen() > 1 ? 1 : getGreen());
-        setBlue(getBlue() > 1 ? 1 : getBlue());
-        return new javafx.scene.paint.Color((float) getRed(), (float) getGreen(), (float) getBlue(), (float) alpha);
-    }
-
-    /**
-     * Return a {@link java.awt.Color} object representing the color. Overloaded
-     * method with given alpha.
-     *
-     * @param alpha Alpha to apply to color
-     * @return Color
-     */
-    public javafx.scene.paint.Color getFXColor(double alpha) {
-        return new javafx.scene.paint.Color((float) getRed(), (float) getGreen(), (float) getBlue(), (float) alpha);
     }
 
     /**
@@ -325,18 +286,13 @@ public class JMColor extends PaintStyle<JMColor> {
     }
 
     @Override
-    public Paint getFXPaint(JavaFXRenderer r, Camera cam) {
-        return getFXColor();
-    }
-
-    @Override
     public double getAlpha() {
         return alpha;
     }
 
     @Override
     public JMColor setAlpha(double alpha) {
-        this.alpha = alpha;
+        this.alpha = Math.max(Math.min(alpha, 1), 0);
         return this;
     }
 
@@ -379,7 +335,7 @@ public class JMColor extends PaintStyle<JMColor> {
     }
 
     public void setRed(double red) {
-        this.red = red;
+        this.red = Math.max(Math.min(red, 1), 0);
     }
 
     public double getGreen() {
@@ -387,7 +343,7 @@ public class JMColor extends PaintStyle<JMColor> {
     }
 
     public void setGreen(double green) {
-        this.green = green;
+        this.green = Math.max(Math.min(green, 1), 0);
     }
 
     public double getBlue() {
@@ -395,6 +351,6 @@ public class JMColor extends PaintStyle<JMColor> {
     }
 
     public void setBlue(double blue) {
-        this.blue = blue;
+        this.blue =Math.max(Math.min(blue, 1), 0);
     }
 }

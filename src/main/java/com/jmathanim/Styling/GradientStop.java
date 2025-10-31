@@ -17,8 +17,6 @@
  */
 package com.jmathanim.Styling;
 
-import javafx.scene.paint.Stop;
-
 import java.util.TreeMap;
 
 /**
@@ -49,26 +47,7 @@ public class GradientStop {
         return (T) this;
     }
 
-    /**
-     * Converts the current color marks for appropriate use with the JavaFX
-     * library. If there are no marks, it generates a basic white-to-black
-     * gradient
-     *
-     * @return An array of JavaFX Stop objects
-     */
-    public Stop[] toFXStop(double alpha) {
-        if (colors.isEmpty()) {//Generate a basic white-black gradient
-            add(0, JMColor.WHITE);
-            add(1, JMColor.BLACK);
-        }
-        Stop[] resul = new Stop[colors.size()];
-        int k = 0;
-        for (Double t : colors.keySet()) {
-            resul[k] = new Stop(t, colors.get(t).getFXColor(alpha));
-            k++;
-        }
-        return resul;
-    }
+
 
     /**
      * Add the properly interpolated color at given time.

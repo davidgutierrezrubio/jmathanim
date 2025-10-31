@@ -17,13 +17,9 @@
  */
 package com.jmathanim.Styling;
 
-import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Enum.GradientCycleMethod;
 import com.jmathanim.MathObjects.Coordinates;
-import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Utils.Vec;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.Paint;
-import javafx.scene.paint.RadialGradient;
 
 import java.util.Objects;
 import java.util.TreeMap;
@@ -42,7 +38,7 @@ public class JMRadialGradient extends PaintStyle<JMRadialGradient> {
 
     protected GradientStop stops;
     protected boolean relativeToShape;
-    protected CycleMethod cycleMethod;
+    protected GradientCycleMethod cycleMethod;
 
     protected JMRadialGradient(Coordinates<?> center, double focusAngle, double focusDistance, double radius) {
         super();
@@ -53,7 +49,7 @@ public class JMRadialGradient extends PaintStyle<JMRadialGradient> {
 
         this.stops = new GradientStop();
         relativeToShape = false;
-        cycleMethod = CycleMethod.NO_CYCLE;
+        cycleMethod = GradientCycleMethod.NO_CYCLE;
     }
 
     public static JMRadialGradient make(Coordinates<?> center, double radius, double focusAngle, double focusDistance) {
@@ -105,22 +101,6 @@ public class JMRadialGradient extends PaintStyle<JMRadialGradient> {
             map.put(0d, jMColor);
         }
 
-    }
-
-    @Override
-    public Paint getFXPaint(JavaFXRenderer r, Camera cam) {
-        double[] cc;
-        double realRadius;
-        if (!relativeToShape) {
-            cc = cam.mathToScreenFX(center);
-            realRadius = cam.mathToScreen(this.radius);
-        } else {
-            cc = new double[]{center.x, 1 - center.y};
-            realRadius = this.radius;
-        }
-
-        return new RadialGradient(focusAngle, focusDistance, cc[0], cc[1], realRadius, relativeToShape, cycleMethod, stops.toFXStop(getAlpha()));
-//                cc[0], c[1], ee[0], ee[1], relativeToShape, this.cycleMethod, stops.toFXStop(alpha));
     }
 
     @Override
@@ -238,7 +218,7 @@ public class JMRadialGradient extends PaintStyle<JMRadialGradient> {
      *
      * @return A cycle method, a value from the enum javafx.scene.paint.CycleMethod
      */
-    public CycleMethod getCycleMethod() {
+    public GradientCycleMethod getCycleMethod() {
         return cycleMethod;
     }
 
@@ -248,7 +228,7 @@ public class JMRadialGradient extends PaintStyle<JMRadialGradient> {
      * @param cycleMethod
      * @return A cycle method, a value from the enum javafx.scene.paint.CycleMethod
      */
-    public JMRadialGradient setCycleMethod(CycleMethod cycleMethod) {
+    public JMRadialGradient setCycleMethod(GradientCycleMethod cycleMethod) {
         this.cycleMethod = cycleMethod;
         return this;
     }

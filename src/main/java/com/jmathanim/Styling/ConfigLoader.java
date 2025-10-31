@@ -17,12 +17,12 @@
  */
 package com.jmathanim.Styling;
 
+import com.jmathanim.Enum.GradientCycleMethod;
 import com.jmathanim.Enum.LatexTokenType;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.jmathanim.LogUtils;
-import javafx.scene.paint.CycleMethod;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -601,19 +601,19 @@ public class ConfigLoader {
         String relativeText = gradientElement.getAttribute("relative");
         boolean relative = Boolean.parseBoolean(relativeText);//Default:false
         resul.setRelativeToShape(relative);
-        resul.setCycleMethod(CycleMethod.NO_CYCLE);
+        resul.setCycleMethod(GradientCycleMethod.NO_CYCLE);
 
         //Cycle method: none, repeat, reflect
         String cycleMethod = gradientElement.getAttribute("cycle").trim().toUpperCase();
         switch (cycleMethod) {
             case "NONE":
-                resul.setCycleMethod(CycleMethod.NO_CYCLE);
+                resul.setCycleMethod(GradientCycleMethod.NO_CYCLE);
                 break;
             case "REPEAT":
-                resul.setCycleMethod(CycleMethod.REPEAT);
+                resul.setCycleMethod(GradientCycleMethod.REPEAT);
                 break;
             case "REFLECT":
-                resul.setCycleMethod(CycleMethod.REFLECT);
+                resul.setCycleMethod(GradientCycleMethod.REFLECT);
                 break;
         }
         return resul;
@@ -663,19 +663,19 @@ public class ConfigLoader {
         String relativeText = gradientElement.getAttribute("relative");
         boolean relative = Boolean.parseBoolean(relativeText);//Default:false
         resul.setRelativeToShape(relative);
-        resul.setCycleMethod(CycleMethod.NO_CYCLE);
+        resul.setCycleMethod(GradientCycleMethod.NO_CYCLE);
 
         //Cycle method: none, repeat, reflect
         String cycleMethod = gradientElement.getAttribute("cycle").trim().toUpperCase();
         switch (cycleMethod) {
             case "NONE":
-                resul.setCycleMethod(CycleMethod.NO_CYCLE);
+                resul.setCycleMethod(GradientCycleMethod.NO_CYCLE);
                 break;
             case "REPEAT":
-                resul.setCycleMethod(CycleMethod.REPEAT);
+                resul.setCycleMethod(GradientCycleMethod.REPEAT);
                 break;
             case "REFLECT":
-                resul.setCycleMethod(CycleMethod.REFLECT);
+                resul.setCycleMethod(GradientCycleMethod.REFLECT);
                 break;
         }
         return resul;

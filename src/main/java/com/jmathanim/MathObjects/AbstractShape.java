@@ -138,7 +138,7 @@ AbstractShape<T extends AbstractShape<T>>
     public boolean containsPoint(Vec v) {
         Camera dummyCamera = JMathAnimConfig.getConfig().getFixedCamera();
         Path path = JavaFXRendererUtils.createFXPathFromJMPath(jmpath, Vec.to(0, 0), dummyCamera);
-        path.setFill(JMColor.parse("black").getFXColor()); // It's necessary that the javafx path is filled to work
+        path.setFill(JavaFXRendererUtils.getFXColor(JMColor.parse("black"))); // It's necessary that the javafx path is filled to work
         double[] xy = dummyCamera.mathToScreenFX(v);
         return path.contains(xy[0], xy[1]);
     }

@@ -273,12 +273,13 @@ public class MODrawProperties implements DrawStyleProperties {
             return this;
         }
         if (this.drawColor != drawColor) {
-            this.drawColor = drawColor.copy();
+            this.drawColor = drawColor;
 //            if (parent != null) {
 //                parent.on_setDrawColor(this.drawColor);
 //            }
+            setHasBeenChanged(true);
         }
-        setHasBeenChanged(true);
+
         return this;
     }
 
@@ -317,12 +318,13 @@ public class MODrawProperties implements DrawStyleProperties {
             return this;
         }
         if (this.fillColor != fillColor) {
-            this.fillColor = fillColor.copy();
+            this.fillColor = fillColor;
 //            if (parent != null) {
 //                parent.on_setFillColor(this.fillColor);
 //            }
+            setHasBeenChanged(true);
         }
-        setHasBeenChanged(true);
+
         return this;
     }
 

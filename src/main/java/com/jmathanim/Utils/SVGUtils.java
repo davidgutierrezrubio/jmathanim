@@ -17,8 +17,9 @@
  */
 package com.jmathanim.Utils;
 
-import com.jmathanim.Cameras.Camera;
-import com.jmathanim.MathObjects.*;
+import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.MathObjects.Point;
+import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.MathObjects.Shapes.JMPath;
 import com.jmathanim.MathObjects.Shapes.JMPathPoint;
 import com.jmathanim.MathObjects.Shapes.MultiShapeObject;
@@ -39,10 +40,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,8 +68,6 @@ public class SVGUtils {
     private static AffineJTransform currentTransform;
     private static double width;
 //
-//    public SVGUtils(JMathAnimScene scene) {
-
     /// /        this.scene = scene;
 //        this.currentX = 0;
 //        this.currentY = 0;
@@ -1058,177 +1054,4 @@ public class SVGUtils {
     private static String extractNumbers(String input) {
         return input.replaceAll("[^0-9.]", "");
     }
-
-
-    public static String shapeToSVGPath(JMathAnimScene scene,AbstractShape<?> shape) {
-        JMPath path = shape.getPath();
-        if (shape.getCamera()==scene.getFixedCamera()) {
-            AffineJTransform fixedToMedia = cameraToScreen(scene.getFixedCamera());
-            AffineJTransform cameraToMedia = cameraToScreen(scene.getCamera());
-            path=path.copy().applyAffineTransform(fixedToMedia.compose(cameraToMedia.getInverse()));
-        }
-        StringBuilder svg = new StringBuilder();
-        svg.append("<path d=\"M ")
-                .append(path.get(0).getV().x)
-                .append(" ")
-                .append(path.get(0).getV().y)
-                .append(" ");
-        for (int i = 1; i <= path.size(); i++) {
-            JMPathPoint jmp = path.get(i);
-            JMPathPoint jmpPrev = path.get(i - 1);
-
-            if (!jmp.isSegmentToThisPointVisible()) {
-                svg.append("M ");//Invisible, move to
-                svg.append(jmp.getV().x);
-                svg.append(" ");
-                svg.append(jmp.getV().y);
-            } else {
-                if ((jmp.isSegmentToThisPointCurved()) && (isEffectivelyCurved(jmpPrev, jmp))) {
-                    //Cubic Bezier
-                    svg.append("C ")
-                            .append(jmpPrev.getVExit().x)
-                            .append(" ")
-                            .append(jmpPrev.getVExit().y)
-                            .append(" ")
-                            .append(jmp.getVEnter().x)
-                            .append(" ")
-                            .append(jmp.getVEnter().y)
-                            .append(" ")
-                            .append(jmp.getV().x)
-                            .append(" ")
-                            .append(jmp.getV().y)
-                            .append(" ");
-                } else {
-                    svg.append("L ") //Straight line
-                            .append(jmp.getV().x)
-                            .append(" ")
-                            .append(jmp.getV().y)
-                            .append(" ");
-
-                }
-            }
-
-//
-//            svg.append(jmp.isSegmentToThisPointVisible() ? "L " : "M ")
-//                    .append(jmp.getV().x)
-//                    .append(" ")
-//                    .append(jmp.getV().y)
-//                    .append(" ");
-        }
-        svg.append("\" ");
-        //Color attributes
-        svg.append(svgColorAttributes("stroke", (JMColor) shape.getMp().getDrawColor())).append(" ");
-        svg.append(svgColorAttributes("fill", (JMColor) shape.getMp().getFillColor())).append(" ");
-        svg.append(svgThickness(shape.getMp().getThickness(), shape.getCamera())).append(" ");
-        return svg.append("></path>").toString();
-    }
-
-
-    public static String generateSVGHeaderForSVGExport(JMathAnimScene scene
-    ) {
-        double minX = scene.getCamera().getMathView().xmin;//Should use rect of all objects instead?
-        double maxX = scene.getCamera().getMathView().xmax;
-        double minY = scene.getCamera().getMathView().ymin;
-        double maxY = scene.getCamera().getMathView().ymax;
-        int widthPx = scene.getConfig().getMediaWidth();
-        int heightPx = scene.getConfig().getMediaHeight();
-        // Calculamos ancho y alto del viewBox en coordenadas matemáticas
-        double viewBoxWidth = maxX - minX;
-        double viewBoxHeight = maxY - minY;
-
-        // Translate necesario para corregir Y tras invertir el eje
-        double translateY = -viewBoxHeight;
-
-        // Generamos la cabecera SVG
-        String svgHeader = String.format(
-                "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"%d\" height=\"%d\" viewBox=\"%f %f %f %f\">\n" +
-                        "  <g transform=\"scale(1,-1) translate(0,%f)\">\n",
-                widthPx, heightPx,
-                minX, minY, viewBoxWidth, viewBoxHeight, -minY - maxY
-        );
-
-        return svgHeader;
-    }
-
-    private static String svgColorAttributes(String name, JMColor color) {
-        double red = color.getRed();
-        double green = color.getGreen();
-        double blue = color.getBlue();
-        double alpha = color.getAlpha();
-        int r = (int) Math.round(red * 255);
-        int g = (int) Math.round(green * 255);
-        int b = (int) Math.round(blue * 255);
-        return String.format(name + "=\"rgb(%d,%d,%d)\" " + name + "-opacity=\"%.3f\"", r, g, b, alpha);
-    }
-
-    private static String svgThickness(double thickness, Camera camera) {
-        double w = camera.getMathView().getWidth();
-        return String.format("stroke-width=\"%.6f\"", thickness / 5000 * w);
-    }
-
-
-    private static boolean isEffectivelyCurved(JMPathPoint jmpPrev, JMPathPoint jmp) {
-        boolean curved = true;
-        curved &= !jmpPrev.getVExit().isEquivalentTo(jmpPrev.getV(), .000001);
-        curved &= !jmp.getVEnter().isEquivalentTo(jmp.getV(), .000001);
-        return curved;
-    }
-
-
-    public static void saveSVGFile(JMathAnimScene scene, File file) {
-        try {
-            PrintWriter out = new PrintWriter(file);
-            out.println(generateSVGHeaderForSVGExport(scene));
-
-            for (MathObject<?> mathObject : scene.getMathObjects()) {
-                process(scene,mathObject, out);
-            }
-            out.println("    </g></svg>");
-            out.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static void process(JMathAnimScene scene,MathObject<?> mathObject, PrintWriter out) {
-        if (mathObject instanceof AbstractShape<?>) {
-            out.println(shapeToSVGPath(scene,(AbstractShape<?>) mathObject));
-        }
-        if (mathObject instanceof AbstractMathGroup<?>) {
-            AbstractMathGroup<?> group = (AbstractMathGroup<?>) mathObject;
-            ArrayList<MathObject<?>> objects = group.getObjects();
-            for (int i = 0; i < objects.size(); i++) {
-                MathObject<?> g = objects.get(i);
-                process(scene,g, out);
-            }
-        }
-        if (mathObject instanceof AbstractMultiShapeObject<?, ?>) {
-            AbstractMultiShapeObject<?, ?> msh = (AbstractMultiShapeObject<?, ?>) mathObject;
-            for (int i = 0; i < msh.size(); i++) {
-                AbstractShape<?> g = msh.get(i);
-                process(scene,g, out);
-            }
-        }
-        if (mathObject instanceof AbstractPoint<?>) {
-            AbstractPoint<?> p = (AbstractPoint<?>) mathObject;
-            Shape dotShape = p.getDotShape().copy();
-            dotShape.setCamera(scene.getFixedCamera());
-            Vec anchor=p.v;
-            AffineJTransform fixedToMedia = cameraToScreen(scene.getFixedCamera());
-            AffineJTransform cameraToMedia = cameraToScreen(scene.getCamera());
-            Vec vFixed=anchor.copy().applyAffineTransform(cameraToMedia.compose(fixedToMedia.getInverse()));
-            dotShape.shift(vFixed.minus(anchor));
-
-            process(scene,dotShape, out);
-        }
-    }
-
-    private static AffineJTransform cameraToScreen(Camera camera) {
-        Rect r = camera.getMathView();
-        return AffineJTransform.createAffineTransformation(
-                r.getLowerLeft(), r.getUpperLeft(), r.getUpperRight(),
-                Vec.to(0, 0), Vec.to(0, camera.getScreenHeight()), Vec.to(camera.getScreenWidth(), camera.getScreenHeight()), 1);
-
-    }
-
 }

@@ -17,12 +17,8 @@
  */
 package com.jmathanim.Styling;
 
-import com.jmathanim.Cameras.Camera;
 import com.jmathanim.MathObjects.JMImage;
-import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.paint.Paint;
 
 import java.util.Objects;
 
@@ -32,7 +28,7 @@ import java.util.Objects;
  */
 public class JMImagePattern extends PaintStyle<JMImagePattern> {
 
-    JMImage img;
+    private JMImage img;
 
     public JMImagePattern(String str) {
         super();
@@ -58,11 +54,6 @@ public class JMImagePattern extends PaintStyle<JMImagePattern> {
         }
     }
 
-    @Override
-    public Paint getFXPaint(JavaFXRenderer r, Camera cam) {
-        return new ImagePattern(img.getImage(),0,0,img.getWidth(),img.getHeight(),true);
-//        return new ImagePattern(img);
-    }
 
     @Override
     public JMImagePattern interpolate(PaintStyle<?> p, double t) {
@@ -102,7 +93,7 @@ public class JMImagePattern extends PaintStyle<JMImagePattern> {
         return Objects.equals(this.img, other.img);
     }
 
-    
-    
-    
+    public JMImage getImage() {
+        return img;
+    }
 }

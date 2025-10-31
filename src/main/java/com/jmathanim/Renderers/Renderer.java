@@ -26,7 +26,7 @@ import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Styling.RendererEffects;
 import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.SVGUtils;
+import com.jmathanim.Utils.SVGExport;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -37,6 +37,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -141,7 +142,12 @@ public abstract class Renderer {
     protected void writeImageToSVG(String filename) {
         try {
             File file = new File(config.getOutputDir().getCanonicalPath() + File.separator + filename);
-            SVGUtils.saveSVGFile(scene,file);
+            SVGExport svgExport = new SVGExport(config.getScene());
+            String svgCode = svgExport.getSVGCode();
+            PrintWriter pw = new PrintWriter(file);
+            pw.print(svgCode);
+            pw.close();
+//            SVGUtils.saveSVGFile(scene,file);
             logger.info("Saved image " + LogUtils.fileName(file.getPath()));
         } catch (IOException ex) {
             logger.error("Error saving svg image "+filename);

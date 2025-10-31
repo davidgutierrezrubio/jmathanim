@@ -18,12 +18,15 @@
 package com.jmathanim.Renderers.FXRenderer;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Enum.GradientCycleMethod;
+import com.jmathanim.MathObjects.JMImage;
 import com.jmathanim.MathObjects.Point;
 import com.jmathanim.MathObjects.Shapes.JMPath;
 import com.jmathanim.MathObjects.Shapes.JMPathPoint;
+import com.jmathanim.Styling.*;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
-import javafx.scene.paint.Color;
+import javafx.scene.paint.*;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -31,19 +34,18 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This class holds several methods to distille paths created with JavaFX
- * routines
+ * This class holds several methods to distille paths created with JavaFX routines
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class JavaFXRendererUtils {
 
     public static double EPSILON = 0.0001;
-
 
 
     public static Text javaFXText(String text, double x, double y) {
@@ -57,86 +59,17 @@ public class JavaFXRendererUtils {
         return t;
     }
 
-
-
-
-    public JMPath createJMPathFromFXPath(Path pa, Camera cam) {
-        JMPath resul = new JMPath();
-        JMPathPoint previousPP = JMPathPoint.curveTo(Point.origin());
-        JMPathPoint currentMoveToPoint = null;
-        for (PathElement el : pa.getElements()) {
-            if (el instanceof MoveTo) {
-                MoveTo c = (MoveTo) el;
-                double[] xy = cam.screenToMath(c.getX(), c.getY());
-                JMPathPoint pp = JMPathPoint.lineTo(Vec.to(xy[0], xy[1]));
-                pp.setSegmentToThisPointVisible(false);
-                resul.addJMPoint(pp);
-                previousPP = pp;
-                currentMoveToPoint = pp;
-            }
-            if (el instanceof CubicCurveTo) {
-                CubicCurveTo c = (CubicCurveTo) el;
-                double[] xy = cam.screenToMath(c.getX(), c.getY());
-                JMPathPoint pp = JMPathPoint.curveTo(Vec.to(xy[0], xy[1]));
-                xy = cam.screenToMath(c.getControlX2(), c.getControlY2());
-                pp.getVEnter().x = xy[0];
-                pp.getVEnter().y = xy[1];
-                xy = cam.screenToMath(c.getControlX1(), c.getControlY1());
-                previousPP.getVExit().x = xy[0];
-                previousPP.getVExit().y = xy[1];
-                resul.addJMPoint(pp);
-                previousPP = pp;
-            }
-            if (el instanceof LineTo) {
-                LineTo c = (LineTo) el;
-                double[] xy = cam.screenToMath(c.getX(), c.getY());
-                JMPathPoint pp = JMPathPoint.lineTo(Vec.to(xy[0], xy[1]));
-                resul.addJMPoint(pp);
-                previousPP = pp;
-            }
-            if (el instanceof ClosePath) {
-                if (currentMoveToPoint != null) {
-                    // if (currentMoveToPoint == resul.getJMPoint(0)) {
-                    // resul.getJMPoint(0).isThisSegmentVisible=true;
-                    // }
-                    // else
-                    // {
-                    JMPathPoint cc = currentMoveToPoint.copy();
-                    cc.setSegmentToThisPointVisible(true);
-                    resul.addJMPoint(cc);
-                    // }
-                }
-            }
-        }
-        // //Be sure the last point is connected with the first (if closed)
-        if (!resul.getJmPathPoints().isEmpty()) {
-            if (resul.getJmPathPoints().get(0).getV().isEquivalentTo(resul.getJmPathPoints().get(-1).getV(), 1.0E-6)) {
-                JMPathPoint fp = resul.getJmPathPoints().get(0);
-                JMPathPoint lp = resul.getJmPathPoints().get(-1);
-                fp.getVEnter().x = lp.getVEnter().x;
-                fp.getVEnter().y = lp.getVEnter().y;
-                fp.setSegmentToThisPointVisible(true);
-                // Delete last point
-                resul.getJmPathPoints().remove(lp);
-            }
-            // Finally, distille the path, removing unnecessary points
-            resul.distille();
-        }
-        return resul;
-    }
-
     /**
      * Convert a JMPath into a JavaFX path
      *
      * @param jmpath JMPath to convert
-     * @param camera Camera to convert from math coordinates to screen
-     * coordinates
+     * @param camera Camera to convert from math coordinates to screen coordinates
      * @return
      */
     public static Path createFXPathFromJMPath(JMPath jmpath, Vec shiftVector, Camera camera) {
         Path path = new Path();
         Vec p = jmpath.getJmPathPoints().get(0).getV();
-        double[] prev = camera.mathToScreen(p.x+shiftVector.x, p.y+shiftVector.y);
+        double[] prev = camera.mathToScreen(p.x + shiftVector.x, p.y + shiftVector.y);
         path.getElements().add(new MoveTo(prev[0], prev[1]));
         for (int n = 1; n < jmpath.size() + 1; n++) {
             Vec point = jmpath.getJmPathPoints().get(n).getV();
@@ -145,9 +78,9 @@ public class JavaFXRendererUtils {
 
             double[] xy, cxy1, cxy2;
 
-            xy = camera.mathToScreen(point.x+shiftVector.x,point.y+shiftVector.y);
-            cxy1 = camera.mathToScreen(cpoint1.x+shiftVector.x,cpoint1.y+shiftVector.y);
-            cxy2 = camera.mathToScreen(cpoint2.x+shiftVector.x,cpoint2.y+shiftVector.y);
+            xy = camera.mathToScreen(point.x + shiftVector.x, point.y + shiftVector.y);
+            cxy1 = camera.mathToScreen(cpoint1.x + shiftVector.x, cpoint1.y + shiftVector.y);
+            cxy2 = camera.mathToScreen(cpoint2.x + shiftVector.x, cpoint2.y + shiftVector.y);
 
             if (jmpath.getJmPathPoints().get(n).isSegmentToThisPointVisible()) {
                 JMPathPoint jp = jmpath.getJmPathPoints().get(n);
@@ -176,32 +109,6 @@ public class JavaFXRendererUtils {
     protected static boolean isAbsEquiv(double[] a, double[] b, double epsilon) {
         final double nn = Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
         return nn < epsilon;
-    }
-
-    /**
-     * Remove redundant elements from a JavaFX Path
-     *
-     * @param path Path to distille
-     */
-    public void distille(Path path) {
-        int n = 0;
-        Double[] xyPrevious = new Double[]{null, null};
-        while (n < path.getElements().size() - 1) {
-            PathElement el1 = path.getElements().get(n);
-            PathElement el2 = path.getElements().get(n + 1);
-            if (isFirstElementRedundant(xyPrevious, el1, el2)) {
-                path.getElements().remove(el1);
-                n = 0;
-                continue;
-            }
-            if (isSecondElementRedundant(xyPrevious, el1, el2)) {
-                path.getElements().remove(el2);
-                n = 0;
-                continue;
-            }
-            xyPrevious = getXYFromPathElement(el1);
-            n++;
-        }
     }
 
     private static boolean isSecondElementRedundant(Double[] xyPrevious, PathElement el1, PathElement el2) {
@@ -302,9 +209,8 @@ public class JavaFXRendererUtils {
     }
 
     /**
-     * Matrix that stores the transform, with the following form: {{1, x, y, z},
-     * {0, vx, vy, vz},{0, wx, wy, wz},{0 tx ty tz}} Where x,y,z is the image of
-     * (0,0,0) and v,w,t are the images of canonical vectors.
+     * Matrix that stores the transform, with the following form: {{1, x, y, z}, {0, vx, vy, vz},{0, wx, wy, wz},{0 tx
+     * ty tz}} Where x,y,z is the image of (0,0,0) and v,w,t are the images of canonical vectors.
      */
     public static Affine affineJToAffine(AffineJTransform tr) {
         double[] orig = tr.getMatrix().getRow(0);
@@ -316,5 +222,191 @@ public class JavaFXRendererUtils {
                 vx[2], vy[2], vz[2], orig[2],
                 vx[3], vy[3], vz[3], orig[3]
         );
+    }
+
+    public static Paint getFXPaint(PaintStyle<?> paintStyle, JavaFXRenderer r, Camera cam) {
+        if (paintStyle instanceof JMColor) {
+            return getFXColor((JMColor) paintStyle);
+        }
+        if (paintStyle instanceof JMLinearGradient) {
+            return getFXLinearGradient((JMLinearGradient) paintStyle, r, cam);
+        }
+        if (paintStyle instanceof JMRadialGradient) {
+            return getFXRadialGradient((JMRadialGradient) paintStyle, r, cam);
+        }
+
+        return null;
+    }
+
+    public static javafx.scene.paint.Color getFXColor(JMColor color) {
+        return new javafx.scene.paint.Color((float) color.getRed(), (float) color.getGreen(), (float) color.getBlue(), (float) color.getAlpha());
+    }
+
+    private static javafx.scene.paint.Color getFXColor(JMColor color, double alpha) {
+        return new javafx.scene.paint.Color((float) color.getRed(), (float) color.getGreen(), (float) color.getBlue(), (float) alpha);
+    }
+
+    private static LinearGradient getFXLinearGradient(JMLinearGradient lg, JavaFXRenderer r, Camera cam) {
+        double[] ss, ee;
+        if (!lg.isRelativeToShape()) {
+            ss = cam.mathToScreenFX(lg.getStart());
+            ee = cam.mathToScreenFX(lg.getEnd());
+        } else {
+            ss = new double[]{lg.getStart().x, 1 - lg.getStart().y};
+            ee = new double[]{lg.getEnd().x, 1 - lg.getEnd().y};
+        }
+        return new LinearGradient(ss[0], ss[1], ee[0], ee[1], lg.isRelativeToShape(),
+                getFXCycleMethod(lg.getCycleMethod()),
+                gradientStopsToFXStop(lg.getStops(), lg.getAlpha())
+        );
+    }
+
+
+    private static RadialGradient getFXRadialGradient(JMRadialGradient rg, JavaFXRenderer r, Camera cam) {
+        double[] cc;
+        double realRadius;
+        if (!rg.isRelativeToShape()) {
+            cc = cam.mathToScreenFX(rg.getCenter());
+            realRadius = cam.mathToScreen(rg.getRadius());
+        } else {
+            cc = new double[]{rg.getCenter().x, 1 - rg.getCenter().y};
+            realRadius = rg.getRadius();
+        }
+
+        return new RadialGradient(rg.getFocusAngle(), rg.getFocusDistance(), cc[0], cc[1],
+                realRadius, rg.isRelativeToShape(), getFXCycleMethod(rg.getCycleMethod()),
+                gradientStopsToFXStop(rg.getStops(), rg.getAlpha())
+        );
+    }
+
+    /**
+     * Converts the current color marks for appropriate use with the JavaFX library. If there are no marks, it generates
+     * a basic white-to-black gradient
+     *
+     * @return An array of JavaFX Stop objects
+     */
+    private static Stop[] gradientStopsToFXStop(GradientStop stops, double alpha) {
+        TreeMap<Double, JMColor> colors = stops.getColorTreeMap();
+        if (colors.isEmpty()) {//Generate a basic white-black gradient
+            stops.add(0, JMColor.WHITE);
+            stops.add(1, JMColor.BLACK);
+        }
+        Stop[] resul = new Stop[colors.size()];
+        int k = 0;
+        for (Double t : colors.keySet()) {
+            JMColor col = colors.get(t);
+            Color fxColor = getFXColor(colors.get(t), alpha);
+            resul[k] = new Stop(t, fxColor);
+            k++;
+        }
+        return resul;
+    }
+
+    private static CycleMethod getFXCycleMethod(GradientCycleMethod gcm) {
+        switch (gcm) {
+            case REFLECT:
+                return CycleMethod.REFLECT;
+            case REPEAT:
+                return CycleMethod.REPEAT;
+            default:
+                return CycleMethod.NO_CYCLE;
+        }
+    }
+
+
+    private static Paint getImagePatternFXPaint(JMImagePattern jmImagePattern,JavaFXRenderer r, Camera cam) {
+        JMImage img = jmImagePattern.getImage();
+        return new ImagePattern(img.getImage(),0,0,img.getWidth(),img.getHeight(),true);
+    }
+
+    public static JMPath createJMPathFromFXPath(Path pa, Camera cam) {
+        JMPath resul = new JMPath();
+        JMPathPoint previousPP = JMPathPoint.curveTo(Point.origin());
+        JMPathPoint currentMoveToPoint = null;
+        for (PathElement el : pa.getElements()) {
+            if (el instanceof MoveTo) {
+                MoveTo c = (MoveTo) el;
+                double[] xy = cam.screenToMath(c.getX(), c.getY());
+                JMPathPoint pp = JMPathPoint.lineTo(Vec.to(xy[0], xy[1]));
+                pp.setSegmentToThisPointVisible(false);
+                resul.addJMPoint(pp);
+                previousPP = pp;
+                currentMoveToPoint = pp;
+            }
+            if (el instanceof CubicCurveTo) {
+                CubicCurveTo c = (CubicCurveTo) el;
+                double[] xy = cam.screenToMath(c.getX(), c.getY());
+                JMPathPoint pp = JMPathPoint.curveTo(Vec.to(xy[0], xy[1]));
+                xy = cam.screenToMath(c.getControlX2(), c.getControlY2());
+                pp.getVEnter().x = xy[0];
+                pp.getVEnter().y = xy[1];
+                xy = cam.screenToMath(c.getControlX1(), c.getControlY1());
+                previousPP.getVExit().x = xy[0];
+                previousPP.getVExit().y = xy[1];
+                resul.addJMPoint(pp);
+                previousPP = pp;
+            }
+            if (el instanceof LineTo) {
+                LineTo c = (LineTo) el;
+                double[] xy = cam.screenToMath(c.getX(), c.getY());
+                JMPathPoint pp = JMPathPoint.lineTo(Vec.to(xy[0], xy[1]));
+                resul.addJMPoint(pp);
+                previousPP = pp;
+            }
+            if (el instanceof ClosePath) {
+                if (currentMoveToPoint != null) {
+                    // if (currentMoveToPoint == resul.getJMPoint(0)) {
+                    // resul.getJMPoint(0).isThisSegmentVisible=true;
+                    // }
+                    // else
+                    // {
+                    JMPathPoint cc = currentMoveToPoint.copy();
+                    cc.setSegmentToThisPointVisible(true);
+                    resul.addJMPoint(cc);
+                    // }
+                }
+            }
+        }
+        // //Be sure the last point is connected with the first (if closed)
+        if (!resul.getJmPathPoints().isEmpty()) {
+            if (resul.getJmPathPoints().get(0).getV().isEquivalentTo(resul.getJmPathPoints().get(-1).getV(), 1.0E-6)) {
+                JMPathPoint fp = resul.getJmPathPoints().get(0);
+                JMPathPoint lp = resul.getJmPathPoints().get(-1);
+                fp.getVEnter().x = lp.getVEnter().x;
+                fp.getVEnter().y = lp.getVEnter().y;
+                fp.setSegmentToThisPointVisible(true);
+                // Delete last point
+                resul.getJmPathPoints().remove(lp);
+            }
+            // Finally, distille the path, removing unnecessary points
+            resul.distille();
+        }
+        return resul;
+    }
+
+    /**
+     * Remove redundant elements from a JavaFX Path
+     *
+     * @param path Path to distille
+     */
+    public static void distille(Path path) {
+        int n = 0;
+        Double[] xyPrevious = new Double[]{null, null};
+        while (n < path.getElements().size() - 1) {
+            PathElement el1 = path.getElements().get(n);
+            PathElement el2 = path.getElements().get(n + 1);
+            if (isFirstElementRedundant(xyPrevious, el1, el2)) {
+                path.getElements().remove(el1);
+                n = 0;
+                continue;
+            }
+            if (isSecondElementRedundant(xyPrevious, el1, el2)) {
+                path.getElements().remove(el2);
+                n = 0;
+                continue;
+            }
+            xyPrevious = getXYFromPathElement(el1);
+            n++;
+        }
     }
 }

@@ -17,14 +17,10 @@
  */
 package com.jmathanim.Styling;
 
-import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Enum.GradientCycleMethod;
 import com.jmathanim.MathObjects.Coordinates;
-import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Paint;
 
 import java.util.Objects;
 
@@ -38,7 +34,7 @@ public class JMLinearGradient extends PaintStyle<JMLinearGradient> {
     protected Vec start, end;
     protected GradientStop stops;
     protected boolean relativeToShape;
-    protected CycleMethod cycleMethod;
+    protected GradientCycleMethod cycleMethod;
 
     /**
      * Creates a new linear gradient. Both points should be in math coordinates
@@ -58,7 +54,7 @@ public class JMLinearGradient extends PaintStyle<JMLinearGradient> {
         this.end = end.getVec();
         this.stops = new GradientStop();
         relativeToShape = false;
-        cycleMethod = CycleMethod.NO_CYCLE;
+        cycleMethod = GradientCycleMethod.NO_CYCLE;
     }
 
     @Override
@@ -92,19 +88,6 @@ public class JMLinearGradient extends PaintStyle<JMLinearGradient> {
             this.stops = jmlg.stops.copy();
             this.setAlpha(jmlg.getAlpha());
         }
-    }
-
-    @Override
-    public Paint getFXPaint(JavaFXRenderer r, Camera cam) {
-        double[] ss, ee;
-        if (!relativeToShape) {
-            ss = cam.mathToScreenFX(start);
-            ee = cam.mathToScreenFX(end);
-        } else {
-            ss = new double[]{start.x, 1 - start.y};
-            ee = new double[]{end.x, 1 - end.y};
-        }
-        return new LinearGradient(ss[0], ss[1], ee[0], ee[1], relativeToShape, this.cycleMethod, stops.toFXStop(getAlpha()));
     }
 
     @Override
@@ -178,11 +161,11 @@ public class JMLinearGradient extends PaintStyle<JMLinearGradient> {
         return (T) this;
     }
 
-    public CycleMethod getCycleMethod() {
+    public GradientCycleMethod getCycleMethod() {
         return cycleMethod;
     }
 
-    public <T extends JMLinearGradient> T setCycleMethod(CycleMethod cycleMethod) {
+    public <T extends JMLinearGradient> T setCycleMethod(GradientCycleMethod cycleMethod) {
         this.cycleMethod = cycleMethod;
         return (T) this;
     }
