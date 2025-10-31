@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.Enum.GradientCycleMethod;
 import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.MathObjects.Point;
 import com.jmathanim.MathObjects.Shape;
@@ -24,7 +25,9 @@ import com.jmathanim.MathObjects.Shapes.JMPath;
 import com.jmathanim.MathObjects.Shapes.JMPathPoint;
 import com.jmathanim.MathObjects.Shapes.MultiShapeObject;
 import com.jmathanim.Styling.JMColor;
+import com.jmathanim.Styling.JMLinearGradient;
 import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.jmathanim.LogUtils;
@@ -48,6 +51,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.DEGREES;
 import static com.jmathanim.jmathanim.JMathAnimScene.logger;
@@ -58,6 +63,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.logger;
 public class SVGUtils {
 
     private static final double CONTROL_POINT_RATIO = 2d / 3;
+    private final static HashMap<String, Object> defsObjects = new HashMap<>();
     private static double height;
     private static JMathAnimScene scene;
     private static double currentX;
@@ -68,8 +74,8 @@ public class SVGUtils {
     private static double previousY;
     private static AffineJTransform currentTransform;
     private static double width;
-    private final static HashMap<String, Object> defsObjects = new HashMap<>();
 //
+
     /// /        this.scene = scene;
 //        this.currentX = 0;
 //        this.currentY = 0;
@@ -318,7 +324,7 @@ public class SVGUtils {
                         msh.add(shape);
                         break;
                     case "defs":
-                      processDefs(el);
+                        processDefs(el);
                         break;
                     case "metadata":
                         break;
@@ -338,11 +344,125 @@ public class SVGUtils {
             Node node = nList.item(nchild);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element el = (Element) node;
-                System.out.println(el.getTagName());
-
+                switch (el.getTagName()) {
+                    case "linearGradient":
+                        processLinearGradient(el);
+                        break;
+                    case "radialGradient":
+                        processRadialGradient(el);
+                        break;
+                }
             }
         }
     }
+
+    private static void processLinearGradient(Element el) {
+        Vec start = Vec.to(parseStringValueWithPercentageNumber(el.getAttribute("x1")), -parseStringValueWithPercentageNumber(el.getAttribute("y1")));
+        Vec end= Vec.to(parseStringValueWithPercentageNumber(el.getAttribute("x2")), -parseStringValueWithPercentageNumber(el.getAttribute("y2")));
+        JMLinearGradient lg=JMLinearGradient.make(start,end);
+        lg.setCycleMethod(getSvgSpreadMethod(el.getAttribute("spreadMethod")));
+        lg.setRelativeToShape(el.getAttribute("gradientUnits").equals("objectBoundingBox"));
+        processGradientStops(lg,el);
+        logger.debug("Storing "+LogUtils.method(el.getAttribute("id"))+" with object "+LogUtils.method(lg.getClass().getSimpleName()));
+        defsObjects.put(el.getAttribute("id"), lg);
+    }
+    private static void processRadialGradient(Element el) {
+
+    }
+
+    private static void processGradientStops(JMLinearGradient lg, Element gradientElement) {
+        NodeList nList = gradientElement.getChildNodes();
+        // localMP holds the base MODrawProperties to apply to all childs
+        MODrawProperties mpCopy;
+        int length = nList.getLength();
+        for (int nchild = 0; nchild < length; nchild++) {
+            Node node = nList.item(nchild);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element el = (Element) node;
+                switch (el.getTagName()) {
+                    case "stop":
+                        processGradientStop(lg, el);
+                }
+            }
+        }
+    }
+    private static void processGradientStop(JMLinearGradient lg, Element el) {
+        double offset = parseStringValueWithPercentageNumber(el.getAttribute("offset"));
+        JMColor color = parseStopStyle(el.getAttribute("style"));
+        lg.add(offset, color);
+
+    }
+    public static JMColor parseStopStyle(String styleString) {
+        if (styleString == null || styleString.trim().isEmpty()) {
+            throw new IllegalArgumentException("La cadena de estilo no puede ser nula o vacía.");
+        }
+        styleString=styleString.replaceAll(" ", "");
+
+        // 1. Usar Regex para encontrar los 4 grupos de números (R, G, B, O)
+        // Patrón: stop-color:rgb(NUM1,NUM2,NUM3);stop-opacity:NUM4
+        // [\d\.]+ es usado para capturar números, incluyendo decimales.
+        Pattern pattern = Pattern.compile("rgb\\((\\d+),(\\d+),(\\d+)\\);stop-opacity:([\\d\\.]+)");
+        Matcher matcher = pattern.matcher(styleString.trim());
+
+        if (matcher.find()) {
+            double[] result = new double[4];
+
+            // Los números RGB son enteros, la opacidad es un double
+            // Los grupos de la regex corresponden a:
+            // Grupo 1: R
+            // Grupo 2: G
+            // Grupo 3: B
+            // Grupo 4: Opacidad
+
+            // R, G, B
+            for (int i = 0; i < 3; i++) {
+                result[i] = Double.parseDouble(matcher.group(i + 1));
+            }
+
+            // Opacidad
+            result[3] = Double.parseDouble(matcher.group(4));
+
+            return JMColor.rgba(result[0]/255, result[1]/255, result[2]/255, result[3]);
+
+        } else {
+           logger.warn("Color format incorrect for <stop> element. Returning default color instead");
+           return JMColor.rgba(0,0,0,1);
+        }
+    }
+
+
+    private static GradientCycleMethod getSvgSpreadMethod(String cycle) {
+        cycle=cycle.toLowerCase().trim();
+        switch (cycle) {
+            case "pad":
+                return GradientCycleMethod.NO_CYCLE;
+            case "reflect":
+                return GradientCycleMethod.REFLECT ;
+            case "repeat":
+                return GradientCycleMethod.REPEAT;
+            default:
+               logger.warn("Gradient cycle not recognized:"+ LogUtils.method("<" + cycle + ">")+
+                       ". Using "+LogUtils.method("NO_CYCLE")+" instead");
+                return GradientCycleMethod.NO_CYCLE;
+        }
+    }
+
+
+
+    public static double parseStringValueWithPercentageNumber(String valorString) {
+        if (valorString == null || valorString.trim().isEmpty()) {
+            throw new NumberFormatException("String null or empty");
+        }
+        String trimmedValue = valorString.trim();
+        if (trimmedValue.endsWith("%")) {
+            String percentageString = trimmedValue.substring(0, trimmedValue.length() - 1);
+            double percentage = Double.parseDouble(percentageString);
+            return percentage / 100.0;
+        } else {
+            return Double.parseDouble(trimmedValue);
+        }
+    }
+
 
 
     private static Shape processPolygonPoints(String s, boolean polygon) {
@@ -801,27 +921,70 @@ public class SVGUtils {
         return point;
     }
 
-    private static void processStyleAttributeCommands(Element el, MODrawProperties ShMp) {
-        if (!"".equals(el.getAttribute("style"))) {
-            parseStyleAttribute(el.getAttribute("style"), ShMp);
+    private static void processStyleAttributeCommands(Element gradientElement, MODrawProperties ShMp) {
+        if (!"".equals(gradientElement.getAttribute("style"))) {
+            parseStyleAttribute(gradientElement.getAttribute("style"), ShMp);
         }
-        if (!"".equals(el.getAttribute("stroke"))) {
-            JMColor strokeColor = JMColor.parse(el.getAttribute("stroke"));
+        if (!"".equals(gradientElement.getAttribute("stroke"))) {
+//            JMColor strokeColor = JMColor.parse(gradientElement.getAttribute("stroke"));
+            PaintStyle<?> strokeColor = processPaintStyleTag(gradientElement.getAttribute("stroke"));
             ShMp.setDrawColor(strokeColor);
         }
 
-        if (!"".equals(el.getAttribute("stroke-width"))) {
-            double th = Double.parseDouble(el.getAttribute("stroke-width"));
+        if (!"".equals(gradientElement.getAttribute("stroke-width"))) {
+            double th = Double.parseDouble(gradientElement.getAttribute("stroke-width"));
 //            double th2 = scene.getRenderer().MathWidthToThickness(th);
             ShMp.setThickness(computeWidth(th));
         }
 
-        if (!"".equals(el.getAttribute("fill"))) {
-            JMColor fillColor = JMColor.parse(el.getAttribute("fill"));
+        if (!"".equals(gradientElement.getAttribute("fill"))) {
+//            JMColor fillColor = JMColor.parse(gradientElement.getAttribute("fill"));
+            PaintStyle<?> fillColor = processPaintStyleTag(gradientElement.getAttribute("fill"));
             ShMp.setFillColor(fillColor);
         }
-
     }
+    private static PaintStyle<?> processPaintStyleTag(String referenceString) {
+            if (referenceString == null || referenceString.trim().isEmpty()) {
+                logger.warn("Reference string null or empty, returning default color instead");
+                return JMColor.rgba(0, 0, 0, 1);
+            }
+
+            String trimmed = referenceString.trim();
+            final String PREFIX = "url(#";
+            final String SUFFIX = ")";
+
+            // 1. Verificar si la cadena comienza y termina con el formato esperado
+            if (trimmed.startsWith(PREFIX) && trimmed.endsWith(SUFFIX)) {
+                // 2. Extraer el contenido entre el prefijo y el sufijo
+                // trimmed.substring(5, trimmed.length() - 1)
+
+                // La longitud de "url(#" es 5.
+                int startIndex = PREFIX.length();
+
+                // Restamos 1 para excluir el ')' final
+                int endIndex = trimmed.length() - SUFFIX.length();
+
+                // 3. Devolver el ID extraído.
+                // También verificamos que no sea una cadena vacía después de la extracción, aunque es improbable
+                // en el contexto SVG.
+                if (endIndex > startIndex) {
+                    //A name found
+                    String name=trimmed.substring(startIndex, endIndex);
+                    if (defsObjects.containsKey(name)) {
+                        return (PaintStyle<?>) defsObjects.get(name);
+                    }else
+                    {
+                        logger.warn("Style "+LogUtils.method(name)+"is not defined, returning default color instead");
+                        return JMColor.rgba(0, 0, 0, 1);
+                    }
+                }
+            }
+
+        logger.warn("Style string "+LogUtils.method(trimmed)+"is not valid, returning default color instead");
+            return JMColor.rgba(0, 0, 0, 1);
+    }
+
+
 
     private static double computeWidth(double th) {
         if ((width == 0) || (height == 0)) {
@@ -830,13 +993,13 @@ public class SVGUtils {
             height = 150;
         }
 //        double porc= th/width;//% de ancho pantalla
-        return th * scene.getFixedCamera().getMathView().getWidth() / width;
+        return th * scene.getFixedCamera().getMathView().getWidth() / width*5000;
 
     }
 
-    private static void processTransformAttributeCommands(Element el, AffineJTransform currentTransform) {
-        if (!"".equals(el.getAttribute("transform"))) {
-            parseTransformAttribute(el.getAttribute("transform"), currentTransform);
+    private static void processTransformAttributeCommands(Element gradientElement, AffineJTransform currentTransform) {
+        if (!"".equals(gradientElement.getAttribute("transform"))) {
+            parseTransformAttribute(gradientElement.getAttribute("transform"), currentTransform);
         }
     }
 
@@ -990,7 +1153,7 @@ public class SVGUtils {
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
         Document document = docBuilder.newDocument();
 
-        // Importa el elemento al nuevo documento
+        // Importa gradientElement elemento al nuevo documento
         Node importedNode = document.importNode(rootElement, true);
         document.appendChild(importedNode);
 
@@ -1048,3 +1211,5 @@ public class SVGUtils {
         return input.replaceAll("[^0-9.]", "");
     }
 }
+
+

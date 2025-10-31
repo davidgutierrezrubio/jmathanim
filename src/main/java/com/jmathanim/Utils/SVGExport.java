@@ -22,6 +22,7 @@ public class SVGExport {
     int styleCounter;
     private MathObjectGroup objects;
     private boolean useMathView;
+    Rect svgView;
 
     public SVGExport(JMathAnimScene scene) {
         this.scene = scene;
@@ -32,6 +33,7 @@ public class SVGExport {
         styleCounter = 0;
         paintStyleNames = new HashMap<>();
         useMathView=false;
+
     }
 
     public boolean isUseMathView() {
@@ -187,7 +189,7 @@ public class SVGExport {
     }
 
     private String svgThickness(double thickness, Camera camera) {
-        double w = camera.getMathView().getWidth();
+        double w = svgView.getWidth();//camera.getMathView().getWidth();
         return String.format("stroke-width=\"%.6f\"", thickness / 5000 * w);
     }
 
@@ -339,7 +341,6 @@ public class SVGExport {
 
     private String getSvgSpreadMethod(GradientCycleMethod cycle) {
         String svgValue;
-
         switch (cycle) {
             case NO_CYCLE:
                 // NO_CYCLE corresponde al comportamiento por defecto de SVG: "pad"
@@ -429,7 +430,7 @@ public class SVGExport {
             translateY=-minY - maxY;
         }
 
-
+        svgView = new Rect(minX, minY, maxX, maxY);
 
 
         // Calculamos ancho y alto del viewBox en coordenadas matemáticas
