@@ -18,6 +18,8 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.Enum.GradientCycleMethod;
+import com.jmathanim.Enum.StrokeLineCap;
+import com.jmathanim.Enum.StrokeLineJoin;
 import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.MathObjects.Point;
 import com.jmathanim.MathObjects.Shape;
@@ -926,7 +928,6 @@ public class SVGUtils {
             parseStyleAttribute(gradientElement.getAttribute("style"), ShMp);
         }
         if (!gradientElement.getAttribute("stroke").isEmpty()) {
-//            JMColor strokeColor = JMColor.parse(gradientElement.getAttribute("stroke"));
             String stroke = gradientElement.getAttribute("stroke");
             PaintStyle<?> strokeColor = processPaintStyleTag(stroke);
             ShMp.setDrawColor(strokeColor);
@@ -935,15 +936,49 @@ public class SVGUtils {
 
         if (!gradientElement.getAttribute("stroke-width").isEmpty()) {
             double th = Double.parseDouble(gradientElement.getAttribute("stroke-width"));
-//            double th2 = scene.getRenderer().MathWidthToThickness(th);
-            ShMp.setThickness(computeWidth(th));
+            ShMp.setThickness(computeThicknessFromSVGThickness(th));
         }
 
         if (!gradientElement.getAttribute("fill").isEmpty()) {
-//            JMColor fillColor = JMColor.parse(gradientElement.getAttribute("fill"));
             PaintStyle<?> fillColor = processPaintStyleTag(gradientElement.getAttribute("fill"));
             ShMp.setFillColor(fillColor);
         }
+
+        String linecap = gradientElement.getAttribute("stroke-linecap");
+        if (!linecap.isEmpty()) {
+           switch (linecap) {
+               case "round":
+                   ShMp.setLinecap(StrokeLineCap.ROUND);
+                   break;
+                case "butt":
+                    ShMp.setLinecap(StrokeLineCap.BUTT);
+                    break;
+               case "square":
+                   ShMp.setLinecap(StrokeLineCap.SQUARE);
+                   break;
+               default:
+                   logger.warn("stroke-linecap parameter "+LogUtils.method(linecap)+" not recognized. Ignoring.");
+            }
+        }
+        String linejoin = gradientElement.getAttribute("stroke-linejoin");
+        if (!linejoin.isEmpty()) {
+            switch (linejoin) {
+                case "miter":
+                    ShMp.setLineJoin(StrokeLineJoin.MITER);
+                    break;
+                case "bevel":
+                    ShMp.setLineJoin(StrokeLineJoin.BEVEL);
+                    break;
+                case "round":
+                    ShMp.setLineJoin(StrokeLineJoin.ROUND);
+                    break;
+                default:
+                    logger.warn("stroke-linejoin parameter "+LogUtils.method(linejoin)+" not recognized. Ignoring.");
+            }
+        }
+
+
+
     }
     private static PaintStyle<?> processPaintStyleTag(String referenceString) {
             if (referenceString == null || referenceString.trim().isEmpty()) {
@@ -981,25 +1016,26 @@ public class SVGUtils {
                     }
                 }
             }
-            if (referenceString.equals("none")) {
-                return JMColor.rgba(0, 0, 0, 0);
-            }
+//            if (referenceString.equals("none")) {
+//                return JMColor.rgba(0, 0, 0, 0);
+//            }
+            return JMColor.parse(referenceString);
 
 
 //        logger.warn("Style string "+LogUtils.method(trimmed)+" is not valid, returning default color instead");
-            return JMColor.rgba(0, 0, 0, 1);
+//            return JMColor.rgba(0, 0, 0, 1);
     }
 
 
 
-    private static double computeWidth(double th) {
+    private static double computeThicknessFromSVGThickness(double th) {
         if ((width == 0) || (height == 0)) {
             //Default values if no width/height are defined in SVG file
             width = 300;
             height = 150;
         }
 //        double porc= th/width;//% de ancho pantalla
-        System.out.println("SVG Import: svgTh:"+th+" thickness:"+th / width*5000);
+//        System.out.println("SVG Import: svgTh:"+th+" thickness:"+th / width*5000);
         return th / width*5000;
 
     }
@@ -1028,7 +1064,7 @@ public class SVGUtils {
                     double th = Double.parseDouble(decl[1]);
                     //Esto no es correcto!
                     double th2 = scene.getRenderer().MathWidthToThickness(th);
-                    ShMp.setThickness(computeWidth(th));
+                    ShMp.setThickness(computeThicknessFromSVGThickness(th));
 
             }
 
