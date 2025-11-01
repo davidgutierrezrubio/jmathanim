@@ -34,6 +34,15 @@ public class JMRadialGradient extends PaintStyle<JMRadialGradient> {
     protected Vec center;
     protected double focusAngle;
     protected double focusDistance;
+
+    public void setFocusAngle(double focusAngle) {
+        this.focusAngle = focusAngle;
+    }
+
+    public void setFocusDistance(double focusDistance) {
+        this.focusDistance = focusDistance;
+    }
+
     protected double radius;
 
     protected GradientStop stops;

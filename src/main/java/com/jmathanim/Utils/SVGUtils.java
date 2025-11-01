@@ -26,10 +26,7 @@ import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.MathObjects.Shapes.JMPath;
 import com.jmathanim.MathObjects.Shapes.JMPathPoint;
 import com.jmathanim.MathObjects.Shapes.MultiShapeObject;
-import com.jmathanim.Styling.JMColor;
-import com.jmathanim.Styling.JMLinearGradient;
-import com.jmathanim.Styling.MODrawProperties;
-import com.jmathanim.Styling.PaintStyle;
+import com.jmathanim.Styling.*;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.jmathanim.LogUtils;
@@ -369,8 +366,36 @@ public class SVGUtils {
         defsObjects.put(el.getAttribute("id"), lg);
     }
     private static void processRadialGradient(Element el) {
+        Vec center = Vec.to(parseStringValueWithPercentageNumber(el.getAttribute("cx")), 1-parseStringValueWithPercentageNumber(el.getAttribute("cy")));
+        double radius=parseStringValueWithPercentageNumber(el.getAttribute("r"));
+        JMRadialGradient rg = JMRadialGradient.make(center, radius);
+        double[] focus = convertSvgFocusToJfxFocus(center.x, center.y, radius, parseStringValueWithPercentageNumber(el.getAttribute("fx")), 1 - parseStringValueWithPercentageNumber(el.getAttribute("fy")));
+        rg.setFocusAngle(focus[0]);
+        rg.setFocusDistance(focus[1]);
+        rg.setCycleMethod(getSvgSpreadMethod(el.getAttribute("spreadMethod")));
+        rg.setRelativeToShape(el.getAttribute("gradientUnits").equals("objectBoundingBox"));
+        logger.debug("Storing "+LogUtils.method(el.getAttribute("id"))+" with object "+LogUtils.method(rg.getClass().getSimpleName()));
 
+        defsObjects.put(el.getAttribute("id"), rg);
     }
+    public static double[] convertSvgFocusToJfxFocus(double cx, double cy, double r, double fx, double fy) {
+        double deltaX = fx - cx;
+        double deltaY = fy - cy;
+        double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        double focusDistance = distance / r; // Normalizar al radio
+        focusDistance = Math.min(1.0, Math.max(0.0, focusDistance));
+        double angleRad = Math.atan2(-deltaY, deltaX);
+        double focusAngle = Math.toDegrees(angleRad);
+
+        // Normalizar el ángulo a [0, 360) si es necesario (atan2 devuelve [-180, 180])
+        if (focusAngle < 0) {
+            focusAngle += 360.0;
+        }
+
+        return new double[]{focusAngle, focusDistance};
+    }
+
+
 
     private static void processGradientStops(JMLinearGradient lg, Element gradientElement) {
         NodeList nList = gradientElement.getChildNodes();
@@ -470,7 +495,7 @@ public class SVGUtils {
 
     public static double parseStringValueWithPercentageNumber(String valorString) {
         if (valorString == null || valorString.trim().isEmpty()) {
-            throw new NumberFormatException("String null or empty");
+          return 0;
         }
         String trimmedValue = valorString.trim();
         if (trimmedValue.endsWith("%")) {
