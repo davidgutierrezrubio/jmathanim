@@ -138,6 +138,56 @@ public class Rect implements Boxable {// TODO: Adjust this to 3D coordinates
     }
 
     /**
+     * Calculates and returns the largest scaled rectToFit rectangle that fits within rectContainer,
+     * maintaining the aspect ratio and being centered inside rectContainer.
+     *
+     * @param rectContainer The container rectangle (Rect).
+     * @param rectToFit The rectangle to be scaled and fitted (Rect).
+     * @return A new Rect object (R'svg) which is the scaled and centered version of rectToFit.
+     */
+    public static Rect fitRect(Rect rectContainer, Rect rectToFit) {
+        // 1. Calculate the dimensions of both rectangles
+        double W_View = rectContainer.xmax - rectContainer.xmin;
+        double H_View = rectContainer.ymax - rectContainer.ymin;
+
+        double W_Svg = rectToFit.xmax - rectToFit.xmin;
+        double H_Svg = rectToFit.ymax - rectToFit.ymin;
+
+        // 2. Determine the Scaling Factor (lambda)
+        // The largest fitting scale factor is determined by taking the minimum
+        // of the width and height ratios. This ensures both scaled dimensions
+        // fit inside the container.
+        double scaleX = W_View / W_Svg;
+        double scaleY = H_View / H_Svg;
+
+        double lambda = Math.min(scaleX, scaleY);
+
+        // 3. Calculate the new scaled dimensions (W', H')
+        double W_Svg_Scaled = W_Svg * lambda;
+        double H_Svg_Scaled = H_Svg * lambda;
+
+        // 4. Calculate the Center of rectContainer
+        // The scaled rectangle will be centered at the same point as rectContainer.
+        double Center_x = rectContainer.xmin + W_View / 2.0;
+        double Center_y = rectContainer.ymin + H_View / 2.0;
+
+        // 5. Calculate the new coordinates for the scaled and centered rectangle (R'svg)
+
+        // Calculate xmin' and xmax'
+        double xmin_Scaled = Center_x - W_Svg_Scaled / 2.0;
+        double xmax_Scaled = Center_x + W_Svg_Scaled / 2.0;
+
+        // Calculate ymin' and ymax'
+        double ymin_Scaled = Center_y - H_Svg_Scaled / 2.0;
+        double ymax_Scaled = Center_y + H_Svg_Scaled / 2.0;
+
+        // 6. Return the new Rect object
+        // Assuming the Rect constructor is: new Rect(xmin, ymin, xmax, ymax)
+        return new Rect(xmin_Scaled, ymin_Scaled, xmax_Scaled, ymax_Scaled);
+    }
+
+
+    /**
      * Checks whether the given rectangle {@code rectangle} is fully contained within this rectangle.
      *
      * @param rectangle the rectangle to test
