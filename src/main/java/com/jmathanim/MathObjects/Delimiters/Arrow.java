@@ -224,7 +224,8 @@ public class Arrow extends Constructible<Arrow> {
         }
         try {
             resource = rl.getResource(arrowSVGName, folder);
-            return SVGUtils.importSVG(resource).get(0).getPath();
+            SVGImport svgImport = new SVGImport(JMathAnimConfig.getConfig().getScene());
+            return svgImport.importSVG(resource).get(0).getPath();
         } catch (FileNotFoundException ex) {
             logger.warn("FileNotFoundException when trying to load SVG internal object "
                     + LogUtils.YELLOW + arrowSVGName + LogUtils.RESET +

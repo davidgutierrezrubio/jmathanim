@@ -39,7 +39,8 @@ public class ShapeDelimiter extends Delimiter {
         }
         try {
         if (name != null) {
-            resul.body = SVGUtils.importSVG(rl.getResource(name, "shapeResources/delimiters"));
+            SVGImport svgImport = new SVGImport(resul.scene);
+            resul.body = svgImport.importSVG(rl.getResource(name, "shapeResources/delimiters"));
         } else resul.body = null;
         } catch (Exception ex) {
             JMathAnimScene.logger.error("An exception occurred creating shape delimiter. A null delimiter will be created");

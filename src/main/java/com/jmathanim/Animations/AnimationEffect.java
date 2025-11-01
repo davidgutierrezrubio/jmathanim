@@ -23,6 +23,7 @@ import com.jmathanim.MathObjects.Shapes.JMPath;
 import com.jmathanim.MathObjects.Shapes.MultiShapeObject;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.*;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 
 import java.util.HashMap;
 
@@ -171,7 +172,8 @@ public class AnimationEffect {
                 ResourceLoader rl = new ResourceLoader();
                 MultiShapeObject folium = null;
                 try {
-                    folium = SVGUtils.importSVG(rl.getResource("#foliumJumpPath.svg", "shapeResources/jumpPaths"));
+                    SVGImport svgImport = new SVGImport(JMathAnimConfig.getConfig().getScene());
+                    folium = svgImport.importSVG(rl.getResource("#foliumJumpPath.svg", "shapeResources/jumpPaths"));
                     jumpPath = folium.get(0).scale(1, -1);
                 } catch (Exception e) {
                     logger.error("An exception occurred loading the foliumJumpPath, a null jump path will be used");

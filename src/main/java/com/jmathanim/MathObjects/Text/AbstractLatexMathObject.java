@@ -121,12 +121,14 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
             scene.remove(sh);
         }
         clearShapes();
+        SVGImport svgImport = new SVGImport(JMathAnimConfig.getConfig().getScene());
         if (mode == CompileMode.CompileFile) {
             try {
                 generateLaTeXDocument();
                 File f = new File(compileLaTeXFile());
                 clearShapes();
-                addShapesFrom(SVGUtils.importSVG(f.toURI().toURL(), MODrawProperties.createFromStyle("latexdefault")));
+
+                addShapesFrom(svgImport.importSVG(f.toURI().toURL(), MODrawProperties.createFromStyle("latexdefault")));
             } catch (IOException ex) {
                 if (ex.getLocalizedMessage().toUpperCase().startsWith("CANNOT RUN PROGRAM")) {
                     JMathAnimScene.logger.error("Oops, it seems JMathAnim cannot find your LaTeX executable." + " Make sure you have LaTeX installed on your system and the latex program" + " is accesible from your path");
@@ -142,7 +144,7 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
             Element root = null;
             try {
                 root = generateDOMTreeFromLaTeX(this.text);
-                addShapesFrom(SVGUtils.importSVGFromDOM(root));
+                addShapesFrom(svgImport.importSVGFromDOM(root));
                 latexParser.parse();
             } catch (ParseException e) {
               JMathAnimScene.logger.error("LaTeX compilation error. Perhaps there is an error in the code "+
