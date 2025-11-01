@@ -922,22 +922,24 @@ public class SVGUtils {
     }
 
     private static void processStyleAttributeCommands(Element gradientElement, MODrawProperties ShMp) {
-        if (!"".equals(gradientElement.getAttribute("style"))) {
+        if (!gradientElement.getAttribute("style").isEmpty()) {
             parseStyleAttribute(gradientElement.getAttribute("style"), ShMp);
         }
-        if (!"".equals(gradientElement.getAttribute("stroke"))) {
+        if (!gradientElement.getAttribute("stroke").isEmpty()) {
 //            JMColor strokeColor = JMColor.parse(gradientElement.getAttribute("stroke"));
-            PaintStyle<?> strokeColor = processPaintStyleTag(gradientElement.getAttribute("stroke"));
+            String stroke = gradientElement.getAttribute("stroke");
+            PaintStyle<?> strokeColor = processPaintStyleTag(stroke);
             ShMp.setDrawColor(strokeColor);
+            if (stroke.equals("none"))   ShMp.setThickness(0d);
         }
 
-        if (!"".equals(gradientElement.getAttribute("stroke-width"))) {
+        if (!gradientElement.getAttribute("stroke-width").isEmpty()) {
             double th = Double.parseDouble(gradientElement.getAttribute("stroke-width"));
 //            double th2 = scene.getRenderer().MathWidthToThickness(th);
             ShMp.setThickness(computeWidth(th));
         }
 
-        if (!"".equals(gradientElement.getAttribute("fill"))) {
+        if (!gradientElement.getAttribute("fill").isEmpty()) {
 //            JMColor fillColor = JMColor.parse(gradientElement.getAttribute("fill"));
             PaintStyle<?> fillColor = processPaintStyleTag(gradientElement.getAttribute("fill"));
             ShMp.setFillColor(fillColor);
@@ -979,8 +981,12 @@ public class SVGUtils {
                     }
                 }
             }
+            if (referenceString.equals("none")) {
+                return JMColor.rgba(0, 0, 0, 0);
+            }
 
-        logger.warn("Style string "+LogUtils.method(trimmed)+"is not valid, returning default color instead");
+
+//        logger.warn("Style string "+LogUtils.method(trimmed)+" is not valid, returning default color instead");
             return JMColor.rgba(0, 0, 0, 1);
     }
 
@@ -993,7 +999,8 @@ public class SVGUtils {
             height = 150;
         }
 //        double porc= th/width;//% de ancho pantalla
-        return th * scene.getFixedCamera().getMathView().getWidth() / width*5000;
+        System.out.println("SVG Import: svgTh:"+th+" thickness:"+th / width*5000);
+        return th / width*5000;
 
     }
 

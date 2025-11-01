@@ -190,6 +190,7 @@ public class SVGExport {
 
     private String svgThickness(double thickness, Camera camera) {
         double w = svgView.getWidth();//camera.getMathView().getWidth();
+        System.out.println("SVG Export: Thickness:"+thickness+" svgTh:"+thickness / 5000 * w);
         return String.format("stroke-width=\"%.6f\"", thickness / 5000 * w);
     }
 
@@ -367,6 +368,8 @@ public class SVGExport {
         for (MathObject<?> mo : scene.getMathObjects()) {
             getFlattenedListOfMathObjectsAux(mo, mg);
         }
+        mg.getObjects().sort((MathObject<?> o1, MathObject<?> o2) -> o1.getLayer().compareTo(o2.getLayer()));
+
         return mg;
     }
 
@@ -402,7 +405,7 @@ public class SVGExport {
 
 
     private String generateSVGHeaderForSVGExport() {
-        double cminX = scene.getCamera().getMathView().xmin;//Should use rect of all objects instead?
+        double cminX = scene.getCamera().getMathView().xmin;
         double cmaxX = scene.getCamera().getMathView().xmax;
         double cminY = scene.getCamera().getMathView().ymin;
         double cmaxY = scene.getCamera().getMathView().ymax;
@@ -433,13 +436,9 @@ public class SVGExport {
         svgView = new Rect(minX, minY, maxX, maxY);
 
 
-        // Calculamos ancho y alto del viewBox en coordenadas matemáticas
         double viewBoxWidth = maxX - minX;
         double viewBoxHeight = maxY - minY;
 
-
-
-        // Generamos la cabecera SVG
         String svgHeader = String.format(
                 "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"%d\" height=\"%d\" viewBox=\"%f %f %f %f\">\n" +
                         "  <g transform=\"scale(1,-1) translate(0,%f)\">\n",

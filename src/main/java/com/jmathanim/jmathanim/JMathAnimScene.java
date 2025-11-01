@@ -145,6 +145,7 @@ public abstract class JMathAnimScene {
      */
     private boolean animationIsDisabled;
     private long startTime;
+
     /**
      * Creates a new Scene with default settings.
      */
@@ -211,14 +212,15 @@ public abstract class JMathAnimScene {
         logger.setLevel(LogLevel.INFO);//Default log level: INFO
         setupSketch();
         if (!sketchName.endsWith("Groovy.GroovyExecutor"))
-            logger.info("Running sketch "+LogUtils.method(sketchName));
+            logger.info("Running sketch " + LogUtils.method(sketchName));
 
         exitCode = 0;
         // In the global variable store Scene, Renderer and main Camera
         config.setScene(this);
         try {
             runSketch();
-            renderer.finish(frameCount);
+            if (renderer != null)
+                renderer.finish(frameCount);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -245,13 +247,13 @@ public abstract class JMathAnimScene {
         JMathAnimConfig.getConfig().setRenderer(createRenderer());
         status = SCENE_STATUS.PLAYING;
         JMathAnimScene.logger.debug("Renderer " +
-                LogUtils.method(renderer.getClass().getSimpleName())+
+                LogUtils.method(renderer.getClass().getSimpleName()) +
                 " initialized "
-                +LogUtils.number(camera.getScreenWidth(),0)
+                + LogUtils.number(camera.getScreenWidth(), 0)
                 + "x"
-                +LogUtils.number(camera.getScreenHeight(),0)
+                + LogUtils.number(camera.getScreenHeight(), 0)
                 + " at "
-                +LogUtils.number(fps,2)+ " fps."
+                + LogUtils.number(fps, 2) + " fps."
         );
     }
 
@@ -537,27 +539,26 @@ public abstract class JMathAnimScene {
         }
         renderer.saveImage(fn, format);
     }
+
     /**
-     * Saves the current view of the scene to an SVG file.
-     * The SVG viewport (its coordinate system) is determined based on the
-     * value of {@code useMathView}.
-     * * @param filename The name of the SVG file (including the extension) to save the image to.
-     * It is saved within the configured output directory ({@code config.getOutputDir()}).
-     * @param useMathView If {@code true}, the SVG's bounding box is determined by
-     * the limits of the current mathematical view. If {@code false},
-     * the bounding box will be automatically computed to tightly fit all
-     * visible objects in the scene.
+     * Saves the current view of the scene to an SVG file. The SVG viewport (its coordinate system) is determined based
+     * on the value of {@code useMathView}. * @param filename The name of the SVG file (including the extension) to save
+     * the image to. It is saved within the configured output directory ({@code config.getOutputDir()}).
+     *
+     * @param useMathView If {@code true}, the SVG's bounding box is determined by the limits of the current
+     *                    mathematical view. If {@code false}, the bounding box will be automatically computed to
+     *                    tightly fit all visible objects in the scene.
      */
-    public final void saveSVGImage(String filename,boolean useMathView) {
+    public final void saveSVGImage(String filename, boolean useMathView) {
         Optional<String> extension = Optional.ofNullable(filename).filter(f -> f.contains(".")).map(f -> f.substring(filename.lastIndexOf(".") + 1));
         String fn;
         if ("".equals(extension.toString())) {
             //Add png as default extension
             fn = filename + ".svg";
-        }else {
-            fn=filename;
+        } else {
+            fn = filename;
         }
-        renderer.saveSVGImage(fn,useMathView);
+        renderer.saveSVGImage(fn, useMathView);
     }
 
     /**
@@ -596,7 +597,7 @@ public abstract class JMathAnimScene {
             return;
         }
 
-        JMathAnimScene.logger.info("Playing sound " + LogUtils.fileName(soundName) + " with pitch " + LogUtils.number(pitch,2));
+        JMathAnimScene.logger.info("Playing sound " + LogUtils.fileName(soundName) + " with pitch " + LogUtils.number(pitch, 2));
         long miliSeconds = (frameCount * 1000L) / config.fps;
 
         SoundItem soundItem = SoundItem.make(soundURL, miliSeconds, pitch);
@@ -637,10 +638,10 @@ public abstract class JMathAnimScene {
             if (!"".equals(anim.getDebugName())) {
                 JMathAnimScene.logger.info("Begin animation: "
 //                        + LogUtils.CYAN + anim.getDebugName() + LogUtils.RESET +
-                        + LogUtils.method(anim.getDebugName())+
+                        + LogUtils.method(anim.getDebugName()) +
                         " [" +
 //                        LogUtils.GREEN + anim.getRunTime() + LogUtils.RESET
-                        LogUtils.number(anim.getRunTime(),1)
+                        LogUtils.number(anim.getRunTime(), 1)
                         +
                         " seconds]");
             }
@@ -679,7 +680,7 @@ public abstract class JMathAnimScene {
         }
         JMathAnimScene.logger.info("Waiting " +
 //                LogUtils.GREEN + time + LogUtils.RESET +
-                LogUtils.number(time,1) +
+                LogUtils.number(time, 1) +
                 " seconds");
         int numFrames = (int) (time * fps);
         for (int n = 0; n < numFrames; n++) {
@@ -844,7 +845,7 @@ public abstract class JMathAnimScene {
         if (styles.containsKey(name)) {
             return styles.get(name);
         } else {
-            JMathAnimScene.logger.warn("No style with name "+LogUtils.method(name)+" found, returning null style");
+            JMathAnimScene.logger.warn("No style with name " + LogUtils.method(name) + " found, returning null style");
             return MODrawProperties.makeNullValues();
         }
     }

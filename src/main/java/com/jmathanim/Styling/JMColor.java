@@ -17,10 +17,8 @@
  */
 package com.jmathanim.Styling;
 
-import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.jmathanim.LogUtils;
+import com.jmathanim.Utils.ColorParser;
 
-import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.TreeMap;
 
@@ -195,81 +193,91 @@ public class JMColor extends PaintStyle<JMColor> {
      */
     public static JMColor parse(String str) {
         javafx.scene.paint.Color col = javafx.scene.paint.Color.WHITE;// Default color
-        str = str.toUpperCase().trim();
-        JMColor colrgb = extractRGBValues(str);
+        str = str.toLowerCase().trim();
+        JMColor colrgb = ColorParser.parseRGBorRGBA(str);
         if (colrgb != null) {//String is format "rgb(r,g,b) decimals or RGB(R,G,B) integers"
             return colrgb;
         }
+        JMColor colHsl = ColorParser.parseHSL(str);
+        if (colHsl != null) {//String is format "rgb(r,g,b) decimals or RGB(R,G,B) integers"
+            return colHsl;
+        }
 
-        if ("NONE".equals(str)) {
+        if ("none".equals(str)) {
             return new JMColor(0, 0, 0, 0);
         }
-        if ("RANDOM".equals(str)) {
+        if ("random".equals(str)) {
             return JMColor.random();
         }
         if (str.startsWith("#"))// Hex
         {
-            col = javafx.scene.paint.Color.valueOf(str);
+//            col = javafx.scene.paint.Color.valueOf(str);
+            return ColorParser.parseHexColor(str);
         } else {
-            try {
-                Field field = javafx.scene.paint.Color.class.getField(str.toUpperCase());
-                col = (javafx.scene.paint.Color) field.get(JMColor.class);
-            } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-                JMathAnimScene.logger.warn("Color "+ LogUtils.method(str)+" is not recognized ");
+//            try {
+//                Field field = javafx.scene.paint.Color.class.getField(str.toUpperCase());
+//                col = (javafx.scene.paint.Color) field.get(JMColor.class);
+//            } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+//                JMathAnimScene.logger.warn("Color "+ LogUtils.method(str)+" is not recognized ");
+//            }
+            if (ColorParser.COLOR_NAMES.containsKey(str)) {
+                Integer[] rgb = ColorParser.COLOR_NAMES.get(str);
+                return JMColor.rgbaInt(rgb[0], rgb[1], rgb[2],255);
             }
+
         }
         return JMColor.fromFXColor(col);
     }
 
-    /**
-     * Parse SVG strings rgb(R,G,B) and returns the generated color
-     *
-     * @param input A String with format rgb(R,G,B)
-     * @return The color. If the String has no valid format, returns null
-     */
-    private static JMColor extractRGBValues(String input) {
-//        // Verifica si la cadena comienza con "rgb(" y termina con ")"
-        if (input.startsWith("RGB(") && input.endsWith(")")) {
-            // Elimina los caracteres "rgb(" al principio y ")" al final
-            String valuesString = input.substring(4, input.length() - 1);
-
-            // Divide la cadena en partes utilizando la coma como separador
-            String[] valuesArray = valuesString.split(",");
-
-            try {
-                // Convierte las partes a números enteros
-                int red = Integer.parseInt(valuesArray[0].trim());
-                int green = Integer.parseInt(valuesArray[1].trim());
-                int blue = Integer.parseInt(valuesArray[2].trim());
-                int alpha;
-                if (valuesArray.length == 4) {
-                    alpha = Integer.parseInt(valuesArray[3].trim());
-                } else {
-                    alpha = 255;
-                }
-
-                return JMColor.rgbaInt(red, green, blue, alpha);
-            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-                //Try to parse double values
-                try {
-                    // Convierte las partes a números enteros
-                    float red = Float.parseFloat(valuesArray[0].trim());
-                    float green = Float.parseFloat(valuesArray[1].trim());
-                    float blue = Float.parseFloat(valuesArray[2].trim());
-                    float alpha;
-                    if (valuesArray.length == 4) {
-                        alpha = Float.parseFloat(valuesArray[3].trim());
-                    } else {
-                        alpha = 1;
-                    }
-                    return new JMColor(red, green, blue, alpha);
-                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e2) {
-                    return null;
-                }
-            }
-        }
-        return null;
-    }
+//    /**
+//     * Parse SVG strings rgb(R,G,B) and returns the generated color
+//     *
+//     * @param input A String with format rgb(R,G,B)
+//     * @return The color. If the String has no valid format, returns null
+//     */
+//    private static JMColor extractRGBValues(String input) {
+////        // Verifica si la cadena comienza con "rgb(" y termina con ")"
+//        if (input.startsWith("RGB(") && input.endsWith(")")) {
+//            // Elimina los caracteres "rgb(" al principio y ")" al final
+//            String valuesString = input.substring(4, input.length() - 1);
+//
+//            // Divide la cadena en partes utilizando la coma como separador
+//            String[] valuesArray = valuesString.split(",");
+//
+//            try {
+//                // Convierte las partes a números enteros
+//                int red = Integer.parseInt(valuesArray[0].trim());
+//                int green = Integer.parseInt(valuesArray[1].trim());
+//                int blue = Integer.parseInt(valuesArray[2].trim());
+//                int alpha;
+//                if (valuesArray.length == 4) {
+//                    alpha = Integer.parseInt(valuesArray[3].trim());
+//                } else {
+//                    alpha = 255;
+//                }
+//
+//                return JMColor.rgbaInt(red, green, blue, alpha);
+//            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+//                //Try to parse double values
+//                try {
+//                    // Convierte las partes a números enteros
+//                    float red = Float.parseFloat(valuesArray[0].trim());
+//                    float green = Float.parseFloat(valuesArray[1].trim());
+//                    float blue = Float.parseFloat(valuesArray[2].trim());
+//                    float alpha;
+//                    if (valuesArray.length == 4) {
+//                        alpha = Float.parseFloat(valuesArray[3].trim());
+//                    } else {
+//                        alpha = 1;
+//                    }
+//                    return new JMColor(red, green, blue, alpha);
+//                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e2) {
+//                    return null;
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
     public static JMColor fromFXColor(javafx.scene.paint.Color col) {
         JMColor resul = new JMColor(1, 1, 1, 1);
