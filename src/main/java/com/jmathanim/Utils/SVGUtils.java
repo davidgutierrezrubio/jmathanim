@@ -359,8 +359,8 @@ public class SVGUtils {
     }
 
     private static void processLinearGradient(Element el) {
-        Vec start = Vec.to(parseStringValueWithPercentageNumber(el.getAttribute("x1")), -parseStringValueWithPercentageNumber(el.getAttribute("y1")));
-        Vec end= Vec.to(parseStringValueWithPercentageNumber(el.getAttribute("x2")), -parseStringValueWithPercentageNumber(el.getAttribute("y2")));
+        Vec start = Vec.to(parseStringValueWithPercentageNumber(el.getAttribute("x1")), 1-parseStringValueWithPercentageNumber(el.getAttribute("y1")));
+        Vec end= Vec.to(parseStringValueWithPercentageNumber(el.getAttribute("x2")), 1-parseStringValueWithPercentageNumber(el.getAttribute("y2")));
         JMLinearGradient lg=JMLinearGradient.make(start,end);
         lg.setCycleMethod(getSvgSpreadMethod(el.getAttribute("spreadMethod")));
         lg.setRelativeToShape(el.getAttribute("gradientUnits").equals("objectBoundingBox"));
@@ -390,13 +390,29 @@ public class SVGUtils {
     }
     private static void processGradientStop(JMLinearGradient lg, Element el) {
         double offset = parseStringValueWithPercentageNumber(el.getAttribute("offset"));
-        JMColor color = parseStopStyle(el.getAttribute("style"));
+        JMColor color=JMColor.WHITE;
+
+        String styleString = el.getAttribute("styleString");
+        if (!styleString.isEmpty()) {
+             color = parseStopStyle(styleString);
+        }
+        String stopColor = el.getAttribute("stop-color");
+        if (!stopColor.isEmpty()) {
+            color = JMColor.parse(stopColor);
+        }
+        String stopOpacity = el.getAttribute("stop-opacity");
+        if (!stopOpacity.isEmpty()) {
+            color.setAlpha(parseStringValueWithPercentageNumber(stopOpacity));
+        }
+
+
         lg.add(offset, color);
 
     }
     public static JMColor parseStopStyle(String styleString) {
         if (styleString == null || styleString.trim().isEmpty()) {
-            throw new IllegalArgumentException("La cadena de estilo no puede ser nula o vacía.");
+            logger.warn("Color format incorrect for <stop> element. Returning BLACK color instead");
+            return JMColor.rgba(0,0,0,1);
         }
         styleString=styleString.replaceAll(" ", "");
 
@@ -437,6 +453,7 @@ public class SVGUtils {
         cycle=cycle.toLowerCase().trim();
         switch (cycle) {
             case "pad":
+            case "":
                 return GradientCycleMethod.NO_CYCLE;
             case "reflect":
                 return GradientCycleMethod.REFLECT ;

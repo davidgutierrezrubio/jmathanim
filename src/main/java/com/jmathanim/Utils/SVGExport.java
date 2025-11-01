@@ -190,7 +190,6 @@ public class SVGExport {
 
     private String svgThickness(double thickness, Camera camera) {
         double w = svgView.getWidth();//camera.getMathView().getWidth();
-        System.out.println("SVG Export: Thickness:"+thickness+" svgTh:"+thickness / 5000 * w);
         return String.format("stroke-width=\"%.6f\"", thickness / 5000 * w);
     }
 

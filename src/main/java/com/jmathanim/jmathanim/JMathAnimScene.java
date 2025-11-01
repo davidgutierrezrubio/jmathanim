@@ -468,13 +468,6 @@ public abstract class JMathAnimScene {
         }
     }
 
-    public void printUpdateables() {
-        objectsToBeUpdated.sort(Comparator.comparingInt(Updateable::getUpdateLevel));
-        for (Updateable obj : objectsToBeUpdated) {
-            System.out.println(obj.getUpdateLevel() + "   " + obj);
-        }
-    }
-
     /**
      * Advance one frame, making all necessary drawings and saving frame
      */

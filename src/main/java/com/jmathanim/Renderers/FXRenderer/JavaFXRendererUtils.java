@@ -295,7 +295,7 @@ public class JavaFXRendererUtils {
         int k = 0;
         for (Double t : colors.keySet()) {
             JMColor col = colors.get(t);
-            Color fxColor = getFXColor(colors.get(t), alpha);
+            Color fxColor = getFXColor(colors.get(t), alpha*colors.get(t).getAlpha());
             resul[k] = new Stop(t, fxColor);
             k++;
         }
