@@ -24,7 +24,7 @@ What's new?
 Version 0.9.13-SNAPSHOT (30/10/2025)
 
 * Improved compatibility of standalone Groovy execution in Linux/Windows
-* Beta version of SVG export, using saveImage with the svg extension.
+* Beta version of SVG export.
 * Changed logging system from LogBack to System.Logger
 * Improved logging system
 * Improved Groovy code execution.
