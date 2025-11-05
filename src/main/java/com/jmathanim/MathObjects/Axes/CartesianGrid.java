@@ -301,6 +301,21 @@ public class CartesianGrid extends MathObject<CartesianGrid> implements shouldUd
         verticalSecondaryLines.forEach(t -> t.draw(scene, r, camera));
         horizontalPrimaryLines.forEach(t -> t.draw(scene, r, camera));
         verticalPrimaryLines.forEach(t -> t.draw(scene, r, camera));
+    }
 
+    public ArrayList<Line> getHorizontalPrimaryLines() {
+        return horizontalPrimaryLines;
+    }
+
+    public ArrayList<Line> getVerticalPrimaryLines() {
+        return verticalPrimaryLines;
+    }
+
+    public ArrayList<Line> getHorizontalSecondaryLines() {
+        return horizontalSecondaryLines;
+    }
+
+    public ArrayList<Line> getVerticalSecondaryLines() {
+        return verticalSecondaryLines;
     }
 }

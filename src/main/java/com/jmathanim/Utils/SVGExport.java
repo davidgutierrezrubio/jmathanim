@@ -1,12 +1,18 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Enum.GradientCycleMethod;
 import com.jmathanim.Enum.StrokeLineCap;
 import com.jmathanim.Enum.StrokeLineJoin;
 import com.jmathanim.MathObjects.*;
+import com.jmathanim.MathObjects.Axes.Axes;
+import com.jmathanim.MathObjects.Axes.CartesianGrid;
+import com.jmathanim.MathObjects.Axes.TickAxes;
 import com.jmathanim.MathObjects.Shapes.JMPath;
 import com.jmathanim.MathObjects.Shapes.JMPathPoint;
+import com.jmathanim.MathObjects.Shapes.Line;
+import com.jmathanim.MathObjects.Tippable.AbstractTippableObject;
 import com.jmathanim.Styling.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
@@ -66,6 +72,10 @@ public class SVGExport {
 
 
     private void processObjectsToSVG(MathObject<?> mathObject) {
+        if (mathObject instanceof Constructible<?>) {
+            Constructible<?> constructible = (Constructible<?>) mathObject;
+            processObjectsToSVG(constructible.getMathObject());
+        }
         if (mathObject instanceof AbstractShape<?>) {
             svgCode.append(shapeToSVGPath(scene, (AbstractShape<?>) mathObject));
         }
@@ -93,9 +103,51 @@ public class SVGExport {
             AffineJTransform cameraToMedia = cameraToScreen(scene.getCamera());
             Vec vFixed = anchor.copy().applyAffineTransform(cameraToMedia.compose(fixedToMedia.getInverse()));
             dotShape.shift(vFixed.minus(anchor));
-
             processObjectsToSVG(dotShape);
         }
+        if (mathObject instanceof Axes) {
+            Axes axes = (Axes) mathObject;
+            processObjectsToSVG(axes.getxAxis());
+            processObjectsToSVG(axes.getyAxis());
+            for (TickAxes xTicks: axes.getXticks()) {
+                processObjectsToSVG(xTicks);
+            }
+            for (TickAxes yTicks: axes.getYticks()) {
+                processObjectsToSVG(yTicks);
+            }
+        }
+        if (mathObject instanceof TickAxes) {
+            TickAxes tickAxes = (TickAxes) mathObject;
+            processObjectsToSVG(tickAxes.getTick());
+            processObjectsToSVG(tickAxes.getLegend());
+        }
+
+        if (mathObject instanceof CartesianGrid) {
+            CartesianGrid cartesianGrid = (CartesianGrid) mathObject;
+            for (Line l: cartesianGrid.getHorizontalPrimaryLines()) {
+                processObjectsToSVG(l);
+            }
+            for (Line l: cartesianGrid.getVerticalPrimaryLines()) {
+                processObjectsToSVG(l);
+            }
+            for (Line l: cartesianGrid.getVerticalSecondaryLines()) {
+                processObjectsToSVG(l);
+            }
+            for (Line l: cartesianGrid.getHorizontalSecondaryLines()) {
+                processObjectsToSVG(l);
+            }
+        }
+        if (mathObject instanceof RigidBox) {
+            RigidBox rigidBox = (RigidBox) mathObject;
+            processObjectsToSVG(rigidBox.getMathObjectCopyToDraw());
+        }
+
+        if (mathObject instanceof AbstractTippableObject<?>) {
+            AbstractTippableObject<?> abstractTippableObject = (AbstractTippableObject<?>) mathObject;
+            processObjectsToSVG(abstractTippableObject.getMathObject());
+        }
+
+
     }
 
 

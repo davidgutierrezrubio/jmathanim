@@ -18,6 +18,8 @@
 package com.jmathanim.Styling;
 
 import com.jmathanim.Utils.ColorParser;
+import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.jmathanim.LogUtils;
 
 import java.util.Iterator;
 import java.util.TreeMap;
@@ -203,7 +205,7 @@ public class JMColor extends PaintStyle<JMColor> {
             return colHsl;
         }
 
-        if ("none".equals(str)) {
+        if (("none".equals(str))||("transparent".equals(str))) {
             return new JMColor(0, 0, 0, 0);
         }
         if ("random".equals(str)) {
@@ -226,7 +228,8 @@ public class JMColor extends PaintStyle<JMColor> {
             }
 
         }
-        return JMColor.fromFXColor(col);
+        JMathAnimScene.logger.warn("Color " + LogUtils.method(str) + " is not recognized. Returning "+LogUtils.method("WHITE")+" instead.");
+        return JMColor.WHITE;
     }
 
 //    /**
