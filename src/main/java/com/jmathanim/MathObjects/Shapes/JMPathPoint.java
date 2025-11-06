@@ -28,12 +28,12 @@ import java.text.DecimalFormat;
 /**
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class JMPathPoint implements
+public class JMPathPoint extends AbstractVersioned implements
         Updateable, Boxable, Linkable,
         Coordinates<JMPathPoint>,
         AffineTransformable<JMPathPoint>,
         Interpolable<JMPathPoint>,
-        Stateable, Serializable {
+        Stateable, Serializable, Dirtyable {
 
     //    public final Point p; // The vertex point
     private final Vec v; // The vertex point
@@ -45,17 +45,25 @@ public class JMPathPoint implements
     private transient Point pCenter; // The vertex Point object, created on demand
     // subdiving a path
     private JMPathPoint pState;
+    private boolean dirty;
+    private long version=0;
 
 
     public JMPathPoint(Coordinates<?> p, boolean isVisible) {
         this.v = p.getVec();
+        addDependency(this.v);
         if (p instanceof Point) {
             this.pCenter = (Point) p;
+            addDependency(this.pCenter);
         } else {
             this.pCenter = null;
         }
         vExit = getV().copy();
         vEnter = getV().copy();
+
+        addDependency(this.vExit);
+        addDependency(this.vEnter);
+
         setSegmentToThisPointCurved(false);// By default, is not curved
         this.setSegmentToThisPointVisible(isVisible);
     }
@@ -149,6 +157,7 @@ public class JMPathPoint implements
                 pCenter = jp.pCenter.copy();
             }
         }
+        setDirty(true);
 
     }
 
@@ -174,6 +183,7 @@ public class JMPathPoint implements
         this.getV().copyCoordinatesFrom(jmPoint.getV());
         this.getVExit().copyCoordinatesFrom(jmPoint.getVExit());
         this.getVEnter().copyCoordinatesFrom(jmPoint.getVEnter());
+        setDirty(true);
     }
 
 
@@ -197,29 +207,29 @@ public class JMPathPoint implements
         this.getV().applyAffineTransform(affineJTransform);
         this.getVExit().applyAffineTransform(affineJTransform);
         this.getVEnter().applyAffineTransform(affineJTransform);
-
+        setDirty(true);
         return this;
     }
-
-    @Override
-    public JMPathPoint rotate(Coordinates center, double angle) {
-        applyAffineTransform(AffineJTransform.create2DRotationTransform(center, angle));
-//        AffineJTransform tr = AffineJTransform.create2DRotationTransform(center, angle);
-//        p.applyAffineTransform(tr);
-//        cpEnter.applyAffineTransform(tr);
-//        cpExit.applyAffineTransform(tr);
-        return this;
-    }
-
-    @Override
-    public JMPathPoint shift(Coordinates<?> shiftVector) {
-//        AffineJTransform tr = AffineJTransform.createTranslationTransform(shiftVector);
-        applyAffineTransform(AffineJTransform.createTranslationTransform(shiftVector));
-//        p.applyAffineTransform(tr);
-//        cpEnter.applyAffineTransform(tr);
-//        cpExit.applyAffineTransform(tr);
-        return this;
-    }
+//
+//    @Override
+//    public JMPathPoint rotate(Coordinates center, double angle) {
+//        applyAffineTransform(AffineJTransform.create2DRotationTransform(center, angle));
+////        AffineJTransform tr = AffineJTransform.create2DRotationTransform(center, angle);
+////        p.applyAffineTransform(tr);
+////        cpEnter.applyAffineTransform(tr);
+////        cpExit.applyAffineTransform(tr);
+//        return this;
+//    }
+//
+//    @Override
+//    public JMPathPoint shift(Coordinates<?> shiftVector) {
+////        AffineJTransform tr = AffineJTransform.createTranslationTransform(shiftVector);
+//        applyAffineTransform(AffineJTransform.createTranslationTransform(shiftVector));
+////        p.applyAffineTransform(tr);
+////        cpEnter.applyAffineTransform(tr);
+////        cpExit.applyAffineTransform(tr);
+//        return this;
+//    }
 
     /**
      * Computes an interpolated JMPathPoint between this and another one. The interpolation is not the usual linear one,
@@ -277,7 +287,9 @@ public class JMPathPoint implements
 
     @Override
     public void update(JMathAnimScene scene) {
-
+        super.update(scene);
+        System.out.println("update jmpathpoint");
+        markClean();
     }
 
     @Override
@@ -312,6 +324,7 @@ public class JMPathPoint implements
         getV().addInSite(coords);
         getVEnter().addInSite(coords);
         getVExit().addInSite(coords);
+        setDirty(true);
         return this;
     }
 
@@ -321,6 +334,7 @@ public class JMPathPoint implements
         getV().minusInSite(coords);
         getVEnter().minusInSite(coords);
         getVExit().minusInSite(coords);
+        setDirty(true);
         return this;
     }
 
@@ -330,6 +344,7 @@ public class JMPathPoint implements
         getV().copyCoordinatesFrom(coords);
         getVEnter().copyCoordinatesFrom(coords);
         getVExit().copyCoordinatesFrom(coords);
+        setDirty(true);
     }
 
     @Override
@@ -338,6 +353,7 @@ public class JMPathPoint implements
         copy.getV().minusInSite(v2);
         copy.getVEnter().minusInSite(v2);
         copy.getVExit().minusInSite(v2);
+        setDirty(true);
         return copy;
     }
 
@@ -348,6 +364,7 @@ public class JMPathPoint implements
         copy.getV().addInSite(v2);
         copy.getVEnter().addInSite(v2);
         copy.getVExit().addInSite(v2);
+        setDirty(true);
         return copy;
     }
 
@@ -358,6 +375,7 @@ public class JMPathPoint implements
         copy.getV().multInSite(lambda);
         copy.getVEnter().multInSite(lambda);
         copy.getVExit().multInSite(lambda);
+        setDirty(true);
         return copy;
     }
 
@@ -388,6 +406,7 @@ public class JMPathPoint implements
 
     public void setSegmentToThisPointCurved(boolean segmentToThisPointCurved) {
         isSegmentToThisPointCurved = segmentToThisPointCurved;
+        setDirty(true);
     }
 
     @Override
@@ -399,5 +418,4 @@ public class JMPathPoint implements
     public boolean isEmpty() {
         return false;
     }
-
 }

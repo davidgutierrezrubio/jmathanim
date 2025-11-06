@@ -39,7 +39,7 @@ import java.util.*;
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 @SuppressWarnings("ALL")
-public abstract class MathObject<T extends MathObject<T>> implements
+public abstract class MathObject<T extends MathObject<T>> extends AbstractVersioned implements
         Drawable,
         Updateable,
         Boxable,
@@ -56,8 +56,8 @@ public abstract class MathObject<T extends MathObject<T>> implements
     public Vec absoluteAnchorVec;
     protected JMathAnimScene scene;
     protected boolean isRigid = false;
-    private boolean hasBeenUpdated = false;
     protected Camera camera;
+    private boolean hasBeenUpdated = false;
     private int updateLevel;
     private String debugText = "";
     private AnchorType absoluteAnchorAnchorType = AnchorType.CENTER;
@@ -74,7 +74,7 @@ public abstract class MathObject<T extends MathObject<T>> implements
         scene = config.getScene();
         if (scene != null) {
             camera = scene.getCamera();//Default camera
-        }else {
+        } else {
             camera = new DummyCamera();
         }
         //Default values for an object that always updates
@@ -173,14 +173,14 @@ public abstract class MathObject<T extends MathObject<T>> implements
     @Override
     public void copyStateFrom(Stateable obj) {
         if (!(obj instanceof MathObject<?>)) return;
-            MathObject mathObject = (MathObject) obj;
-            this.setCamera(mathObject.getCamera());
-            getMp().copyFrom(mathObject.getMp());
+        MathObject mathObject = (MathObject) obj;
+        this.setCamera(mathObject.getCamera());
+        getMp().copyFrom(mathObject.getMp());
 //        this.getMp().copyFrom(obj.getMp());
-            if (this.getRendererEffects() != null) {
-                this.getRendererEffects().copyFrom(rendererEffects);
-            }
-            this.modelMatrix.copyFrom(mathObject.modelMatrix);
+        if (this.getRendererEffects() != null) {
+            this.getRendererEffects().copyFrom(rendererEffects);
+        }
+        this.modelMatrix.copyFrom(mathObject.modelMatrix);
     }
 
 
@@ -207,7 +207,6 @@ public abstract class MathObject<T extends MathObject<T>> implements
     }
 
 
-
     /**
      * Copy draw attributes from another one.
      *
@@ -218,10 +217,6 @@ public abstract class MathObject<T extends MathObject<T>> implements
         this.getMp().copyFrom(newMp);
         return (T) this;
     }
-
-
-
-
 
 
     public Vec getAbsoluteAnchor() {
@@ -318,6 +313,7 @@ public abstract class MathObject<T extends MathObject<T>> implements
 
     /**
      * Convenience class to apply stack methods
+     *
      * @return
      */
     public StackUtils<T> stack() {
@@ -707,9 +703,9 @@ public abstract class MathObject<T extends MathObject<T>> implements
         scene.registerUpdateable(objs);
 
         //Sets the update level the max of objs +1
-        int currentUpdateLevel=getUpdateLevel();
+        int currentUpdateLevel = getUpdateLevel();
         int maxUpdateLevel = Arrays.stream(objs).filter(Objects::nonNull).mapToInt(Updateable::getUpdateLevel).max().orElse(-1);
-        setUpdateLevel(Math.max(currentUpdateLevel,maxUpdateLevel + 1));
+        setUpdateLevel(Math.max(currentUpdateLevel, maxUpdateLevel + 1));
 
 
         //TODO: Implement this
@@ -779,7 +775,6 @@ public abstract class MathObject<T extends MathObject<T>> implements
         this.objectLabel = objectLabel;
         return (T) this;
     }
-
 
 
 //    //Style hooks

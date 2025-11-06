@@ -18,12 +18,10 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.Constructible.Lines.HasDirection;
-import com.jmathanim.MathObjects.AffineTransformable;
-import com.jmathanim.MathObjects.Coordinates;
-import com.jmathanim.MathObjects.Interpolable;
-import com.jmathanim.MathObjects.Stateable;
+import com.jmathanim.MathObjects.*;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.jmathanim.LogUtils;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 
@@ -36,7 +34,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI2;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<Vec>, Interpolable<Vec>, Serializable {
+public class Vec extends AbstractVersioned implements HasDirection, Coordinates<Vec>, AffineTransformable<Vec>, Interpolable<Vec>, Serializable {
 
     public double x, y, z;
     public double xState, yState, zState;
@@ -62,7 +60,6 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
         this.x = x;
         this.y = y;
         this.z = z;
-
     }
 
     public static Vec to(double x, double y, double z) {
@@ -186,6 +183,7 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
         double b = this.y;
         this.x = c * a - s * b;
         this.y = s * a + c * b;
+        setDirty(true);
         return this;
     }
 
@@ -216,53 +214,9 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
     }
 
 
-//    @Override
-//    public int hashCode() {
-//        int hash = 7;
-//        hash = 29 * hash + Long.hashCode(Double.doubleToLongBits(this.x));
-//        hash = 29 * hash + Long.hashCode(Double.doubleToLongBits(this.y));
-//        hash = 29 * hash + Long.hashCode(Double.doubleToLongBits(this.z));
-//        return hash;
-//    }
-
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (this == obj) {
-//            return true;
-//        }
-//        if (obj == null) {
-//            return false;
-//        }
-//        if (getClass() != obj.getClass()) {
-//            return false;
-//        }
-//        final Vec other = (Vec) obj;
-//        if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.x)) {
-//            return false;
-//        }
-//        if (Double.doubleToLongBits(this.y) != Double.doubleToLongBits(other.y)) {
-//            return false;
-//        }
-//        return Double.doubleToLongBits(this.z) == Double.doubleToLongBits(other.z);
-//    }
-
     @Override
     public String toString() {
-//        return String.format(
-//                        LogUtils.PURPLE+"%s"+LogUtils.RESET+"[" +
-//                        LogUtils.BLUE+"%.2f" +LogUtils.RESET+
-//                        ", " +
-//                        LogUtils.BLUE+"%.2f" +LogUtils.RESET+
-//                        "]",
-//                getClass().getSimpleName(),
-//                x,
-//                y);
-        return String.format(
-                "%s[%.2f, %.2f]",
-                getClass().getSimpleName(),
-                x,
-                y);
-
+        return getClass().getSimpleName()+"["+LogUtils.number(x,2)+","+LogUtils.number(y,2)+"]";
     }
 
     /**
@@ -273,6 +227,7 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
      */
     public Vec normalize() {
         double norm = this.norm();
+        setDirty(true);
         if (norm > 0) {
             return this.mult(1d / norm);
         } else {
@@ -300,6 +255,7 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
         x = pNew.getEntry(0, 1);
         y = pNew.getEntry(0, 2);
         z = pNew.getEntry(0, 3);
+        setDirty(true);
         return this;
     }
 
@@ -337,7 +293,12 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
 
     @Override
     public void update(JMathAnimScene scene) {
+        markClean();//No dependents, just mark it clean
+    }
 
+    @Override
+    public boolean isDirty() {
+        return dirty;//No dependents, easier to check
     }
 
     @Override
@@ -355,5 +316,6 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
         if (!(obj instanceof Vec)) return;
         Vec v = (Vec) obj;
         copyCoordinatesFrom(v);
+        setDirty(true);
     }
 }
