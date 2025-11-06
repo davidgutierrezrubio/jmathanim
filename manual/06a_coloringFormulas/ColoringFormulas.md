@@ -27,7 +27,7 @@ This is the simplest use of the colouring capabilities, but there are many more,
 
 ## A closer look into the LatexToken class
 
-As we have seen, LaTeX formulas are compiled and imported into Shape objects, usually one per glyph (in some cases a glyph is composed of more than one glyph). If we generate the formulas using the `JLaTeXMath` library (the default option), additional information about the specific glyph a shape represents is stored in the `LatexMathObject`. This is done using the `LatexParser` class, accessible through the `getLatexParser()` method, which relies heavily on the parsing capabilities of the `JLaTeXMath` library. Let's have a look at an example that generates a simple and beautiful mathematical formula:
+As we have seen, LaTeX formulas are compiled and imported into `LatexShape` objects, usually one per glyph (in some cases a glyph is composed of more than one  `LatexShape`). If we generate the formulas using the `JLaTeXMath` library (the default option), additional information about the specific glyph a shape represents is stored in the `LatexMathObject`. This is done using the `LatexParser` class, accessible through the `getLatexParser()` method, which relies heavily on the parsing capabilities of the `JLaTeXMath` library. Let's have a look at an example that generates a simple and beautiful mathematical formula:
 
 ```java
 LatexMathObject eulerFormula=LatexMathObject.make("$e^{i\\pi}+1=0$");
