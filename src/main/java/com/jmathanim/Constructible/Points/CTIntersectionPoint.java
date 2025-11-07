@@ -98,6 +98,8 @@ public class CTIntersectionPoint extends CTAbstractPoint<CTIntersectionPoint> {
             ctcircle1 = null;
             ctcircle2 = null;
             intersectionType = IntersectionType.LINE_LINE;
+            addDependency(ctline1);
+            addDependency(ctline2);
         } else if ((c1 instanceof CTAbstractLine) && (c2 instanceof CTAbstractCircle)) {
             ctline1 = (CTAbstractLine<?>) c1;
             ctline2 = null;
@@ -110,12 +112,16 @@ public class CTIntersectionPoint extends CTAbstractPoint<CTIntersectionPoint> {
             ctcircle1 = (CTCircle) c1;
             ctcircle2 = null;
             intersectionType = IntersectionType.LINE_CIRCLE;
+            addDependency(ctline1);
+            addDependency(ctcircle1);
         } else if ((c1 instanceof CTCircle) && (c2 instanceof CTCircle)) {
             ctline1 = null;
             ctline2 = null;
             ctcircle1 = (CTCircle) c1;
             ctcircle2 = (CTCircle) c2;
             intersectionType = IntersectionType.CIRCLE_CIRCLE;
+            addDependency(ctcircle1);
+            addDependency(ctcircle2);
         } else if ((c1 instanceof CTCircle) && (c2 instanceof CTEllipse)) {
             intersectionType = IntersectionType.CIRCLE_CONIC;
             JMathAnimScene.logger.error("Don't know still how to compute intersection of 2 ellipses");
@@ -233,12 +239,6 @@ public class CTIntersectionPoint extends CTAbstractPoint<CTIntersectionPoint> {
 
     }
 
-    @Override
-    public void update(JMathAnimScene scene) {
-        super.update(scene);
-        rebuildShape();
-    }
-
     //Determines if given point P of line/ray/segment is valid or not
     private boolean validateSolutionForLines(CTAbstractLine<?> line, Vec v) {
         boolean valid = true;
@@ -275,23 +275,6 @@ public class CTIntersectionPoint extends CTAbstractPoint<CTIntersectionPoint> {
         return solutions;
     }
 
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        switch (intersectionType) {
-            case CIRCLE_CIRCLE:
-                dependsOn(scene, ctcircle1, ctcircle1);
-                break;
-            case CIRCLE_CONIC:
-                //Not implemented yet...
-                setUpdateLevel(0);
-                break;
-            case LINE_LINE:
-                dependsOn(scene, ctline1, ctline2);
-                break;
-            case LINE_CIRCLE:
-                dependsOn(scene, ctline1, ctcircle1);
-        }
-    }
 
 //    @Override
 //    public Constructible applyAffineTransform(AffineJTransform transform) {

@@ -36,29 +36,29 @@ public class CTTransformedCircle extends CTAbstractCircle<CTTransformedCircle> {
     private final CTAbstractPoint<?> center;
     private final CTVector translation;
     private final Scalar angle;
-
-    @Override
-    public Vec getHoldCoordinates(Vec coordinates) {
-        JMathAnimScene.logger.warn("Hold coordinates not implemented yet for CTTransformedCircle");
-        return null;//TODO: IMplement this
-    }
-
-    private enum transformType {
-        ROTATION, TRANSLATION, AXISMIRROR, CENTRALMIRROR
-    }
-
     private transformType transType;
+
+    private CTTransformedCircle(CTAbstractCircle<?> circleToTransform, CTAbstractLine<?> axis, CTAbstractPoint<?> center, CTVector translation, Scalar angle) {
+        super(Vec.to(0, 0), Scalar.make(0));
+        this.circleToTransform = circleToTransform;
+        this.axis = axis;
+        this.center = center;
+        this.translation = translation;
+        this.angle = angle;
+    }
 
     /**
      * Creates a Constructible circle mirrored about a given axis
      *
      * @param circleToTransform Circle to be mirrored
-     * @param axis Mirror axis
+     * @param axis              Mirror axis
      * @return The created object
      */
     public static CTTransformedCircle makeAxisReflectionCircle(CTAbstractCircle<?> circleToTransform, CTAbstractLine<?> axis) {
         CTTransformedCircle resul = new CTTransformedCircle(circleToTransform, axis, null, null, null);
         resul.transType = transformType.AXISMIRROR;
+        resul.addDependency(circleToTransform);
+        resul.addDependency(resul.center);
         return resul;
     }
 
@@ -66,12 +66,14 @@ public class CTTransformedCircle extends CTAbstractCircle<CTTransformedCircle> {
      * Creates a Constructible circle mirrored about a given point
      *
      * @param circleToTransform Circle to be mirrored
-     * @param center Mirror center
+     * @param center            Mirror center
      * @return The created object
      */
     public static CTTransformedCircle makePointReflectionCircle(CTAbstractCircle<?> circleToTransform, CTAbstractPoint<?> center) {
         CTTransformedCircle resul = new CTTransformedCircle(circleToTransform, null, center, null, null);
         resul.transType = transformType.CENTRALMIRROR;
+        resul.addDependency(circleToTransform);
+        resul.addDependency(resul.center);
         return resul;
     }
 
@@ -79,20 +81,23 @@ public class CTTransformedCircle extends CTAbstractCircle<CTTransformedCircle> {
      * Creates a Constructible circle translated a given vector
      *
      * @param circleToTransform Circle to be translated
-     * @param vector Translation vector
+     * @param vector            Translation vector
      * @return The created object
      */
     public static CTTransformedCircle makeTranslatedCircle(CTAbstractCircle<?> circleToTransform, CTVector vector) {
         CTTransformedCircle resul = new CTTransformedCircle(circleToTransform, null, null, vector, null);
         resul.transType = transformType.TRANSLATION;
+        resul.addDependency(circleToTransform);
+        resul.addDependency(vector);
         return resul;
     }
- /**
+
+    /**
      * Creates a Constructible circle rotated arount a given point and angle
      *
      * @param circleToTransform Circle to be rotated
-     * @param center Rotation center
-     * @param angle Rotation angle
+     * @param center            Rotation center
+     * @param angle             Rotation angle
      * @return The created object
      */
     public static CTTransformedCircle makeRotatedCircle(CTAbstractCircle<?> circleToTransform, CTAbstractPoint<?> center, Scalar angle) {
@@ -101,13 +106,10 @@ public class CTTransformedCircle extends CTAbstractCircle<CTTransformedCircle> {
         return resul;
     }
 
-    private CTTransformedCircle(CTAbstractCircle<?> circleToTransform, CTAbstractLine<?> axis, CTAbstractPoint<?> center, CTVector translation, Scalar angle) {
-        super(Vec.to(0,0), Scalar.make(0));
-        this.circleToTransform = circleToTransform;
-        this.axis = axis;
-        this.center = center;
-        this.translation = translation;
-        this.angle = angle;
+    @Override
+    public Vec getHoldCoordinates(Vec coordinates) {
+        JMathAnimScene.logger.warn("Hold coordinates not implemented yet for CTTransformedCircle");
+        return null;//TODO: IMplement this
     }
 
     @Override
@@ -162,22 +164,9 @@ public class CTTransformedCircle extends CTAbstractCircle<CTTransformedCircle> {
         }
     }
 
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        switch (transType) {
-            case AXISMIRROR:
-                dependsOn(scene, this.circleToTransform, this.axis);
-                break;
-            case CENTRALMIRROR:
-                dependsOn(scene, this.circleToTransform, this.center);
-                break;
-            case ROTATION:
-                dependsOn(scene, this.circleToTransform, this.center, this.angle);
-                break;
-            case TRANSLATION:
-                dependsOn(scene, this.circleToTransform, this.translation);
-                break;
-        }
+    private enum transformType {
+        ROTATION, TRANSLATION, AXISMIRROR, CENTRALMIRROR
     }
 
 }
+

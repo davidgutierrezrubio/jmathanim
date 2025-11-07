@@ -386,4 +386,5 @@ public class JMPathPoint extends AbstractVersioned implements
     public boolean isEmpty() {
         return false;
     }
+
 }

@@ -527,4 +527,6 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
     public DrawStyleProperties getMp() {
         return this;
     }
+
+
 }

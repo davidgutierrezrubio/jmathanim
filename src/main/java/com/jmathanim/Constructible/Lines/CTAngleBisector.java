@@ -57,6 +57,9 @@ public class CTAngleBisector extends CTAbstractLine<CTAngleBisector> {
         this.A = A.getVec();
         this.B = B.getVec();
         this.C = C.getVec();
+        addDependency(this.A);
+        addDependency(this.B);
+        addDependency(this.C);
         dirPoint = Vec.to(0,0);
     }
 
@@ -82,17 +85,6 @@ public class CTAngleBisector extends CTAbstractLine<CTAngleBisector> {
                 break;
         }
         lineToDraw.rebuildShape();
-    }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        switch (bisectorType) {
-            case PointPointPoint:
-                dependsOn(scene, this.A, this.B, this.C);
-                break;
-            case LineLine:
-            //TODO: Implement
-        }
     }
 
 }

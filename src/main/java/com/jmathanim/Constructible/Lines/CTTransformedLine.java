@@ -22,7 +22,6 @@ import com.jmathanim.MathObjects.Scalar;
 import com.jmathanim.MathObjects.Shapes.Line;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  *
@@ -46,24 +45,33 @@ public class CTTransformedLine extends CTAbstractLine<CTTransformedLine> {
     public static CTTransformedLine makeAxisReflectionLine(CTAbstractLine<?> lineToTransform, CTAbstractLine<?> axis) {
         CTTransformedLine resul = new CTTransformedLine(lineToTransform, axis, null, null, null);
         resul.transType = transformType.AXISMIRROR;
+        resul.addDependency(resul.lineToTransform);
+        resul.addDependency(resul.axis);
         return resul;
     }
 
     public static CTTransformedLine makePointReflectionLine(CTAbstractLine<?> lineToTransform, CTAbstractPoint<?> center) {
         CTTransformedLine resul = new CTTransformedLine(lineToTransform, null, center, null, null);
         resul.transType = transformType.CENTRALMIRROR;
+        resul.addDependency(resul.lineToTransform);
+        resul.addDependency(resul.center);
         return resul;
     }
 
     public static CTTransformedLine makeTranslatedLine(CTAbstractLine<?> lineToTransform, CTVector vector) {
         CTTransformedLine resul = new CTTransformedLine(lineToTransform, null, null, vector, null);
         resul.transType = transformType.TRANSLATION;
+        resul.addDependency(resul.lineToTransform);
+        resul.addDependency(resul.translation);
         return resul;
     }
 
     public static CTTransformedLine makeRotatedLine(CTAbstractLine<?> lineToTransform, CTAbstractPoint<?> center, Scalar angle) {
         CTTransformedLine resul = new CTTransformedLine(lineToTransform, null, center, null, angle);
         resul.transType = transformType.ROTATION;
+        resul.addDependency(resul.lineToTransform);
+        resul.addDependency(resul.center);
+        resul.addDependency(resul.angle);
         return resul;
     }
 
@@ -130,22 +138,4 @@ public class CTTransformedLine extends CTAbstractLine<CTTransformedLine> {
         lineToDraw.rebuildShape();
     }
 
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        super.registerUpdateableHook(scene);
-        switch (transType) {
-            case AXISMIRROR:
-                dependsOn(scene, this.lineToTransform, this.axis);
-                break;
-            case CENTRALMIRROR:
-                dependsOn(scene, this.lineToTransform, this.center);
-                break;
-            case ROTATION:
-                dependsOn(scene, this.lineToTransform, this.center, this.angle);
-                break;
-            case TRANSLATION:
-                dependsOn(scene, this.lineToTransform, this.translation);
-                break;
-        }
-    }
 }

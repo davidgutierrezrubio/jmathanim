@@ -45,8 +45,16 @@ public abstract class AbstractVersioned implements Dirtyable  {
 
         return dirty;
     }
-
+    @Override
     public boolean update(JMathAnimScene scene) {
+        if (updateDependents(scene)) {
+            performUpdates(scene);
+            markClean();
+        }
+
+    }
+
+    protected boolean updateDependents(JMathAnimScene scene) {
         boolean updateResult=false;
         for (Dirtyable d : dependencies) {
             if (d.isDirty() || d.getVersion() > version) {

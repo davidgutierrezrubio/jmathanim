@@ -344,7 +344,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
     // Updateable methods
     @Override
     public boolean update(JMathAnimScene scene) {
-        boolean resultFlag = super.update(scene);
+        boolean resultFlag = updateDependents(scene);
         if (resultFlag) {
             performUpdateActions(scene);
         }

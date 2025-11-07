@@ -22,7 +22,6 @@ import com.jmathanim.MathObjects.Scalar;
 import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
@@ -35,8 +34,8 @@ public class CTSemiCircle extends CTAbstractCircle<CTSemiCircle>{
 
     private final Shape arcTODraw;
     private final Shape arcTODrawOrig;
-    private final Vec B;
-    private final Vec A;
+    private final Coordinates<?> B;
+    private final Coordinates<?> A;
 
 
     /**
@@ -55,8 +54,10 @@ public class CTSemiCircle extends CTAbstractCircle<CTSemiCircle>{
 
     private CTSemiCircle(Coordinates<?> A, Coordinates<?> B) {
         super(Vec.to(0,0), Scalar.make(0));
-        this.A = A.getVec();
-        this.B = B.getVec();
+        this.A = A;
+        this.B = B;
+        addDependency(this.A.getVec());
+        addDependency(this.B.getVec());
         arcTODraw = Shape.arc(PI);
         arcTODrawOrig = Shape.arc(PI);
     }
@@ -95,7 +96,7 @@ public class CTSemiCircle extends CTAbstractCircle<CTSemiCircle>{
 
     @Override
     public void rebuildShape() {
-        setCircleCenter(A.interpolate(B,.5));
+        setCircleCenter(A.getVec().interpolate(B,.5));
         setCircleRadius(A.to(B).norm());
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(Vec.to(-1, 0), Vec.to(1, 0),
                 A, B, 1);
@@ -105,11 +106,6 @@ public class CTSemiCircle extends CTAbstractCircle<CTSemiCircle>{
             }
             arcTODraw.applyAffineTransform(tr);
         }
-    }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, A, B);
     }
 
 }
