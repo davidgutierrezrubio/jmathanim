@@ -28,7 +28,6 @@ public abstract class AbstractMultiShapeObject<
     public boolean isAddedToScene;
 
 
-
     protected AbstractMultiShapeObject(Class<T> clazz) {
         this(clazz, new ArrayList<>());
     }
@@ -38,36 +37,41 @@ public abstract class AbstractMultiShapeObject<
         this.clazz = clazz;
         isAddedToScene = false;
         this.shapes = new ArrayList<>();
-        this.shapes.addAll(shapes);
         mpMultiShape = new DrawStylePropertiesObjectsArray();
-        for (MathObject<?> sh : shapes) {
-            mpMultiShape.add(sh);
+        addDependency(mpMultiShape);
+
+        for (T sh : shapes) {
+            add(sh);
         }
     }
 
-    public boolean add( T e) {
-        mpMultiShape.add(e);
-        return shapes.add(e);
+    public boolean add(T element) {
+        mpMultiShape.add(element);
+        addDependency(element);
+        return shapes.add(element);
     }
-
 
 
     abstract protected T createEmptyShapeAt(int index);
 
     public T setShapeAt(int index, T element) {
         mpMultiShape.add(element);
+        addDependency(element);
         return shapes.set(index, element);
 
     }
 
     public void clearShapes() {
+        for (AbstractShape<?> sh : shapes) {
+            removeDependency(sh);
+        }
         shapes.clear();
         mpMultiShape.getObjects().clear();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public S fillColor(PaintStyle fc) {
+        setDirty(true);
         for (T jmp : shapes) {
             jmp.fillColor(fc);
         }
@@ -75,9 +79,9 @@ public abstract class AbstractMultiShapeObject<
         return (S) this;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public S drawColor(PaintStyle<?> dc) {
+        setDirty(true);
         for (AbstractShape<?> jmp : shapes) {
             jmp.drawColor(dc);
         }
@@ -89,7 +93,7 @@ public abstract class AbstractMultiShapeObject<
     @Override
     public void copyStateFrom(Stateable obj) {
         if (!(obj instanceof AbstractMultiShapeObject<?, ?>)) return;
-        AbstractMultiShapeObject<?, ?> msh = (AbstractMultiShapeObject<S,T>) obj;
+        AbstractMultiShapeObject<?, ?> msh = (AbstractMultiShapeObject<S, T>) obj;
         super.copyStateFrom(msh);
         int n = 0;
         //Assuming this shape and obj has the same number of items
@@ -101,12 +105,13 @@ public abstract class AbstractMultiShapeObject<
         } else {//If there is discrepancy, turn it off and on!
             shapes.clear();
             for (AbstractShape<?> sh : msh.shapes) {
-                T sh2=(T) sh;
+                T sh2 = (T) sh;
                 T copy = sh2.copy();
                 add(copy);
             }
         }
     }
+
     @SuppressWarnings("unchecked")
     @Override
     public S setAbsoluteSize(AnchorType anchorType) {
@@ -178,7 +183,7 @@ public abstract class AbstractMultiShapeObject<
      * @return This object
      */
     @SuppressWarnings("unchecked")
-    public S alignCenter(int index, AbstractMultiShapeObject<?,?> otherObject, int indexOtherObject) {
+    public S alignCenter(int index, AbstractMultiShapeObject<?, ?> otherObject, int indexOtherObject) {
         shift(this.get(index).getCenter().to(otherObject.get(indexOtherObject).getCenter()));
         return (S) this;
     }
@@ -210,7 +215,7 @@ public abstract class AbstractMultiShapeObject<
         List<Integer> list = Arrays.stream(indices).boxed().collect(Collectors.toList());//Arrays.asList(indices);
         S resul = (S) this.copy();
         resul.clearShapes();
-        int size=size();
+        int size = size();
         //Populate the new MultiShape with n empty shapes
 //        for (int n = 0; n < size; n++) {
 //            resul.createEmptyShapeAt(n);
@@ -223,8 +228,7 @@ public abstract class AbstractMultiShapeObject<
                     this.mpMultiShape.remove(this.get(n));
                     this.createEmptyShapeAt(n);
                 }
-            }else
-            {
+            } else {
                 resul.createEmptyShapeAt(n);
             }
         }
@@ -275,7 +279,7 @@ public abstract class AbstractMultiShapeObject<
         for (int n : indices) {
             resul.add(shapes.get(n));
         }
-        return (S)resul;
+        return (S) resul;
     }
 
     @SuppressWarnings("unchecked")
@@ -304,6 +308,11 @@ public abstract class AbstractMultiShapeObject<
             }
         }
         return false;
+    }
+
+    @Override
+    protected void performUpdateActions(JMathAnimScene scene) {
+
     }
 
     /**

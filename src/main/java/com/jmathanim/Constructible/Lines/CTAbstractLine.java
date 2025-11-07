@@ -23,7 +23,6 @@ import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.MathObjects.Shapes.Line;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
@@ -42,6 +41,8 @@ public abstract class CTAbstractLine<T extends CTAbstractLine<T>> extends Constr
         this.P2draw = P2.getVec().copy();
         this.P1 = P1;
         this.P2 = P2;
+        addDependency(this.P1.getVec());
+        addDependency(this.P2.getVec());
         lineToDraw = Line.make(this.P1draw, this.P2draw);
     }
 
@@ -76,12 +77,6 @@ public abstract class CTAbstractLine<T extends CTAbstractLine<T>> extends Constr
         Vec v1 = getDirection().normalize();
         Vec v2 = coordinates.minus(getP1());
         return getP1().add(v1.mult(v1.dot(v2))).getVec();
-    }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        super.registerUpdateableHook(scene);
-        dependsOn(scene, P1, P2);
     }
 
     protected enum LineType {

@@ -24,7 +24,6 @@ import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.MathObjects.Stateable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import static com.jmathanim.jmathanim.JMathAnimScene.logger;
@@ -43,6 +42,8 @@ public class CTCircleArc extends CTAbstractCircle<CTCircleArc> {
         super(center, Scalar.make(0));
         this.A = A;
         this.B = B;
+        addDependency(this.A);
+        addDependency(this.B);
     }
 
     /**
@@ -99,11 +100,6 @@ public class CTCircleArc extends CTAbstractCircle<CTCircleArc> {
             getMathObject().applyAffineTransform(tr);
         }
 
-    }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, getCircleCenter(), A, B);
     }
 
     @Override

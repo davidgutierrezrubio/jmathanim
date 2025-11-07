@@ -103,6 +103,12 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
         return (T) this;
     }
 
+
+    @Override
+    protected void performUpdateActions(JMathAnimScene scene) {
+        generateDotShape();
+    }
+
     private void generateDotShape() {
         double st = scene.getRenderer().ThicknessToMathWidth(this);
         double th = scene.getRenderer().MathWidthToThickness(st);

@@ -76,6 +76,11 @@ public abstract class Delimiter extends Constructible<Delimiter> {
         groupElementsToBeDrawn.addWithKey("shape", this.delimiterShapeToDraw);
         groupElementsToBeDrawn.addWithKey("label", this.delimiterLabelRigidBox);
 
+
+        addDependency(this.A);
+        addDependency(this.B);
+        addDependency(this.groupElementsToBeDrawn);
+
         delimiterScale = 1;
         amplitudeScale = 1;
 
@@ -351,13 +356,8 @@ public abstract class Delimiter extends Constructible<Delimiter> {
     }
 
     @Override
-    public void update(JMathAnimScene scene) {
-        super.update(scene);
-        groupElementsToBeDrawn.update(scene);
-        rebuildShape();
+    protected void performUpdateActions(JMathAnimScene scene) {
     }
-
-
 
     @Override
     protected Rect computeBoundingBox() {
@@ -366,11 +366,5 @@ public abstract class Delimiter extends Constructible<Delimiter> {
 //            return Rect.union(bb, labelTip.getBoundingBox());
 //        } else
             return bb;
-    }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        super.registerUpdateableHook(scene);
-        dependsOn(scene, A,B);
     }
 }

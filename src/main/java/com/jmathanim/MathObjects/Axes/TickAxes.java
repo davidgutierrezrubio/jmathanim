@@ -166,6 +166,11 @@ public class TickAxes extends MathObject {
         return tickType;
     }
 
+
+    @Override
+    protected void performUpdateActions(JMathAnimScene scene) {
+    }
+
     public boolean shouldDraw(Camera cam) {
         boolean scaleCondition = (maximumScaleToShow == 0) | (cam.getMathView().getWidth() < maximumScaleToShow);
 

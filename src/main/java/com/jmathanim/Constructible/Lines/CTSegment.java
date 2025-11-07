@@ -21,7 +21,6 @@ import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.MathObjects.hasScalarParameter;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  * A straight segment,given by 2 points
@@ -90,12 +89,6 @@ public class CTSegment extends CTAbstractLine<CTSegment> implements hasScalarPar
             segmentToDraw.get(0).getV().copyCoordinatesFrom(this.P1);
             segmentToDraw.get(1).getV().copyCoordinatesFrom(this.P2);
         }
-    }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        super.registerUpdateableHook(scene);
-        dependsOn(scene, getP1(), getP2());
     }
 
     @Override

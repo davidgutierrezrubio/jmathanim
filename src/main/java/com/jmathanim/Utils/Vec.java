@@ -282,32 +282,15 @@ public class Vec extends AbstractVersioned implements HasDirection, Coordinates<
     }
 
     @Override
-    public int getUpdateLevel() {
-        return 0;
-    }
-
-    @Override
-    public void setUpdateLevel(int level) {
-
-    }
-
-    @Override
-    public void update(JMathAnimScene scene) {
+    public boolean update(JMathAnimScene scene) {
+        boolean result = isDirty();
         markClean();//No dependents, just mark it clean
+        return result;//True if it was dirty
     }
 
     @Override
     public boolean isDirty() {
         return dirty;//No dependents, easier to check
-    }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-
-    }
-
-    @Override
-    public void unregisterUpdateableHook(JMathAnimScene scene) {
     }
 
 

@@ -27,7 +27,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CameraAlwaysAdjusting implements Updateable {
+public class CameraAlwaysAdjusting  {
 
     Camera camera;
     double hgap, vgap;
@@ -42,12 +42,12 @@ public class CameraAlwaysAdjusting implements Updateable {
         this.vgap = vgap;
     }
 
-    @Override
+//    @Override
     public int getUpdateLevel() {
         return Integer.MAX_VALUE;// This always should be updated last
     }
 
-    @Override
+//    @Override
     public void update(JMathAnimScene scene) {
         if (!scene.getMathObjects().isEmpty()) {
             Vec cameraGaps=camera.getGaps();
@@ -58,18 +58,6 @@ public class CameraAlwaysAdjusting implements Updateable {
 //            camera.adjustToRect(bbox.addGap(hgap, vgap));
             camera.adjustToRect(bbox);
         }
-    }
-
-    @Override
-    public void setUpdateLevel(int level) {
-    }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-    }
-
-    @Override
-    public void unregisterUpdateableHook(JMathAnimScene scene) {
     }
 
 }

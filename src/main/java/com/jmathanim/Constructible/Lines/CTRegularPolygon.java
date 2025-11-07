@@ -25,7 +25,6 @@ import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 import java.util.ArrayList;
 
@@ -83,6 +82,8 @@ public class CTRegularPolygon extends Constructible<CTRegularPolygon> {
         this.nSides = generatedPoints.size();
         this.A = generatedPoints.get(0);
         this.B = generatedPoints.get(1);
+        addDependency(this.A.getVec());
+        addDependency(this.B.getVec());
 //        generatedPoints.remove(0);
 //        generatedPoints.remove(0);
 //        generatedPoints.add(0,this.B.copy());
@@ -117,11 +118,6 @@ public class CTRegularPolygon extends Constructible<CTRegularPolygon> {
         CTRegularPolygon copy = make(this.A.copy(), this.B.copy(), this.nSides);
          copy.copyStateFrom(this);
         return copy;
-    }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, this.A, this.B);
     }
 
 }

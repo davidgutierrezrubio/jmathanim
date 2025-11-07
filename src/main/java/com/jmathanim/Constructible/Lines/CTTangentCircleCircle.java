@@ -18,7 +18,6 @@ package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Conics.CTAbstractCircle;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
@@ -27,13 +26,15 @@ public class CTTangentCircleCircle extends CTAbstractLine<CTTangentCircleCircle>
 
     public final Vec intersectionTangents;
     private final int numTangent;
-    protected CTAbstractCircle<?> c1;
-    protected CTAbstractCircle<?> c2;
+    protected final CTAbstractCircle<?> c1;
+    protected final CTAbstractCircle<?> c2;
 
     private CTTangentCircleCircle(CTAbstractCircle<?> c1, CTAbstractCircle<?> c2, int numTangent) {
         super(Vec.to(0, 0), Vec.to(1, 0));//Trivial line
         this.c1 = c1;
         this.c2 = c2;
+        addDependency(this.c1);
+        addDependency(this.c2);
         this.numTangent = numTangent;
         intersectionTangents = Vec.to(0, 0);//Dummy point
     }
@@ -78,12 +79,6 @@ public class CTTangentCircleCircle extends CTAbstractLine<CTTangentCircleCircle>
         this.P2.copyCoordinatesFrom(ct.getP2());
         super.rebuildShape();
 
-    }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        super.registerUpdateableHook(scene);
-        dependsOn(scene, c1, c2);
     }
 
 }

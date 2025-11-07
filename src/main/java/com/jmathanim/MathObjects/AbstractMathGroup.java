@@ -31,11 +31,9 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
     }
 
     protected AbstractMathGroup(ArrayList<MathObject<?>> objects) {
-        this.objects = objects;
-        this.dict = new HashMap<>();
-        mpArray = new DrawStylePropertiesObjectsArray();
-        for (MathObject<?> o : objects) {
-            mpArray.add(o);
+        this();
+        for (MathObject<?> obj : objects) {
+            add(obj);
         }
 
     }
@@ -107,6 +105,7 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
             if (obj != null) {
                 objects.add(obj);
                 mpArray.add(obj);
+                addDependency(obj);
             }
         }
         return (MathObjectGroup) this;
@@ -353,12 +352,13 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
     public T setLayout(LayoutType layoutType, double hGap, double vGap) {
         return setLayout(null, layoutType, hGap, vGap);
     }
+
     public T setLayout(LayoutType layoutType, double gap) {
         return setLayout(null, layoutType, gap, gap);
     }
 
     public T setLayout(Boxable corner, LayoutType layoutType, double gap) {
-        return setLayout(corner, layoutType, gap,gap);
+        return setLayout(corner, layoutType, gap, gap);
     }
 
     public T setLayout(Boxable corner, LayoutType layoutType, double hGap, double vGap) {
@@ -424,14 +424,14 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
 //            objects.get(0).stackTo(corner, anchor, gap);
             objects.get(0).stack()
                     .withDestinyAnchor(anchor)
-                    .withGaps(hGap,vGap)
+                    .withGaps(hGap, vGap)
                     .toObject(corner);
         }
         for (int n = 1; n < objects.size(); n++) {
 //            objects.get(n).stackTo(objects.get(n - 1), anchor, gap);
             objects.get(n).stack()
                     .withDestinyAnchor(anchor)
-                    .withGaps(hGap,vGap)
+                    .withGaps(hGap, vGap)
                     .toObject(objects.get(n - 1));
         }
         return (T) this;
@@ -513,6 +513,11 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
         homogeneizeBoundingBoxesTo(anchorType, wmax, hmax, upperGap, rightGap, lowerGap, leftGap);
 
         return (T) this;
+    }
+
+    @Override
+    protected void performUpdateActions(JMathAnimScene scene) {
+
     }
 
     /**

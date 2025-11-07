@@ -41,6 +41,9 @@ public class CTCircleSector extends CTAbstractCircle<CTCircleSector> {
         setCircleCenter(center);
         this.A = A.getVec();
         this.B = B.getVec();
+        addDependency(this.A);
+        addDependency(this.B);
+        addDependency(center.getVec());
     }
 
     /**
@@ -121,11 +124,6 @@ public class CTCircleSector extends CTAbstractCircle<CTCircleSector> {
             getMathObject().getPath().getJmPathPoints().addAll(referenceArc.getPath().getJmPathPoints());
         }
 
-    }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, getCircleCenter(), A, B);
     }
 
     @Override

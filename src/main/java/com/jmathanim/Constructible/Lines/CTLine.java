@@ -19,9 +19,7 @@ package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.MathObjects.Shapes.Line;
-import com.jmathanim.MathObjects.UpdateableObjects.Updateable;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
@@ -126,20 +124,20 @@ public class CTLine extends CTAbstractLine<CTLine> {
            super.rebuildShape();
         }
     }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene
-    ) {
-        switch (lineType) {
-            case POINT_POINT:
-                dependsOn(scene, this.A, this.B);
-                break;
-            case POINT_DIRECTION:
-                dependsOn(scene, this.A);
-                if (this.dir instanceof Updateable) {
-                    scene.registerUpdateable((Updateable) this.dir);
-                    setUpdateLevel(Math.max(this.A.getUpdateLevel(), ((Updateable) this.dir).getUpdateLevel()) + 1);
-                }
-        }
-    }
+//
+//    @Override
+//    public void registerUpdateableHook(JMathAnimScene scene
+//    ) {
+//        switch (lineType) {
+//            case POINT_POINT:
+//                dependsOn(scene, this.A, this.B);
+//                break;
+//            case POINT_DIRECTION:
+//                dependsOn(scene, this.A);
+//                if (this.dir instanceof Updateable) {
+//                    scene.registerUpdateable((Updateable) this.dir);
+//                    setUpdateLevel(Math.max(this.A.getUpdateLevel(), ((Updateable) this.dir).getUpdateLevel()) + 1);
+//                }
+//        }
+//    }
 }

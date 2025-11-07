@@ -40,7 +40,7 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
     public final Vec pivotPointRefShape;
     public final RigidBox tipObjectRigidBox;
     private final DrawStylePropertiesObjectsArray mpArray;
-    public AbstractShape<?> shape;
+    protected final AbstractShape<?> shape;
     public double locationParameterOnShape;
     //    public double rotationAngleAroundPivotPoint;
     public double rotationAngleAroundCenterOfMathObject;
@@ -59,6 +59,7 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
     protected AbstractTippableObject(AbstractShape<?> shape, MathObject<?> tipObject, double location) {
         correctionAngle = PI / 2;
         this.shape = shape;
+        addDependency(this.shape);
         this.tipObjectRigidBox = new RigidBox(tipObject);
         this.locationParameterOnShape = location;
         this.slopeDirectionType = SlopeDirectionType.POSITIVE;
@@ -284,18 +285,12 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
         return (T) this;
     }
 
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, this.shape);
-    }
-
     public Vec getMarkLabelLocation() {
         return markPoint;
     }
 
     @Override
-    public void update(JMathAnimScene scene) {
-        super.update(scene);
+    protected void performUpdateActions(JMathAnimScene scene) {
         rebuildShape();
     }
 

@@ -51,10 +51,14 @@ public class CTMirrorPoint extends CTPoint {
 //        return resul;
 //    }
 
-    public static CTMirrorPoint make(Coordinates<?> orig, Coordinates<?> A, Coordinates<?> B) {
+
+
+    public static CTMirrorPoint make(CTAbstractPoint<?> orig, Coordinates<?> A, Coordinates<?> B) {
         CTMirrorPoint resul = new CTMirrorPoint(CTPoint.at(orig), CTSegment.make(A, B), null);
         resul.rebuildShape();
         resul.mirrorType = MirrorType.AXIAL;
+        resul.addDependency(resul.axis);
+        resul.addDependency(resul.originalPoint);
         return resul;
     }
 
@@ -65,26 +69,12 @@ public class CTMirrorPoint extends CTPoint {
             resul.rebuildShape();
             return resul;
         }
-//        if (axis instanceof CTSegment) {
-//            CTSegment segment = (CTSegment) axis;
-//            CTLine line = CTLine.make(segment.getP1(), segment.getP1());
-//            CTMirrorPoint resul = new CTMirrorPoint(orig, line, null);
-//            resul.mirrorType = MirrorType.AXIAL;
-//            resul.rebuildShape();
-//            return resul;
-//        }
-//        if (axis instanceof CTRay) {
-//            CTRay ray = (CTRay) axis;
-//            CTLine line = CTLine.make(ray.getP1(), ray.getP1());
-//            CTMirrorPoint resul = new CTMirrorPoint(orig, line, null);
-//            resul.mirrorType = MirrorType.AXIAL;
-//            resul.rebuildShape();
-//            return resul;
-//        }
         if (axis instanceof CTAbstractPoint<?>) {
             CTPoint cp = (CTPoint) axis;
             CTMirrorPoint resul = new CTMirrorPoint(orig, null, cp);
             resul.mirrorType = MirrorType.CENTRAL;
+            resul.addDependency(resul.center);
+            resul.addDependency(resul.originalPoint);
             resul.rebuildShape();
             return resul;
         }
@@ -121,15 +111,4 @@ public class CTMirrorPoint extends CTPoint {
         }
     }
 
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        switch (mirrorType) {
-            case AXIAL:
-                dependsOn(scene, axis, originalPoint);
-                break;
-            case CENTRAL:
-                dependsOn(scene, center, originalPoint);
-                break;
-        }
-    }
 }

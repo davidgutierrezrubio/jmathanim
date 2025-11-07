@@ -22,7 +22,6 @@ import com.jmathanim.MathObjects.Scalar;
 import com.jmathanim.MathObjects.Stateable;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  * Represents a Circle imported from Geogebra with 2 points (center and another one in the perimeter)
@@ -59,7 +58,9 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
         CTCircle resul = new CTCircle(center, Scalar.make(0));
         resul.circleType = CircleType.CENTER_POINT;
         resul.setCircleCenter(center);
+        resul.addDependency(center);
         resul.A = P.getVec();
+        resul.addDependency(resul.A);
         resul.rebuildShape();
         return resul;
     }
@@ -85,6 +86,8 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
     public static CTCircle makeCenterRadius(Coordinates<?> center, Scalar radius) {
         CTCircle resul = new CTCircle(center, radius);
         resul.circleType = CircleType.CENTER_RADIUS;
+        resul.addDependency(center);
+        resul.addDependency(radius);
         resul.rebuildShape();
         return resul;
     }
@@ -103,6 +106,9 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
         resul.A = A.getVec();
         resul.B = B.getVec();
         resul.C = C.getVec();
+        resul.addDependency(resul.A);
+        resul.addDependency(resul.B);
+        resul.addDependency(resul.C);
         resul.rebuildShape();
         return resul;
     }
@@ -157,19 +163,19 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
         rebuildShape();
     }
 
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        switch (circleType) {
-            case CENTER_POINT:
-                dependsOn(scene, this.getCircleCenter(), this.A);
-                break;
-            case THREE_POINTS:
-                dependsOn(scene, this.getCircleCenter(), this.A, this.B, this.C);
-                break;
-            case CENTER_RADIUS:
-                dependsOn(scene, this.getCircleCenter(), this.abstractCircleRadius);
-        }
-    }
+//    @Override
+//    public void registerUpdateableHook(JMathAnimScene scene) {
+//        switch (circleType) {
+//            case CENTER_POINT:
+//                dependsOn(scene, this.getCircleCenter(), this.A);
+//                break;
+//            case THREE_POINTS:
+//                dependsOn(scene, this.getCircleCenter(), this.A, this.B, this.C);
+//                break;
+//            case CENTER_RADIUS:
+//                dependsOn(scene, this.getCircleCenter(), this.abstractCircleRadius);
+//        }
+//    }
 
     @Override
     protected Rect computeBoundingBox() {

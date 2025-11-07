@@ -18,9 +18,7 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.MathObjects.Coordinates;
-import com.jmathanim.MathObjects.UpdateableObjects.Updateable;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
@@ -90,15 +88,5 @@ public class CTLineOrthogonal extends CTAbstractLine<CTLineOrthogonal> {
             P2draw.copyCoordinatesFrom(P2);
         }
         super.rebuildShape();
-    }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        scene.registerUpdateable(this.getP1());
-        setUpdateLevel(this.getP1().getUpdateLevel() + 1);
-        if (this.dir instanceof Updateable) {
-            scene.registerUpdateable((Updateable) this.dir);
-            setUpdateLevel(Math.max(this.getP1().getUpdateLevel(), ((Updateable) this.dir).getUpdateLevel()) + 1);
-        }
     }
 }

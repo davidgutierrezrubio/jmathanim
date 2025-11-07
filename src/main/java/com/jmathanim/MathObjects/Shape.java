@@ -553,4 +553,6 @@ public class Shape extends AbstractShape<Shape> {
         return resul;
     }
 
+
+
 }

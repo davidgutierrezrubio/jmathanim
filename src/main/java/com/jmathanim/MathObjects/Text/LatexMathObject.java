@@ -21,7 +21,6 @@ import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.MathObjects.Scalar;
 import com.jmathanim.MathObjects.Stateable;
 import com.jmathanim.MathObjects.hasArguments;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 import java.util.Map;
 
@@ -107,26 +106,6 @@ public class LatexMathObject extends AbstractLatexMathObject<LatexMathObject> im
 
     }
 
-    @Override
-    public void update(JMathAnimScene scene) {
-        super.update(scene);
-        if (isHasBeenUpdated()) return;
-        if (origText == null) {
-            origText = getText();
-        }
-        //Actualizo numeros
-        String newText = origText;
-        for (Integer index : variables.keySet()) {
-            newText = newText.replace("{#" + index + "}", df.format(variables.get(index).getValue()));
-        }
-        if (!newText.equals(origText)) {//No need to update if text has not changed
-            changeInnerLaTeX(newText);
-        }
-//        anchor3DA = getBoundingBox().getLower();
-//        anchor3DC = anchor3DA.copy().shift(0, 1, 0);
-//        anchor3DD = anchor3DA.copy().shift(0, 0, 1);
-//        alignTo3DView();
-    }
 
 
     @Override

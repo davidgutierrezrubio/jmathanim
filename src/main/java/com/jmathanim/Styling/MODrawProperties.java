@@ -21,6 +21,7 @@ import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.Enum.StrokeLineCap;
 import com.jmathanim.Enum.StrokeLineJoin;
+import com.jmathanim.MathObjects.AbstractVersioned;
 import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimConfig;
@@ -35,7 +36,7 @@ import java.util.Objects;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class MODrawProperties implements DrawStyleProperties {
+public class MODrawProperties extends AbstractVersioned implements DrawStyleProperties {
 
     // When added a new property here, remember to include it in rawCopyFrom and
     // copyFrom

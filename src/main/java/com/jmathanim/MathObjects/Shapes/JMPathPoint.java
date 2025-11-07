@@ -18,9 +18,7 @@
 package com.jmathanim.MathObjects.Shapes;
 
 import com.jmathanim.MathObjects.*;
-import com.jmathanim.MathObjects.UpdateableObjects.Updateable;
 import com.jmathanim.Utils.*;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -29,7 +27,7 @@ import java.text.DecimalFormat;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class JMPathPoint extends AbstractVersioned implements
-        Updateable, Boxable, Linkable,
+        Boxable, Linkable,
         Coordinates<JMPathPoint>,
         AffineTransformable<JMPathPoint>,
         Interpolable<JMPathPoint>,
@@ -273,36 +271,6 @@ public class JMPathPoint extends AbstractVersioned implements
         }
         interpolate.setSegmentToThisPointCurved(q.isSegmentToThisPointCurved()); // The new point is curved iff v2 is
         return interpolate;
-    }
-
-    @Override
-    public int getUpdateLevel() {
-        return 0;
-    }
-
-    @Override
-    public void setUpdateLevel(int level) {
-
-    }
-
-    @Override
-    public void update(JMathAnimScene scene) {
-        super.update(scene);
-        System.out.println("update jmpathpoint");
-        markClean();
-    }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-//        int m = Math.max(p.getUpdateLevel(), cpEnter.getUpdateLevel());
-//        m = Math.max(m, cpExit.getUpdateLevel());
-//        setUpdateLevel(p.getUpdateLevel());
-
-    }
-
-    @Override
-    public void unregisterUpdateableHook(JMathAnimScene scene) {
-
     }
 
     public Point getPoint() {

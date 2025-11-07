@@ -565,4 +565,21 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
          */
         CompileFile
     }
+    protected void performUpdateActions(JMathAnimScene scene) {
+        if (origText == null) {
+            origText = getText();
+        }
+        //Update args
+        String newText = origText;
+        for (Integer index : variables.keySet()) {
+            newText = newText.replace("{#" + index + "}", df.format(variables.get(index).getValue()));
+        }
+        if (!newText.equals(origText)) {//No need to update if text has not changed
+            changeInnerLaTeX(newText);
+        }
+//        anchor3DA = getBoundingBox().getLower();
+//        anchor3DC = anchor3DA.copy().shift(0, 1, 0);
+//        anchor3DD = anchor3DA.copy().shift(0, 0, 1);
+//        alignTo3DView();
+    }
 }

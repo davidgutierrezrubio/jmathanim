@@ -550,11 +550,9 @@ public class Arrow extends Constructible<Arrow> {
     }
 
     @Override
-    public void update(JMathAnimScene scene) {
-        super.update(scene);
+    protected void performUpdateActions(JMathAnimScene scene) {
         if (labelTip != null) labelTip.update(scene);
         rebuildShape();
-
     }
 
     /**
@@ -876,12 +874,6 @@ public class Arrow extends Constructible<Arrow> {
             getLabelTip().setFreeMathObject(isMathObjectFree);
         }
         return this;
-    }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        super.registerUpdateableHook(scene);
-        dependsOn(scene, A, B);
     }
 
     private enum labelTypeEnum {NORMAL, DISTANCE, COORDS}

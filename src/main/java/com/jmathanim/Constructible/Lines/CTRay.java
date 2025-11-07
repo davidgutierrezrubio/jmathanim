@@ -19,9 +19,7 @@ package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.MathObjects.Shapes.Ray;
-import com.jmathanim.MathObjects.UpdateableObjects.Updateable;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  * A Constructible ray
@@ -37,7 +35,6 @@ public class CTRay extends CTAbstractLine<CTRay> {
         super(A, B);
         rayToDraw = Ray.make(P1draw, P2draw);
     }
-
     /**
      * Creates a new Constructible ray with given point and direction
      *
@@ -109,21 +106,7 @@ public class CTRay extends CTAbstractLine<CTRay> {
         return rayToDraw.getDirection();
     }
 
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        switch (lineType) {
-            case POINT_POINT:
-                dependsOn(scene, this.getP1(), this.getP2());
-                break;
-            case POINT_DIRECTION:
-                scene.registerUpdateable(this.getP1());
-                setUpdateLevel(this.getP1().getUpdateLevel() + 1);
-                if (this.dir instanceof Updateable) {
-                    scene.registerUpdateable((Updateable) this.dir);
-                    setUpdateLevel(Math.max(this.getP1().getUpdateLevel(), ((Updateable) this.dir).getUpdateLevel()) + 1);
-                }
-        }
-    }
+
 
     @Override
     public Vec getHoldCoordinates(Vec coordinates) {

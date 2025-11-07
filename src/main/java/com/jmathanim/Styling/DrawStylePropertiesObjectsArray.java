@@ -21,6 +21,7 @@ import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.Enum.StrokeLineCap;
 import com.jmathanim.Enum.StrokeLineJoin;
+import com.jmathanim.MathObjects.AbstractVersioned;
 import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.Utils.LatexStyle;
 import com.jmathanim.Utils.Vec;
@@ -48,7 +49,7 @@ import java.util.Arrays;
  * can be initialized with default properties or copied from existing objects, with
  * modifications propagating across associated entities.
  */
-public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
+public class DrawStylePropertiesObjectsArray extends AbstractVersioned implements DrawStyleProperties {
 
     private final MODrawPropertiesLaTeX mpRef;
     private ArrayList<MathObject<?>> objects;
@@ -82,6 +83,9 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
     }
 
     public void clear() {
+        for (MathObject<?> obj : objects) {
+           removeDependency(obj);
+        }
         objects.clear();
     }
 
@@ -146,6 +150,9 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
      */
     public void add(MathObject<?>... objs) {
         objects.addAll(Arrays.asList(objs));
+        for (MathObject<?> obj:objs) {
+            addDependency(obj);
+        }
         setHasBeenChanged(true);
     }
 
@@ -183,6 +190,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
      */
     public boolean remove(MathObject<?> o) {
         setHasBeenChanged(true);
+        removeDependency(o);
         return objects.remove(o);
     }
 

@@ -273,6 +273,8 @@ public class CartesianGrid extends MathObject<CartesianGrid> implements shouldUd
         return getCamera().getMathView();
     }
 
+
+
     public void rebuildShape() {
         final Rect mathView = getCamera().getMathView();
         if (!this.currentView.equals(mathView)) {
@@ -282,6 +284,11 @@ public class CartesianGrid extends MathObject<CartesianGrid> implements shouldUd
             alignGridToScreen();
             this.currentView.copyFrom(mathView);
         }
+    }
+
+    @Override
+    protected void performUpdateActions(JMathAnimScene scene) {
+
     }
 
     @Override

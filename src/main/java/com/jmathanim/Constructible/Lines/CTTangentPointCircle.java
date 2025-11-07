@@ -20,7 +20,6 @@ import com.jmathanim.Constructible.Conics.CTAbstractCircle;
 import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  *
@@ -50,6 +49,7 @@ public final class CTTangentPointCircle extends CTAbstractLine<CTTangentPointCir
     private CTTangentPointCircle(Coordinates<?> A, CTAbstractCircle<?> C, int numTangent) {
         super(A,Vec.to(1,0));//Trivial line
         this.C = C;
+        addDependency(C);
         this.numTangent = numTangent;
     }
 
@@ -96,12 +96,6 @@ public final class CTTangentPointCircle extends CTAbstractLine<CTTangentPointCir
         v.applyAffineTransform(transform);
         this.P2.copyCoordinatesFrom(v);
         super.rebuildShape();
-    }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        super.registerUpdateableHook(scene);
-        dependsOn(scene, C);
     }
 
 }

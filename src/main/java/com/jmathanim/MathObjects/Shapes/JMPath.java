@@ -37,7 +37,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.logger;
  *
  * @author David Gutiérrez davidgutierrezrubio@gmail.com
  */
-public class JMPath implements Boxable, Iterable<JMPathPoint>, AffineTransformable<JMPath>, hasPath, Serializable {
+public class JMPath extends AbstractVersioned implements Boxable, Iterable<JMPathPoint>, AffineTransformable<JMPath>, hasPath, Serializable {
 
     public static final double DELTA_DERIVATIVE = .0001;
     // this way

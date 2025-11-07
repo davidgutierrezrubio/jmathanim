@@ -21,7 +21,6 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.MathObjects.Shape;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 import java.util.ArrayList;
 
@@ -69,11 +68,6 @@ public class CTPolygon extends Constructible<CTPolygon> {
         CTPolygon copy = CTPolygon.make(this.points);
         copy.copyStateFrom(this);
         return copy;
-    }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, points);
     }
 
 }

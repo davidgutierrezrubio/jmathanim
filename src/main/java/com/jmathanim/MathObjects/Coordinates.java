@@ -1,10 +1,9 @@
 package com.jmathanim.MathObjects;
 
-import com.jmathanim.MathObjects.UpdateableObjects.Updateable;
 import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.Vec;
 
-public interface Coordinates<T extends Coordinates<T>> extends Boxable, Updateable {
+public interface Coordinates<T extends Coordinates<T>> extends Boxable,Dirtyable  {
 
     Vec getVec();
 

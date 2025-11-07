@@ -18,7 +18,6 @@ import javafx.scene.shape.Path;
 
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.OptionalInt;
 
 public abstract class
 AbstractShape<T extends AbstractShape<T>>
@@ -38,6 +37,9 @@ AbstractShape<T extends AbstractShape<T>>
         super();
         this.jmpath = jmpath;
         this.mpShape = JMathAnimConfig.getConfig().getDefaultMP();
+        addDependency(this.jmpath);
+        addDependency(this.mpShape);
+
     }
 
     public abstract Shape toShape();
@@ -249,15 +251,6 @@ AbstractShape<T extends AbstractShape<T>>
     }
 
 
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        OptionalInt m = getPath().getJmPathPoints().stream().mapToInt(t -> t.getUpdateLevel()).max();
-        if (m.isPresent()) {
-            setUpdateLevel(m.getAsInt() + 1);
-        } else {
-            setUpdateLevel(0);
-        }
-    }
 
     /**
      * Merges with the given Shape, adding all their jmpathpoints.If the shapes were disconnected they will remain so
@@ -318,5 +311,9 @@ AbstractShape<T extends AbstractShape<T>>
         return getPath().isOpen();
     }
 
+    @Override
+    protected void performUpdateActions(JMathAnimScene scene) {
+
+    }
 
 }

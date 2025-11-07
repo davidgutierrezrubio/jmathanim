@@ -48,6 +48,8 @@ public class Line extends AbstractShape<Line> implements HasDirection, shouldUdp
         super();
         this.p1 = p1;
         this.p2 = p2;
+        addDependency(this.p1);
+        addDependency(this.p2);
         borderPoint1 = new JMPathPoint(Vec.to(0, 0), true);// trivial boundary points, just to
         // initialize objects
         borderPoint2 = new JMPathPoint(Vec.to(0, 0), true);// trivial boundary points, just to
@@ -190,11 +192,6 @@ public class Line extends AbstractShape<Line> implements HasDirection, shouldUdp
         return p2.getVec();
     }
 
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, p1, p2);//You can safely pass null to this method
-    }
-
 
     /**
      * Creates a finite Segment, that runs over the screen plus a percent gap
@@ -221,9 +218,9 @@ public class Line extends AbstractShape<Line> implements HasDirection, shouldUdp
         return toSegment(cam, 1);
     }
 
+
     @Override
-    public void update(JMathAnimScene scene) {
-        super.update(scene);
+    protected void performUpdateActions(JMathAnimScene scene) {
         rebuildShape();
     }
 

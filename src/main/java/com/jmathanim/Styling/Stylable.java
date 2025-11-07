@@ -18,12 +18,13 @@
 package com.jmathanim.Styling;
 
 import com.jmathanim.Enum.DashStyle;
+import com.jmathanim.MathObjects.Dirtyable;
 
 /**
  *
  * @author David
  */
-public interface Stylable<T extends Stylable<T>> {
+public interface Stylable<T extends Stylable<T>> extends Dirtyable {
      DrawStyleProperties getMp();
 
      /**

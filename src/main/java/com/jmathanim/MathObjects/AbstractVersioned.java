@@ -1,9 +1,9 @@
 package com.jmathanim.MathObjects;
 
-import com.jmathanim.MathObjects.UpdateableObjects.Updateable;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractVersioned implements Dirtyable  {
     protected long version = 0;
@@ -24,6 +24,10 @@ public abstract class AbstractVersioned implements Dirtyable  {
     public void addDependency(Dirtyable dep) {
         dependencies.add(dep);
     }
+    public void removeDependency(Dirtyable dep) {
+        dependencies.remove(dep);
+    }
+
 
     @Override
     public boolean isDirty() {
@@ -42,13 +46,14 @@ public abstract class AbstractVersioned implements Dirtyable  {
         return dirty;
     }
 
-    @Override
-    public void update(JMathAnimScene scene) {
+    public boolean update(JMathAnimScene scene) {
+        boolean updateResult=false;
         for (Dirtyable d : dependencies) {
             if (d.isDirty() || d.getVersion() > version) {
-               d.update(scene);
+                updateResult=updateResult||d.update(scene);
             }
         }
+        return updateResult;
     }
 
 
