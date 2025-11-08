@@ -216,7 +216,7 @@ public class Vec extends AbstractVersioned implements HasDirection, Coordinates<
 
     @Override
     public String toString() {
-        return getClass().getSimpleName()+"["+LogUtils.number(x,2)+","+LogUtils.number(y,2)+"]";
+        return getClass().getSimpleName() + "[" + LogUtils.number(x, 2) + "," + LogUtils.number(y, 2) + "]";
     }
 
     /**
@@ -283,9 +283,21 @@ public class Vec extends AbstractVersioned implements HasDirection, Coordinates<
 
     @Override
     public boolean update(JMathAnimScene scene) {
-        boolean result = isDirty();
-        markClean();//No dependents, just mark it clean
-        return result;//True if it was dirty
+        if (isDirty()) {
+            markClean();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
+    }
+
+    @Override
+    protected boolean applyUpdaters(JMathAnimScene scene) {
+        return false;
     }
 
     @Override

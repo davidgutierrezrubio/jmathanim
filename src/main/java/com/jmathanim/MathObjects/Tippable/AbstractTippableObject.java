@@ -290,7 +290,7 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
     }
 
     @Override
-    protected void performUpdateActions(JMathAnimScene scene) {
+    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
         rebuildShape();
     }
 

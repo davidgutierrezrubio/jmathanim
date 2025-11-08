@@ -19,6 +19,7 @@ package com.jmathanim.MathObjects.Shapes;
 
 import com.jmathanim.MathObjects.*;
 import com.jmathanim.Utils.*;
+import com.jmathanim.jmathanim.JMathAnimScene;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -387,4 +388,12 @@ public class JMPathPoint extends AbstractVersioned implements
         return false;
     }
 
+    @Override
+    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
+    }
+
+    @Override
+    protected boolean applyUpdaters(JMathAnimScene scene) {
+        return false;
+    }
 }

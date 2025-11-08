@@ -516,7 +516,7 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
     }
 
     @Override
-    protected void performUpdateActions(JMathAnimScene scene) {
+    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
 
     }
 

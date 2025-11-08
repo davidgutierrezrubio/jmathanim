@@ -168,7 +168,7 @@ public class TickAxes extends MathObject {
 
 
     @Override
-    protected void performUpdateActions(JMathAnimScene scene) {
+    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
     }
 
     public boolean shouldDraw(Camera cam) {

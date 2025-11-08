@@ -64,7 +64,7 @@ public class PointOnFunctionGraph extends AbstractPoint<PointOnFunctionGraph> {
 
 
     @Override
-    protected void performUpdateActions(JMathAnimScene scene) {
+    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
         computePoints();
     }
 

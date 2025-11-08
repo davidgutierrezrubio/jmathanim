@@ -250,7 +250,7 @@ public class Ray extends AbstractShape<Ray> implements HasDirection {
 
 
     @Override
-    protected void performUpdateActions(JMathAnimScene scene) {
+    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
         rebuildShape();
     }
 }

@@ -35,6 +35,8 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
         mpPoint = JMathAnimConfig.getConfig().getDefaultMP();
         mpPoint.copyFrom(JMathAnimConfig.getConfig().getStyles().get("dotdefault"));
         mpPoint.setAbsoluteThickness(true);
+        addDependency(this.v);
+        addDependency(mpPoint);
         generateDotShape();
     }
 
@@ -105,7 +107,7 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
 
 
     @Override
-    protected void performUpdateActions(JMathAnimScene scene) {
+    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
         generateDotShape();
     }
 

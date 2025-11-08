@@ -40,7 +40,7 @@ public class BooleanShape extends Shape {
     }
 
     @Override
-    protected void performUpdateActions(JMathAnimScene scene) {
+    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
         JMPath newPath = null;
         switch (this.booleanOperation) {
             case UNION:

@@ -311,7 +311,7 @@ public abstract class AbstractMultiShapeObject<
     }
 
     @Override
-    protected void performUpdateActions(JMathAnimScene scene) {
+    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
 
     }
 

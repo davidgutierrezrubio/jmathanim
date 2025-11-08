@@ -23,6 +23,7 @@ import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.MathObjects.*;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimConfig;
+import com.jmathanim.jmathanim.JMathAnimScene;
 
 import java.io.Serializable;
 import java.util.*;
@@ -1411,4 +1412,15 @@ public class JMPath extends AbstractVersioned implements Boxable, Iterable<JMPat
         properties.put(key, obj);
         return this;
     }
+
+    @Override
+    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
+
+    }
+
+    @Override
+    protected boolean applyUpdaters(JMathAnimScene scene) {
+        return false;
+    }
+
 }

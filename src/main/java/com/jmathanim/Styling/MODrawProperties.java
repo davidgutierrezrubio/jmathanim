@@ -529,4 +529,13 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
     }
 
 
+    @Override
+    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
+
+    }
+
+    @Override
+    protected boolean applyUpdaters(JMathAnimScene scene) {
+        return false;//TODO: May implement some updaters here
+    }
 }

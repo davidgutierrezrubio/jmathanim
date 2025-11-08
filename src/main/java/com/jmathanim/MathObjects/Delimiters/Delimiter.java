@@ -356,7 +356,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
     }
 
     @Override
-    protected void performUpdateActions(JMathAnimScene scene) {
+    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
     }
 
     @Override

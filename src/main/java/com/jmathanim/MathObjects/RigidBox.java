@@ -93,7 +93,7 @@ public class RigidBox extends MathObject<RigidBox> {
     }
 
     @Override
-    protected void performUpdateActions(JMathAnimScene scene) {
+    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
 
     }
 

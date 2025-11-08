@@ -312,7 +312,7 @@ AbstractShape<T extends AbstractShape<T>>
     }
 
     @Override
-    protected void performUpdateActions(JMathAnimScene scene) {
+    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
 
     }
 

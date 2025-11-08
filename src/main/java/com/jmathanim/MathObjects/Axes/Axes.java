@@ -357,7 +357,7 @@ public class Axes extends MathObject<Axes> implements shouldUdpateWithCamera,has
     }
 
     @Override
-    protected void performUpdateActions(JMathAnimScene scene) {
+    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
         //Nothing, it should update only when camera moves in the updateWithCamera method
     }
 

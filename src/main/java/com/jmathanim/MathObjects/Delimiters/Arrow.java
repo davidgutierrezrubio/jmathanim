@@ -550,7 +550,7 @@ public class Arrow extends Constructible<Arrow> {
     }
 
     @Override
-    protected void performUpdateActions(JMathAnimScene scene) {
+    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
         if (labelTip != null) labelTip.update(scene);
         rebuildShape();
     }

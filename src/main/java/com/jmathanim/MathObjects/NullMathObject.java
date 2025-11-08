@@ -29,7 +29,7 @@ public class NullMathObject extends MathObject<NullMathObject>{
     }
 
     @Override
-    protected void performUpdateActions(JMathAnimScene scene) {
+    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
 
     }
 

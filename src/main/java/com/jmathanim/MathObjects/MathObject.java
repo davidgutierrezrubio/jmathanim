@@ -342,22 +342,33 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
     }
 
     // Updateable methods
-    @Override
-    public boolean update(JMathAnimScene scene) {
-        boolean resultFlag = updateDependents(scene);
-        if (resultFlag) {
-            performUpdateActions(scene);
-        }
+//    @Override
+//    public boolean update(JMathAnimScene scene) {
+//        boolean resultFlag = updateDependents(scene);
+//        if (resultFlag) {
+//            performMathObjectUpdateActions(scene);
+//        }
+//
+//        for (Updater u : updaters) {
+//            u.update(scene);
+//            resultFlag = true;//If at least one updater, the object is changed
+//        }
+//        if (resultFlag) markClean();//Only mark clean if has been updated
+//        return resultFlag;
+//    }
 
+
+    @Override
+    protected boolean applyUpdaters(JMathAnimScene scene) {
+        boolean resultFlag=false;
         for (Updater u : updaters) {
             u.update(scene);
             resultFlag = true;//If at least one updater, the object is changed
         }
-        if (resultFlag) markClean();//Only mark clean if has been updated
         return resultFlag;
     }
 
-    protected abstract void performUpdateActions(JMathAnimScene scene);
+
 
     protected String getDebugText() {
         return debugText;

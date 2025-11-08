@@ -40,7 +40,7 @@ public final class JMNumberLength extends JMNumber {
     }
 
     @Override
-    protected void performUpdateActions(JMathAnimScene scene) {
+    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
         setValue(A.to(B).norm());
     }
 }
