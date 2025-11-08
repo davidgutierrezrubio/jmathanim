@@ -1419,6 +1419,11 @@ public class JMPath extends AbstractVersioned implements Boxable, Iterable<JMPat
     }
 
     @Override
+    protected void performUpdateBoundingBox(JMathAnimScene scene) {
+
+    }
+
+    @Override
     protected boolean applyUpdaters(JMathAnimScene scene) {
         return false;
     }

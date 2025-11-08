@@ -62,6 +62,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
     private String debugText = "";
     private AnchorType absoluteAnchorAnchorType = AnchorType.CENTER;
     private double leftGap, upperGap, rightGap, lowerGap;
+    private Rect boundingBox;
 
     public MathObject() {
         this.updateLevel = 0;
@@ -194,10 +195,14 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
     @Override
     public final Rect getBoundingBox() {
 //        return computeBoundingBox().addGap(rightGap, upperGap, leftGap, lowerGap);
-        Rect bb = computeBoundingBox();
-        if (bb instanceof EmptyRect) {
-            return bb;
-        } else return bb.addGap(rightGap, upperGap, leftGap, lowerGap);
+        if (isDirty()) {
+            update(scene);//Updates and recomputes bounding box
+        }
+        return boundingBox.addGap(rightGap, upperGap, leftGap, lowerGap);
+    }
+
+    protected void performUpdateBoundingBox(JMathAnimScene scene) {
+        boundingBox = computeBoundingBox();
     }
 
     protected abstract Rect computeBoundingBox();
@@ -343,14 +348,13 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
 
     @Override
     protected boolean applyUpdaters(JMathAnimScene scene) {
-        boolean resultFlag=false;
+        boolean resultFlag = false;
         for (Updater u : updaters) {
             u.update(scene);
             resultFlag = true;//If at least one updater, the object is changed
         }
         return resultFlag;
     }
-
 
 
     protected String getDebugText() {

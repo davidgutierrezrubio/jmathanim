@@ -296,6 +296,11 @@ public class Vec extends AbstractVersioned implements HasDirection, Coordinates<
     }
 
     @Override
+    protected void performUpdateBoundingBox(JMathAnimScene scene) {
+
+    }
+
+    @Override
     protected boolean applyUpdaters(JMathAnimScene scene) {
         return false;
     }

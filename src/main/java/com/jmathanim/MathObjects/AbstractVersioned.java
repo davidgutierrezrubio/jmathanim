@@ -6,10 +6,10 @@ import java.util.HashMap;
 
 public abstract class AbstractVersioned implements Dirtyable {
     public static long globalVersion = 0;
+    public HashMap<Dirtyable, Long> dependencies = new HashMap<>();
     protected long version = 0;
     protected boolean dirty = true;
-    public HashMap<Dirtyable, Long> dependencies = new HashMap<>();
-    protected long lastCleanedDepsVersionSum = -1; // ayuda para evitar recálculos innecesarios
+    protected long lastCleanedDepsVersionSum = -1;
 
     public void addDependency(Dirtyable dep) {
         dependencies.put(dep, dep.getVersion());
@@ -44,8 +44,9 @@ public abstract class AbstractVersioned implements Dirtyable {
     @Override
     public boolean update(JMathAnimScene scene) {
         boolean flag = isDirty();
-        if (updateDependents(scene)) {
+        if (flag | updateDependents(scene)) {
             performMathObjectUpdateActions(scene);
+            performUpdateBoundingBox(scene);
             flag = true;
         }
         flag = flag | applyUpdaters(scene);
@@ -54,6 +55,8 @@ public abstract class AbstractVersioned implements Dirtyable {
     }
 
     protected abstract void performMathObjectUpdateActions(JMathAnimScene scene);
+
+    protected abstract void performUpdateBoundingBox(JMathAnimScene scene);
 
     protected abstract boolean applyUpdaters(JMathAnimScene scene);
 

@@ -718,6 +718,11 @@ public class DrawStylePropertiesArray extends AbstractVersioned implements DrawS
     }
 
     @Override
+    protected void performUpdateBoundingBox(JMathAnimScene scene) {
+        
+    }
+
+    @Override
     protected boolean applyUpdaters(JMathAnimScene scene) {
         return false;
     }

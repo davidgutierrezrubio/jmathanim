@@ -393,6 +393,11 @@ public class JMPathPoint extends AbstractVersioned implements
     }
 
     @Override
+    protected void performUpdateBoundingBox(JMathAnimScene scene) {
+
+    }
+
+    @Override
     protected boolean applyUpdaters(JMathAnimScene scene) {
         return false;
     }
