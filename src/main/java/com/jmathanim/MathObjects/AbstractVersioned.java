@@ -27,9 +27,7 @@ public abstract class AbstractVersioned implements Dirtyable {
         long depSum = 0;
         for (Dirtyable d : dependencies.keySet()) {
             depSum += d.getVersion();
-            long version1 = d.getVersion();
-            Long version2 = dependencies.get(d);
-            if (d.isDirty() || version1 > version2) {
+            if (d.isDirty() || d.getVersion() > dependencies.get(d)) {
                 dirty = true;
             }
         }
@@ -45,12 +43,12 @@ public abstract class AbstractVersioned implements Dirtyable {
 
     @Override
     public boolean update(JMathAnimScene scene) {
-        boolean flag = false;
+        boolean flag = isDirty();
         if (updateDependents(scene)) {
             performMathObjectUpdateActions(scene);
             flag = true;
         }
-        flag = flag || applyUpdaters(scene);
+        flag = flag | applyUpdaters(scene);
         if (flag) markClean();
         return flag;
     }
