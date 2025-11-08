@@ -34,10 +34,12 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI2;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Vec extends AbstractVersioned implements HasDirection, Coordinates<Vec>, AffineTransformable<Vec>, Interpolable<Vec>, Serializable {
+public class Vec  implements Dirtyable,HasDirection, Coordinates<Vec>, AffineTransformable<Vec>, Interpolable<Vec>, Serializable {
 
     public double x, y, z;
     public double xState, yState, zState;
+    private boolean dirty;
+    private long version;
 
     /**
      * Returns a new Vec with the given coordinates
@@ -60,6 +62,8 @@ public class Vec extends AbstractVersioned implements HasDirection, Coordinates<
         this.x = x;
         this.y = y;
         this.z = z;
+        dirty = true;
+        version = -1;
     }
 
     public static Vec to(double x, double y, double z) {
@@ -183,7 +187,7 @@ public class Vec extends AbstractVersioned implements HasDirection, Coordinates<
         double b = this.y;
         this.x = c * a - s * b;
         this.y = s * a + c * b;
-        setDirty(true);
+        setDirty();
         return this;
     }
 
@@ -227,7 +231,7 @@ public class Vec extends AbstractVersioned implements HasDirection, Coordinates<
      */
     public Vec normalize() {
         double norm = this.norm();
-        setDirty(true);
+        setDirty();
         if (norm > 0) {
             return this.mult(1d / norm);
         } else {
@@ -255,7 +259,7 @@ public class Vec extends AbstractVersioned implements HasDirection, Coordinates<
         x = pNew.getEntry(0, 1);
         y = pNew.getEntry(0, 2);
         z = pNew.getEntry(0, 3);
-        setDirty(true);
+        setDirty();
         return this;
     }
 
@@ -281,33 +285,32 @@ public class Vec extends AbstractVersioned implements HasDirection, Coordinates<
         return false;
     }
 
-    @Override
-    public boolean update(JMathAnimScene scene) {
-        if (isDirty()) {
-            markClean();
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     @Override
-    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
-    }
-
-    @Override
-    protected void performUpdateBoundingBox(JMathAnimScene scene) {
-
-    }
-
-    @Override
-    protected boolean applyUpdaters(JMathAnimScene scene) {
-        return false;
+    public long getVersion() {
+        return version;
     }
 
     @Override
     public boolean isDirty() {
-        return dirty;//No dependents, easier to check
+        return dirty;
+    }
+
+    @Override
+    public void setDirty() {
+//        dirty = true;
+        version = ++AbstractVersioned.globalVersion;
+    }
+
+    @Override
+    public void markClean() {
+//        dirty=false;
+    }
+
+    @Override
+    public boolean update(JMathAnimScene scene) {
+//        markClean();
+        return false;
     }
 
 
@@ -316,6 +319,6 @@ public class Vec extends AbstractVersioned implements HasDirection, Coordinates<
         if (!(obj instanceof Vec)) return;
         Vec v = (Vec) obj;
         copyCoordinatesFrom(v);
-        setDirty(true);
+        setDirty();
     }
 }

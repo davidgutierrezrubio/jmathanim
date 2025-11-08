@@ -71,7 +71,7 @@ public abstract class AbstractMultiShapeObject<
 
     @Override
     public S fillColor(PaintStyle fc) {
-        setDirty(true);
+        setDirty();
         for (T jmp : shapes) {
             jmp.fillColor(fc);
         }
@@ -81,7 +81,7 @@ public abstract class AbstractMultiShapeObject<
 
     @Override
     public S drawColor(PaintStyle<?> dc) {
-        setDirty(true);
+        setDirty();
         for (AbstractShape<?> jmp : shapes) {
             jmp.drawColor(dc);
         }

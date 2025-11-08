@@ -5,8 +5,8 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 public interface Dirtyable {
     long getVersion();
     boolean isDirty();
-    void setDirty(boolean dirty);
-
+    void setDirty();
+    void markClean();
     /**
      * Updates object if necessary
      * @param scene Scene where the object belongs

@@ -38,7 +38,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.logger;
  *
  * @author David Gutiérrez davidgutierrezrubio@gmail.com
  */
-public class JMPath extends AbstractVersioned implements Boxable, Iterable<JMPathPoint>, AffineTransformable<JMPath>, hasPath, Serializable {
+public class JMPath  implements Dirtyable,Boxable, Iterable<JMPathPoint>, AffineTransformable<JMPath>, hasPath, Serializable {
 
     public static final double DELTA_DERIVATIVE = .0001;
     // this way
@@ -51,6 +51,10 @@ public class JMPath extends AbstractVersioned implements Boxable, Iterable<JMPat
     private JMPath pathBackup;
     private double computedPathLength;
     private Boolean isConvex = null;
+    private long lastPointCount;
+    private long lastDepsVersionMax;
+    private long version;
+    private boolean dirty;
 
     /**
      * Creates a new empty JMPath objectF
@@ -1413,19 +1417,46 @@ public class JMPath extends AbstractVersioned implements Boxable, Iterable<JMPat
         return this;
     }
 
-    @Override
-    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
 
+    @Override
+    public long getVersion() {
+        return 0;
     }
 
     @Override
-    protected void performUpdateBoundingBox(JMathAnimScene scene) {
+    public boolean isDirty() {
+//        if (dirty) return true;
 
+        // Si el número de puntos cambia, es sucio directamente
+        if (jmPathPoints.size() != lastPointCount) return true;
+
+        // Calcula max de versiones de puntos
+        long currentMax = jmPathPoints.stream()
+                .mapToLong(JMPathPoint::getVersion)
+                .max().orElse(-1);
+
+        return currentMax != lastDepsVersionMax;
     }
 
     @Override
-    protected boolean applyUpdaters(JMathAnimScene scene) {
+    public void setDirty() {
+        dirty=true;
+    }
+
+    @Override
+    public void markClean() {
+//        dirty = false;
+        lastPointCount = jmPathPoints.size();
+        lastDepsVersionMax = jmPathPoints.stream()
+                .mapToLong(JMPathPoint::getVersion)
+                .max().orElse(-1);
+        version = ++AbstractVersioned.globalVersion;
+    }
+
+    @Override
+    public boolean update(JMathAnimScene scene) {
         return false;
     }
+
 
 }

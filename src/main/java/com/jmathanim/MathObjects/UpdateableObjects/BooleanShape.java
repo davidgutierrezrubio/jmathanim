@@ -72,7 +72,7 @@ public class BooleanShape extends Shape {
         this.shape1.copyStateFrom(bs.shape1);
         this.shape2.copyStateFrom(bs.shape2);
         this.booleanOperation = bs.booleanOperation;
-        setDirty(true);
+        setDirty();
     }
 
 }

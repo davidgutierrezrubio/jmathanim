@@ -37,8 +37,8 @@ public abstract class AbstractVersioned implements Dirtyable {
     }
 
     @Override
-    public void setDirty(boolean dirty) {
-        this.dirty = dirty;
+    public void setDirty() {
+        this.dirty = true;
     }
 
     @Override
@@ -74,7 +74,7 @@ public abstract class AbstractVersioned implements Dirtyable {
     }
 
 
-    protected void markClean() {
+    public void markClean() {
         dirty = false;
         version = ++globalVersion;
         lastCleanedDepsVersionSum = dependencies.keySet().stream().mapToLong(Dirtyable::getVersion).sum();
