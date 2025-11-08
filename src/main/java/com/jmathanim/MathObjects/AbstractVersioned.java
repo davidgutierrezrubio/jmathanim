@@ -46,11 +46,13 @@ public abstract class AbstractVersioned implements Dirtyable {
         boolean flag = isDirty();
         if (flag | updateDependents(scene)) {
             performMathObjectUpdateActions(scene);
-            performUpdateBoundingBox(scene);
             flag = true;
         }
-        flag = flag | applyUpdaters(scene);
-        if (flag) markClean();
+        if (flag | applyUpdaters(scene)) {
+            performUpdateBoundingBox(scene);
+            markClean();
+            flag = true;
+        }
         return flag;
     }
 
