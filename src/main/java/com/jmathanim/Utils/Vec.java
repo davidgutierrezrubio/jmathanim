@@ -25,7 +25,6 @@ import com.jmathanim.MathObjects.Stateable;
 import com.jmathanim.jmathanim.Dependable;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.jmathanim.LogUtils;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 
@@ -225,7 +224,8 @@ public class Vec implements Dependable, HasDirection, Coordinates<Vec>, AffineTr
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[" + LogUtils.number(x, 2) + "," + LogUtils.number(y, 2) + "]";
+//        return getClass().getSimpleName() + "[" + LogUtils.number(x, 2) + "," + LogUtils.number(y, 2) + "]";
+        return String.format("%s [%2f, %2f]", getClass().getSimpleName(), x, y);
     }
 
     /**

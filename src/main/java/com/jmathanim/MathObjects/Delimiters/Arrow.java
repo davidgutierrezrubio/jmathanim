@@ -76,6 +76,8 @@ public class Arrow extends Constructible<Arrow> {
     private Arrow(Coordinates<?> A, Coordinates<?> B) {
         this.A = A;
         this.B = B;
+        addDependency(A.getVec());
+        addDependency(B.getVec());
         labelType = labelTypeEnum.NORMAL;
         this.labelArcUpside = new Shape();
         this.labelArcDownside = new Shape();

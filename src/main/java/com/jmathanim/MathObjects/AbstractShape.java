@@ -36,6 +36,7 @@ AbstractShape<T extends AbstractShape<T>>
     protected AbstractShape(JMPath jmpath) {
         super();
         this.jmpath = jmpath;
+        boundingBox=jmpath.getBoundingBox();
         this.mpShape = JMathAnimConfig.getConfig().getDefaultMP();
         addDependency(this.jmpath);
         addDependency(this.mpShape);
@@ -115,6 +116,8 @@ AbstractShape<T extends AbstractShape<T>>
         }
         return (T) this;
     }
+
+
 
     @Override
     protected Rect computeBoundingBox() {
@@ -314,6 +317,10 @@ AbstractShape<T extends AbstractShape<T>>
     @Override
     protected void performMathObjectUpdateActions(JMathAnimScene scene) {
 
+    }
+    @Override
+    protected void performUpdateBoundingBox(JMathAnimScene scene) {
+        boundingBox=jmpath.getBoundingBox();
     }
 
 }

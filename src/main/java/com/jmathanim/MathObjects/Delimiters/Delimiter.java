@@ -13,7 +13,6 @@ import com.jmathanim.MathObjects.Text.TextUpdaters.TextUpdaterFactory;
 import com.jmathanim.MathObjects.Updaters.Updater;
 import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -49,10 +48,12 @@ public abstract class Delimiter extends Constructible<Delimiter> {
     protected double gap;
 
 
-    public Delimiter(Coordinates<?> A, Coordinates<?> B, DelimiterType type, double gap) {
+    protected Delimiter(Coordinates<?> A, Coordinates<?> B, DelimiterType type, double gap) {
         super();
         this.A = A;
         this.B = B;
+        addDependency(A.getVec());
+        addDependency(B.getVec());
         this.type = type;
         this.gap = gap;
 
@@ -357,14 +358,15 @@ public abstract class Delimiter extends Constructible<Delimiter> {
 
     @Override
     protected void performMathObjectUpdateActions(JMathAnimScene scene) {
+        rebuildShape();
     }
 
-    @Override
-    protected Rect computeBoundingBox() {
-        Rect bb = super.computeBoundingBox();
-//        if (getL != null) {
-//            return Rect.union(bb, labelTip.getBoundingBox());
-//        } else
-            return bb;
-    }
+//    @Override
+//    protected Rect computeBoundingBox() {
+//        Rect bb = super.computeBoundingBox();
+////        if (getL != null) {
+////            return Rect.union(bb, labelTip.getBoundingBox());
+////        } else
+//            return bb;
+//    }
 }

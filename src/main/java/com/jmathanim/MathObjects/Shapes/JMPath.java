@@ -50,13 +50,10 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
     private final ArrayList<ArrayList<float[]>> rectifiedPath;
     private final HashMap<String, Object> properties;
     public int pathType; // Default value
-    private JMPath pathBackup;
     private double computedPathLength;
     private Boolean isConvex = null;
-    private long lastPointCount;
-    private long currentDepsVersionMax;
+    private long lastPointCount = -1;
     private long version;
-    private boolean dirty;
     private Rect boundingBox;
 
 
@@ -271,7 +268,7 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
     @Override
     public String toString() {
         if (size() < 5) {
-            String resul = "JMPath " + LogUtils.number(getJmPathPoints().size(),0) + " points:  ";
+            String resul = "JMPath " + LogUtils.number(getJmPathPoints().size(), 0) + " points:  ";
             int counter = 0;
             for (JMPathPoint p : getJmPathPoints()) {
                 resul += "< " + counter + " " + p.toString() + "> ";
@@ -280,7 +277,7 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
             }
             return resul;
         } else {
-            return "JMPath with "+ LogUtils.number(size(),0) + " points";
+            return "JMPath with " + LogUtils.number(size(), 0) + " points";
         }
     }
 
@@ -603,9 +600,7 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
 
     @Override
     public Rect getBoundingBox() {
-        if (needsUpdate()) {
-            update(JMathAnimConfig.getConfig().getScene());
-        }
+        update(JMathAnimConfig.getConfig().getScene());
         return boundingBox;
     }
 
@@ -1403,18 +1398,22 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
 
     @Override
     public boolean needsUpdate() {
-        // Si el número de puntos cambia, es sucio directamente
-        if (jmPathPoints.size() != lastPointCount) {
-            lastPointCount = jmPathPoints.size();
-            return true;
-        }
-
         // Calcula max de versiones de puntos
         newLastMaxDependencyVersion = jmPathPoints.stream()
                 .mapToLong(JMPathPoint::getVersion)
                 .max().orElse(-1);
 
+
+        if (jmPathPoints.size() != lastPointCount) {
+            return true;
+        }
         return lastCleanedDepsVersionSum != newLastMaxDependencyVersion;
+    }
+
+    @Override
+    public void markClean() {
+        super.markClean();
+        lastPointCount = jmPathPoints.size();
     }
 
     @Override
@@ -1436,7 +1435,7 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
     @Override
     protected void performUpdateBoundingBox(JMathAnimScene scene) {
         if (getJmPathPoints().isEmpty()) {
-            boundingBox=new EmptyRect();
+            boundingBox = new EmptyRect();
             return;
         }
         double xmin = Double.MAX_VALUE;

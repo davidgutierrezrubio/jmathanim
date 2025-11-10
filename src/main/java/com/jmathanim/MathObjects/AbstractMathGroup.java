@@ -38,14 +38,14 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
 
     }
 
-    protected AbstractMathGroup(HashMap<String, MathObject<?>> dict) {
-        this.dict = dict;
-        this.objects = new ArrayList<>(dict.values());
-        this.mpArray = new DrawStylePropertiesObjectsArray();
-        for (MathObject<?> o : objects) {
-            mpArray.add(o);
-        }
-    }
+//    protected AbstractMathGroup(HashMap<String, MathObject<?>> dict) {
+//        this.dict = dict;
+//        this.objects = new ArrayList<>(dict.values());
+//        this.mpArray = new DrawStylePropertiesObjectsArray();
+//        for (MathObject<?> o : objects) {
+//            mpArray.add(o);
+//        }
+//    }
 
     /**
      * Computes a MathObjectgroup with the same elements, divided en equally sized subgroups. The current group is
@@ -310,16 +310,17 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
 
     @Override
     protected Rect computeBoundingBox() {
+        if (!needsUpdate()) return boundingBox;
         //If group is empty, returns an empty rect
         if (objects.isEmpty()) {
             return new EmptyRect();
         }
 
-        Rect bbox = objects.get(0).getBoundingBox();
+        boundingBox = objects.get(0).getBoundingBox();
         for (MathObject<?> obj : objects) {
-            bbox = Rect.union(bbox, obj.getBoundingBox());
+            boundingBox = Rect.union(boundingBox, obj.getBoundingBox());
         }
-        return bbox;
+        return boundingBox;
     }
 
     public ArrayList<MathObject<?>> getObjects() {

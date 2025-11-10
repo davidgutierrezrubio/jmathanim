@@ -31,7 +31,6 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  * This class represents a mathematical object that can be drawn on screen, transformed or animated. All math objects
@@ -47,7 +46,6 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
         Stylable<T>,
         AffineTransformable<T> {
     protected final AffineJTransform modelMatrix;
-    private final HashSet<MathObject<?>> dependents;
     private final RendererEffects rendererEffects;
     private final HashMap<String, Object> properties;
     private final ArrayList<Updater> updaters;
@@ -62,7 +60,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
     private String debugText = "";
     private AnchorType absoluteAnchorAnchorType = AnchorType.CENTER;
     private double leftGap, upperGap, rightGap, lowerGap;
-    private Rect boundingBox;
+    protected Rect boundingBox;
 
     public MathObject() {
         this.updateLevel = 0;
@@ -78,8 +76,6 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
         } else {
             camera = new DummyCamera();
         }
-        //Default values for an object that always updates
-        dependents = new HashSet<>();
 
         //Default gaps
         leftGap = 0;
@@ -195,7 +191,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
     @Override
     public final Rect getBoundingBox() {
 //        return computeBoundingBox().addGap(rightGap, upperGap, leftGap, lowerGap);
-        if (needsUpdate()) {
+        if (needsUpdate()|boundingBox==null) {
             update(scene);//Updates and recomputes bounding box
         }
         return boundingBox.addGap(rightGap, upperGap, leftGap, lowerGap);
