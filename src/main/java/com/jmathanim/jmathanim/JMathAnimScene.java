@@ -241,7 +241,8 @@ public abstract class JMathAnimScene {
     }
 
     private void initializeRenderer() {
-        JMathAnimConfig.getConfig().setRenderer(createRenderer());
+        this.renderer=createRenderer();
+        JMathAnimConfig.getConfig().setRenderer(this.renderer);
         status = SCENE_STATUS.PLAYING;
         JMathAnimScene.logger.debug("Renderer " +
                 LogUtils.method(renderer.getClass().getSimpleName()) +
