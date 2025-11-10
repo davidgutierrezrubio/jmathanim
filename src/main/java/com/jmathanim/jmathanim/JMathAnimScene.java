@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
  */
 public abstract class JMathAnimScene {
 
-
+    public static long globalVersion = 0;
     /**
      * Logger class
      */

@@ -30,6 +30,13 @@ import com.jmathanim.Utils.Vec;
  */
 public class CTCircle extends CTAbstractCircle<CTCircle> {
 
+    @Override
+    public String toString() {
+        return "CTCircle{" +
+                "circleType=" + circleType +
+                '}';
+    }
+
     //Currently Geogebra has these methods to create circles:
     // Circle(point,point)
     // Circle(point,number)

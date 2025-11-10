@@ -16,8 +16,8 @@
  */
 package com.jmathanim.Constructible;
 
-import com.jmathanim.MathObjects.Dirtyable;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.Dependable;
 
 /**
  * Interface that implements any constructible object that can holds a point
@@ -25,7 +25,7 @@ import com.jmathanim.Utils.Vec;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public interface PointOwner extends Dirtyable {
+public interface PointOwner extends Dependable {
     /**
      * Computes the coordinates of the Point projected into the holding object
      * @param coordinates of the point to project

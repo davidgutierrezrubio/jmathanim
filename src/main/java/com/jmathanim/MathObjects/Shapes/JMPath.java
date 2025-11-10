@@ -22,8 +22,10 @@ import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.MathObjects.*;
 import com.jmathanim.Utils.*;
+import com.jmathanim.jmathanim.Dependable;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.jmathanim.LogUtils;
 
 import java.io.Serializable;
 import java.util.*;
@@ -38,7 +40,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.logger;
  *
  * @author David Gutiérrez davidgutierrezrubio@gmail.com
  */
-public class JMPath  implements Dirtyable,Boxable, Iterable<JMPathPoint>, AffineTransformable<JMPath>, hasPath, Serializable {
+public class JMPath extends AbstractVersioned implements Dependable, Updatable, Boxable, Iterable<JMPathPoint>, AffineTransformable<JMPath>, hasPath, Serializable {
 
     public static final double DELTA_DERIVATIVE = .0001;
     // this way
@@ -52,9 +54,11 @@ public class JMPath  implements Dirtyable,Boxable, Iterable<JMPathPoint>, Affine
     private double computedPathLength;
     private Boolean isConvex = null;
     private long lastPointCount;
-    private long lastDepsVersionMax;
+    private long currentDepsVersionMax;
     private long version;
     private boolean dirty;
+    private Rect boundingBox;
+
 
     /**
      * Creates a new empty JMPath objectF
@@ -267,7 +271,7 @@ public class JMPath  implements Dirtyable,Boxable, Iterable<JMPathPoint>, Affine
     @Override
     public String toString() {
         if (size() < 5) {
-            String resul = "#" + getJmPathPoints().size() + ":  ";
+            String resul = "JMPath " + LogUtils.number(getJmPathPoints().size(),0) + " points:  ";
             int counter = 0;
             for (JMPathPoint p : getJmPathPoints()) {
                 resul += "< " + counter + " " + p.toString() + "> ";
@@ -276,7 +280,7 @@ public class JMPath  implements Dirtyable,Boxable, Iterable<JMPathPoint>, Affine
             }
             return resul;
         } else {
-            return size() + " points";
+            return "JMPath with "+ LogUtils.number(size(),0) + " points";
         }
     }
 
@@ -564,12 +568,7 @@ public class JMPath  implements Dirtyable,Boxable, Iterable<JMPathPoint>, Affine
      * @return The width. If the path is empty, returns 0.
      */
     public double getWidth() {
-        Rect r = getBoundingBox();
-        if (r == null) {
-            return 0;
-        } else {
-            return r.getWidth();
-        }
+        return boundingBox.getWidth();
     }
 
     /**
@@ -578,12 +577,7 @@ public class JMPath  implements Dirtyable,Boxable, Iterable<JMPathPoint>, Affine
      * @return The height. If the path is empty, returns 0.
      */
     public double getHeight() {
-        Rect r = getBoundingBox();
-        if (r == null) {
-            return 0;
-        } else {
-            return r.getHeight();
-        }
+        return boundingBox.getHeight();
     }
 
     /**
@@ -609,37 +603,10 @@ public class JMPath  implements Dirtyable,Boxable, Iterable<JMPathPoint>, Affine
 
     @Override
     public Rect getBoundingBox() {
-        if (getJmPathPoints().isEmpty()) {
-            return new EmptyRect();
+        if (needsUpdate()) {
+            update(JMathAnimConfig.getConfig().getScene());
         }
-        double xmin = Double.MAX_VALUE;
-        double xmax = -Double.MAX_VALUE;
-        double ymin = Double.MAX_VALUE;
-        double ymax = -Double.MAX_VALUE;
-
-        ArrayList<Vec> criticalPoints = getCriticalPoints();
-
-
-        int size = getJmPathPoints().size();
-        int sizeCrit = criticalPoints.size();
-        Vec[] vectors = new Vec[size + sizeCrit];
-
-        for (int i = 0; i < size; i++) {
-            Vec vi = getJmPathPoints().get(i).getV();
-            xmin = Math.min(xmin, vi.x);
-            xmax = Math.max(xmax, vi.x);
-            ymin = Math.min(ymin, vi.y);
-            ymax = Math.max(ymax, vi.y);
-
-        }
-        for (int i = size; i < size + sizeCrit; i++) {
-            Vec vi = criticalPoints.get(i - size);
-            xmin = Math.min(xmin, vi.x);
-            xmax = Math.max(xmax, vi.x);
-            ymin = Math.min(ymin, vi.y);
-            ymax = Math.max(ymax, vi.y);
-        }
-        return new Rect(xmin, ymin, xmax, ymax);
+        return boundingBox;
     }
 
     @Override
@@ -1420,43 +1387,96 @@ public class JMPath  implements Dirtyable,Boxable, Iterable<JMPathPoint>, Affine
 
     @Override
     public long getVersion() {
-        return 0;
+        return version;
     }
 
-    @Override
-    public boolean isDirty() {
-//        if (dirty) return true;
-
-        // Si el número de puntos cambia, es sucio directamente
-        if (jmPathPoints.size() != lastPointCount) return true;
-
-        // Calcula max de versiones de puntos
-        long currentMax = jmPathPoints.stream()
-                .mapToLong(JMPathPoint::getVersion)
-                .max().orElse(-1);
-
-        return currentMax != lastDepsVersionMax;
-    }
-
-    @Override
-    public void setDirty() {
-        dirty=true;
-    }
-
-    @Override
-    public void markClean() {
-//        dirty = false;
-        lastPointCount = jmPathPoints.size();
-        lastDepsVersionMax = jmPathPoints.stream()
-                .mapToLong(JMPathPoint::getVersion)
-                .max().orElse(-1);
-        version = ++AbstractVersioned.globalVersion;
-    }
 
     @Override
     public boolean update(JMathAnimScene scene) {
+        if (needsUpdate()) {
+            performUpdateBoundingBox(scene);
+            changeVersion();
+            markClean();
+            return true;
+        } else return false;
+    }
+
+    @Override
+    public boolean needsUpdate() {
+        // Si el número de puntos cambia, es sucio directamente
+        if (jmPathPoints.size() != lastPointCount) {
+            lastPointCount = jmPathPoints.size();
+            return true;
+        }
+
+        // Calcula max de versiones de puntos
+        newLastMaxDependencyVersion = jmPathPoints.stream()
+                .mapToLong(JMPathPoint::getVersion)
+                .max().orElse(-1);
+
+        return lastCleanedDepsVersionSum != newLastMaxDependencyVersion;
+    }
+
+    @Override
+    public void changeVersion() {
+        version = ++JMathAnimScene.globalVersion;
+    }
+
+    @Override
+    public List<Dependable> getDependencies() {
+        return Dependable.EMPTY_DEPENDENCIES;
+//        return new ArrayList<>(jmPathPoints);
+    }
+
+    @Override
+    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
+
+    }
+
+    @Override
+    protected void performUpdateBoundingBox(JMathAnimScene scene) {
+        if (getJmPathPoints().isEmpty()) {
+            boundingBox=new EmptyRect();
+            return;
+        }
+        double xmin = Double.MAX_VALUE;
+        double xmax = -Double.MAX_VALUE;
+        double ymin = Double.MAX_VALUE;
+        double ymax = -Double.MAX_VALUE;
+
+        ArrayList<Vec> criticalPoints = getCriticalPoints();
+
+
+        int size = getJmPathPoints().size();
+        int sizeCrit = criticalPoints.size();
+        Vec[] vectors = new Vec[size + sizeCrit];
+
+        for (int i = 0; i < size; i++) {
+            Vec vi = getJmPathPoints().get(i).getV();
+            xmin = Math.min(xmin, vi.x);
+            xmax = Math.max(xmax, vi.x);
+            ymin = Math.min(ymin, vi.y);
+            ymax = Math.max(ymax, vi.y);
+
+        }
+        for (int i = size; i < size + sizeCrit; i++) {
+            Vec vi = criticalPoints.get(i - size);
+            xmin = Math.min(xmin, vi.x);
+            xmax = Math.max(xmax, vi.x);
+            ymin = Math.min(ymin, vi.y);
+            ymax = Math.max(ymax, vi.y);
+        }
+        boundingBox = new Rect(xmin, ymin, xmax, ymax);
+
+    }
+
+    @Override
+    protected boolean applyUpdaters(JMathAnimScene scene) {
         return false;
     }
 
+    @Override
+    public void addDependency(Dependable dep) {
 
+    }
 }

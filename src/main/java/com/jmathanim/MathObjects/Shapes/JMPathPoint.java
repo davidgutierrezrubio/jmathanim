@@ -19,16 +19,19 @@ package com.jmathanim.MathObjects.Shapes;
 
 import com.jmathanim.MathObjects.*;
 import com.jmathanim.Utils.*;
+import com.jmathanim.jmathanim.Dependable;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class JMPathPoint  implements
-        Boxable, Linkable, Dirtyable,
+        Boxable, Linkable, Dependable,
         Coordinates<JMPathPoint>,
         AffineTransformable<JMPathPoint>,
         Interpolable<JMPathPoint>,
@@ -44,9 +47,11 @@ public class JMPathPoint  implements
     private transient Point pCenter; // The vertex Point object, created on demand
     // subdiving a path
     private JMPathPoint pState;
-    private boolean dirty;
     private long version=0;
-    private long lastDepsVersionMax;
+    protected long lastCleanedDepsVersionSum = -1;
+    private long newLastMaxDependencyVersion=-2;
+    public ArrayList<Dependable> dependencies = new ArrayList<>();
+
 
 
     public JMPathPoint(Coordinates<?> p, boolean isVisible) {
@@ -58,7 +63,7 @@ public class JMPathPoint  implements
         }
         vExit = getV().copy();
         vEnter = getV().copy();
-
+        dependencies.addAll(List.of(v, vEnter, vExit));
 
         setSegmentToThisPointCurved(false);// By default, is not curved
         this.setSegmentToThisPointVisible(isVisible);
@@ -153,7 +158,7 @@ public class JMPathPoint  implements
                 pCenter = jp.pCenter.copy();
             }
         }
-        setDirty();
+        changeVersion();
 
     }
 
@@ -179,7 +184,7 @@ public class JMPathPoint  implements
         this.getV().copyCoordinatesFrom(jmPoint.getV());
         this.getVExit().copyCoordinatesFrom(jmPoint.getVExit());
         this.getVEnter().copyCoordinatesFrom(jmPoint.getVEnter());
-        setDirty();
+        changeVersion();
     }
 
 
@@ -203,7 +208,7 @@ public class JMPathPoint  implements
         this.getV().applyAffineTransform(affineJTransform);
         this.getVExit().applyAffineTransform(affineJTransform);
         this.getVEnter().applyAffineTransform(affineJTransform);
-        setDirty();
+        changeVersion();
         return this;
     }
 //
@@ -290,7 +295,7 @@ public class JMPathPoint  implements
         getV().addInSite(coords);
         getVEnter().addInSite(coords);
         getVExit().addInSite(coords);
-        setDirty();
+        changeVersion();
         return this;
     }
 
@@ -300,7 +305,7 @@ public class JMPathPoint  implements
         getV().minusInSite(coords);
         getVEnter().minusInSite(coords);
         getVExit().minusInSite(coords);
-        setDirty();
+        changeVersion();
         return this;
     }
 
@@ -310,7 +315,7 @@ public class JMPathPoint  implements
         getV().copyCoordinatesFrom(coords);
         getVEnter().copyCoordinatesFrom(coords);
         getVExit().copyCoordinatesFrom(coords);
-        setDirty();
+        changeVersion();
     }
 
     @Override
@@ -319,7 +324,7 @@ public class JMPathPoint  implements
         copy.getV().minusInSite(v2);
         copy.getVEnter().minusInSite(v2);
         copy.getVExit().minusInSite(v2);
-        setDirty();
+        changeVersion();
         return copy;
     }
 
@@ -330,7 +335,7 @@ public class JMPathPoint  implements
         copy.getV().addInSite(v2);
         copy.getVEnter().addInSite(v2);
         copy.getVExit().addInSite(v2);
-        setDirty();
+        changeVersion();
         return copy;
     }
 
@@ -341,7 +346,7 @@ public class JMPathPoint  implements
         copy.getV().multInSite(lambda);
         copy.getVEnter().multInSite(lambda);
         copy.getVExit().multInSite(lambda);
-        setDirty();
+        changeVersion();
         return copy;
     }
 
@@ -372,7 +377,7 @@ public class JMPathPoint  implements
 
     public void setSegmentToThisPointCurved(boolean segmentToThisPointCurved) {
         isSegmentToThisPointCurved = segmentToThisPointCurved;
-        setDirty();
+        changeVersion();
     }
 
     @Override
@@ -390,27 +395,22 @@ public class JMPathPoint  implements
         return version;
     }
 
-    @Override
-    public boolean isDirty() {
-//        if (dirty) return true;
-        long max = Math.max(v.getVersion(), Math.max(vEnter.getVersion(), vExit.getVersion()));
-        return max != lastDepsVersionMax;
-    }
-
-    @Override
     public void markClean() {
-        dirty = false;
-        lastDepsVersionMax = Math.max(v.getVersion(), Math.max(vEnter.getVersion(), vExit.getVersion()));
-        version = ++AbstractVersioned.globalVersion;
+        lastCleanedDepsVersionSum = Math.max(v.getVersion(), Math.max(vEnter.getVersion(), vExit.getVersion()));
+    }
+    @Override
+    public void changeVersion() {
+        version=++JMathAnimScene.globalVersion;
     }
 
     @Override
-    public void setDirty() {
-        dirty=true;
+    public List<Dependable> getDependencies() {
+        return List.of();
     }
 
     @Override
-    public boolean update(JMathAnimScene scene) {
-        return false;
+    public void addDependency(Dependable dep) {
+        //Nothing here...yet...
     }
+
 }

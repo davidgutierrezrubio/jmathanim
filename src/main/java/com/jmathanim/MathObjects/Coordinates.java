@@ -2,8 +2,9 @@ package com.jmathanim.MathObjects;
 
 import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.Dependable;
 
-public interface Coordinates<T extends Coordinates<T>> extends Boxable,Dirtyable  {
+public interface Coordinates<T extends Coordinates<T>> extends Boxable, Dependable {
 
     Vec getVec();
 

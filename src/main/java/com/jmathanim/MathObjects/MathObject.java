@@ -120,7 +120,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
             camera.registerUpdateable((shouldUdpateWithCamera) this);
         }
         this.camera = camera;
-        setDirty();
+        changeVersion();
         return (T) this;
     }
 
@@ -183,7 +183,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
             this.getRendererEffects().copyFrom(rendererEffects);
         }
         this.modelMatrix.copyFrom(mathObject.modelMatrix);
-        setDirty();
+        changeVersion();
     }
 
 
@@ -195,7 +195,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
     @Override
     public final Rect getBoundingBox() {
 //        return computeBoundingBox().addGap(rightGap, upperGap, leftGap, lowerGap);
-        if (isDirty()) {
+        if (needsUpdate()) {
             update(scene);//Updates and recomputes bounding box
         }
         return boundingBox.addGap(rightGap, upperGap, leftGap, lowerGap);
@@ -210,7 +210,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
     public void setAlpha(double t) {
         drawAlpha(t);
         fillAlpha(t);
-        setDirty();
+        changeVersion();
     }
 
 
@@ -222,7 +222,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
      */
     public T setMp(MODrawProperties newMp) {
         this.getMp().copyFrom(newMp);
-        setDirty();
+        changeVersion();
         return (T) this;
     }
 
@@ -247,7 +247,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
         this.absoluteAnchorVec = anchorVec;
         absoluteAnchorAnchorType = AnchorType.BY_POINT;
         absoluteSize = true;
-        setDirty();
+        changeVersion();
         return (T) this;
     }
 
@@ -263,13 +263,13 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
         absoluteSize = true;
         absoluteAnchorAnchorType = anchorType;
         absoluteSize = true;
-        setDirty();
+        changeVersion();
         return (T) this;
     }
 
     public T setRelativeSize() {
         absoluteSize = false;
-        setDirty();
+        changeVersion();
         return (T) this;
     }
 
@@ -292,7 +292,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
      */
     public T layer(int layer) {
         this.getMp().setLayer(layer);
-        setDirty();
+        changeVersion();
         return (T) this;
     }
 
@@ -314,7 +314,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
      */
     public T style(String name) {
         getMp().loadFromStyle(name);
-        setDirty();
+        changeVersion();
         return (T) this;
     }
 
@@ -326,7 +326,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
      */
     public T linecap(StrokeLineCap strokeLineCap) {
         this.getMp().setLinecap(strokeLineCap);
-        setDirty();
+        changeVersion();
         return (T) this;
     }
 
@@ -489,7 +489,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
             AffineJTransform compose = modelMatrix.compose(affineJTransform);
             modelMatrix.copyFrom(compose);
         }
-        setDirty();
+        changeVersion();
         return (T) this;// By default does nothing
     }
 
@@ -542,7 +542,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
         this.upperGap = upperGap;
         this.leftGap = leftGap;
         this.lowerGap = lowerGap;
-        setDirty();
+        changeVersion();
         return (T) this;
     }
 
@@ -600,110 +600,110 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
 
     @Override
     public T drawColor(PaintStyle<?> dc) {
-        setDirty();
+        changeVersion();
         return Stylable.super.drawColor(dc);
     }
 
     @Override
     public T drawColor(String str) {
-        setDirty();
+        changeVersion();
         return Stylable.super.drawColor(str);
     }
 
     @Override
     public T drawAlpha(double alpha) {
-        setDirty();
+        changeVersion();
         return Stylable.super.drawAlpha(alpha);
     }
 
     @Override
     public T fillAlpha(double alpha) {
-        setDirty();
+        changeVersion();
         return Stylable.super.fillAlpha(alpha);
     }
 
     @Override
     public T thickness(double newThickness) {
-        setDirty();
+        changeVersion();
         return Stylable.super.thickness(newThickness);
     }
 
     @Override
     public T dashStyle(DashStyle dashStyle) {
-        setDirty();
+        changeVersion();
         return Stylable.super.dashStyle(dashStyle);
     }
 
     @Override
     public T visible(boolean visible) {
-        setDirty();
+        changeVersion();
         return Stylable.super.visible(visible);
     }
 
     @Override
     public T color(PaintStyle dc) {
-        setDirty();
+        changeVersion();
         return Stylable.super.color(dc);
     }
 
     @Override
     public T color(String str) {
-        setDirty();
+        changeVersion();
         return Stylable.super.color(str);
     }
 
     @Override
     public T fillColor(PaintStyle fc) {
-        setDirty();
+        changeVersion();
         return Stylable.super.fillColor(fc);
 
     }
 
     @Override
     public T fillColor(String str) {
-        setDirty();
+        changeVersion();
         return Stylable.super.fillColor(str);
     }
 
     @Override
     public T shift(Coordinates<?> shiftVector) {
-        setDirty();
+        changeVersion();
         return AffineTransformable.super.shift(shiftVector);
     }
 
     @Override
     public T shift(double x, double y) {
-        setDirty();
+        changeVersion();
         return AffineTransformable.super.shift(x, y);
     }
 
     @Override
     public T shift(double x, double y, double z) {
-        setDirty();
+        changeVersion();
         return AffineTransformable.super.shift(x, y, z);
     }
 
     @Override
     public T scale(double sx, double sy) {
-        setDirty();
+        changeVersion();
         return AffineTransformable.super.scale(sx, sy);
     }
 
     @Override
     public T scale(double s) {
-        setDirty();
+        changeVersion();
         return AffineTransformable.super.scale(s);
     }
 
     @Override
     public T scale(Coordinates<?> scaleCenter, double scale) {
-        setDirty();
+        changeVersion();
         return AffineTransformable.super.scale(scaleCenter, scale);
     }
 
     @Override
     public T scale(Coordinates<?> scaleCenter, double sx, double sy) {
-        setDirty();
+        changeVersion();
         return AffineTransformable.super.scale(scaleCenter, sx, sy);
     }
 
@@ -714,55 +714,55 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
 
     @Override
     public T scale(Coordinates<?> scaleCenter, double sx, double sy, double sz) {
-        setDirty();
+        changeVersion();
         return AffineTransformable.super.scale(scaleCenter, sx, sy, sz);
     }
 
     @Override
     public T rotate(double angle) {
-        setDirty();
+        changeVersion();
         return AffineTransformable.super.rotate(angle);
     }
 
     @Override
     public T rotate(Coordinates<?> center, double angle) {
-        setDirty();
+        changeVersion();
         return AffineTransformable.super.rotate(center, angle);
     }
 
     @Override
     public T rotate3d(double anglex, double angley, double anglez) {
-        setDirty();
+        changeVersion();
         return AffineTransformable.super.rotate3d(anglex, angley, anglez);
     }
 
     @Override
     public T rotate3d(Coordinates<?> center, double anglex, double angley, double anglez) {
-        setDirty();
+        changeVersion();
         return AffineTransformable.super.rotate3d(center, anglex, angley, anglez);
     }
 
     @Override
     public T moveTo(Coordinates<?> p) {
-        setDirty();
+        changeVersion();
         return AffineTransformable.super.moveTo(p);
     }
 
     @Override
     public T moveTo(double x, double y) {
-        setDirty();
+        changeVersion();
         return AffineTransformable.super.moveTo(x, y);
     }
 
     @Override
     public T smash(Boxable containerBox, double horizontalGap, double verticalGap) {
-        setDirty();
+        changeVersion();
         return AffineTransformable.super.smash(containerBox, horizontalGap, verticalGap);
     }
 
     @Override
     public T smash(Boxable containerBox) {
-        setDirty();
+        changeVersion();
         return AffineTransformable.super.smash(containerBox);
     }
 }

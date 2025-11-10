@@ -18,7 +18,11 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.Constructible.Lines.HasDirection;
-import com.jmathanim.MathObjects.*;
+import com.jmathanim.MathObjects.AffineTransformable;
+import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.MathObjects.Interpolable;
+import com.jmathanim.MathObjects.Stateable;
+import com.jmathanim.jmathanim.Dependable;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.jmathanim.LogUtils;
@@ -26,6 +30,7 @@ import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 
 import java.io.Serializable;
+import java.util.List;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI2;
 
@@ -34,7 +39,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI2;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Vec  implements Dirtyable,HasDirection, Coordinates<Vec>, AffineTransformable<Vec>, Interpolable<Vec>, Serializable {
+public class Vec implements Dependable, HasDirection, Coordinates<Vec>, AffineTransformable<Vec>, Interpolable<Vec>, Serializable {
 
     public double x, y, z;
     public double xState, yState, zState;
@@ -187,7 +192,7 @@ public class Vec  implements Dirtyable,HasDirection, Coordinates<Vec>, AffineTra
         double b = this.y;
         this.x = c * a - s * b;
         this.y = s * a + c * b;
-        setDirty();
+        changeVersion();
         return this;
     }
 
@@ -231,7 +236,7 @@ public class Vec  implements Dirtyable,HasDirection, Coordinates<Vec>, AffineTra
      */
     public Vec normalize() {
         double norm = this.norm();
-        setDirty();
+        changeVersion();
         if (norm > 0) {
             return this.mult(1d / norm);
         } else {
@@ -259,7 +264,7 @@ public class Vec  implements Dirtyable,HasDirection, Coordinates<Vec>, AffineTra
         x = pNew.getEntry(0, 1);
         y = pNew.getEntry(0, 2);
         z = pNew.getEntry(0, 3);
-        setDirty();
+        changeVersion();
         return this;
     }
 
@@ -287,30 +292,23 @@ public class Vec  implements Dirtyable,HasDirection, Coordinates<Vec>, AffineTra
 
 
     @Override
+    public List<Dependable> getDependencies() {
+        return Dependable.EMPTY_DEPENDENCIES;//No dependencies
+    }
+
+    @Override
+    public void addDependency(Dependable dep) {
+
+    }
+
+    @Override
+    public void changeVersion() {
+        version = ++JMathAnimScene.globalVersion;
+    }
+
+    @Override
     public long getVersion() {
         return version;
-    }
-
-    @Override
-    public boolean isDirty() {
-        return dirty;
-    }
-
-    @Override
-    public void setDirty() {
-//        dirty = true;
-        version = ++AbstractVersioned.globalVersion;
-    }
-
-    @Override
-    public void markClean() {
-//        dirty=false;
-    }
-
-    @Override
-    public boolean update(JMathAnimScene scene) {
-//        markClean();
-        return false;
     }
 
 
@@ -319,6 +317,6 @@ public class Vec  implements Dirtyable,HasDirection, Coordinates<Vec>, AffineTra
         if (!(obj instanceof Vec)) return;
         Vec v = (Vec) obj;
         copyCoordinatesFrom(v);
-        setDirty();
+        changeVersion();
     }
 }
