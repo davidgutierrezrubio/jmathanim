@@ -22,6 +22,7 @@ public class DummyRenderer extends Renderer{
 
     public DummyRenderer(JMathAnimScene parentScene) {
         super(parentScene);
+
         this.camera =new Camera(parentScene,1280,720);
         this.fixedCamera =new Camera(parentScene,1280,720);
     }
