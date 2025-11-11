@@ -143,6 +143,7 @@ public abstract class JMathAnimScene {
      */
     private boolean animationIsDisabled;
     private long startTime;
+    private final DependencyGraph dependencyGraph;
 
     /**
      * Creates a new Scene with default settings.
@@ -152,6 +153,7 @@ public abstract class JMathAnimScene {
         status = SCENE_STATUS.CONFIG;
         sceneObjects = new ArrayList<>();
         objectsAlreadydrawn = new HashSet<>();
+        dependencyGraph = new DependencyGraph();
 
         camera = new Camera(scene, 800, 600);
         fixedCamera = new Camera(scene, 800, 600);
@@ -313,9 +315,9 @@ public abstract class JMathAnimScene {
 //                        for (Shape sh : msh) {
 //                            add(sh);
 //                        }
-                        sceneObjects.add(obj);
+                        addSingleObjectToScene(obj);
                     } else {
-                        sceneObjects.add(obj);
+                        addSingleObjectToScene(obj);
 
                     }
                 }
@@ -328,6 +330,11 @@ public abstract class JMathAnimScene {
             }
 
         }
+    }
+
+    private void addSingleObjectToScene(MathObject<?> obj) {
+        sceneObjects.add(obj);
+        dependencyGraph.addNode(obj);
     }
 
     /**
@@ -415,9 +422,11 @@ public abstract class JMathAnimScene {
      * Perform all needed updates
      */
     private void doUpdates() {
-        for (MathObject<?> obj : getMathObjects()) {
-            obj.update(this);
-        }
+//        for (MathObject<?> obj : getMathObjects()) {
+//            System.out.println("Updating "+obj);
+//            obj.update(this);
+//        }
+        dependencyGraph.updateAll();
     }
 
     /**

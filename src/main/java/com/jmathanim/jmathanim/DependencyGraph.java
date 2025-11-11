@@ -127,10 +127,11 @@ public class DependencyGraph {
         for (Dependable dep : topoOrder) {
             if (dep instanceof Updatable) {
                 Updatable updatable = (Updatable) dep;
-                long ver=((Dependable)updatable).getVersion();
+//                long ver=((Dependable)updatable).getVersion();
                 updatable.update(JMathAnimConfig.getConfig().getScene());
-                long ver2=((Dependable)updatable).getVersion();
-                System.out.println("Updating "+ LogUtils.method(updatable.toString())+" version "+LogUtils.number(ver,0)+" to "+LogUtils.number(ver2,0));
+//                long ver2=((Dependable)updatable).getVersion();
+//                if (ver!=ver2)
+//                System.out.println("Updating "+ LogUtils.method(updatable.toString())+" version "+LogUtils.number(ver,0)+" to "+LogUtils.number(ver2,0));
             }
         }
     }
