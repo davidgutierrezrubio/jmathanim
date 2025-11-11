@@ -48,9 +48,10 @@ public abstract class AbstractVersioned implements Dependable, Updatable {
         if (flag) {
             performUpdateBoundingBox(scene);
             changeVersion();
+            markClean();
         }
-        markClean();
-        return true;
+
+        return flag;
     }
 
     public void markClean() {
