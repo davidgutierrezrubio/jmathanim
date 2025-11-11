@@ -110,7 +110,7 @@ registerUpdateable(CameraAlwaysAdjusting.make(camera, .1, .1));
 ## Stacks permanently an object to another
 
 ```java
-Shape circ1=Shape.circle().scale(.3).fillColor(JMColor.BLUE).thickness(8);
+Shape circ1=Shape.circle().scale(.3).fillColor("red").thickness(8);
 Shape circ2=circ1.copy();
 Shape circ3=circ1.copy();
 Shape circ4=circ1.copy();

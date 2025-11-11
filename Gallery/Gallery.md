@@ -110,10 +110,10 @@ public void runSketch() throws Exception {
         texts[n].color("#153e90").layer(2);
     }
     final Rect r = texts[1].getBoundingBox().addGap(.1, .1);
-    Shape box = Shape.rectangle(r).fillColor(JMColor.WHITE).thickness(3).layer(1);
+    Shape box = Shape.rectangle(r).fillColor("white").thickness(3).layer(1);
     play.showCreation(taylor[1], texts[1], box);
     for (int n = 2; n < orderTaylor; n++) {
-        add(taylor[n - 1].copy().thickness(1).drawColor(JMColor.GRAY));
+        add(taylor[n - 1].copy().thickness(1).drawColor("gray"));
         Transform transformFunction = Transform.make(2, taylor[n - 1], taylor[n]);
         Transform transformText = Transform.make(2, texts[n - 1], texts[n]);
         playAnimation(transformFunction, transformText);
@@ -210,10 +210,10 @@ Shape sq = Shape.square().scale(.2)
     .toScreen(ScreenAnchor.LEFT);
 add(Line.XAxis(), sq);
 int n = 1;
-add(Trail.make(sq.getPoint(0)).drawColor(JMColor.RED).thickness(15)
-    , Trail.make(sq.getPoint(1)).drawColor(JMColor.BLUE).thickness(15)
-    , Trail.make(sq.getPoint(2)).drawColor(JMColor.GREEN).thickness(15)
-    , Trail.make(sq.getPoint(3)).drawColor(JMColor.GRAY).thickness(15)
+add(Trail.make(sq.getPoint(0)).drawColor("red").thickness(15)
+    , Trail.make(sq.getPoint(1)).drawColor("blue").thickness(15)
+    , Trail.make(sq.getPoint(2)).drawColor("green").thickness(15)
+    , Trail.make(sq.getPoint(3)).drawColor("gray").thickness(15)
    );
 for (int k = 0; k < 30; k++) {
     play.rotate(.5, sq.getPoint(n), -90 * DEGREES, sq);
@@ -324,7 +324,7 @@ You can [see the video here](https://imgur.com/gallery/7ZRnq0I).
 int numPoints = 10;//Number of points/diameters to show
 
 //The outer circle
-Shape outerCircle = Shape.circle().thickness(15).drawColor(JMColor.BLUE);
+Shape outerCircle = Shape.circle().thickness(15).drawColor("blue");
 
 //This shape (outerCircle scaled 50%) is the path that will follow the rotatingCircle group
 Shape path = outerCircle.copy().scale(.5);
@@ -333,7 +333,7 @@ Shape path = outerCircle.copy().scale(.5);
 for (int n = 0; n < numPoints * 2; n++) {
     Point p1 = Point.at(outerCircle.getVecAt(.5d * n / numPoints));
     Point p2 = Point.at(outerCircle.getVecAt(.5d * n / numPoints + .5));
-    add(Shape.segment(p1, p2).drawColor(JMColor.GRAY).thickness(5));
+    add(Shape.segment(p1, p2).drawColor("gray").thickness(5));
 }
 
 //A group containing the rotating circle and the marker points

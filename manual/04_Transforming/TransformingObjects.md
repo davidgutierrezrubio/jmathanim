@@ -103,13 +103,13 @@ With the `stack()` command you can easily generate aligned objects:
 
 ``` java
 Shape previousPol = Shape.regularPolygon(3)
-    .fillColor(JMColor.random())
+    .fillColor("random")
     .thickness(20);//First polygon, with random fill color
 add(previousPol);
 for (int n = 4; n < 10; n++) {
     Shape pol = Shape.regularPolygon(n)
         .setHeight(previousPol.getHeight())//Scale to have same height as previousPol
-        .fillColor(JMColor.random())//Random fill color
+        .fillColor("random")//Random fill color
         .thickness(20)
         .stack() //Stack this object...
         .withDestinyAnchor(AnchorType.RIGHT)//to the RIGHT anchor of..
@@ -195,7 +195,7 @@ for (int n = 4; n < 10; n++) {
         .moveTo(Point.random()) //Move its center to a random point on current view...
         .scale(Math.random() * .5);//And scale it randomly between 0 and 0.5
     Shape pol2 = pol.copy() //Creates a copy of the polygon...
-        .fillColor(JMColor.random()) //fill it with a random color...
+        .fillColor("random") //fill it with a random color...
         .thickness(6) //With this thickness...
         .align(floor, AlignType.LOWER);//And align the bottom of the object with object floor
     add(pol, pol2);
@@ -405,7 +405,7 @@ The following code shows all current layouts, with a set of 10 increasing square
 MathObjectGroup group = MathObjectGroup.make();
 double h = 0;//This will hold the total height of the squares, to properly zoom out the camera later
 for (int n = 0; n < 10; n++) {
-    Shape square = Shape.square().scale(.2 + .1 * n).fillColor(JMColor.random()).fillAlpha(.5).thickness(6);
+    Shape square = Shape.square().scale(.2 + .1 * n).fillColor("random").fillAlpha(.5).thickness(6);
     h += square.getHeight();
     group.add(square);
 }
@@ -443,7 +443,7 @@ for (int n = 0; n < num; n++) {
     gr.add(MathObjectGroup.make(sq, t));//Each object of the group is itself a group with 2 elements
 }
 Point refPoint = Point.origin(); //The reference point to locate the box
-add(refPoint.thickness(40).drawColor(JMColor.RED).layer(1));
+add(refPoint.thickness(40).drawColor("red").layer(1));
 BoxLayout layout = BoxLayout.make(refPoint, 4,  .1, .1);//This is where the magic happens
 add(gr.setLayout(layout));
 camera.zoomToAllObjects();
@@ -466,7 +466,7 @@ For example, if you add the following lines right before the `waitSeconds`comman
 
 ```java
 for(MathObjectGroup rows:layout.getRowGroups(gr)) {//Iterate over the rows
-	rows.fillColor(JMColor.random());
+	rows.fillColor("random");
 }
 ```
 
@@ -580,7 +580,7 @@ for (int n = 0; n < num; n++) {//Creates a group with 54 numbered squares
 }
 
 Point refPoint = Point.origin(); //The reference point to locate the outer layout
-add(refPoint.thickness(40).drawColor(JMColor.RED).layer(1));//add this point so we can see it clearly
+add(refPoint.thickness(40).drawColor("red").layer(1));//add this point so we can see it clearly
 
 GroupLayout innerLayout = BoxLayout.make(refPoint, 3, 0, 0)
     .setDirection(BoxDirection.RIGHT_DOWN);

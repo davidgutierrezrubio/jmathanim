@@ -615,12 +615,12 @@ LatexMathObject bigB = LatexMathObject.make("B").center().setHeight(1).style("so
 //Animate the creation of the grid and the B shape
 play.showCreation(grid, bigB);
 waitSeconds(1);
-Point A = Point.at(0, 0).drawColor(JMColor.BLUE);
-Point B = Point.at(1, 0).drawColor(JMColor.BLUE);
-Point C = Point.at(0, 1).drawColor(JMColor.BLUE);
-Point D = Point.at(0, .5).drawColor(JMColor.RED);
-Point E = Point.at(1, 0).drawColor(JMColor.RED);
-Point F = Point.at(1, 1).drawColor(JMColor.RED);
+Point A = Point.at(0, 0).drawColor("blue");
+Point B = Point.at(1, 0).drawColor("blue");
+Point C = Point.at(0, 1).drawColor("blue");
+Point D = Point.at(0, .5).drawColor("red");
+Point E = Point.at(1, 0).drawColor("red");
+Point F = Point.at(1, 1).drawColor("red");
 add(A, B, C, D, E, F);
 Animation anim = Commands.affineTransform(3, A, B, C, D, E, F, grid, bigB);
 playAnimation(anim);
@@ -656,8 +656,8 @@ MathObject text = LatexMathObject.make("Pentagon")
 
 //Origin and destination points to define the reflection
 //Point A is (a copy of) the first point of the pentagon
-Point A = reg.getPoint(0).drawColor(JMColor.BLUE).copy();
-Point B = Point.at(1, .5).drawColor(JMColor.RED);
+Point A = reg.getPoint(0).drawColor("blue").copy();
+Point B = Point.at(1, .5).drawColor("red");
 
 //Add everything to the scene
 add(A, B, grid, text);
@@ -690,10 +690,10 @@ waitSeconds(2);
 The animation `Commands.isomorphism(double runtime, Point a, Point b, Point c, Point d, MathObject... objects)` animates the only direct isomorphism that maps A into C and B into D:
 
 ```java
-Point A = Point.origin().drawColor(JMColor.BLUE);
-Point B = Point.at(1, 0).drawColor(JMColor.BLUE);
-Point C = Point.at(1, .2).drawColor(JMColor.RED);
-Point D = Point.at(1.8, .6).drawColor(JMColor.RED);
+Point A = Point.origin().drawColor("blue");
+Point B = Point.at(1, 0).drawColor("blue");
+Point C = Point.at(1, .2).drawColor("red");
+Point D = Point.at(1.8, .6).drawColor("red");
 Shape triangle = Shape.polygon(A.copy(), B.copy(), Point.at(0, .5));
 triangle.style("solidblue");
 add(triangle, A, B, C, D);
