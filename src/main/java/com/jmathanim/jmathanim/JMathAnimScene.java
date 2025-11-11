@@ -336,6 +336,9 @@ public abstract class JMathAnimScene {
         sceneObjects.add(obj);
         dependencyGraph.addNode(obj);
     }
+    public void addDependency(Dependable dep) {
+        dependencyGraph.addNode(dep);
+    }
 
     /**
      * Overloaded method. Remove the specified MathObjects from the scene
@@ -897,6 +900,8 @@ public abstract class JMathAnimScene {
     public double getDt() {
         return dt;
     }
+
+
 
     public enum SCENE_STATUS {CONFIG, PLAYING, DONE}
 

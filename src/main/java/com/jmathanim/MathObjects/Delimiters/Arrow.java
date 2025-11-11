@@ -474,9 +474,9 @@ public class Arrow extends Constructible<Arrow> {
             boolean upperSide = true;
             Object upperObj = labelTip.getProperty("upperSide");
             if (upperObj != null) upperSide = (boolean) upperObj;
-            copy.labelType=labelType;
+            copy.labelType = labelType;
             if (labelType == labelTypeEnum.DISTANCE) {
-                copy.addLengthLabelTip(stringFormat,  upperSide);
+                copy.addLengthLabelTip(stringFormat, upperSide);
                 copy.getLabelTip().setDistanceToShapeRelative(getLabelTip().isDistanceToShapeRelative());
                 copy.getLabelTip().setDistanceToShape(getLabelTip().getDistanceToShape());
             }
@@ -485,7 +485,7 @@ public class Arrow extends Constructible<Arrow> {
                 copy.getLabelTip().setDistanceToShapeRelative(getLabelTip().isDistanceToShapeRelative());
                 copy.getLabelTip().setDistanceToShape(getLabelTip().getDistanceToShape());
             }
-            if (labelType==labelTypeEnum.NORMAL) {
+            if (labelType == labelTypeEnum.NORMAL) {
                 copy.registerLabel(getLabelTip().copy());
             }
         }
@@ -501,8 +501,6 @@ public class Arrow extends Constructible<Arrow> {
 //    labelType = labelTypeEnum.NORMAL;
 //        this.stringFormat = "";
 //        return label;
-
-
 
 
     @Override
@@ -736,8 +734,6 @@ public class Arrow extends Constructible<Arrow> {
     }
 
 
-
-
     private void registerLabel(LabelTip labelTip) {
         this.labelTip = labelTip;
         labelType = labelTypeEnum.NORMAL;
@@ -797,6 +793,10 @@ public class Arrow extends Constructible<Arrow> {
 
             }
         });
+//        if (scene.getMathObjects().contains(this)) {
+//        t.addDependency(this);
+//        scene.addDependency(t);
+//        }
         return label;
     }
 
