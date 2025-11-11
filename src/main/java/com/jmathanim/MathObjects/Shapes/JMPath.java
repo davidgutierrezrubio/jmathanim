@@ -267,7 +267,7 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
 //    }
     @Override
     public String toString() {
-        if (size() < 5) {
+        if (size() < 32) {
             String resul = "JMPath " + LogUtils.number(getJmPathPoints().size(), 0) + " points:  ";
             int counter = 0;
             for (JMPathPoint p : getJmPathPoints()) {

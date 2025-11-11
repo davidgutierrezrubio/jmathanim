@@ -181,6 +181,8 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
         if ((mode == CompileMode.JLaTexMath) || (mode == CompileMode.RawJLaTexMath)) {
             sc *= 0.24906237699889464;
         }
+        markClean();
+        boundingBox=computeBoundingBox();
         this.scale(sc, sc, 1);
         Vec v = Vec.to(0, 0);
         switch (anchor) {

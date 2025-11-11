@@ -15,7 +15,6 @@ import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.DependableUtils;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.Dependable;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
@@ -23,7 +22,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
     public final Vec labelMarkPoint;
     protected final Coordinates<?> A;
     protected final Coordinates<?> B;
-    protected final Shape delimiterShapeToDraw;
+    public final Shape delimiterShapeToDraw;
 //    protected final MODrawProperties mpDelimiterShape;
     protected final DrawStylePropertiesObjectsArray mpDelimiter;
     /**
