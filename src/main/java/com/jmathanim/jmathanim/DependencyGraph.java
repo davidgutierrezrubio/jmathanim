@@ -4,16 +4,24 @@ import com.jmathanim.MathObjects.Updatable;
 
 import java.util.*;
 
+/**
+ * Represents a directed acyclic dependency graph for {@link Dependable} objects.
+ * It maintains the correct topological order for update propagation.
+ */
 public class DependencyGraph {
 
     private final Set<Dependable> nodes = new LinkedHashSet<>();
     private final Map<Dependable, List<Dependable>> dependencies = new HashMap<>();
     private final Map<Dependable, List<Dependable>> reverseDeps = new HashMap<>();
     private final List<Dependable> topoOrder = new ArrayList<>();
-    private long globalVersionCounter = 0L;
+    private boolean dirty;
+
+    public DependencyGraph() {
+        this.dirty = false;
+    }
 
     /**
-     * DFS post-order para garantizar que las dependencias aparecen antes que el nodo
+     * Depth-first search for topological sorting (post-order).
      */
     private static void dfsTopo(Dependable node,
                                 Map<Dependable, List<Dependable>> deps,
@@ -22,7 +30,7 @@ public class DependencyGraph {
                                 List<Dependable> result) {
         if (visited.contains(node)) return;
         if (temp.contains(node))
-            throw new IllegalStateException("Ciclo detectado en dependencias: " + node);
+            throw new IllegalStateException("Cycle detected in dependencies: " + node);
 
         temp.add(node);
         for (Dependable dep : deps.getOrDefault(node, Collections.emptyList())) {
@@ -34,113 +42,96 @@ public class DependencyGraph {
     }
 
     /**
-     * Añade un solo nodo al grafo, insertando también sus dependencias recursivamente.
+     * Adds a node and all its dependencies recursively.
+     * Marks the graph as dirty, requiring resorting.
+     *
+     * @param node the node to add
      */
     public void addNode(Dependable node) {
-//        if (node instanceof AbstractMathGroup) {
-//            for (Dependable dep : (AbstractMathGroup<?>) node) {
-//                addNode(dep);
-//            }
-//            return;
-//        }
-
-        if (nodes.contains(node)) return;
-        for (Dependable dep : node.getDependencies()) {
-            addNode(dep);
-            reverseDeps.computeIfAbsent(dep, k -> new ArrayList<>()).add(node);
-        }
-        nodes.add(node);
-        dependencies.put(node, new ArrayList<>(node.getDependencies()));
-        topoOrder.add(node); // inserción incremental simple
-    }
-
-    private void addSingleNode(Dependable node) {
-//        if (node instanceof AbstractMathGroup) {
-//            for (Dependable dep : (AbstractMathGroup<?>) node) {
-//                addSingleNode(dep);
-//            }
-//            return;
-//        }
-        nodes.add(node);
-        dependencies.put(node, new ArrayList<>(node.getDependencies()));
-        for (Dependable dep : node.getDependencies()) {
-            reverseDeps.computeIfAbsent(dep, k -> new ArrayList<>()).add(node);
+        if (!nodes.contains(node)) {
+            nodes.add(node);
+            for (Dependable dep : node.getDependencies()) {
+                addNode(dep);
+                dependencies.computeIfAbsent(node, k -> new ArrayList<>()).add(dep);
+                reverseDeps.computeIfAbsent(dep, k -> new ArrayList<>()).add(node);
+            }
+            dirty = true;
         }
     }
-
 
     /**
-     * Añade varios nodos al grafo de forma eficiente y garantiza que el orden topológico sea correcto.
+     * Adds multiple nodes to the graph without sorting immediately.
+     *
+     * @param newNodes collection of nodes to add
      */
-    public void addNodes(Collection<Dependable> newNodes) {
-        // 1️⃣ Añadir nodos y dependencias al grafo sin preocuparse aún del orden
-        Set<Dependable> allNew = new LinkedHashSet<>();
+    public void addNodes(Collection<? extends Dependable> newNodes) {
         for (Dependable node : newNodes) {
-            collectDependenciesRecursive(node, allNew);
+            addNode(node);
         }
-        for (Dependable node : allNew) {
-            if (!nodes.contains(node)) {
-                addSingleNode(node);
-            }
-        }
-
-        // 2️⃣ Recalcular orden topológico para todos los nodos nuevos
-        List<Dependable> newTopo = new ArrayList<>();
-        Set<Dependable> visited = new HashSet<>();
-        for (Dependable node : allNew) {
-            dsfTopHandle(node, visited, newTopo);
-        }
-
-        // 3️⃣ Añadir al final del topoOrder sin duplicados
-        for (Dependable node : newTopo) {
-            if (!topoOrder.contains(node)) {
-                topoOrder.add(node);
-            }
-        }
+        dirty = true;
     }
-
-    private void dsfTopHandle(Dependable node, Set<Dependable> visited, List<Dependable> newTopo) {
-//        if (node instanceof AbstractMathGroup) {
-//            for (Dependable nodeDep : (AbstractMathGroup<?>) node) {
-//                dfsTopo(nodeDep, dependencies, visited, new HashSet<>(), newTopo);
-//            }
-//            return;
-//        }
-        dfsTopo(node, dependencies, visited, new HashSet<>(), newTopo);
-    }
-
 
     /**
-     * Recorre recursivamente dependencias de un nodo y las añade a 'result'.
+     * Removes a node and all edges referencing it.
+     *
+     * @param node the node to remove
      */
-    private void collectDependenciesRecursive(Dependable node, Set<Dependable> result) {
-        if (!result.add(node)) return;
-        for (Dependable dep : node.getDependencies()) {
-            collectDependenciesRecursive(dep, result);
-        }
+    public void removeNode(Dependable node) {
+        nodes.remove(node);
+        dependencies.remove(node);
+        reverseDeps.remove(node);
+        dependencies.values().forEach(list -> list.remove(node));
+        reverseDeps.values().forEach(list -> list.remove(node));
+        dirty = true;
     }
 
     /**
-     * Actualiza todos los nodos en orden topológico
+     * Performs a full topological sort if the graph is dirty.
+     * This ensures dependencies are processed before dependents.
+     */
+    public void sort() {
+        if (!dirty) return;
+        topoOrder.clear();
+        topoOrder.addAll(topologicalSort());
+        dirty = false;
+    }
+
+    /**
+     * Computes a full topological ordering of the graph nodes.
+     *
+     * @return a list of nodes in topological order
+     */
+    private List<Dependable> topologicalSort() {
+        List<Dependable> result = new ArrayList<>();
+        Set<Dependable> visited = new HashSet<>();
+        Set<Dependable> temp = new HashSet<>();
+        for (Dependable node : nodes) {
+            dfsTopo(node, dependencies, visited, temp, result);
+        }
+        return result;
+    }
+
+    /**
+     * Updates all updatable nodes in topological order.
+     * Each node's dependencies are guaranteed to be updated first.
      */
     public void updateAll() {
+        if (dirty) sort();
         for (Dependable dep : topoOrder) {
             if (dep instanceof Updatable) {
-                Updatable updatable = (Updatable) dep;
-//                long ver=((Dependable)updatable).getVersion();
-                updatable.update(JMathAnimConfig.getConfig().getScene());
-//                long ver2=((Dependable)updatable).getVersion();
-//                if (ver!=ver2)
-//                System.out.println("Updating "+ LogUtils.method(updatable.toString())+" version "+LogUtils.number(ver,0)+" to "+LogUtils.number(ver2,0));
+                ((Updatable) dep).update(JMathAnimConfig.getConfig().getScene());
             }
         }
     }
 
-    public long getGlobalVersion() {
-        return globalVersionCounter;
-    }
-
+    /**
+     * Returns the list of nodes in current topological order.
+     * The graph is automatically sorted if marked dirty.
+     *
+     * @return ordered list of nodes
+     */
     public List<Dependable> getTopologicalOrder() {
-        return topoOrder;
+        if (dirty) sort();
+        return Collections.unmodifiableList(topoOrder);
     }
 }
