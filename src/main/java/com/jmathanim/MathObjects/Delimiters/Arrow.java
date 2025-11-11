@@ -31,7 +31,10 @@ import com.jmathanim.MathObjects.Text.AbstractLatexMathObject;
 import com.jmathanim.MathObjects.Tippable.LabelTip;
 import com.jmathanim.MathObjects.Updaters.Updater;
 import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
-import com.jmathanim.Utils.*;
+import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.ResourceLoader;
+import com.jmathanim.Utils.SVGImport;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.jmathanim.LogUtils;
@@ -656,15 +659,15 @@ public class Arrow extends Constructible<Arrow> {
         rebuildShape();
         return this;
     }
-
-    @Override
-    protected Rect computeBoundingBox() {
-        rebuildShape();
-        Rect bb = shapeToDraw.getPath().getBoundingBox();
-        if (labelTip != null) {
-            return Rect.union(bb, labelTip.getBoundingBox());
-        } else return bb;
-    }
+//
+//    @Override
+//    protected Rect computeBoundingBox() {
+//        rebuildShape();
+//        Rect bb = shapeToDraw.getPath().getBoundingBox();
+//        if (labelTip != null) {
+//            return Rect.union(bb, labelTip.getBoundingBox());
+//        } else return bb;
+//    }
 
     /**
      * Returns the starting point

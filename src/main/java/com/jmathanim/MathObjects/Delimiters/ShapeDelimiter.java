@@ -142,6 +142,7 @@ public class ShapeDelimiter extends Delimiter {
 //        if (amplitudeScale != 1)
 //            groupElementsToBeDrawn.scale(this.amplitudeScale);
         tr.applyTransform(groupElementsToBeDrawn);
+        boundingBox=computeBoundingBox();
     }
 
 }

@@ -84,9 +84,9 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
     }
 
     public void clear() {
-        for (MathObject<?> obj : objects) {
-           removeDependency(obj);
-        }
+//        for (MathObject<?> obj : objects) {
+//           removeDependency(obj);
+//        }
         objects.clear();
     }
 
@@ -151,9 +151,9 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      */
     public void add(MathObject<?>... objs) {
         objects.addAll(Arrays.asList(objs));
-        for (MathObject<?> obj:objs) {
-            addDependency(obj);
-        }
+//        for (MathObject<?> obj:objs) {
+//            addDependency(obj);
+//        }
         setHasBeenChanged(true);
     }
 
