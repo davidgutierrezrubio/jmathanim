@@ -78,9 +78,9 @@ public abstract class Delimiter extends Constructible<Delimiter> {
         groupElementsToBeDrawn.addWithKey("label", this.delimiterLabelRigidBox);
 
 
-        addDependency(this.A);
-        addDependency(this.B);
-        addDependency(this.groupElementsToBeDrawn);
+//        addDependency(this.A);
+//        addDependency(this.B);
+//        addDependency(this.groupElementsToBeDrawn);
 
         delimiterScale = 1;
         amplitudeScale = 1;

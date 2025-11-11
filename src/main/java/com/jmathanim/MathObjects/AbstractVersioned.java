@@ -11,8 +11,8 @@ public abstract class AbstractVersioned implements Dependable, Updatable {
     public ArrayList<Dependable> dependencies = new ArrayList<>();
     protected long version = 0;
     protected boolean dirty = true;
-    protected long lastCleanedDepsVersionSum = -1;
-    protected long newLastMaxDependencyVersion = -2;
+    protected long lastCleanedDepsVersionSum = -2;
+    protected long newLastMaxDependencyVersion = -1;
 
     @Override
     public void addDependency(Dependable dep) {
