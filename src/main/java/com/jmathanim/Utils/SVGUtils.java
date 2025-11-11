@@ -143,7 +143,7 @@ public class SVGUtils {
     }
     public static void processGradientStop(GradientStop stops, Element el) {
         double offset = parseStringValueWithPercentageNumber(el.getAttribute("offset"));
-        JMColor color=JMColor.WHITE;
+        JMColor color=JMColor.rgba(1,1,1,1);
 
         String styleString = el.getAttribute("styleString");
         if (!styleString.isEmpty()) {

@@ -288,8 +288,8 @@ public class JavaFXRendererUtils {
     private static Stop[] gradientStopsToFXStop(GradientStop stops, double alpha) {
         TreeMap<Double, JMColor> colors = stops.getColorTreeMap();
         if (colors.isEmpty()) {//Generate a basic white-black gradient
-            stops.add(0, JMColor.WHITE);
-            stops.add(1, JMColor.BLACK);
+            stops.add(0, JMColor.parse("white"));
+            stops.add(1, JMColor.parse("black"));
         }
         Stop[] resul = new Stop[colors.size()];
         int k = 0;

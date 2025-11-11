@@ -39,8 +39,8 @@ public class ColorScale {
      */
     public static ColorScale createDefaultBR(double minValue, double maxValue) {
         ColorScale cs = new ColorScale();
-        cs.addMarker(minValue, JMColor.BLUE);
-        cs.addMarker(maxValue, JMColor.RED);
+        cs.addMarker(minValue, JMColor.parse("blue"));
+        cs.addMarker(maxValue, JMColor.parse("red"));
         return cs;
     }
 
@@ -53,8 +53,8 @@ public class ColorScale {
      */
     public static ColorScale createDefaultBW(double minValue, double maxValue) {
         ColorScale cs = new ColorScale();
-        cs.addMarker(minValue, JMColor.BLACK);
-        cs.addMarker(maxValue, JMColor.WHITE);
+        cs.addMarker(minValue, JMColor.parse("black"));
+        cs.addMarker(maxValue, JMColor.parse("white"));
         return cs;
     }
 

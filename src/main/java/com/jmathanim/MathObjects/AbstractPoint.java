@@ -7,6 +7,7 @@ import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.DependableUtils;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimConfig;
@@ -38,6 +39,15 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
         addDependency(this.v);
         addDependency(mpPoint);
         generateDotShape();
+    }
+
+    @Override
+    public boolean needsUpdate() {
+        newLastMaxDependencyVersion= DependableUtils.maxVersion(
+               this.v,
+                getMp()
+        );
+        return newLastMaxDependencyVersion != lastCleanedDepsVersionSum;
     }
 
     @Override
@@ -168,13 +178,13 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
         double sc = .5 * st;
         switch (getMp().getDotStyle()) {
             case CROSS:
-                dotShape.drawColor(getMp().getDrawColor()) .fillColor(JMColor.NONE).thickness(.25 * th);
+                dotShape.drawColor(getMp().getDrawColor()) .fillColor(JMColor.parse("none")).thickness(.25 * th);
                 break;
             case PLUS:
-                dotShape.drawColor(getMp().getDrawColor()) .fillColor(JMColor.NONE).thickness(.25 * th);
+                dotShape.drawColor(getMp().getDrawColor()) .fillColor(JMColor.parse("none")).thickness(.25 * th);
                 break;
             case TRIANGLE_DOWN_HOLLOW:
-                dotShape.drawColor(getMp().getDrawColor()) .fillColor(JMColor.NONE).thickness(.25 * th);
+                dotShape.drawColor(getMp().getDrawColor()) .fillColor(JMColor.parse("none")).thickness(.25 * th);
                 break;
             case TRIANGLE_UP_HOLLOW:
                 dotShape.drawColor(getMp().getDrawColor()).thickness(.25 * th);
@@ -186,7 +196,7 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
                 dotShape.drawColor(getMp().getDrawColor()).fillColor(getMp().getDrawColor()).thickness(0);
                 break;
             case RING:
-                dotShape.drawColor(getMp().getDrawColor()).fillColor(JMColor.NONE).thickness(.25 * th);
+                dotShape.drawColor(getMp().getDrawColor()).fillColor(JMColor.parse("none")).thickness(.25 * th);
                 break;
             default:// Default case, includes CIRCLE
                 dotShape.drawColor(getMp().getDrawColor())

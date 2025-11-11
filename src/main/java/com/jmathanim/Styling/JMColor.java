@@ -32,14 +32,6 @@ import java.util.TreeMap;
  */
 public class JMColor extends PaintStyle<JMColor> {
 
-    public static JMColor NONE = new JMColor(0, 0, 0, 0);
-    public static JMColor WHITE = new JMColor(1, 1, 1, 1);
-    public static JMColor BLACK = new JMColor(0, 0, 0, 1);
-    public static JMColor RED = new JMColor(1, 0, 0, 1);
-    public static JMColor GREEN = new JMColor(0, 1, 0, 1);
-    public static JMColor BLUE = new JMColor(0, 0, 1, 1);
-    public static JMColor GRAY = new JMColor(.5, .5, .5, 1);
-
     private double red;
     private double green;
     private double blue;
@@ -229,7 +221,7 @@ public class JMColor extends PaintStyle<JMColor> {
 
         }
         JMathAnimScene.logger.warn("Color " + LogUtils.method(str) + " is not recognized. Returning "+LogUtils.method("WHITE")+" instead.");
-        return JMColor.WHITE;
+        return JMColor.rgba(1,1,1,1);
     }
 
 //    /**
