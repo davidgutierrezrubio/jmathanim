@@ -14,6 +14,7 @@ import com.jmathanim.MathObjects.Updaters.Updater;
 import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.Dependable;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
@@ -65,6 +66,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
         this.mpDelimiter.add(delimiterShapeToDraw);
         this.mpDelimiter.loadFromStyle("DEFAULT");
 
+        addDependency(this.mpDelimiter);
 
         labelMarkPoint = Vec.to(0, 0);
         this.rotationType = RotationType.SMART;
@@ -361,12 +363,10 @@ public abstract class Delimiter extends Constructible<Delimiter> {
         rebuildShape();
     }
 
-//    @Override
-//    protected Rect computeBoundingBox() {
-//        Rect bb = super.computeBoundingBox();
-////        if (getL != null) {
-////            return Rect.union(bb, labelTip.getBoundingBox());
-////        } else
-//            return bb;
-//    }
+    @Override
+    public boolean needsUpdate() {
+        newLastMaxDependencyVersion = Math.max(A.getVec().getVersion(),B.getVec().getVersion());
+        newLastMaxDependencyVersion = Math.max(newLastMaxDependencyVersion, getMp().getVersion());
+        return newLastMaxDependencyVersion != lastCleanedDepsVersionSum;
+    }
 }

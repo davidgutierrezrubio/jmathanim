@@ -52,8 +52,8 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
     // Styles used for specified objects
     // Point
     private DotStyle dotStyle = DotStyle.CIRCLE;
-    private PaintStyle drawColor;
-    private PaintStyle fillColor;
+    private PaintStyle<?> drawColor;
+    private PaintStyle<?> fillColor;
     private Integer layer = null;
     private StrokeLineCap linecap = StrokeLineCap.ROUND;
     private Double thickness = 1d;
@@ -62,6 +62,8 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
     public MODrawProperties() {
         drawColor = new JMColor(1, 1, 1, 1);
         fillColor = new JMColor(0, 0, 0, 0);
+        addDependency(drawColor);
+        addDependency(fillColor);
         faceToCamera = false;
         setVisible(true);
     }

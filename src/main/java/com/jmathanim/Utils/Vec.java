@@ -42,7 +42,6 @@ public class Vec implements Dependable, HasDirection, Coordinates<Vec>, AffineTr
 
     public double x, y, z;
     public double xState, yState, zState;
-    private boolean dirty;
     private long version;
 
     /**
@@ -66,7 +65,6 @@ public class Vec implements Dependable, HasDirection, Coordinates<Vec>, AffineTr
         this.x = x;
         this.y = y;
         this.z = z;
-        dirty = true;
         version = -1;
     }
 
