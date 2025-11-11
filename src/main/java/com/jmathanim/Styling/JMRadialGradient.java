@@ -20,6 +20,7 @@ package com.jmathanim.Styling;
 import com.jmathanim.Enum.GradientCycleMethod;
 import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 
 import java.util.Objects;
 import java.util.TreeMap;
@@ -302,5 +303,20 @@ public class JMRadialGradient extends PaintStyle<JMRadialGradient> {
 
     public double getRadius() {
         return radius;
+    }
+
+    @Override
+    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
+
+    }
+
+    @Override
+    protected void performUpdateBoundingBox(JMathAnimScene scene) {
+
+    }
+
+    @Override
+    protected boolean applyUpdaters(JMathAnimScene scene) {
+        return false;
     }
 }

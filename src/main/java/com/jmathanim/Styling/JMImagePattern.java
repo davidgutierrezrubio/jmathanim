@@ -96,4 +96,19 @@ public class JMImagePattern extends PaintStyle<JMImagePattern> {
     public JMImage getImage() {
         return img;
     }
+
+    @Override
+    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
+
+    }
+
+    @Override
+    protected void performUpdateBoundingBox(JMathAnimScene scene) {
+
+    }
+
+    @Override
+    protected boolean applyUpdaters(JMathAnimScene scene) {
+        return false;
+    }
 }

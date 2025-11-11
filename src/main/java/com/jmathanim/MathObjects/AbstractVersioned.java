@@ -1,5 +1,6 @@
 package com.jmathanim.MathObjects;
 
+import com.jmathanim.Utils.DependableUtils;
 import com.jmathanim.jmathanim.Dependable;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
@@ -25,10 +26,13 @@ public abstract class AbstractVersioned implements Dependable, Updatable {
 
     @Override
     public boolean needsUpdate() {
-        newLastMaxDependencyVersion = dependencies.stream()
-                .mapToLong(Dependable::getVersion)
-                .max()
-                .orElse(0);
+//        List<Dependable> deps = getDependencies();
+//        long maxDep = 0;
+//        for (int i = 0, n = deps.size(); i < n; i++) {
+//            long v = deps.get(i).getVersion();
+//            if (v > maxDep) maxDep = v;
+//        }
+        newLastMaxDependencyVersion = DependableUtils.maxVersion(getDependencies());
         return newLastMaxDependencyVersion != lastCleanedDepsVersionSum;
     }
 

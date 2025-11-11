@@ -47,9 +47,9 @@ public class JMColor extends PaintStyle<JMColor> {
 
 
     protected JMColor(double red, double green, double blue, double alpha) {
-        this.setRed(red);
-        this.setGreen(green);
-        this.setBlue(blue);
+        this.red =Math.max(Math.min(red, 1), 0);
+        this.green =Math.max(Math.min(green, 1), 0);
+        this.blue =Math.max(Math.min(blue, 1), 0);
         this.alpha = alpha;
     }
 
@@ -363,5 +363,21 @@ public class JMColor extends PaintStyle<JMColor> {
 
     public void setBlue(double blue) {
         this.blue =Math.max(Math.min(blue, 1), 0);
+        changeVersion();
+    }
+
+    @Override
+    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
+
+    }
+
+    @Override
+    protected void performUpdateBoundingBox(JMathAnimScene scene) {
+
+    }
+
+    @Override
+    protected boolean applyUpdaters(JMathAnimScene scene) {
+        return false;
     }
 }
