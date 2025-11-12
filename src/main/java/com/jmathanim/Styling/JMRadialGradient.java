@@ -306,12 +306,12 @@ public class JMRadialGradient extends PaintStyle<JMRadialGradient> {
     }
 
     @Override
-    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
 
     }
 
     @Override
-    protected void performUpdateBoundingBox(JMathAnimScene scene) {
+    public void performUpdateBoundingBox(JMathAnimScene scene) {
 
     }
 

@@ -197,7 +197,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
         return boundingBox.addGap(rightGap, upperGap, leftGap, lowerGap);
     }
 
-    protected void performUpdateBoundingBox(JMathAnimScene scene) {
+    public void performUpdateBoundingBox(JMathAnimScene scene) {
         boundingBox = computeBoundingBox();
     }
 

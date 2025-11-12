@@ -93,7 +93,7 @@ public abstract class Constructible<T extends Constructible<T>> extends MathObje
     }
 
     @Override
-    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
         rebuildShape();
     }
 

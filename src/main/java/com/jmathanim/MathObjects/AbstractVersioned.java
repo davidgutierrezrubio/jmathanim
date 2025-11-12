@@ -43,7 +43,7 @@ public abstract class AbstractVersioned implements Dependable, Updatable {
         if (updating) return false;
         updating=true;
         boolean flag = false;
-        if (needsUpdate()) {
+        if (dirty||needsUpdate()) {
             performMathObjectUpdateActions(scene);
             flag = true;
         }
@@ -59,7 +59,12 @@ public abstract class AbstractVersioned implements Dependable, Updatable {
 
     public void markClean() {
         lastCleanedDepsVersionSum = newLastMaxDependencyVersion;
+        dirty=false;
     }
+    public void markDirty() {
+        dirty=true;
+    }
+
 
     @Override
     public void changeVersion() {
@@ -71,9 +76,9 @@ public abstract class AbstractVersioned implements Dependable, Updatable {
         return dependencies;
     }
 
-    protected abstract void performMathObjectUpdateActions(JMathAnimScene scene);
+    public abstract void performMathObjectUpdateActions(JMathAnimScene scene);
 
-    protected abstract void performUpdateBoundingBox(JMathAnimScene scene);
+    public abstract void performUpdateBoundingBox(JMathAnimScene scene);
 
     protected abstract boolean applyUpdaters(JMathAnimScene scene);
 

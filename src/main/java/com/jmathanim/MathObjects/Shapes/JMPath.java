@@ -1428,12 +1428,12 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
     }
 
     @Override
-    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
 
     }
 
     @Override
-    protected void performUpdateBoundingBox(JMathAnimScene scene) {
+    public void performUpdateBoundingBox(JMathAnimScene scene) {
         if (getJmPathPoints().isEmpty()) {
             boundingBox = new EmptyRect();
             return;

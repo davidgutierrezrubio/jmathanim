@@ -314,11 +314,6 @@ public class Arrow extends Constructible<Arrow> {
         JMPath h1A = head1.copy();
         JMPath h1B = head2.copy();
         double dist = Acopy.to(Bcopy).norm();
-        if (labelTip != null) {
-            labelTip.update(scene);
-            labelTip.getMathObject().scale(labelTip.pivotPointRefMathObject, getAmplitudeScale());
-
-        }
 
 
         //Scale heads to adjust to thickness
@@ -453,6 +448,12 @@ public class Arrow extends Constructible<Arrow> {
         labelArcUpside.getPath().applyAffineTransform(tr);
         labelArcDownside.getPath().applyAffineTransform(tr);
 
+        if (labelTip != null) {
+            labelTip.performMathObjectUpdateActions(scene);
+            labelTip.getMathObject().scale(labelTip.pivotPointRefShape, getAmplitudeScale());
+
+        }
+
 
         //Now, rotate to face camera3d..
         if (is3D) {
@@ -481,7 +482,7 @@ public class Arrow extends Constructible<Arrow> {
                 copy.getLabelTip().setDistanceToShape(getLabelTip().getDistanceToShape());
             }
             if (labelType == labelTypeEnum.COORDS) {
-                copy.addVecLabelTip(labelTip.getDistanceToShape(), stringFormat, upperSide);
+                copy.addVecLabelTip(stringFormat, upperSide);
                 copy.getLabelTip().setDistanceToShapeRelative(getLabelTip().isDistanceToShapeRelative());
                 copy.getLabelTip().setDistanceToShape(getLabelTip().getDistanceToShape());
             }
@@ -553,8 +554,7 @@ public class Arrow extends Constructible<Arrow> {
     }
 
     @Override
-    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
-        if (labelTip != null) labelTip.update(scene);
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
         rebuildShape();
     }
 
@@ -776,6 +776,8 @@ public class Arrow extends Constructible<Arrow> {
 
         labelType = labelTypeEnum.DISTANCE;
         this.stringFormat = format;
+        labelTip.addDependency(this.A);
+        labelTip.addDependency(this.B);
 
         AbstractLatexMathObject<?> t = labelTip.getLaTeXObject();
         t.setArgumentsFormat(format);
@@ -793,10 +795,7 @@ public class Arrow extends Constructible<Arrow> {
 
             }
         });
-//        if (scene.getMathObjects().contains(this)) {
-//        t.addDependency(this);
-//        scene.addDependency(t);
-//        }
+        t.performMathObjectUpdateActions(null);
         return label;
     }
 
@@ -804,20 +803,22 @@ public class Arrow extends Constructible<Arrow> {
      * Adds a label with the vector coordinates.The points mark the beginning and end of the delimiter.The delimiter
      * lies at the "left" of vector AB.
      *
-     * @param gap    Gap between control delimiter and label
      * @param format Format to print the numbers, for example "0.00"
      * @return The created LabelTip object
      */
-    public LabelTip addVecLabelTip(double gap, String format, boolean upperSide) {
+    public LabelTip addVecLabelTip(String format, boolean upperSide) {
         LabelTip label = LabelTip.makeLabelTip((upperSide ? labelArcUpside : labelArcDownside), .5, "$({#0},{#1})$");
         label.setProperty("upperSide", upperSide);//This will be useful when copying labels
-        label.setDistanceToShape(gap);
+        label.setDistanceToShape(.1);
         label.setAnchor(AnchorType.LOWER);
+        label.setSlopeDirection((upperSide ? SlopeDirectionType.POSITIVE : SlopeDirectionType.NEGATIVE));
         registerLabel(label);
         labelType = labelTypeEnum.COORDS;
         AbstractLatexMathObject<?> t = labelTip.getLaTeXObject();
         t.setArgumentsFormat(format);
         this.stringFormat = format;
+        labelTip.addDependency(this.A);
+        labelTip.addDependency(this.B);
         labelTip.registerUpdater(new Updater() {
 //            @Override
 //            public void computeUpdateLevel() {
@@ -831,6 +832,7 @@ public class Arrow extends Constructible<Arrow> {
                 t.getArg(1).setValue(vAB.y);
             }
         });
+        t.performMathObjectUpdateActions(null);
 
         return label;
 //        return (LaTeXMathObject) arrowLabel.getRefMathObject();
@@ -860,6 +862,7 @@ public class Arrow extends Constructible<Arrow> {
      */
     public <T extends Arrow> T setAmplitudeScale(double amplitudeScale) {
         this.amplitudeScale = Math.max(Math.min(amplitudeScale, 1), 0);
+        markDirty();
         return (T) this;
     }
 

@@ -567,7 +567,7 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
          */
         CompileFile
     }
-    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
         if (origText == null) {
             origText = getText();
         }

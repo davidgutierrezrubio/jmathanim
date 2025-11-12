@@ -65,7 +65,7 @@ public class Trail extends AbstractShape<Trail> {
     }
 
     @Override
-    protected void performMathObjectUpdateActions(JMathAnimScene scene) {
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
         if (draw) {
             JMPathPoint pa = JMPathPoint.lineTo(marker.getCenter());
             pa.setSegmentToThisPointVisible(!cutNext);
