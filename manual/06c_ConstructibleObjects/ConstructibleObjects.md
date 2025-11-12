@@ -8,8 +8,8 @@ A constructible object is a `MathObject`,that is built in a similar way as const
 For example, the following code:
 
 ```java
-CTPoint A = CTPoint.make(Point.at(0, 0)).dotStyle(DotStyle.CROSS).drawColor("blue");
-CTPoint B = CTPoint.make(Point.at(1, 1)).dotStyle(DotStyle.CROSS).drawColor("blue");;
+CTPoint A = CTPoint.at(0, 0).dotStyle(DotStyle.CROSS).drawColor("blue");
+CTPoint B = CTPoint.at(1, 1).dotStyle(DotStyle.CROSS).drawColor("blue");;
 CTSegment segment = CTSegment.make(A, B).drawColor("red").thickness(10);
 CTPerpBisector perpBisector = CTPerpBisector.make(segment).drawColor("darkgreen").thickness(10);
 CTCircle circle=CTCircle.makeCenterPoint(A, B).dashStyle(DashStyle.DASHED).drawColor("gray");
