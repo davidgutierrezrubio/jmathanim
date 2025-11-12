@@ -76,20 +76,21 @@ public class JavaFXRenderer extends Renderer {
 
 
     private static final double MIN_THICKNESS = .2d;
-    private static final double THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH=5000;
+    private static final double THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH = 5000;
     public final JavaFXRendererUtils fXRendererUtilsJava;
+    public final Camera camera;
+    public final Camera fixedCamera;
+    protected final HashMap<AbstractShape<?>, Node> shapesToNodesMap;
     protected final ArrayList<Node> fxnodes;
     protected final ArrayList<Node> debugFXnodes;
     protected final ArrayList<Node> javaFXNodes;
     private final HashMap<JMPath, Path> storedPaths;
     private final HashMap<String, Image> images;
-    public final Camera camera;
-    public final Camera fixedCamera;
-//    public double FxCamerarotateX = 0;
+    //    public double FxCamerarotateX = 0;
 //    public double FxCamerarotateY = 0;
 //    public double FxCamerarotateZ = 0;
     public double correctionThickness;
-//    protected PerspectiveCamera fxCamera;
+    //    protected PerspectiveCamera fxCamera;
     protected ParallelCamera fxCamera;
     protected Scene fxScene;
     protected Group group;
@@ -103,17 +104,52 @@ public class JavaFXRenderer extends Renderer {
     public JavaFXRenderer(JMathAnimScene parentScene) throws Exception {
         super(parentScene);
         fxnodes = new ArrayList<>();
+        shapesToNodesMap = new HashMap<>();
+
+
         debugFXnodes = new ArrayList<>();
         javaFXNodes = new ArrayList<>();
         images = new HashMap<>();
         storedPaths = new HashMap<>();
         fXRendererUtilsJava = new JavaFXRendererUtils();
-        camera=parentScene.getCamera();
-        fixedCamera=parentScene.getFixedCamera();
+        camera = parentScene.getCamera();
+        fixedCamera = parentScene.getFixedCamera();
 //        camera = new Camera(scene, config.mediaW, config.mediaH);
 //        fixedCamera = new Camera(scene, config.mediaW, config.mediaH);
         correctionThickness = config.getMediaWidth() * 1d / THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH;//Correction factor for thickness
 
+    }
+
+    private static StrokeLineJoin strokeJoinToFX(AbstractShape<?> mobj) {
+        StrokeLineJoin join;
+        switch (mobj.getMp().getLineJoin()) {
+            case BEVEL:
+                join = StrokeLineJoin.BEVEL;
+                break;
+            case ROUND:
+                join = StrokeLineJoin.ROUND;
+                break;
+            default:
+                join = StrokeLineJoin.MITER;
+                break;
+        }
+        return join;
+    }
+
+    private static StrokeLineCap strokeLineCapToFX(AbstractShape<?> mobj) {
+        StrokeLineCap cap;
+        switch (mobj.getMp().getLineCap()) {
+            case BUTT:
+                cap = StrokeLineCap.BUTT;
+                break;
+            case ROUND:
+                cap = StrokeLineCap.ROUND;
+                break;
+            default:
+                cap = StrokeLineCap.SQUARE;
+                break;
+        }
+        return cap;
     }
 
     @Override
@@ -129,18 +165,17 @@ public class JavaFXRenderer extends Renderer {
     public final void prepareEncoder() throws Exception {
 
 
-
         initializeJavaFXWindow();
 
         if (config.isCreateMovie()) {
             videoEncoder = new XugglerVideoEncoder();
-            JMathAnimScene.logger.debug("Preparing encoder "+LogUtils.method(videoEncoder.getClass().getSimpleName()));
+            JMathAnimScene.logger.debug("Preparing encoder " + LogUtils.method(videoEncoder.getClass().getSimpleName()));
 
             File tempPath = new File(config.getOutputDir().getCanonicalPath());
             tempPath.mkdirs();
             saveFilePath = new File(config.getOutputDir().getCanonicalPath() + File.separator
                     + config.getOutputFileName() + "_" + config.getMediaHeight() + ".mp4");
-            JMathAnimScene.logger.info("Creating movie encoder for "+ LogUtils.fileName(saveFilePath.getCanonicalPath()));
+            JMathAnimScene.logger.info("Creating movie encoder for " + LogUtils.fileName(saveFilePath.getCanonicalPath()));
             config.setSaveFilePath(saveFilePath);
             videoEncoder.createEncoder(config);
         }
@@ -186,7 +221,7 @@ public class JavaFXRenderer extends Renderer {
             groupRoot.getChildren().add(group);// Mathobjects
             groupRoot.getChildren().add(groupDebug);// Debug things
             fxScene = new Scene(groupRoot, config.getMediaWidth(), config.getMediaHeight());
-            fxScene.setFill(JavaFXRendererUtils.getFXPaint(config.getBackgroundColor(),r, camera));
+            fxScene.setFill(JavaFXRendererUtils.getFXPaint(config.getBackgroundColor(), r, camera));
             StandaloneSnapshot.FXStarter.stage.setScene(fxScene);
             // Proof with perspective camera
 //            fxCamera = new PerspectiveCamera();
@@ -249,7 +284,7 @@ public class JavaFXRenderer extends Renderer {
         BufferedImage bi = new BufferedImage(config.getMediaWidth(), config.getMediaHeight(), BufferedImage.TYPE_INT_ARGB);
         JavaFXRenderer r = this;
         FutureTask<WritableImage> task = new FutureTask<>(() -> {
-            fxScene.setFill(JavaFXRendererUtils.getFXPaint(config.getBackgroundColor(),r, camera));
+            fxScene.setFill(JavaFXRendererUtils.getFXPaint(config.getBackgroundColor(), r, camera));
             group.getChildren().clear();
             groupDebug.getChildren().clear();
 
@@ -271,7 +306,7 @@ public class JavaFXRenderer extends Renderer {
             }
             // Snapshot parameters
             final SnapshotParameters params = new SnapshotParameters();
-            params.setFill(JavaFXRendererUtils.getFXPaint(config.getBackgroundColor(),r, camera));
+            params.setFill(JavaFXRendererUtils.getFXPaint(config.getBackgroundColor(), r, camera));
             params.setViewport(new Rectangle2D(0, 0, config.getMediaWidth(), config.getMediaHeight()));
             params.setCamera(fxScene.getCamera());
 
@@ -293,10 +328,10 @@ public class JavaFXRenderer extends Renderer {
     public void finish(int frameCount) {
 
         JMathAnimScene.logger.info(
-                LogUtils.number(frameCount,0)+
-                " frames created, "
-                        +  LogUtils.number((1.f * frameCount) / config.getFps(),2)
-                        +" seconds "
+                LogUtils.number(frameCount, 0) +
+                        " frames created, "
+                        + LogUtils.number((1.f * frameCount) / config.getFps(), 2)
+                        + " seconds "
                         + " total time");
         if (config.isCreateMovie()) {
             /**
@@ -335,32 +370,43 @@ public class JavaFXRenderer extends Renderer {
 
     @Override
     public void drawPath(AbstractShape<?> mobj, Vec shiftVector, Camera cam) {
-        if (cam == null) {
-            //If the object has not a camera assigned yet, set it to default
-            cam = getCamera();
-            mobj.setCamera(cam);
-        }
-        JMPath objectPath = mobj.getPath();
+        if (mobj.size() < 2) return;
 
-        if (objectPath.size() >= 2) {
+        if (shapesToNodesMap.containsKey(mobj)) {
+            Path path = (Path) shapesToNodesMap.get(mobj);
+
+            path.setTranslateX(shiftVector.x * cam.getScreenWidth() / cam.getMathView().getWidth());
+            path.setTranslateY(-shiftVector.y * cam.getScreenHeight() / cam.getMathView().getHeight());
+            fxnodes.add(path);
+
+        } else {
+            if (cam == null) {
+                //If the object has not a camera assigned yet, set it to default
+                cam = getCamera();
+                mobj.setCamera(cam);
+            }
+            JMPath objectPath = mobj.getPath();
+
             Path path;
 //            path = JavaFXRendererUtils.createFXPathFromJMPath(objectPath, shiftVector,cam);
-            path = JavaFXRendererUtils.createFXPathFromJMPath(objectPath, Vec.to(0,0),cam);
+            path = JavaFXRendererUtils.createFXPathFromJMPath(objectPath, cam);
 //            System.out.println(shiftVector);
-            path.setTranslateX(shiftVector.x*cam.getScreenWidth()/cam.getMathView().getWidth());
-            path.setTranslateY(-shiftVector.y*cam.getScreenHeight()/cam.getMathView().getHeight());
+            path.setTranslateX(shiftVector.x * cam.getScreenWidth() / cam.getMathView().getWidth());
+            path.setTranslateY(-shiftVector.y * cam.getScreenHeight() / cam.getMathView().getHeight());
 
             applyDrawingStyles(path, mobj);
             applyRendererEffects(path, mobj.getRendererEffects());
             path.setClip(new Rectangle(cam.upperLeftX, cam.upperLeftY, cam.getScreenWidth(), cam.getScreenHeight()));
             fxnodes.add(path);
+//            group.getChildren().add(path);
+            shapesToNodesMap.put(mobj, path);
         }
+
         String debugText = DebugTools.getDebugText(mobj);
         if (!"".equals(debugText)) {
             debugText(debugText, mobj.getCenter());
         }
     }
-
 
     private void applyDrawingStyles(Path path, AbstractShape<?> mobj) {
 
@@ -373,7 +419,7 @@ public class JavaFXRenderer extends Renderer {
 //        path.setSmooth(false);
 
         // Stroke width and color
-        path.setStroke(JavaFXRendererUtils.getFXPaint(mobj.getMp().getDrawColor(),this, camera));
+        path.setStroke(JavaFXRendererUtils.getFXPaint(mobj.getMp().getDrawColor(), this, camera));
         double th = computeThickness(mobj);
 
         // Compute thickness depending on camera
@@ -383,7 +429,7 @@ public class JavaFXRenderer extends Renderer {
         path.setStrokeWidth(th);
 
         // Fill color
-        path.setFill(JavaFXRendererUtils.getFXPaint(mobj.getMp().getFillColor(),this, camera));
+        path.setFill(JavaFXRendererUtils.getFXPaint(mobj.getMp().getFillColor(), this, camera));
 
         // Dash pattern
         switch (mobj.getMp().getDashStyle()) {
@@ -403,38 +449,6 @@ public class JavaFXRenderer extends Renderer {
                 path.setStrokeLineCap(StrokeLineCap.BUTT);
                 break;
         }
-    }
-
-    private static StrokeLineJoin strokeJoinToFX(AbstractShape<?> mobj) {
-        StrokeLineJoin join;
-        switch(mobj.getMp().getLineJoin()) {
-            case BEVEL:
-                join = StrokeLineJoin.BEVEL;
-                break;
-            case ROUND:
-                join = StrokeLineJoin.ROUND;
-                break;
-            default:
-                join = StrokeLineJoin.MITER;
-                break;
-        }
-        return join;
-    }
-
-    private static StrokeLineCap strokeLineCapToFX(AbstractShape<?> mobj) {
-        StrokeLineCap cap;
-        switch(mobj.getMp().getLineCap()) {
-            case BUTT:
-                cap = StrokeLineCap.BUTT;
-                break;
-            case ROUND:
-                cap = StrokeLineCap.ROUND;
-                break;
-            default:
-                cap = StrokeLineCap.SQUARE;
-                break;
-        }
-        return cap;
     }
 
     private void applyRendererEffects(Node node, RendererEffects rendererEffects) {
@@ -475,13 +489,13 @@ public class JavaFXRenderer extends Renderer {
 //        return mathScalar * config.mediaW / (xmax - ymin);
 //        return camera.mathToScreen(w) / 1.25 * camera.getMathView().getWidth() / 2d;
 //        return w * 1066;
-        return w*THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH/camera.getMathView().getWidth();
+        return w * THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH / camera.getMathView().getWidth();
     }
 
     @Override
     public double ThicknessToMathWidth(double th) {
 
-        return th*fixedCamera.getMathView().getWidth()/ THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH;
+        return th * fixedCamera.getMathView().getWidth() / THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH;
 
 //        return th / 1066;
 
@@ -492,14 +506,14 @@ public class JavaFXRenderer extends Renderer {
         Camera cam = (obj.getMp().isAbsoluteThickness() ? fixedCamera : camera);
 
 //        return obj.getMp().getThickness() / 1066 * 4 / cam.getMathView().getWidth();
-        double th= obj.getMp().getThickness();
-        return th*cam.getMathView().getWidth()/ THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH;
+        double th = obj.getMp().getThickness();
+        return th * cam.getMathView().getWidth() / THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH;
     }
 
     @Override
     public void drawAbsoluteCopy(AbstractShape<?> sh, Vec anchor) {
         Vec vFixed = defaultToFixedCamera(anchor);
-        drawPath(sh, vFixed.minus(anchor),fixedCamera);
+        drawPath(sh, vFixed.minus(anchor), fixedCamera);
     }
 
     /**

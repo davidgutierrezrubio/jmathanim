@@ -66,10 +66,10 @@ public class JavaFXRendererUtils {
      * @param camera Camera to convert from math coordinates to screen coordinates
      * @return
      */
-    public static Path createFXPathFromJMPath(JMPath jmpath, Vec shiftVector, Camera camera) {
+    public static Path createFXPathFromJMPath(JMPath jmpath, Camera camera) {
         Path path = new Path();
         Vec p = jmpath.getJmPathPoints().get(0).getV();
-        double[] prev = camera.mathToScreen(p.x + shiftVector.x, p.y + shiftVector.y);
+        double[] prev = camera.mathToScreen(p.x , p.y );
         path.getElements().add(new MoveTo(prev[0], prev[1]));
         for (int n = 1; n < jmpath.size() + 1; n++) {
             Vec point = jmpath.getJmPathPoints().get(n).getV();
@@ -78,9 +78,9 @@ public class JavaFXRendererUtils {
 
             double[] xy, cxy1, cxy2;
 
-            xy = camera.mathToScreen(point.x + shiftVector.x, point.y + shiftVector.y);
-            cxy1 = camera.mathToScreen(cpoint1.x + shiftVector.x, cpoint1.y + shiftVector.y);
-            cxy2 = camera.mathToScreen(cpoint2.x + shiftVector.x, cpoint2.y + shiftVector.y);
+            xy = camera.mathToScreen(point.x , point.y );
+            cxy1 = camera.mathToScreen(cpoint1.x , cpoint1.y );
+            cxy2 = camera.mathToScreen(cpoint2.x , cpoint2.y );
 
             if (jmpath.getJmPathPoints().get(n).isSegmentToThisPointVisible()) {
                 JMPathPoint jp = jmpath.getJmPathPoints().get(n);
