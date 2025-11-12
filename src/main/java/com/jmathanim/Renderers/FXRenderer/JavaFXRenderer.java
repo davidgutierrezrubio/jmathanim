@@ -344,24 +344,12 @@ public class JavaFXRenderer extends Renderer {
 
         if (objectPath.size() >= 2) {
             Path path;
-//            if (mobj.isRigid()) {
-//                if (false){
-////                if (storedPaths.containsKey(objectPath)){
-//                    path=storedPaths.get(objectPath);
-//                    path.getTransforms().clear();
-//                }else {
-//                    path = FXPathUtils.createFXPathFromJMPath(objectPath, cam);
-//                    storedPaths.put(objectPath,path);
-//                }
-//                path.getTransforms().add(FXPathUtils.camToScreenAffineTransform(mobj.getCamera()));
-//                path.getTransforms().add(new Scale(1, -1));
-//                Affine tr = FXPathUtils.affineJToAffine(mobj.getModelMatrix());
-//                path.getTransforms().add(tr);
-//                path.getTransforms().add(new Scale(1, -1));
-//                path.getTransforms().add(FXPathUtils.screenToCamAffineTransfrom(mobj.getCamera()));
-//            } else {
-            path = JavaFXRendererUtils.createFXPathFromJMPath(objectPath, shiftVector,cam);
-//            }
+//            path = JavaFXRendererUtils.createFXPathFromJMPath(objectPath, shiftVector,cam);
+            path = JavaFXRendererUtils.createFXPathFromJMPath(objectPath, Vec.to(0,0),cam);
+//            System.out.println(shiftVector);
+            path.setTranslateX(shiftVector.x*cam.getScreenWidth()/cam.getMathView().getWidth());
+            path.setTranslateY(-shiftVector.y*cam.getScreenHeight()/cam.getMathView().getHeight());
+
             applyDrawingStyles(path, mobj);
             applyRendererEffects(path, mobj.getRendererEffects());
             path.setClip(new Rectangle(cam.upperLeftX, cam.upperLeftY, cam.getScreenWidth(), cam.getScreenHeight()));

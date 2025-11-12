@@ -18,6 +18,7 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.Utils.DependableUtils;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
@@ -87,4 +88,10 @@ public class CTAngleBisector extends CTAbstractLine<CTAngleBisector> {
         lineToDraw.rebuildShape();
     }
 
+    @Override
+    public boolean needsUpdate() {
+        newLastMaxDependencyVersion = DependableUtils.maxVersion(this.A, this.B, this.C, getMp());
+        if (dirty) return true;
+        return newLastMaxDependencyVersion != lastCleanedDepsVersionSum;
+    }
 }

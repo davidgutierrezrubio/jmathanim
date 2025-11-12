@@ -60,7 +60,9 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
         correctionAngle = PI / 2;
         this.shape = shape;
         addDependency(this.shape);
+
         this.tipObjectRigidBox = new RigidBox(tipObject);
+        addDependency(this.tipObjectRigidBox);
         this.locationParameterOnShape = location;
         this.slopeDirectionType = SlopeDirectionType.POSITIVE;
         distanceToShape = .5;
