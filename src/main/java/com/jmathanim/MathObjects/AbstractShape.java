@@ -120,7 +120,7 @@ AbstractShape<T extends AbstractShape<T>>
 
 
     @Override
-    protected Rect computeBoundingBox() {
+    public Rect computeBoundingBox() {
         return jmpath.getBoundingBox();
     }
 

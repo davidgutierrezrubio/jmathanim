@@ -565,7 +565,7 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
      * @return The width. If the path is empty, returns 0.
      */
     public double getWidth() {
-        return boundingBox.getWidth();
+        return getBoundingBox().getWidth();
     }
 
     /**
@@ -574,7 +574,7 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
      * @return The height. If the path is empty, returns 0.
      */
     public double getHeight() {
-        return boundingBox.getHeight();
+        return getBoundingBox().getHeight();
     }
 
     /**
@@ -1403,11 +1403,10 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
                 .mapToLong(JMPathPoint::getVersion)
                 .max().orElse(-1);
 
-
         if (jmPathPoints.size() != lastPointCount) {
             return true;
         }
-        return lastCleanedDepsVersionSum != newLastMaxDependencyVersion;
+        return dirty || (newLastMaxDependencyVersion != lastCleanedDepsVersionSum);
     }
 
     @Override

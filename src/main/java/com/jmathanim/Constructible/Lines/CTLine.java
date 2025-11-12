@@ -19,6 +19,7 @@ package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.MathObjects.Shapes.Line;
+import com.jmathanim.Utils.DependableUtils;
 import com.jmathanim.Utils.Vec;
 
 /**
@@ -26,8 +27,6 @@ import com.jmathanim.Utils.Vec;
  */
 public class CTLine extends CTAbstractLine<CTLine> {
 
-    protected Vec A;
-    protected Vec B;
     HasDirection dir;
 
     protected CTLine(Coordinates<?> A, Coordinates<?> B) {
@@ -55,6 +54,8 @@ public class CTLine extends CTAbstractLine<CTLine> {
         CTLine resul = new CTLine(A, A.add(dir.getDirection()));
         resul.dir = dir;
         resul.lineType = LineType.POINT_DIRECTION;
+        resul.addDependency(A.getVec());
+        resul.addDependency(dir);
         resul.rebuildShape();
         return resul;
     }
@@ -78,11 +79,11 @@ public class CTLine extends CTAbstractLine<CTLine> {
         CTLine copy = null;
         switch (lineType) {
             case POINT_POINT:
-                copy = CTLine.make(A.copy(), B.copy());
+                copy = CTLine.make(P1.copy(), P2.copy());
                 copy.copyStateFrom(this);
                 break;
             case POINT_DIRECTION:
-                copy = CTLine.makePointDir(A.copy(), this.dir);
+                copy = CTLine.makePointDir(P1.copy(), this.dir);
                 copy.copyStateFrom(this);
                 break;
         }
@@ -101,6 +102,21 @@ public class CTLine extends CTAbstractLine<CTLine> {
     }
 
     @Override
+    public boolean needsUpdate() {
+        switch (lineType) {
+            case POINT_POINT:
+                newLastMaxDependencyVersion = DependableUtils.maxVersion(this.P1, this.P2, getMp());
+                break;
+            case POINT_DIRECTION:
+                newLastMaxDependencyVersion = DependableUtils.maxVersion(this.P1, this.dir, getMp());
+                break;
+        }
+        if (dirty) return true;
+        return newLastMaxDependencyVersion != lastCleanedDepsVersionSum;
+    }
+
+
+    @Override
     public Vec getHoldCoordinates(Vec coordinates) {
         Vec v1 = getDirection().normalize();
         Vec v2 = coordinates.minus(getP1());
@@ -110,34 +126,14 @@ public class CTLine extends CTAbstractLine<CTLine> {
 
     @Override
     public void rebuildShape() {
-        if (!isFreeMathObject()) {
+//            P1.copyCoordinatesFrom(getP1().getVec());
             switch (lineType) {
-//                case POINT_POINT:
-//                    P1draw.copyCoordinatesFrom(getP1().getVec());
-//                    P2draw.copyCoordinatesFrom(getP2().getVec());
-//                    break;
+                case POINT_POINT:
+//                    P2.copyCoordinatesFrom(getP2().getVec());
+                    break;
                 case POINT_DIRECTION:
-                    P2.copyCoordinatesFrom(P1.add(dir.getDirection()));
-//                    P1draw.copyCoordinatesFrom(getP1().getVec());
-//                    P2draw.copyCoordinatesFrom(getP1().getVec().add(dir.getDirection()));
+                    P2.copyCoordinatesFrom(getP1().getVec().add(dir.getDirection()));
             }
-           super.rebuildShape();
-        }
+            super.rebuildShape();
     }
-//
-//    @Override
-//    public void registerUpdateableHook(JMathAnimScene scene
-//    ) {
-//        switch (lineType) {
-//            case POINT_POINT:
-//                dependsOn(scene, this.A, this.B);
-//                break;
-//            case POINT_DIRECTION:
-//                dependsOn(scene, this.A);
-//                if (this.dir instanceof Updateable) {
-//                    scene.registerUpdateable((Updateable) this.dir);
-//                    setUpdateLevel(Math.max(this.A.getUpdateLevel(), ((Updateable) this.dir).getUpdateLevel()) + 1);
-//                }
-//        }
-//    }
 }

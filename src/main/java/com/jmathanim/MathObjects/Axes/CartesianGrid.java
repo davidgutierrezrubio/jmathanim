@@ -269,7 +269,7 @@ public class CartesianGrid extends MathObject<CartesianGrid> implements shouldUd
 
 
     @Override
-    protected Rect computeBoundingBox() {
+    public Rect computeBoundingBox() {
         return getCamera().getMathView();
     }
 

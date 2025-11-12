@@ -421,6 +421,10 @@ public abstract class JMathAnimScene {
         }
     }
 
+    public DependencyGraph getDependencyGraph() {
+        return dependencyGraph;
+    }
+
     /**
      * Perform all needed updates
      */

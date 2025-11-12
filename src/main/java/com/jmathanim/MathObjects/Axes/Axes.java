@@ -294,7 +294,7 @@ public class Axes extends MathObject<Axes> implements shouldUdpateWithCamera,has
     }
 
     @Override
-    protected Rect computeBoundingBox() {
+    public Rect computeBoundingBox() {
         return camera.getMathView();
     }
 

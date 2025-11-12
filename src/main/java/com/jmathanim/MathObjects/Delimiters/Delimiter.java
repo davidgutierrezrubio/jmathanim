@@ -331,6 +331,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
 
         this.delimiterLabelRigidBox.setMathObjectReference(label);
 
+
         rebuildShape();
         return (T) this;
     }
@@ -370,6 +371,6 @@ public abstract class Delimiter extends Constructible<Delimiter> {
                 B.getVec(),
                 getMp()
         );
-        return newLastMaxDependencyVersion != lastCleanedDepsVersionSum;
+        return dirty || (newLastMaxDependencyVersion != lastCleanedDepsVersionSum);
     }
 }

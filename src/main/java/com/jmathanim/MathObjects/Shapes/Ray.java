@@ -160,7 +160,7 @@ public class Ray extends AbstractShape<Ray> implements HasDirection {
     }
 
     @Override
-    protected Rect computeBoundingBox() {
+    public Rect computeBoundingBox() {
         //Bounding box of the visible segment
         rebuildShape();
         return Rect.make(boundaryPoint1, boundaryPoint2);

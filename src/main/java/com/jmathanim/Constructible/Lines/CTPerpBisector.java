@@ -18,6 +18,7 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.Utils.DependableUtils;
 import com.jmathanim.Utils.Vec;
 
 /**
@@ -27,15 +28,12 @@ import com.jmathanim.Utils.Vec;
  */
 public class CTPerpBisector extends CTAbstractLine<CTPerpBisector> {
 
-    private Coordinates<?> A, B;
-    private Vec Av, Bv;
+    private final Vec A, B;
 
     private CTPerpBisector(Coordinates<?> A, Coordinates<?> B) {
-        super(Vec.to(0,0),Vec.to(1,0));
-        this.Av = A.getVec();
-        this.Bv = B.getVec();
-        this.A = A;
-        this.B = B;
+        super(Vec.to(0, 0), Vec.to(1, 0));
+        this.A = A.getVec();
+        this.B = B.getVec();
 
         rebuildShape();
     }
@@ -61,13 +59,20 @@ public class CTPerpBisector extends CTAbstractLine<CTPerpBisector> {
     @Override
     public void rebuildShape() {
 
-            Vec midPoint= Av.getVec().interpolate(Bv, .5);
-            Vec v = Av.to(Bv);
+        Vec midPoint = A.interpolate(B, .5);
+        Vec v = A.to(B);
 //        getP2().copyCoordinatesFrom(Vec.to(getP1().x - v.y, getP1().y + v.x));
-            Vec vOrthogonal = Vec.to(midPoint.x - v.y, midPoint.y + v.x);
-            P1.copyCoordinatesFrom(midPoint);
-            P2.copyCoordinatesFrom(vOrthogonal);
-            super.rebuildShape();
+        Vec vOrthogonal = Vec.to(midPoint.x - v.y, midPoint.y + v.x);
+        P1.copyCoordinatesFrom(midPoint);
+        P2.copyCoordinatesFrom(vOrthogonal);
+        super.rebuildShape();
+    }
+
+    @Override
+    public boolean needsUpdate() {
+        newLastMaxDependencyVersion = DependableUtils.maxVersion(this.A, this.B, getMp());
+        if (dirty) return true;
+        return newLastMaxDependencyVersion != lastCleanedDepsVersionSum;
     }
 
     @Override

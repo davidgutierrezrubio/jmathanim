@@ -34,6 +34,7 @@ public abstract class AbstractVersioned implements Dependable, Updatable {
 //            if (v > maxDep) maxDep = v;
 //        }
         newLastMaxDependencyVersion = DependableUtils.maxVersion(getDependencies());
+        if (dirty) return true;
         return newLastMaxDependencyVersion != lastCleanedDepsVersionSum;
     }
 
@@ -69,6 +70,7 @@ public abstract class AbstractVersioned implements Dependable, Updatable {
     @Override
     public void changeVersion() {
         version = ++JMathAnimScene.globalVersion;
+        markDirty();
     }
 
     @Override

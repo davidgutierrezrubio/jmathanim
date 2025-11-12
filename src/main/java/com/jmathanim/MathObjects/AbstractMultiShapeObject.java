@@ -145,7 +145,7 @@ public abstract class AbstractMultiShapeObject<
     }
 
     @Override
-    protected Rect computeBoundingBox() {
+    public Rect computeBoundingBox() {
         Rect resul = null;
         for (T jmp : shapes) {
             if (!jmp.isEmpty()) {

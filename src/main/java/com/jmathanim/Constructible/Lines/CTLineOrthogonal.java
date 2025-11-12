@@ -18,19 +18,35 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.Utils.DependableUtils;
 import com.jmathanim.Utils.Vec;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
 /**
- * A Constructible Line that pass through A and is orthogonal to a given
- * direction
+ * A Constructible Line that pass through A and is orthogonal to a given direction
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class CTLineOrthogonal extends CTAbstractLine<CTLineOrthogonal> {
 
     protected final HasDirection dir;
+    private final Vec A;
+
+    /**
+     * A CTLine that pass through A and is perpendicular to a object with direction
+     *
+     * @param A   Point of line
+     * @param dir An object that implements the HasDirection interface
+     */
+    private CTLineOrthogonal(Coordinates<?> A, HasDirection dir) {
+        super(A.copy(), A.add(dir.getDirection().rotate(PI / 2)));
+        this.lineType = LineType.POINT_DIRECTION;
+        this.dir = dir;
+        this.A = A.getVec();
+        addDependency(dir);
+        addDependency(this.A);
+    }
 
     /**
      * A CTLine that pass through A and is perpendicular to the segment AB
@@ -40,15 +56,13 @@ public class CTLineOrthogonal extends CTAbstractLine<CTLineOrthogonal> {
      * @return The created object
      */
     public static CTLineOrthogonal make(Coordinates<?> A, Coordinates<?> B) {
-        return makePointDir(A,CTSegment.make(A,B));
+        return makePointDir(A, CTSegment.make(A, B));
     }
 
-
     /**
-     * A CTLine that pass through A and is perpendicular to a object with
-     * direction
+     * A CTLine that pass through A and is perpendicular to a object with direction
      *
-     * @param A Point of line
+     * @param A   Point of line
      * @param dir An object that implements the HasDirection interface
      * @return The created object
      */
@@ -56,19 +70,6 @@ public class CTLineOrthogonal extends CTAbstractLine<CTLineOrthogonal> {
         CTLineOrthogonal resul = new CTLineOrthogonal(A, dir);
         resul.rebuildShape();
         return resul;
-    }
-
-    /**
-     * A CTLine that pass through A and is perpendicular to a object with
-     * direction
-     *
-     * @param A Point of line
-     * @param dir An object that implements the HasDirection interface
-     */
-    private CTLineOrthogonal(Coordinates<?> A, HasDirection dir) {
-        super(A, A.add(dir.getDirection().rotate(PI/2)));
-        this.lineType = LineType.POINT_DIRECTION;
-        this.dir = dir;
     }
 
     @Override
@@ -82,11 +83,17 @@ public class CTLineOrthogonal extends CTAbstractLine<CTLineOrthogonal> {
     public void rebuildShape() {
         Vec v = getP1().getVec();
         Vec direction = dir.getDirection();
+        P1.copyCoordinatesFrom(A);
         P2.copyCoordinatesFrom(Vec.to(v.x - direction.y, v.y + direction.x));
-        if (!isFreeMathObject()) {
-            P1draw.copyCoordinatesFrom(P1);
-            P2draw.copyCoordinatesFrom(P2);
-        }
         super.rebuildShape();
     }
+
+    @Override
+    public boolean needsUpdate() {
+        newLastMaxDependencyVersion = DependableUtils.maxVersion(this.A, this.dir, getMp());
+        if (dirty) return true;
+        return newLastMaxDependencyVersion != lastCleanedDepsVersionSum;
+    }
+
+
 }

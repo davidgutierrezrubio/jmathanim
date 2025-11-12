@@ -49,7 +49,7 @@ public class DummyRenderer extends Renderer{
 
     @Override
     public void saveFrame(int frameCount) {
-        JMathAnimScene.logger.debug("Saving frame "+frameCount+" in dummy renderer");
+//        JMathAnimScene.logger.debug("Saving frame "+frameCount+" in dummy renderer");
     }
 
     @Override

@@ -309,16 +309,17 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
     }
 
     @Override
-    protected Rect computeBoundingBox() {
+    public Rect computeBoundingBox() {
         if (!needsUpdate()) return boundingBox;
         //If group is empty, returns an empty rect
         if (objects.isEmpty()) {
             return new EmptyRect();
         }
 
-        boundingBox = objects.get(0).getBoundingBox();
+        boundingBox = objects.get(0).computeBoundingBox();
         for (MathObject<?> obj : objects) {
-            boundingBox = Rect.union(boundingBox, obj.getBoundingBox());
+            Rect b = obj.computeBoundingBox();
+            boundingBox = Rect.union(boundingBox, b);
         }
         return boundingBox;
     }

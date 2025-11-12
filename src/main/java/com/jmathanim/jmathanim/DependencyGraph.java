@@ -1,5 +1,6 @@
 package com.jmathanim.jmathanim;
 
+import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.MathObjects.Updatable;
 
 import java.util.*;
@@ -138,5 +139,16 @@ public class DependencyGraph {
     public List<Dependable> getTopologicalOrder() {
         if (dirty) sort();
         return Collections.unmodifiableList(topoOrder);
+    }
+    private void printStatus(String name, Dependable ob) {
+        System.out.println(status(name, ob));
+    }
+    private String status(String name, Dependable dep) {
+        if (dep instanceof MathObject) {
+            MathObject ob = (MathObject) dep;
+            return "Object " + LogUtils.method(name) + " version " + LogUtils.number(ob.getVersion(), 0) + " needs update: " + LogUtils.method(ob.needsUpdate());
+        }
+
+        return "Object " + name + " version " + LogUtils.number(dep.getVersion(), 0);
     }
 }

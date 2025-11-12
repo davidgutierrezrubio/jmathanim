@@ -223,7 +223,7 @@ public class Vec implements Dependable, HasDirection, Coordinates<Vec>, AffineTr
     @Override
     public String toString() {
 //        return getClass().getSimpleName() + "[" + LogUtils.number(x, 2) + "," + LogUtils.number(y, 2) + "]";
-        return String.format("%s [%2f, %2f]", getClass().getSimpleName(), x, y);
+        return String.format("%s [%.2f, %.2f] version %d", getClass().getSimpleName(), x, y,getVersion());
     }
 
     /**
@@ -317,4 +317,6 @@ public class Vec implements Dependable, HasDirection, Coordinates<Vec>, AffineTr
         copyCoordinatesFrom(v);
         changeVersion();
     }
+
+
 }

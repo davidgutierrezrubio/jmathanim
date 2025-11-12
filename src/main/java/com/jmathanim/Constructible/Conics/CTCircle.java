@@ -170,22 +170,8 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
         rebuildShape();
     }
 
-//    @Override
-//    public void registerUpdateableHook(JMathAnimScene scene) {
-//        switch (circleType) {
-//            case CENTER_POINT:
-//                dependsOn(scene, this.getCircleCenter(), this.A);
-//                break;
-//            case THREE_POINTS:
-//                dependsOn(scene, this.getCircleCenter(), this.A, this.B, this.C);
-//                break;
-//            case CENTER_RADIUS:
-//                dependsOn(scene, this.getCircleCenter(), this.abstractCircleRadius);
-//        }
-//    }
-
     @Override
-    protected Rect computeBoundingBox() {
+    public Rect computeBoundingBox() {
         rebuildShape();
         return getMathObject().getBoundingBox();
     }
@@ -194,15 +180,8 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
     public void rebuildShape() {
 
         computeCircleCenterRadius();
-//        circleToDraw.getPath().jmPathPoints.clear();
-//        circleToDraw.getPath().addJMPointsFrom(originalCircle.copy().getPath());
 
         if (!isFreeMathObject()) {
-//            for (int i = 0; i < getMathObject().size(); i++) {
-//                JMPathPoint get = getMathObject().get(i);
-//                get.copyControlPointsFrom(getOriginalUnitCirclePath().get(i));
-//            }
-
             getMathObject().getPath().copyStateFrom(
                     getOriginalUnitCirclePath().copy()
                             .scale(this.getCircleRadius().getValue())
@@ -267,10 +246,6 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
         this.setCircleRadius(radd.norm());
         // Center (h,k)
     }
-//    @Override
-//    public int getUpdateLevel() {
-//        return Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1;
-//    }
     // Function to find the circle on
     // which the given three points lie
     //Found in https://www.geeksforgeeks.org/equation-of-circle-when-three-points-on-the-circle-are-given/

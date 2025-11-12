@@ -62,8 +62,9 @@ public class RigidBox extends MathObject<RigidBox> {
     }
 
     @Override
-    protected Rect computeBoundingBox() {
-        return mathObjectReference.getBoundingBox().getTransformedRect(modelMatrix);
+    public Rect computeBoundingBox() {
+        Rect boundingBox1 = mathObjectReference.computeBoundingBox();
+        return boundingBox1.getTransformedRect(modelMatrix);
     }
 
     @Override

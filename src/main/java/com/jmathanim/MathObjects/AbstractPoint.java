@@ -47,7 +47,7 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
                this.v,
                 getMp()
         );
-        return newLastMaxDependencyVersion != lastCleanedDepsVersionSum;
+        return dirty || (newLastMaxDependencyVersion != lastCleanedDepsVersionSum);
     }
 
     @Override
@@ -254,7 +254,7 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
     }
 
     @Override
-    protected Rect computeBoundingBox() {
+    public Rect computeBoundingBox() {
         return new Rect(v.x, v.y, v.z, v.x, v.y, v.z);
     }
 

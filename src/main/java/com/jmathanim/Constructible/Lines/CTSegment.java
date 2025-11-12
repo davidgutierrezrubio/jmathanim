@@ -20,6 +20,7 @@ package com.jmathanim.Constructible.Lines;
 import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.MathObjects.hasScalarParameter;
+import com.jmathanim.Utils.DependableUtils;
 import com.jmathanim.Utils.Vec;
 
 /**
@@ -43,7 +44,7 @@ public class CTSegment extends CTAbstractLine<CTSegment> implements hasScalarPar
      * @param B Second point
      * @return The created object
      */
-    public static CTSegment make(Coordinates A, Coordinates B) {
+    public static CTSegment make(Coordinates<?> A, Coordinates<?> B) {
         CTSegment resul = new CTSegment(A, B);
         resul.rebuildShape();
         return resul;
@@ -83,11 +84,9 @@ public class CTSegment extends CTAbstractLine<CTSegment> implements hasScalarPar
 
     @Override
     public void rebuildShape() {
-        this.P1.copyCoordinatesFrom(getP1().getVec());
-        this.P2.copyCoordinatesFrom(getP2().getVec());
         if (!isFreeMathObject()) {
-            segmentToDraw.get(0).getV().copyCoordinatesFrom(this.P1);
-            segmentToDraw.get(1).getV().copyCoordinatesFrom(this.P2);
+            P1draw.copyCoordinatesFrom(this.P1);
+            P2draw.copyCoordinatesFrom(this.P2);
         }
     }
 
@@ -105,4 +104,14 @@ public class CTSegment extends CTAbstractLine<CTSegment> implements hasScalarPar
     public void setValue(double scalar) {
         //Cannot change
     }
+
+    @Override
+    public boolean needsUpdate() {
+        newLastMaxDependencyVersion = DependableUtils.maxVersion(this.P1, this.P2, getMp());
+        if (dirty) return true;
+        return newLastMaxDependencyVersion != lastCleanedDepsVersionSum;
+    }
+
+
+
 }

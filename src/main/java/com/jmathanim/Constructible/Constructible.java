@@ -100,8 +100,8 @@ public abstract class Constructible<T extends Constructible<T>> extends MathObje
     abstract public void rebuildShape();
 
     @Override
-    protected Rect computeBoundingBox() {
-        return getMathObject().getBoundingBox();
+    public Rect computeBoundingBox() {
+        return getMathObject().computeBoundingBox();
     }
 
     @Override

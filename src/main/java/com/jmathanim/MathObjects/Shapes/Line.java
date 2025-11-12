@@ -140,7 +140,7 @@ public class Line extends AbstractShape<Line> implements HasDirection, shouldUdp
     }
 
     @Override
-    protected Rect computeBoundingBox() {
+    public Rect computeBoundingBox() {
         //Bounding box of the visible segment
         rebuildShape();
         return Rect.make(borderPoint1, borderPoint2);

@@ -55,12 +55,12 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
     protected JMathAnimScene scene;
     protected boolean isRigid = false;
     protected Camera camera;
+    protected Rect boundingBox;
     private boolean hasBeenUpdated = false;
     private int updateLevel;
     private String debugText = "";
     private AnchorType absoluteAnchorAnchorType = AnchorType.CENTER;
     private double leftGap, upperGap, rightGap, lowerGap;
-    protected Rect boundingBox;
 
     public MathObject() {
         this.updateLevel = 0;
@@ -184,14 +184,15 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
 
 
     /**
-     * Returns the Bounding box with limits of the MathObject
+     * Returns the Bounding box with limits of the MathObject. The object is updated and bounding box recomputed if
+     * needed.
      *
      * @return A Rect with (xmin,ymin,xmax,ymax)
      */
     @Override
     public final Rect getBoundingBox() {
 //        return computeBoundingBox().addGap(rightGap, upperGap, leftGap, lowerGap);
-        if (needsUpdate()|boundingBox==null) {
+        if (needsUpdate() | boundingBox == null) {
             update(scene);//Updates and recomputes bounding box
         }
         return boundingBox.addGap(rightGap, upperGap, leftGap, lowerGap);
@@ -201,7 +202,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
         boundingBox = computeBoundingBox();
     }
 
-    protected abstract Rect computeBoundingBox();
+    public abstract Rect computeBoundingBox();
 
     public void setAlpha(double t) {
         drawAlpha(t);
@@ -384,12 +385,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
      * @return The width
      */
     public double getWidth() {
-        Rect b = getBoundingBox();
-        if (b == null) {
-            return 0;
-        } else {
-            return b.getWidth();
-        }
+        return getBoundingBox().getWidth();
     }
 
     /**
@@ -409,12 +405,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
      * @return The height
      */
     public double getHeight() {
-        Rect b = getBoundingBox();
-        if (b == null) {
-            return 0;
-        } else {
-            return b.getHeight();
-        }
+        return getBoundingBox().getHeight();
     }
 
     /**

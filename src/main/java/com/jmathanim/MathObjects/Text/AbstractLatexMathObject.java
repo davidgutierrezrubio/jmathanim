@@ -256,7 +256,7 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
     }
 
     @Override
-    protected Rect computeBoundingBox() {
+    public Rect computeBoundingBox() {
         Rect resul = null;
         for (LatexShape jmp : this) {
             if (!jmp.isEmpty()) {
