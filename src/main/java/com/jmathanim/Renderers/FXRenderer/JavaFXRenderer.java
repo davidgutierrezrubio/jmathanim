@@ -54,7 +54,6 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Scale;
-import javafx.scene.transform.Translate;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -67,6 +66,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static com.jmathanim.Renderers.FXRenderer.JavaFXRendererUtils.createWorldToScreenTransform;
 
 
 /**
@@ -93,7 +94,7 @@ public class JavaFXRenderer extends Renderer {
     //    protected PerspectiveCamera fxCamera;
     protected ParallelCamera fxCamera;
     protected Scene fxScene;
-    protected Group group;
+    protected Group mainGroupOfObjectsToRender;
     protected Group groupRoot;
     protected Group groupBackground;
     protected Group groupDebug;
@@ -205,7 +206,7 @@ public class JavaFXRenderer extends Renderer {
         StandaloneSnapshot.FXStarter.waitForInit();
         JavaFXRenderer r = this;
         FutureTask<Integer> task = new FutureTask<>(() -> {
-            group = new Group();
+            mainGroupOfObjectsToRender = new Group();
             groupRoot = new Group();
             groupBackground = new Group();
             groupDebug = new Group();
@@ -218,7 +219,7 @@ public class JavaFXRenderer extends Renderer {
                 groupBackground.getChildren().add(background);
             }
             groupRoot.getChildren().add(groupBackground);// Background image
-            groupRoot.getChildren().add(group);// Mathobjects
+            groupRoot.getChildren().add(mainGroupOfObjectsToRender);// Mathobjects
             groupRoot.getChildren().add(groupDebug);// Debug things
             fxScene = new Scene(groupRoot, config.getMediaWidth(), config.getMediaHeight());
             fxScene.setFill(JavaFXRendererUtils.getFXPaint(config.getBackgroundColor(), r, camera));
@@ -285,24 +286,27 @@ public class JavaFXRenderer extends Renderer {
         JavaFXRenderer r = this;
         FutureTask<WritableImage> task = new FutureTask<>(() -> {
             fxScene.setFill(JavaFXRendererUtils.getFXPaint(config.getBackgroundColor(), r, camera));
-            group.getChildren().clear();
+//            processDrawingCommands();
+            mainGroupOfObjectsToRender.getChildren().clear();
+
             groupDebug.getChildren().clear();
 
-            fxCamera.getTransforms().clear();
-            fxCamera.getTransforms().addAll(new Translate(config.getMediaWidth() / 2, config.getMediaHeight() / 2, 0),
-//                    new Rotate(FxCamerarotateX, Rotate.X_AXIS), new Rotate(FxCamerarotateY, Rotate.Y_AXIS),
-//                    new Rotate(FxCamerarotateZ, Rotate.Z_AXIS),
-                    new Translate(-config.getMediaWidth() / 2, -config.getMediaHeight() / 2, 0));
+//            fxCamera.getTransforms().clear();
+//            fxCamera.getTransforms().addAll(new Translate(config.getMediaWidth() / 2, config.getMediaHeight() / 2, 0),
+////                    new Rotate(FxCamerarotateX, Rotate.X_AXIS), new Rotate(FxCamerarotateY, Rotate.Y_AXIS),
+////                    new Rotate(FxCamerarotateZ, Rotate.Z_AXIS),
+//                    new Translate(-config.getMediaWidth() / 2, -config.getMediaHeight() / 2, 0));
 
             // Add all elements
-            group.getChildren().addAll(fxnodes);
+            mainGroupOfObjectsToRender.getChildren().addAll(fxnodes);
+
             if (config.showFrameNumbers) {
                 showDebugFrame(frameCount, 1d * frameCount / config.getFps());
             }
             groupDebug.getChildren().addAll(debugFXnodes);
             groupDebug.getChildren().addAll(javaFXNodes);
             if (config.drawShadow) {
-                group.setEffect(dropShadow);
+                mainGroupOfObjectsToRender.setEffect(dropShadow);
             }
             // Snapshot parameters
             final SnapshotParameters params = new SnapshotParameters();
@@ -386,20 +390,21 @@ public class JavaFXRenderer extends Renderer {
                 mobj.setCamera(cam);
             }
             JMPath objectPath = mobj.getPath();
-
             Path path;
-//            path = JavaFXRendererUtils.createFXPathFromJMPath(objectPath, shiftVector,cam);
-            path = JavaFXRendererUtils.createFXPathFromJMPath(objectPath, cam);
+//            path = JavaFXRendererUtils.createFXPathFromJMPath(objectPath, cam);
+            path = JavaFXRendererUtils.createFXPathFromJMPathNEW(objectPath, cam);
 //            System.out.println(shiftVector);
             path.setTranslateX(shiftVector.x * cam.getScreenWidth() / cam.getMathView().getWidth());
             path.setTranslateY(-shiftVector.y * cam.getScreenHeight() / cam.getMathView().getHeight());
 
             applyDrawingStyles(path, mobj);
             applyRendererEffects(path, mobj.getRendererEffects());
-            path.setClip(new Rectangle(cam.upperLeftX, cam.upperLeftY, cam.getScreenWidth(), cam.getScreenHeight()));
+            Affine affine = createWorldToScreenTransform(config.getMediaWidth(), config.getMediaHeight(), cam);
+            path.getTransforms().add(affine);
+//            path.setClip(new Rectangle(0,0, cam.getScreenWidth(), cam.getScreenHeight()));
             fxnodes.add(path);
 //            group.getChildren().add(path);
-            shapesToNodesMap.put(mobj, path);
+//            shapesToNodesMap.put(mobj, path);
         }
 
         String debugText = DebugTools.getDebugText(mobj);
@@ -420,13 +425,18 @@ public class JavaFXRenderer extends Renderer {
 
         // Stroke width and color
         path.setStroke(JavaFXRendererUtils.getFXPaint(mobj.getMp().getDrawColor(), this, camera));
-        double th = computeThickness(mobj);
+//        double th = computeThickness(mobj);
 
         // Compute thickness depending on camera
         // A thickness of 1 means a javafx thickness 1 in a 800x600with mathview of
         // width 4
         // In a 800x600, it should mean 1 pixel
-        path.setStrokeWidth(th);
+//        path.setStrokeWidth(th);
+        if (mobj.getMp().isAbsoluteThickness()) {
+            path.setStrokeWidth(mobj.getMp().getThickness() * mobj.getCamera().getMathView().getWidth() / 5000);
+        } else {
+            path.setStrokeWidth(mobj.getMp().getThickness() * 4 / 5000);
+        }
 
         // Fill color
         path.setFill(JavaFXRendererUtils.getFXPaint(mobj.getMp().getFillColor(), this, camera));
