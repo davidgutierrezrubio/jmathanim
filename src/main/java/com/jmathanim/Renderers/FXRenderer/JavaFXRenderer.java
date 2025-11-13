@@ -302,11 +302,11 @@ public class JavaFXRenderer extends Renderer {
             // Add all elements
 //            mainGroupOfObjectsToRender.getChildren().addAll(fxnodes);
             for (JavaFXRenderCommand rc : renderCommands) {
-                Node e = retrieveFXNodeForObject(rc);
-                if (!mainGroupOfObjectsToRender.getChildren().contains(e))
-                    mainGroupOfObjectsToRender.getChildren().add(e);
+                Node node = retrieveFXNodeForRenderCommand(rc);
+                if (!mainGroupOfObjectsToRender.getChildren().contains(node))
+                    mainGroupOfObjectsToRender.getChildren().add(node);
             }
-            System.out.println("render size "+renderCommands.size());
+//            System.out.println("render size "+renderCommands.size());
 //            System.out.println(mainGroupOfObjectsToRender.getChildren().size());
 
             if (config.showFrameNumbers) {
@@ -382,7 +382,7 @@ public class JavaFXRenderer extends Renderer {
         drawPath(mobj, cam);
     }
 
-    private Node retrieveFXNodeForObject(JavaFXRenderCommand renderCommand) {
+    private Node retrieveFXNodeForRenderCommand(JavaFXRenderCommand renderCommand) {
         if (rendererCommandsToNodes.containsKey(renderCommand)) {
             return rendererCommandsToNodes.get(renderCommand);
         } else {
