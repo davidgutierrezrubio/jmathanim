@@ -27,7 +27,6 @@ import com.jmathanim.Styling.*;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
-import javafx.geometry.Point2D;
 import javafx.scene.paint.*;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
@@ -479,8 +478,8 @@ public class JavaFXRendererUtils {
 
             if (jmpath.getJmPathPoints().get(n).isSegmentToThisPointVisible()) {
                 JMPathPoint jp = jmpath.getJmPathPoints().get(n);
-                //JavaFX has problems drawin CubicCurves when control points are equal than points
-                if ((!jp.isSegmentToThisPointCurved()) || ((isAbsEquiv(prev, cxy1, .1)) && (isAbsEquiv(xy, cxy2, .1)))) {
+                //JavaFX has problems drawing CubicCurves when control points are equal to points
+                if ((!jp.isSegmentToThisPointCurved()) || ((isAbsEquiv(prev, cxy1, .000001)) && (isAbsEquiv(xy, cxy2, .000001)))) {
                     final LineTo el = new LineTo(xy[0], xy[1]);
                     path.getElements().add(el);
                 } else {
