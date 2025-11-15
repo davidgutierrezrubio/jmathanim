@@ -11,4 +11,12 @@ public class JavaFXRenderCommand {
     public double shiftVector_y;
     public Camera camera;
 
+    //These variables helps keep if anything changed from previous render
+    public double previous_shiftVector_x=0;
+    public double previous_shiftVector_y=0;
+    public long cameraVersion=-1;
+    public long pathVersion=-1;
+    public long mpVersion=-1;
+    public long imageVersion=-1;
+
 }
