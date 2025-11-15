@@ -197,7 +197,7 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
         visible = (prop.isVisible() == null ? visible : prop.isVisible());
         faceToCamera = (prop.isFaceToCamera() == null ? faceToCamera : prop.isFaceToCamera());
         faceToCameraPivot = (prop.getFaceToCameraPivot() == null ? faceToCameraPivot : prop.getFaceToCameraPivot());
-        setHasBeenChanged(true);
+        changeVersion();
     }
 
     public void setParent(MathObject parent) {
@@ -224,13 +224,13 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
         visible = mp.visible;
         faceToCamera = mp.faceToCamera;
         faceToCameraPivot = mp.faceToCameraPivot;
-        setHasBeenChanged(true);
+       changeVersion();
     }
 
     @Override
     public DrawStyleProperties setAbsoluteThickness(Boolean absThickness) {
         this.absoluteThickness = absThickness;
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -242,7 +242,7 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
     @Override
     public DrawStyleProperties setDashStyle(DashStyle dashStyle) {
         this.dashStyle = dashStyle;
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -254,14 +254,14 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
     @Override
     public DrawStyleProperties setDotStyle(DotStyle dotStyle) {
         this.dotStyle = dotStyle;
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
     @Override
     public DrawStyleProperties setDrawAlpha(double alpha) {
         this.drawColor.setAlpha(alpha);
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -280,7 +280,7 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
 //            if (parent != null) {
 //                parent.on_setDrawColor(this.drawColor);
 //            }
-            setHasBeenChanged(true);
+           changeVersion();
         }
 
         return this;
@@ -304,7 +304,7 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
     public DrawStyleProperties setFillAlpha(double alpha) {
         if (this.fillColor.getAlpha() != alpha) {
             this.fillColor.setAlpha(alpha);
-            setHasBeenChanged(true);
+           changeVersion();
         }
 
         return this;
@@ -325,7 +325,7 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
 //            if (parent != null) {
 //                parent.on_setFillColor(this.fillColor);
 //            }
-            setHasBeenChanged(true);
+          changeVersion();
         }
 
         return this;
@@ -335,16 +335,16 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
     public MODrawProperties getFirstMP() {
         return this;
     }
-
-    @Override
-    public boolean hasBeenChanged() {
-        return hasBeenChanged;
-    }
-
-    @Override
-    public void setHasBeenChanged(boolean hasBeenChanged) {
-        this.hasBeenChanged = hasBeenChanged;
-    }
+//
+//    @Override
+//    public boolean hasBeenChanged() {
+//        return hasBeenChanged;
+//    }
+//
+//    @Override
+//    public void setHasBeenChanged(boolean hasBeenChanged) {
+//        this.hasBeenChanged = hasBeenChanged;
+//    }
 
 
     @Override
@@ -358,7 +358,7 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
     @Override
     public DrawStyleProperties setLayer(int layer) {
         this.layer = layer;
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
 
     }
@@ -375,7 +375,7 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
 
     public DrawStyleProperties setLineJoin(StrokeLineJoin linejoin) {
         if (linejoin == null) {
-            setHasBeenChanged(true);;
+           changeVersion();;
         }
         if (this.linejoin != linejoin) {
             this.linejoin = linejoin;
@@ -383,14 +383,14 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
 //                parent.on_setLineJoin(this.linejoin);
 //            }
         }
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
     @Override
     public DrawStyleProperties setLinecap(StrokeLineCap linecap) {
         if (linecap == null) {
-            setHasBeenChanged(true);;
+           changeVersion();;
         }
         if (this.linecap != linecap) {
             this.linecap = linecap;
@@ -398,7 +398,7 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
 //                parent.on_setLineCap(this.linecap);
 //            }
         }
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -415,7 +415,7 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
 //                parent.on_setThickness(thickness);
 //            }
         }
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -427,7 +427,7 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
 //                parent.on_setVisible(visible);
 //            }
         }
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -453,7 +453,7 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
         if (b.getThickness() != null) {
             this.thickness = (1 - alpha) * a.getThickness() + alpha * b.getThickness();
         }
-        setHasBeenChanged(true);
+       changeVersion();
     }
 
     @Override
@@ -489,14 +489,14 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
         } else {
             JMathAnimScene.logger.warn("No style with name "+LogUtils.method(name)+" found");
         }
-        setHasBeenChanged(true);
+       changeVersion();
     }
 
     @Override
     public DrawStyleProperties multThickness(double multT) {
         if (getThickness() != null)
             setThickness(getThickness() * multT);
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -509,7 +509,7 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
     @Override
     public DrawStyleProperties setFaceToCamera(Boolean faceToCamera) {
         this.faceToCamera = faceToCamera;
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -521,7 +521,7 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
     @Override
     public DrawStyleProperties setFaceToCameraPivot(Vec pivot) {
         this.faceToCameraPivot = pivot;
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 

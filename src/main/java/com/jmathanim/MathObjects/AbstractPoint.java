@@ -23,6 +23,8 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
     protected final Vec previousVecPosition;
     protected final Shape dotShape;
     private final MODrawProperties mpPoint;
+    private long mpVersion;
+    private long dotShapeVersion;
 
     protected AbstractPoint() {
         this(Vec.to(0, 0));
@@ -33,6 +35,8 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
         this.v = v;
         previousVecPosition = this.getVec().copy();
         this.dotShape = new Shape();
+        dotShapeVersion=-1L;
+        mpVersion=-1L;
         mpPoint = JMathAnimConfig.getConfig().getDefaultMP();
         mpPoint.copyFrom(JMathAnimConfig.getConfig().getStyles().get("dotdefault"));
         mpPoint.setAbsoluteThickness(true);
@@ -78,14 +82,14 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
             generateStyleForDot();
             dotShape.setAbsoluteSize(v);
         }
-        if (getMp().hasBeenChanged()) {
+        if (getMp().getVersion()>mpVersion) {
             generateDotShape();
             generateStyleForDot();
             dotShape.setAbsoluteSize(v);
-            getMp().setHasBeenChanged(false);
+            mpVersion=getMp().getVersion();
         }
         if (!previousVecPosition.equals(v)) {
-            dotShape.shift(v.minus(previousVecPosition));
+            dotShape.shift(v.minus(previousVecPosition));//TODO Improve this
             previousVecPosition.copyCoordinatesFrom(v);
         }
         return dotShape;

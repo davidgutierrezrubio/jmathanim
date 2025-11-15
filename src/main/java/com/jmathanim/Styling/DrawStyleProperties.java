@@ -157,9 +157,9 @@ public interface DrawStyleProperties extends Stylable<DrawStyleProperties>, Depe
     DrawStyleProperties multFillAlpha(double mult);
 
     MODrawProperties getFirstMP();
-
-    boolean hasBeenChanged();
-
-    void setHasBeenChanged(boolean hasBeenChanged);
+//
+//    boolean hasBeenChanged();
+//
+//    void setHasBeenChanged(boolean hasBeenChanged);
 
 }

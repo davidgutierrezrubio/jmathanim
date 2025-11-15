@@ -419,6 +419,10 @@ public class JavaFXRenderer extends Renderer {
                     System.out.println("Actualizando shiftVector de PATH");
                     JavaFXRendererUtils.applyShiftVectorToNode(node, rc);
                 }
+                if (shape.getMp().getVersion()>rc.mpVersion) {
+                    System.out.println("Actualizando MP de PATH");
+                    applyDrawingStyles((Path) node, rc);
+                }
 
 
                 break;
@@ -543,6 +547,7 @@ public class JavaFXRenderer extends Renderer {
                 path.setStrokeLineCap(StrokeLineCap.BUTT);
                 break;
         }
+        rc.mpVersion=mobj.getMp().getVersion();
     }
 
 
