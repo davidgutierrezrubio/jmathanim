@@ -28,7 +28,6 @@ import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.RendererEffects;
-import com.jmathanim.Utils.EmptyRect;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.Utils.Vec;
@@ -56,9 +55,7 @@ import javafx.scene.transform.Scale;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
@@ -320,6 +317,8 @@ public class JavaFXRenderer extends Renderer {
 //                if (parent != null) {
 //                    ((Group) parent).getChildren().remove(node);
 //                }
+                System.out.println(node);
+
                 mainGroupOfObjectsToRender.getChildren().add(node);
             }
             if (config.showFrameNumbers) {
@@ -401,6 +400,7 @@ public class JavaFXRenderer extends Renderer {
             return node;
         } else {
             Node e = processNewRenderCommand(renderCommand);
+            System.out.println("new node");
             drawablesToNodes.put(renderCommand.object, e);
             return e;
         }
@@ -454,8 +454,9 @@ public class JavaFXRenderer extends Renderer {
                 generateFullShapeObject(fxPathAbs, renderCommand);
                 return fxPathAbs;
             case IMAGE:
-                JMathAnimScene.logger.warn("Image still not implemented");
-                return null;
+                return createNewImageNode(renderCommand);
+//                JMathAnimScene.logger.warn("Image still not implemented");
+//                return null;
         }
         return null;
     }
@@ -628,16 +629,16 @@ public class JavaFXRenderer extends Renderer {
         String fileName = stream.toString();
         Image image;
         if (!images.containsKey(fileName)) {// If the image is not already loaded...
-            try {
+//            try {
                 ResourceLoader rl = new ResourceLoader();
-                final URL imageResource = rl.getExternalResource(fileName, "images");
+//                final URL imageResource = rl.getExternalResource(fileName, "images");
                 image = new Image(stream);
                 images.put(fileName, image);
                 JMathAnimScene.logger.info("Loaded image " + fileName);
-            } catch (FileNotFoundException e) {
-                JMathAnimScene.logger.error("File " + LogUtils.CYAN + fileName + LogUtils.RESET + " not found. Returning EmptyRect");
-                return new EmptyRect();
-            }
+//            } catch (FileNotFoundException e) {
+//                JMathAnimScene.logger.error("File " + LogUtils.CYAN + fileName + LogUtils.RESET + " not found. Returning EmptyRect");
+//                return new EmptyRect();
+//            }
         } else {
             image = images.get(fileName);
         }
@@ -654,33 +655,45 @@ public class JavaFXRenderer extends Renderer {
         return r;
     }
 
-    public Image getImageFromCatalog(AbstractJMImage obj) {
-        return images.get(obj.getId());
+    public Image getImageFromCatalog(AbstractJMImage<?> jmImage) {
+        return images.get(jmImage.getId());
     }
 
     @Override
-    public void drawImage(AbstractJMImage obj, Camera cam) {
-        Rect bbox = getBboxFromImageCatalog(obj.getId());
-        ImageView imageView;
-        if (obj.isCached()) {
-            Image image = getImageFromCatalog(obj);
-            imageView = new ImageView(image);
+    public void drawImage(AbstractJMImage<?> jmImage, Camera cam) {
+        JavaFXRenderCommand rc = new JavaFXRenderCommand();
+        rc.object = jmImage;
+        rc.type = JavaFXRenderCommand.COMMAND_TYPE.IMAGE;
+//        rc.shiftVector_x = shiftVector.x;
+//        rc.shiftVector_y = shiftVector.y;
+        rc.camera = camera;
+        currentFrame.add(rc);
+    }
+
+
+    private Node createNewImageNode(JavaFXRenderCommand rc){
+        AbstractJMImage<?> jmImage = (AbstractJMImage<?>) rc.object;
+        Rect bbox = getBboxFromImageCatalog(jmImage.getId());
+        ImageView imageNode;
+        if (jmImage.isCached()) {
+            Image image = getImageFromCatalog(jmImage);
+            imageNode = new ImageView(image);
         } else {
-            imageView = new ImageView(obj.getImage());
+            imageNode = new ImageView(jmImage.getImage());
         }
-        imageView.setFitHeight(bbox.getHeight());
-        imageView.setFitWidth(bbox.getWidth());
+        imageNode.setFitHeight(bbox.getHeight());
+        imageNode.setFitWidth(bbox.getWidth());
 
-        imageView.setOpacity(obj.getMp().getDrawColor().getAlpha());
+        imageNode.setOpacity(jmImage.getMp().getDrawColor().getAlpha());
 
-        Affine camToScreen = JavaFXRendererUtils.camToScreenAffineTransform(cam);
-        imageView.getTransforms().add(camToScreen);
+        Affine camToScreen = JavaFXRendererUtils.camToScreenAffineTransform(rc.camera);
+        imageNode.getTransforms().add(camToScreen);
 
 //        //Swap y coordinate
-        imageView.getTransforms().add(new Scale(1, -1));
-        imageView.getTransforms().add(JavaFXRendererUtils.affineJToAffine(obj.getCurrentViewTransform()));
-        imageView.getTransforms().add(new Scale(1, -1));
-//        fxnodes.add(imageView);
+        imageNode.getTransforms().add(new Scale(1, -1));
+        imageNode.getTransforms().add(JavaFXRendererUtils.affineJToAffine(jmImage.getCurrentViewTransform()));
+        imageNode.getTransforms().add(new Scale(1, -1));
+        return imageNode;
     }
 
     @Override
