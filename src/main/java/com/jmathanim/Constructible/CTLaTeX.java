@@ -56,6 +56,7 @@ public class CTLaTeX extends Constructible<CTLaTeX> {
         this.anchorType = anchorType;
         this.anchor = anchor.getVec();
         this.visible = true;
+        addDependency(anchor);
     }
 
     @Override
