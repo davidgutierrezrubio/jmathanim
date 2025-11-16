@@ -21,10 +21,12 @@ import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.Enum.StrokeLineCap;
 import com.jmathanim.Enum.StrokeLineJoin;
+import com.jmathanim.MathObjects.AbstractVersioned;
 import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.Utils.LatexStyle;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimConfig;
+import com.jmathanim.jmathanim.JMathAnimScene;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,7 +50,7 @@ import java.util.Arrays;
  * can be initialized with default properties or copied from existing objects, with
  * modifications propagating across associated entities.
  */
-public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
+public class DrawStylePropertiesObjectsArray extends AbstractVersioned implements DrawStyleProperties {
 
     private final MODrawPropertiesLaTeX mpRef;
     private ArrayList<MathObject<?>> objects;
@@ -82,6 +84,9 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
     }
 
     public void clear() {
+//        for (MathObject<?> obj : objects) {
+//           removeDependency(obj);
+//        }
         objects.clear();
     }
 
@@ -116,7 +121,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
      */
     public void setLatexStyle(LatexStyle latexStyle) {
         this.latexStyle = latexStyle;
-        setHasBeenChanged(true);
+     changeVersion();
     }
 
 
@@ -136,7 +141,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
      */
     public void setObjects(ArrayList<MathObject<?>> objects) {
         this.objects = objects;
-        setHasBeenChanged(true);
+     changeVersion();
     }
 
     /**
@@ -146,7 +151,10 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
      */
     public void add(MathObject<?>... objs) {
         objects.addAll(Arrays.asList(objs));
-        setHasBeenChanged(true);
+//        for (MathObject<?> obj:objs) {
+//            addDependency(obj);
+//        }
+     changeVersion();
     }
 
     /**
@@ -161,7 +169,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
             obj.getMp().setVisible(visible);
         }
         mpRef.setVisible(visible);
-        setHasBeenChanged(true);
+     changeVersion();
         return this;
     }
 
@@ -182,7 +190,8 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
      * @return true if the MathObject was successfully removed; false otherwise.
      */
     public boolean remove(MathObject<?> o) {
-        setHasBeenChanged(true);
+     changeVersion();
+        removeDependency(o);
         return objects.remove(o);
     }
 
@@ -221,7 +230,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
                 mpRef.latexStyle = moDrawPropertiesLaTeX.latexStyle;
 
         }
-        setHasBeenChanged(true);
+     changeVersion();
     }
 
     public void copyFrom(DrawStylePropertiesObjectsArray prop) {
@@ -233,7 +242,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
         } else {
             copyFrom(prop.mpRef);
         }
-        setHasBeenChanged(true);
+     changeVersion();
     }
 
     /**
@@ -249,7 +258,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
             obj.getMp().interpolateFrom(dst, alpha);
         }
         mpRef.interpolateFrom(dst, alpha);
-        setHasBeenChanged(true);
+     changeVersion();
     }
 
     /**
@@ -267,7 +276,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
             obj.getMp().interpolateFrom(a, b, alpha);
         }
         mpRef.interpolateFrom(a, b, alpha);
-        setHasBeenChanged(true);
+     changeVersion();
     }
 
     /**
@@ -282,7 +291,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
 
         }
         mpRef.loadFromStyle(name);
-        setHasBeenChanged(true);
+     changeVersion();
     }
 
     /**
@@ -298,7 +307,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
             obj.getMp().rawCopyFrom(mp);
         }
         mpRef.rawCopyFrom(mp);
-        setHasBeenChanged(true);
+     changeVersion();
     }
 
     /**
@@ -313,7 +322,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
             obj.getMp().setDrawAlpha(alpha);
         }
         mpRef.setDrawAlpha(alpha);
-        setHasBeenChanged(true);
+     changeVersion();
         return this;
     }
 
@@ -331,7 +340,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
             obj.getMp().setFillAlpha(alpha);
         }
         mpRef.setFillAlpha(alpha);
-        setHasBeenChanged(true);
+     changeVersion();
         return this;
     }
 
@@ -347,7 +356,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
             obj.getMp().multDrawAlpha(mult);
         }
         mpRef.multDrawAlpha(mult);
-        setHasBeenChanged(true);
+     changeVersion();
         return this;
     }
 
@@ -364,7 +373,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
             obj.getMp().multFillAlpha(mult);
         }
         mpRef.multFillAlpha(mult);
-        setHasBeenChanged(true);
+     changeVersion();
         return this;
     }
 
@@ -390,7 +399,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
             obj.getMp().setLayer(layer);
         }
         mpRef.setLayer(layer);
-        setHasBeenChanged(true);
+     changeVersion();
         return this;
     }
 
@@ -415,7 +424,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
             obj.getMp().setDrawColor(drawColor);
         }
         mpRef.setDrawColor(drawColor);
-        setHasBeenChanged(true);
+     changeVersion();
         return this;
     }
 
@@ -443,7 +452,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
             obj.getMp().setFillColor(fillColor);
         }
         mpRef.setFillColor(fillColor);
-        setHasBeenChanged(true);
+     changeVersion();
         return this;
     }
 
@@ -456,17 +465,17 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
     public MODrawPropertiesLaTeX getFirstMP() {
         return mpRef;
     }
-
-    @Override
-    public boolean hasBeenChanged() {
-        return hasBeenChanged;
-    }
-
-    @Override
-    public void setHasBeenChanged(boolean hasBeenChanged) {
-        this.hasBeenChanged=hasBeenChanged;
-
-    }
+//
+//    @Override
+//    public boolean hasBeenChanged() {
+//        return hasBeenChanged;
+//    }
+//
+//    @Override
+//    public void setHasBeenChanged(boolean hasBeenChanged) {
+//        this.hasBeenChanged=hasBeenChanged;
+//
+//    }
 
     /**
      * Retrieves the currently defined line cap style for the stroke.
@@ -501,7 +510,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
             obj.getMp().setLineJoin(linejoin);
         }
         mpRef.setLineJoin(linejoin);
-        setHasBeenChanged(true);
+     changeVersion();
         return this;
     }
 
@@ -517,7 +526,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
             obj.getMp().setLinecap(linecap);
         }
         mpRef.setLinecap(linecap);
-        setHasBeenChanged(true);
+     changeVersion();
         return this;
     }
 
@@ -543,7 +552,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
             obj.getMp().setThickness(thickness);
         }
         mpRef.setThickness(thickness);
-        setHasBeenChanged(true);
+     changeVersion();
         return this;
     }
 
@@ -569,7 +578,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
             obj.getMp().setDotStyle(dotStyle);
         }
         mpRef.setDotStyle(dotStyle);
-        setHasBeenChanged(true);
+     changeVersion();
         return this;
     }
 
@@ -595,7 +604,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
             obj.getMp().setDashStyle(dashStyle);
         }
         mpRef.setDashStyle(dashStyle);
-        setHasBeenChanged(true);
+     changeVersion();
         return this;
     }
 
@@ -622,7 +631,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
             obj.getMp().setAbsoluteThickness(absThickness);
         }
         mpRef.setAbsoluteThickness(absThickness);
-        setHasBeenChanged(true);
+     changeVersion();
         return this;
     }
 
@@ -639,7 +648,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
             obj.getMp().multThickness(multT);
         }
         mpRef.multThickness(multT);
-        setHasBeenChanged(true);
+     changeVersion();
         return this;
     }
 
@@ -668,7 +677,7 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
             obj.getMp().setFaceToCamera(faceToCamera);
         }
         mpRef.setFaceToCamera(faceToCamera);
-        setHasBeenChanged(true);
+     changeVersion();
         return this;
     }
 
@@ -695,8 +704,22 @@ public class DrawStylePropertiesObjectsArray implements DrawStyleProperties {
             obj.getMp().setFaceToCameraPivot(pivot);
         }
         mpRef.setFaceToCameraPivot(pivot);
-        setHasBeenChanged(true);
+     changeVersion();
         return this;
     }
 
+    @Override
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+
+    }
+
+    @Override
+    public void performUpdateBoundingBox(JMathAnimScene scene) {
+
+    }
+
+    @Override
+    protected boolean applyUpdaters(JMathAnimScene scene) {
+        return false;
+    }
 }

@@ -34,12 +34,13 @@ public class BooleanShape extends Shape {
     public BooleanShape(BooleanOperation booleanOperation, Shape shape1, Shape shape2) {
         this.shape1 = shape1;
         this.shape2 = shape2;
+        addDependency(this.shape1);
+        addDependency(this.shape2);
         this.booleanOperation = booleanOperation;
     }
 
     @Override
-    public void update(JMathAnimScene scene) {
-        super.update(scene);
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
         JMPath newPath = null;
         switch (this.booleanOperation) {
             case UNION:
@@ -57,12 +58,6 @@ public class BooleanShape extends Shape {
     }
 
     @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        scene.registerUpdateable(shape1, shape2);
-        setUpdateLevel(Math.max(shape1.getUpdateLevel(), shape2.getUpdateLevel()) + 1);
-    }
-
-    @Override
     public Shape copy() {
         BooleanShape copy = new BooleanShape(this.booleanOperation, shape1.copy(), shape2.copy());
         copy.copyStateFrom(this);
@@ -77,6 +72,7 @@ public class BooleanShape extends Shape {
         this.shape1.copyStateFrom(bs.shape1);
         this.shape2.copyStateFrom(bs.shape2);
         this.booleanOperation = bs.booleanOperation;
+        changeVersion();
     }
 
 }

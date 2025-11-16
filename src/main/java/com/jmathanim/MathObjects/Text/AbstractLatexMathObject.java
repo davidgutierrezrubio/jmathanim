@@ -181,6 +181,8 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
         if ((mode == CompileMode.JLaTexMath) || (mode == CompileMode.RawJLaTexMath)) {
             sc *= 0.24906237699889464;
         }
+        markClean();
+        boundingBox=computeBoundingBox();
         this.scale(sc, sc, 1);
         Vec v = Vec.to(0, 0);
         switch (anchor) {
@@ -254,7 +256,7 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
     }
 
     @Override
-    protected Rect computeBoundingBox() {
+    public Rect computeBoundingBox() {
         Rect resul = null;
         for (LatexShape jmp : this) {
             if (!jmp.isEmpty()) {
@@ -564,5 +566,22 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
          * used for compatibiliy reasons and in the rare cases JLaTeXMath cannot compile the LaTeX string.
          */
         CompileFile
+    }
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+        if (origText == null) {
+            origText = getText();
+        }
+        //Update args
+        String newText = origText;
+        for (Integer index : variables.keySet()) {
+            newText = newText.replace("{#" + index + "}", df.format(variables.get(index).getValue()));
+        }
+        if (!newText.equals(origText)) {//No need to update if text has not changed
+            changeInnerLaTeX(newText);
+        }
+//        anchor3DA = getBoundingBox().getLower();
+//        anchor3DC = anchor3DA.copy().shift(0, 1, 0);
+//        anchor3DD = anchor3DA.copy().shift(0, 0, 1);
+//        alignTo3DView();
     }
 }

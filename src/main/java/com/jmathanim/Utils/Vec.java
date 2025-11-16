@@ -22,12 +22,14 @@ import com.jmathanim.MathObjects.AffineTransformable;
 import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.MathObjects.Interpolable;
 import com.jmathanim.MathObjects.Stateable;
+import com.jmathanim.jmathanim.Dependable;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 
 import java.io.Serializable;
+import java.util.List;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI2;
 
@@ -36,10 +38,11 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI2;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<Vec>, Interpolable<Vec>, Serializable {
+public class Vec implements Dependable, HasDirection, Coordinates<Vec>, AffineTransformable<Vec>, Interpolable<Vec>, Serializable {
 
     public double x, y, z;
     public double xState, yState, zState;
+    private long version;
 
     /**
      * Returns a new Vec with the given coordinates
@@ -62,7 +65,7 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
         this.x = x;
         this.y = y;
         this.z = z;
-
+        version = -1;
     }
 
     public static Vec to(double x, double y, double z) {
@@ -186,6 +189,7 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
         double b = this.y;
         this.x = c * a - s * b;
         this.y = s * a + c * b;
+        changeVersion();
         return this;
     }
 
@@ -216,53 +220,10 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
     }
 
 
-//    @Override
-//    public int hashCode() {
-//        int hash = 7;
-//        hash = 29 * hash + Long.hashCode(Double.doubleToLongBits(this.x));
-//        hash = 29 * hash + Long.hashCode(Double.doubleToLongBits(this.y));
-//        hash = 29 * hash + Long.hashCode(Double.doubleToLongBits(this.z));
-//        return hash;
-//    }
-
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (this == obj) {
-//            return true;
-//        }
-//        if (obj == null) {
-//            return false;
-//        }
-//        if (getClass() != obj.getClass()) {
-//            return false;
-//        }
-//        final Vec other = (Vec) obj;
-//        if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.x)) {
-//            return false;
-//        }
-//        if (Double.doubleToLongBits(this.y) != Double.doubleToLongBits(other.y)) {
-//            return false;
-//        }
-//        return Double.doubleToLongBits(this.z) == Double.doubleToLongBits(other.z);
-//    }
-
     @Override
     public String toString() {
-//        return String.format(
-//                        LogUtils.PURPLE+"%s"+LogUtils.RESET+"[" +
-//                        LogUtils.BLUE+"%.2f" +LogUtils.RESET+
-//                        ", " +
-//                        LogUtils.BLUE+"%.2f" +LogUtils.RESET+
-//                        "]",
-//                getClass().getSimpleName(),
-//                x,
-//                y);
-        return String.format(
-                "%s[%.2f, %.2f]",
-                getClass().getSimpleName(),
-                x,
-                y);
-
+//        return getClass().getSimpleName() + "[" + LogUtils.number(x, 2) + "," + LogUtils.number(y, 2) + "]";
+        return String.format("%s [%.2f, %.2f] version %d", getClass().getSimpleName(), x, y,getVersion());
     }
 
     /**
@@ -273,6 +234,7 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
      */
     public Vec normalize() {
         double norm = this.norm();
+        changeVersion();
         if (norm > 0) {
             return this.mult(1d / norm);
         } else {
@@ -300,6 +262,7 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
         x = pNew.getEntry(0, 1);
         y = pNew.getEntry(0, 2);
         z = pNew.getEntry(0, 3);
+        changeVersion();
         return this;
     }
 
@@ -325,28 +288,25 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
         return false;
     }
 
+
     @Override
-    public int getUpdateLevel() {
-        return 0;
+    public List<Dependable> getDependencies() {
+        return Dependable.EMPTY_DEPENDENCIES;//No dependencies
     }
 
     @Override
-    public void setUpdateLevel(int level) {
-
-    }
-
-    @Override
-    public void update(JMathAnimScene scene) {
+    public void addDependency(Dependable dep) {
 
     }
 
     @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-
+    public void changeVersion() {
+        version = ++JMathAnimScene.globalVersion;
     }
 
     @Override
-    public void unregisterUpdateableHook(JMathAnimScene scene) {
+    public long getVersion() {
+        return version;
     }
 
 
@@ -355,5 +315,8 @@ public class Vec implements HasDirection, Coordinates<Vec>, AffineTransformable<
         if (!(obj instanceof Vec)) return;
         Vec v = (Vec) obj;
         copyCoordinatesFrom(v);
+        changeVersion();
     }
+
+
 }

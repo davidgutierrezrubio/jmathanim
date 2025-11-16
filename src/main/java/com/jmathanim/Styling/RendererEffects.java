@@ -46,7 +46,7 @@ public class RendererEffects {
         shadowKernelSize = 0;
         shadowOffsetX = 0;
         shadowOffsetY = 0;
-        shadowColor = JMColor.BLACK;
+        shadowColor = JMColor.rgba(0,0,0,1);
     }
 
     public double getShadowKernelSize() {

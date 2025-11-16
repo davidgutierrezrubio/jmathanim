@@ -23,13 +23,25 @@ import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.MathObjects.Scalar;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  *
  * @author David
  */
 public class CTRotatedPoint extends CTAbstractPoint<CTRotatedPoint> {
+
+    private final Coordinates<?> pointToRotate;
+    private final Scalar angle;
+    private final Vec rotationCenter;
+    private CTRotatedPoint(Coordinates<?> pointToRotate, Scalar angle, Coordinates<?> rotationCenter) {
+        super();
+        this.pointToRotate = pointToRotate;
+        this.angle = angle;
+        this.rotationCenter = rotationCenter.getVec();
+        addDependency(pointToRotate.getVec());
+        addDependency(angle);
+        addDependency(rotationCenter.getVec());
+    }
 
     public static CTRotatedPoint make(Coordinates<?> pointToRotate, double angle, Coordinates<?> rotationCenter) {
         return make(CTPoint.at(pointToRotate), CTPoint.at(rotationCenter), Scalar.make(angle));
@@ -39,16 +51,6 @@ public class CTRotatedPoint extends CTAbstractPoint<CTRotatedPoint> {
         CTRotatedPoint resul = new CTRotatedPoint(pointToRotate, angle, rotationCenter);
         resul.rebuildShape();
         return resul;
-    }
-    private final Coordinates<?> pointToRotate;
-    private final Scalar angle;
-    private final Vec rotationCenter;
-
-    private CTRotatedPoint(Coordinates<?> pointToRotate, Scalar angle, Coordinates<?> rotationCenter) {
-        super();
-        this.pointToRotate = pointToRotate;
-        this.angle = angle;
-        this.rotationCenter = rotationCenter.getVec();
     }
 
     @Override
@@ -62,10 +64,6 @@ public class CTRotatedPoint extends CTAbstractPoint<CTRotatedPoint> {
         }
     }
 
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-       dependsOn(scene,this.pointToRotate, this.rotationCenter, this.angle);
-    }
 
     @Override
     public CTRotatedPoint copy() {

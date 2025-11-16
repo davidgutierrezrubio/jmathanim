@@ -84,6 +84,12 @@ public class JMImage extends AbstractJMImage<JMImage> {
         bbox.copyFrom(img.bbox);
         preserveRatio = img.preserveRatio;
         this.currentViewTransform.copyFrom(img.currentViewTransform);
+        changeVersion();
+    }
+
+    @Override
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+
     }
 
     /**

@@ -62,15 +62,14 @@ public class LengthMeasure extends Delimiter {
             delimiterShapeToDraw.getPath().addJMPointsFrom(segment.getPath());
         } else {
             delimiterLabelRigidBox.resetMatrix();
-            delimiterLabelRigidBox.update(scene);
+
 
 //            double realAmplitudeScale = UsefulLambdas.allocateTo(0, minimumWidthToShrink).applyAsDouble(width);
             double realAmplitudeScale = UsefulLambdas.allocateTo(0, getLabel().getWidth() * 2.5).applyAsDouble(width);
             double gapToUse = hgap * realAmplitudeScale;
             double segmentLength = .5 * (width - getLabel().getWidth()) - gapToUse;
-
-
             delimiterLabelRigidBox.scale(realAmplitudeScale);
+//            delimiterLabelRigidBox.performMathObjectUpdateActions(scene);
 
 
 

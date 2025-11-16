@@ -34,7 +34,7 @@ public class PointOnFunctionGraph extends AbstractPoint<PointOnFunctionGraph> {
     private static double DELTA_DERIVATE = 0.001d;
     private final Vec slopePointRight;
     private final Vec slopePointLeft;
-    FunctionGraph fg;
+    private final FunctionGraph fg;
 
     /**
      * Creates an updateable point which automatically updates the y-component to be so that lies in the function graph
@@ -42,9 +42,10 @@ public class PointOnFunctionGraph extends AbstractPoint<PointOnFunctionGraph> {
      * @param x  The initial x component of the point
      * @param fg Function graph
      */
-    protected PointOnFunctionGraph (double x, FunctionGraph fg) {
+    protected PointOnFunctionGraph(double x, FunctionGraph fg) {
         super(Vec.to(x, 0));
         this.fg = fg;
+        addDependency(fg);
         slopePointRight = Vec.to(x, 0);
         slopePointLeft = Vec.to(x, 0);
         computePoints();
@@ -61,19 +62,19 @@ public class PointOnFunctionGraph extends AbstractPoint<PointOnFunctionGraph> {
         return new PointOnFunctionGraph(x, fg);
     }
 
+
     @Override
-    public void update(JMathAnimScene scene) {
-        super.update(scene);
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
         computePoints();
     }
 
     private void computePoints() {
         getVec().y = this.fg.getFunctionValue(getVec().x);
         slopePointRight.x = getVec().x + DELTA_DERIVATE;
-        slopePointRight.y = getVec().y + this.fg.getSlope(getVec().x, -1)*DELTA_DERIVATE;
+        slopePointRight.y = getVec().y + this.fg.getSlope(getVec().x, -1) * DELTA_DERIVATE;
 
         slopePointLeft.x = getVec().x - DELTA_DERIVATE;
-        slopePointLeft.y = getVec().y - this.fg.getSlope(getVec().x, -1)*DELTA_DERIVATE;
+        slopePointLeft.y = getVec().y - this.fg.getSlope(getVec().x, -1) * DELTA_DERIVATE;
     }
 
     public FunctionGraph getFunctionGraph() {
@@ -88,10 +89,6 @@ public class PointOnFunctionGraph extends AbstractPoint<PointOnFunctionGraph> {
         return slopePointLeft;
     }
 
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, fg);
-    }
 
     @Override
     public PointOnFunctionGraph copy() {

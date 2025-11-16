@@ -22,7 +22,6 @@ import com.jmathanim.MathObjects.Scalar;
 import com.jmathanim.MathObjects.Stateable;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  * Represents a Circle imported from Geogebra with 2 points (center and another one in the perimeter)
@@ -30,6 +29,13 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class CTCircle extends CTAbstractCircle<CTCircle> {
+
+    @Override
+    public String toString() {
+        return "CTCircle{" +
+                "circleType=" + circleType +
+                '}';
+    }
 
     //Currently Geogebra has these methods to create circles:
     // Circle(point,point)
@@ -59,7 +65,9 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
         CTCircle resul = new CTCircle(center, Scalar.make(0));
         resul.circleType = CircleType.CENTER_POINT;
         resul.setCircleCenter(center);
+        resul.addDependency(center);
         resul.A = P.getVec();
+        resul.addDependency(resul.A);
         resul.rebuildShape();
         return resul;
     }
@@ -85,6 +93,8 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
     public static CTCircle makeCenterRadius(Coordinates<?> center, Scalar radius) {
         CTCircle resul = new CTCircle(center, radius);
         resul.circleType = CircleType.CENTER_RADIUS;
+        resul.addDependency(center);
+        resul.addDependency(radius);
         resul.rebuildShape();
         return resul;
     }
@@ -103,6 +113,9 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
         resul.A = A.getVec();
         resul.B = B.getVec();
         resul.C = C.getVec();
+        resul.addDependency(resul.A);
+        resul.addDependency(resul.B);
+        resul.addDependency(resul.C);
         resul.rebuildShape();
         return resul;
     }
@@ -158,21 +171,7 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
     }
 
     @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        switch (circleType) {
-            case CENTER_POINT:
-                dependsOn(scene, this.getCircleCenter(), this.A);
-                break;
-            case THREE_POINTS:
-                dependsOn(scene, this.getCircleCenter(), this.A, this.B, this.C);
-                break;
-            case CENTER_RADIUS:
-                dependsOn(scene, this.getCircleCenter(), this.abstractCircleRadius);
-        }
-    }
-
-    @Override
-    protected Rect computeBoundingBox() {
+    public Rect computeBoundingBox() {
         rebuildShape();
         return getMathObject().getBoundingBox();
     }
@@ -181,15 +180,8 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
     public void rebuildShape() {
 
         computeCircleCenterRadius();
-//        circleToDraw.getPath().jmPathPoints.clear();
-//        circleToDraw.getPath().addJMPointsFrom(originalCircle.copy().getPath());
 
         if (!isFreeMathObject()) {
-//            for (int i = 0; i < getMathObject().size(); i++) {
-//                JMPathPoint get = getMathObject().get(i);
-//                get.copyControlPointsFrom(getOriginalUnitCirclePath().get(i));
-//            }
-
             getMathObject().getPath().copyStateFrom(
                     getOriginalUnitCirclePath().copy()
                             .scale(this.getCircleRadius().getValue())
@@ -254,10 +246,6 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
         this.setCircleRadius(radd.norm());
         // Center (h,k)
     }
-//    @Override
-//    public int getUpdateLevel() {
-//        return Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1;
-//    }
     // Function to find the circle on
     // which the given three points lie
     //Found in https://www.geeksforgeeks.org/equation-of-circle-when-three-points-on-the-circle-are-given/

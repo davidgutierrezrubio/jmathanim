@@ -103,7 +103,9 @@ public interface AffineTransformable <T extends AffineTransformable<T>>  extends
      * @return The same object, after scaling
      */
     default T scale(double sx, double sy, double sz) {
-        scale(getBoundingBox().getCenter(), sx, sy, sz);
+        Rect bb= getBoundingBox();
+        Vec center=bb.getCenter();
+        scale(center, sx, sy, sz);
         return (T) this;
     }
 

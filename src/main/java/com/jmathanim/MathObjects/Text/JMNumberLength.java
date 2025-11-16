@@ -17,7 +17,8 @@
  */
 package com.jmathanim.MathObjects.Text;
 
-import com.jmathanim.MathObjects.Point;
+import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
@@ -26,25 +27,20 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  */
 public final class JMNumberLength extends JMNumber {
 
-    private final Point A;
-    private final Point B;
+    private final Vec A;
+    private final Vec B;
 
-    private JMNumberLength(Point A, Point B) {
+    private JMNumberLength(Coordinates<?> A, Coordinates<?> B) {
         super(0);
-        this.A = A;
-        this.B = B;
+        this.A = A.getVec();
+        this.B = B.getVec();
+        addDependency(this.A);
+        addDependency(this.B);
         update(scene);
     }
 
     @Override
-    public void update(JMathAnimScene scene) {
-        super.update(scene);
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
         setValue(A.to(B).norm());
-    }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        scene.registerUpdateable(A,B);
-        setUpdateLevel(Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1);
     }
 }

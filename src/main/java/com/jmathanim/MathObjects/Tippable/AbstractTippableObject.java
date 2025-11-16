@@ -40,7 +40,7 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
     public final Vec pivotPointRefShape;
     public final RigidBox tipObjectRigidBox;
     private final DrawStylePropertiesObjectsArray mpArray;
-    public AbstractShape<?> shape;
+    protected final AbstractShape<?> shape;
     public double locationParameterOnShape;
     //    public double rotationAngleAroundPivotPoint;
     public double rotationAngleAroundCenterOfMathObject;
@@ -59,7 +59,10 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
     protected AbstractTippableObject(AbstractShape<?> shape, MathObject<?> tipObject, double location) {
         correctionAngle = PI / 2;
         this.shape = shape;
+        addDependency(this.shape);
+
         this.tipObjectRigidBox = new RigidBox(tipObject);
+        addDependency(this.tipObjectRigidBox);
         this.locationParameterOnShape = location;
         this.slopeDirectionType = SlopeDirectionType.POSITIVE;
         distanceToShape = .5;
@@ -199,6 +202,7 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
         }
         //Reset. There may be a problem with scalars, as copyStateFrom overwrites scalars
         //TODO: This is not efficient. Both refMathObject and mathobject have to be updated with this code
+//        tipObjectRigidBox.getReferenceMathObject().performMathObjectUpdateActions(scene);//This is needed as text content must be recreated if scalars changed
         tipObjectRigidBox.update(scene);//This is needed as text content must be recreated if scalars changed
         tipObjectRigidBox.resetMatrix();
         tipObjectRigidBox.rotate(rotationAngleAroundCenterOfMathObject);
@@ -284,18 +288,12 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
         return (T) this;
     }
 
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, this.shape);
-    }
-
     public Vec getMarkLabelLocation() {
         return markPoint;
     }
 
     @Override
-    public void update(JMathAnimScene scene) {
-        super.update(scene);
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
         rebuildShape();
     }
 

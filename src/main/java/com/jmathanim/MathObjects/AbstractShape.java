@@ -18,11 +18,10 @@ import javafx.scene.shape.Path;
 
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.OptionalInt;
 
 public abstract class
 AbstractShape<T extends AbstractShape<T>>
-        extends MathObject<T> implements hasPath {
+        extends MathObject<T> implements hasPath,hasShapes {
     protected final JMPath jmpath;
     private final DrawStyleProperties mpShape;
     protected boolean showDebugPoints = false;
@@ -37,10 +36,21 @@ AbstractShape<T extends AbstractShape<T>>
     protected AbstractShape(JMPath jmpath) {
         super();
         this.jmpath = jmpath;
+        boundingBox = jmpath.getBoundingBox();
         this.mpShape = JMathAnimConfig.getConfig().getDefaultMP();
+        addDependency(this.jmpath);
+        addDependency(this.mpShape);
+
+    }
+    @Override
+    public AbstractShape<?>[] toShapesArray() {
+        return new AbstractShape<?>[]{this};
     }
 
+
+
     public abstract Shape toShape();
+
     /**
      * Returns a new Point object lying in the Shape, at the given position
      *
@@ -114,8 +124,9 @@ AbstractShape<T extends AbstractShape<T>>
         return (T) this;
     }
 
+
     @Override
-    protected Rect computeBoundingBox() {
+    public Rect computeBoundingBox() {
         return jmpath.getBoundingBox();
     }
 
@@ -137,7 +148,7 @@ AbstractShape<T extends AbstractShape<T>>
      */
     public boolean containsPoint(Vec v) {
         Camera dummyCamera = JMathAnimConfig.getConfig().getFixedCamera();
-        Path path = JavaFXRendererUtils.createFXPathFromJMPath(jmpath, Vec.to(0, 0), dummyCamera);
+        Path path = JavaFXRendererUtils.createFXPathFromJMPath(jmpath, dummyCamera);
         path.setFill(JavaFXRendererUtils.getFXColor(JMColor.parse("black"))); // It's necessary that the javafx path is filled to work
         double[] xy = dummyCamera.mathToScreenFX(v);
         return path.contains(xy[0], xy[1]);
@@ -249,16 +260,6 @@ AbstractShape<T extends AbstractShape<T>>
     }
 
 
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        OptionalInt m = getPath().getJmPathPoints().stream().mapToInt(t -> t.getUpdateLevel()).max();
-        if (m.isPresent()) {
-            setUpdateLevel(m.getAsInt() + 1);
-        } else {
-            setUpdateLevel(0);
-        }
-    }
-
     /**
      * Merges with the given Shape, adding all their jmpathpoints.If the shapes were disconnected they will remain so
      * unless the connect parameter is set to true. In such case, the shapes will be connected by a straight line from
@@ -318,5 +319,14 @@ AbstractShape<T extends AbstractShape<T>>
         return getPath().isOpen();
     }
 
+    @Override
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+
+    }
+
+    @Override
+    public void performUpdateBoundingBox(JMathAnimScene scene) {
+        boundingBox = jmpath.getBoundingBox();
+    }
 
 }

@@ -18,6 +18,7 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.Dependable;
 
 /**
  * Any object that has a direction,like segments, lines, vectors should
@@ -25,7 +26,7 @@ import com.jmathanim.Utils.Vec;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public interface HasDirection {
+public interface HasDirection extends Dependable {
 
     Vec getDirection();
 }

@@ -30,7 +30,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  */
 public class Trail extends AbstractShape<Trail> {
 
-    MathObject<?> marker;
+    private final MathObject<?> marker;
     private boolean cutNext = true;
     private boolean draw = true;
 
@@ -53,6 +53,7 @@ public class Trail extends AbstractShape<Trail> {
      */
     public Trail(MathObject<?> marker) {
         this.marker = marker;
+        addDependency(this.marker);
         getPath().addPoint(marker.getCenter());
         get(0).setSegmentToThisPointVisible(false);
     }
@@ -63,10 +64,8 @@ public class Trail extends AbstractShape<Trail> {
         return new Trail(marker.copy());
     }
 
-
     @Override
-    public void update(JMathAnimScene scene) {
-        super.update(scene);
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
         if (draw) {
             JMPathPoint pa = JMPathPoint.lineTo(marker.getCenter());
             pa.setSegmentToThisPointVisible(!cutNext);
@@ -80,11 +79,6 @@ public class Trail extends AbstractShape<Trail> {
         Shape resul=new Shape();
         resul.copyStateFrom(this);
         return resul;
-    }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, marker);
     }
 
     /**
@@ -101,5 +95,9 @@ public class Trail extends AbstractShape<Trail> {
     public void lowerPen() {
         draw = true;
         cutNext = true;
+    }
+
+    public MathObject<?> getMarker() {
+        return marker;
     }
 }

@@ -30,7 +30,7 @@ public class MODrawPropertiesLaTeX extends MODrawProperties {
      */
     public void setLatexStyle(LatexStyle latexStyle) {
         this.latexStyle = latexStyle;
-        setHasBeenChanged(true);
+       changeVersion();
     }
 
     @Override
@@ -41,7 +41,7 @@ public class MODrawPropertiesLaTeX extends MODrawProperties {
             if (moDrawPropertiesLaTeX.latexStyle != null)
                 this.latexStyle = moDrawPropertiesLaTeX.latexStyle;
         }
-        setHasBeenChanged(true);
+       changeVersion();
     }
 
     @Override

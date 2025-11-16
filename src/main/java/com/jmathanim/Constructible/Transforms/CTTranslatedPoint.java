@@ -21,7 +21,6 @@ import com.jmathanim.Constructible.Lines.CTVector;
 import com.jmathanim.Constructible.Points.CTAbstractPoint;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  *
@@ -41,6 +40,9 @@ public class CTTranslatedPoint extends CTPoint {
     private CTTranslatedPoint(CTAbstractPoint<?> originalPoint, CTVector translationVector) {
         this.translationVector = translationVector;
         this.pointToTranslate = originalPoint;
+        addDependency(originalPoint.getVec());
+        addDependency(translationVector.getP1().getVec());
+        addDependency(translationVector.getP2().getVec());
     }
 
     @Override
@@ -53,8 +55,4 @@ public class CTTranslatedPoint extends CTPoint {
         }
     }
 
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, this.translationVector, this.pointToTranslate);
-    }
 }

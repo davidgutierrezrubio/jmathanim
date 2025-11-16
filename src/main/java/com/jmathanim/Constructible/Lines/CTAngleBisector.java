@@ -18,6 +18,7 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.Utils.DependableUtils;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
@@ -57,6 +58,9 @@ public class CTAngleBisector extends CTAbstractLine<CTAngleBisector> {
         this.A = A.getVec();
         this.B = B.getVec();
         this.C = C.getVec();
+        addDependency(this.A);
+        addDependency(this.B);
+        addDependency(this.C);
         dirPoint = Vec.to(0,0);
     }
 
@@ -85,14 +89,9 @@ public class CTAngleBisector extends CTAbstractLine<CTAngleBisector> {
     }
 
     @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        switch (bisectorType) {
-            case PointPointPoint:
-                dependsOn(scene, this.A, this.B, this.C);
-                break;
-            case LineLine:
-            //TODO: Implement
-        }
+    public boolean needsUpdate() {
+        newLastMaxDependencyVersion = DependableUtils.maxVersion(this.A, this.B, this.C, getMp());
+        if (dirty) return true;
+        return newLastMaxDependencyVersion != lastCleanedDepsVersionSum;
     }
-
 }

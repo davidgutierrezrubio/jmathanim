@@ -17,17 +17,16 @@
  */
 package com.jmathanim.Cameras;
 
-import com.jmathanim.MathObjects.Coordinates;
-import com.jmathanim.MathObjects.MathObject;
-import com.jmathanim.MathObjects.hasTrivialBoundingBox;
-import com.jmathanim.MathObjects.shouldUdpateWithCamera;
+import com.jmathanim.MathObjects.*;
 import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.EmptyRect;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.Dependable;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class converts math coordinates to screen cordinates. Screen coordinates are always (0,0)-(w,h) where (0,0) is
@@ -35,7 +34,7 @@ import java.util.ArrayList;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Camera implements Boxable {
+public class Camera implements Boxable, Dependable {
 
     private final ArrayList<shouldUdpateWithCamera> updateableObjects;
     private final JMathAnimScene scene;
@@ -57,6 +56,7 @@ public class Camera implements Boxable {
      */
     protected double hgap = .1, vgap = .1;
     private double xminB, xmaxB, yminB, ymaxB;// Backup values for saveState()
+    private long version;
 
     public Camera(JMathAnimScene scene, int screenWidth, int screenHeight) {
         this.screenWidth = screenWidth;
@@ -164,6 +164,7 @@ public class Camera implements Boxable {
         this.ymax = ycenter + .5 * (xmax - xmin) / ratioScreen;
         this.ymin = ycenter - .5 * (xmax - xmin) / ratioScreen;
         updateDependentObjectsFromThisCamera();
+        changeVersion();
         return this;
     }
 
@@ -448,6 +449,7 @@ public class Camera implements Boxable {
 
     public void setViewFrom(hasCameraParameters param) {
         setMathXY(param.getMinX(), param.getMaxX(), param.getYCenter());
+
     }
 
     @Override
@@ -488,5 +490,25 @@ public class Camera implements Boxable {
     public void setScreenHeight(int screenHeight) {
         this.screenHeight = screenHeight;
         setMathXY(xmin,xmax, .5*(ymin+ymax));//Needed to recompute if proportions are altered
+    }
+
+    @Override
+    public void changeVersion() {
+        version=++JMathAnimScene.globalVersion;
+    }
+
+    @Override
+    public List<Dependable> getDependencies() {
+        return AbstractVersioned.EMPTY_DEPENDENCIES;
+    }
+
+    @Override
+    public void addDependency(Dependable dep) {
+
+    }
+
+    @Override
+    public long getVersion() {
+        return version;
     }
 }

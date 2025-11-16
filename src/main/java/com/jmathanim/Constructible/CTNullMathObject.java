@@ -35,7 +35,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  * @author David Gutierrez Rubio
  */
 public class CTNullMathObject extends Constructible<CTNullMathObject> {
-
+    public static Rect boundingBox = new EmptyRect();
     public CTNullMathObject() {
     }
 
@@ -61,8 +61,8 @@ public class CTNullMathObject extends Constructible<CTNullMathObject> {
     }
 
     @Override
-    protected Rect computeBoundingBox() {
-        return new EmptyRect();
+    public Rect computeBoundingBox() {
+        return boundingBox;
     }
 
     @Override
@@ -71,7 +71,7 @@ public class CTNullMathObject extends Constructible<CTNullMathObject> {
     }
 
     @Override
-    public MathObject getMathObject() {
+    public MathObject<?> getMathObject() {
         return this;
     }
 

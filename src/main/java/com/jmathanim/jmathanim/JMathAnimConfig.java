@@ -149,7 +149,7 @@ public class JMathAnimConfig {
      */
     private boolean showPreview = true;
     // Background color, default black
-    private PaintStyle backgroundColor = JMColor.BLACK;
+    private PaintStyle backgroundColor = JMColor.parse("black");
     private URL backGroundImage = null;
     private JMathAnimConfig() {// Private constructor
         styles = new HashMapUpper<>("styles");
@@ -309,8 +309,8 @@ public class JMathAnimConfig {
         // Default, boring values
         //in case no style.xml file has been loaded
         MODrawProperties defaultMP = new MODrawProperties();
-        defaultMP.setDrawColor(JMColor.WHITE);
-        defaultMP.setFillColor(JMColor.GRAY);
+        defaultMP.setDrawColor(JMColor.parse("white"));
+        defaultMP.setFillColor(JMColor.parse("gray"));
         defaultMP.setFillAlpha(0);// No filling by default
         defaultMP.setThickness(4d);
         defaultMP.setDashStyle(DashStyle.SOLID);
@@ -318,20 +318,20 @@ public class JMathAnimConfig {
         styles.put("DEFAULT", defaultMP);
 
         MODrawProperties defaultDotMP = new MODrawProperties();
-        defaultDotMP.setDrawColor(JMColor.WHITE);
-        defaultDotMP.setFillColor(JMColor.GRAY);
+        defaultDotMP.setDrawColor(JMColor.parse("white"));
+        defaultDotMP.setFillColor(JMColor.parse("gray"));
         defaultDotMP.setDotStyle(DotStyle.CIRCLE);
         defaultDotMP.setThickness(30d);
         styles.put("DOTDEFAULT", defaultMP);
 
         MODrawProperties latexDefaultMP = defaultMP.copy();
-        latexDefaultMP.setFillColor(JMColor.WHITE);
+        latexDefaultMP.setFillColor(JMColor.parse("white"));
         latexDefaultMP.setFillAlpha(1);// Latex formulas are filled by default
         styles.put("LATEXDEFAULT", latexDefaultMP);
 
         MODrawProperties defaultArrowMP = new MODrawProperties();
-        defaultDotMP.setDrawColor(JMColor.WHITE);
-        defaultDotMP.setFillColor(JMColor.WHITE);
+        defaultDotMP.setDrawColor(JMColor.parse("white"));
+        defaultDotMP.setFillColor(JMColor.parse("white"));
         defaultDotMP.setThickness(8d);
         styles.put("ARROWDEFAULT", defaultArrowMP);
     }

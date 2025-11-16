@@ -56,6 +56,8 @@ public class Ray extends AbstractShape<Ray> implements HasDirection {
         super();
         this.p1 = p1.getVec();
         this.p2 = p2.getVec();
+        addDependency(this.p1);
+        addDependency(this.p2);
         boundaryPoint1 = new JMPathPoint(this.p1, true);// trivial boundary points, just to
         // initialize objects
         boundaryPoint2 = new JMPathPoint(Point.at(0, 0), true);// trivial boundary points, just to
@@ -158,7 +160,7 @@ public class Ray extends AbstractShape<Ray> implements HasDirection {
     }
 
     @Override
-    protected Rect computeBoundingBox() {
+    public Rect computeBoundingBox() {
         //Bounding box of the visible segment
         rebuildShape();
         return Rect.make(boundaryPoint1, boundaryPoint2);
@@ -220,12 +222,6 @@ public class Ray extends AbstractShape<Ray> implements HasDirection {
         return p2;
     }
 
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        scene.registerUpdateable(p1, p2);
-        setUpdateLevel(Math.max(p1.getUpdateLevel(), p2.getUpdateLevel()) + 1);
-    }
-
 
     /**
      * Creates a finite Segment, that runs over the screen plus a percent gap
@@ -252,10 +248,9 @@ public class Ray extends AbstractShape<Ray> implements HasDirection {
         return toSegment(cam, 1);
     }
 
+
     @Override
-    public void update(JMathAnimScene scene) {
-        super.update(scene);
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
         rebuildShape();
     }
-
 }

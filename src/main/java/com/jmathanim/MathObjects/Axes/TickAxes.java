@@ -133,7 +133,7 @@ public class TickAxes extends MathObject {
     }
 
     @Override
-    protected Rect computeBoundingBox() {
+    public Rect computeBoundingBox() {
         return Rect.union(tick.getBoundingBox(), legend.getBoundingBox());
     }
 
@@ -164,6 +164,11 @@ public class TickAxes extends MathObject {
 
     public TickType getTickType() {
         return tickType;
+    }
+
+
+    @Override
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
     }
 
     public boolean shouldDraw(Camera cam) {

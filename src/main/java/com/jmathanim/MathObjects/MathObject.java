@@ -20,7 +20,6 @@ package com.jmathanim.MathObjects;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.DummyCamera;
 import com.jmathanim.Enum.*;
-import com.jmathanim.MathObjects.UpdateableObjects.Updateable;
 import com.jmathanim.MathObjects.Updaters.Updater;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
@@ -30,7 +29,8 @@ import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * This class represents a mathematical object that can be drawn on screen, transformed or animated. All math objects
@@ -39,15 +39,13 @@ import java.util.*;
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 @SuppressWarnings("ALL")
-public abstract class MathObject<T extends MathObject<T>> implements
+public abstract class MathObject<T extends MathObject<T>> extends AbstractVersioned implements
         Drawable,
-        Updateable,
         Boxable,
         Linkable,
         Stylable<T>,
         AffineTransformable<T> {
     protected final AffineJTransform modelMatrix;
-    private final HashSet<MathObject<?>> dependents;
     private final RendererEffects rendererEffects;
     private final HashMap<String, Object> properties;
     private final ArrayList<Updater> updaters;
@@ -56,8 +54,9 @@ public abstract class MathObject<T extends MathObject<T>> implements
     public Vec absoluteAnchorVec;
     protected JMathAnimScene scene;
     protected boolean isRigid = false;
-    private boolean hasBeenUpdated = false;
     protected Camera camera;
+    protected Rect boundingBox;
+    private boolean hasBeenUpdated = false;
     private int updateLevel;
     private String debugText = "";
     private AnchorType absoluteAnchorAnchorType = AnchorType.CENTER;
@@ -74,11 +73,9 @@ public abstract class MathObject<T extends MathObject<T>> implements
         scene = config.getScene();
         if (scene != null) {
             camera = scene.getCamera();//Default camera
-        }else {
+        } else {
             camera = new DummyCamera();
         }
-        //Default values for an object that always updates
-        dependents = new HashSet<>();
 
         //Default gaps
         leftGap = 0;
@@ -119,6 +116,7 @@ public abstract class MathObject<T extends MathObject<T>> implements
             camera.registerUpdateable((shouldUdpateWithCamera) this);
         }
         this.camera = camera;
+        changeVersion();
         return (T) this;
     }
 
@@ -173,39 +171,44 @@ public abstract class MathObject<T extends MathObject<T>> implements
     @Override
     public void copyStateFrom(Stateable obj) {
         if (!(obj instanceof MathObject<?>)) return;
-            MathObject mathObject = (MathObject) obj;
-            this.setCamera(mathObject.getCamera());
-            getMp().copyFrom(mathObject.getMp());
+        MathObject mathObject = (MathObject) obj;
+        this.setCamera(mathObject.getCamera());
+        getMp().copyFrom(mathObject.getMp());
 //        this.getMp().copyFrom(obj.getMp());
-            if (this.getRendererEffects() != null) {
-                this.getRendererEffects().copyFrom(rendererEffects);
-            }
-            this.modelMatrix.copyFrom(mathObject.modelMatrix);
+        if (this.getRendererEffects() != null) {
+            this.getRendererEffects().copyFrom(rendererEffects);
+        }
+        this.modelMatrix.copyFrom(mathObject.modelMatrix);
+        changeVersion();
     }
 
 
     /**
-     * Returns the Bounding box with limits of the MathObject
+     * Returns the Bounding box with limits of the MathObject. The object is updated and bounding box recomputed if
+     * needed.
      *
      * @return A Rect with (xmin,ymin,xmax,ymax)
      */
     @Override
     public final Rect getBoundingBox() {
-        //This gives unexpected behaviour and I don't know why!
 //        return computeBoundingBox().addGap(rightGap, upperGap, leftGap, lowerGap);
-        Rect bb = computeBoundingBox();
-        if (bb instanceof EmptyRect) {
-            return bb;
-        } else return bb.addGap(rightGap, upperGap, leftGap, lowerGap);
+        if (needsUpdate() | boundingBox == null) {
+            update(scene);//Updates and recomputes bounding box
+        }
+        return boundingBox.addGap(rightGap, upperGap, leftGap, lowerGap);
     }
 
-    protected abstract Rect computeBoundingBox();
+    public void performUpdateBoundingBox(JMathAnimScene scene) {
+        boundingBox = computeBoundingBox();
+    }
+
+    public abstract Rect computeBoundingBox();
 
     public void setAlpha(double t) {
         drawAlpha(t);
         fillAlpha(t);
+        changeVersion();
     }
-
 
 
     /**
@@ -216,12 +219,9 @@ public abstract class MathObject<T extends MathObject<T>> implements
      */
     public T setMp(MODrawProperties newMp) {
         this.getMp().copyFrom(newMp);
+        changeVersion();
         return (T) this;
     }
-
-
-
-
 
 
     public Vec getAbsoluteAnchor() {
@@ -244,6 +244,7 @@ public abstract class MathObject<T extends MathObject<T>> implements
         this.absoluteAnchorVec = anchorVec;
         absoluteAnchorAnchorType = AnchorType.BY_POINT;
         absoluteSize = true;
+        changeVersion();
         return (T) this;
     }
 
@@ -259,168 +260,24 @@ public abstract class MathObject<T extends MathObject<T>> implements
         absoluteSize = true;
         absoluteAnchorAnchorType = anchorType;
         absoluteSize = true;
+        changeVersion();
         return (T) this;
     }
 
     public T setRelativeSize() {
         absoluteSize = false;
+        changeVersion();
         return (T) this;
     }
 
-//    /**
-//     * Stack the object to another using a specified anchor. The anchor for the stacked object is automatically selected
-//     * as the reverse of the destiny anchor. For example stackTo(obj, RIGHT) will move this object so that its LEFT
-//     * anchor matchs the RIGHT anchor of the destiny. This method is equivalent to stackTo(obj,type,0)
-//     *
-//     * @param obj        The destiny object. Anyting that implements the Boxable interface, like MathObject or Rect
-//     * @param anchorType {@link Anchor} type
-//     * @return The current object
-//     */
-//    @Override
-//    public final T stackTo(Boxable obj, AnchorType anchorType) {
-//        return stackTo(obj, anchorType, 0);
-//    }
-//
-//    /**
-//     * Stack the object to another using a specified anchor. For example stackTo(UPPER, obj, RIGHT) will move this
-//     * object so that its UPPER anchor matchs the RIGHT anchor of the destiny.
-//     *
-//     * @param originAnchor  Anchor of this object to use
-//     * @param destinyObject Destiny object to stack with
-//     * @param destinyAnchor Anchor of destiny object to use
-//     * @param originGap     Amount of gap to leave between the anchors, in math units. The direction of the gap will be
-//     *                      computed using origin anchor as reference.
-//     * @return This object
-//     */
-//    public T stackTo(AnchorType originAnchor, Boxable destinyObject, AnchorType destinyAnchor, double originGap) {
-//        return stackTo(originAnchor, destinyObject, destinyAnchor, originGap, 0);
-//    }
-
-//    /**
-//     * Stack the object to another using a specified anchor.For example stackTo(UPPER, obj, RIGHT) will move this object
-//     * so that its UPPER anchor matchs the RIGHT anchor of the destiny.
-//     *
-//     * @param originAnchor  Anchor of this object to use
-//     * @param destinyObject Destiny object to stack with
-//     * @param destinyAnchor Anchor of destiny object to use
-//     * @param originGap     Amount of gap to leave in origin anchor, in math units
-//     * @param destinyGap    Amount of gap to leave in destiny anchor, in math units
-//     * @return This object
-//     */
-//    public T stackTo(AnchorType originAnchor, Boxable destinyObject, AnchorType destinyAnchor, double originGap, double destinyGap) {
-//        if (!destinyObject.isEmpty()) {
-//            Vec B = Anchor.getAnchorPoint(destinyObject, destinyAnchor, destinyGap);
-//            Vec A = Anchor.getAnchorPoint(this, originAnchor, originGap);
-//            this.shift(A.to(B));
-//        }
-//        return (T) this;
-//    }
-
     /**
      * Convenience class to apply stack methods
+     *
      * @return
      */
     public StackUtils<T> stack() {
         return new StackUtils<>((T) this);
     }
-
-//
-//    /**
-//     * Stack the object to another using a specified anchor. For example stackTo(UPPER, obj, RIGHT) will move this
-//     * object so that its UPPER anchor matchs the RIGHT anchor of the destiny. The difference with similar methods is
-//     * that the gap is given relative to this object width.
-//     *
-//     * @param anchorObj  Anchor of this object to use
-//     * @param dstObj     Destiny object to stack with
-//     * @param anchorType Anchor of destiny object to use
-//     * @param gap        Amount of gap, relative to this object width, to leave between the anchors, in math units.
-//     * @return This object
-//     */
-//    public T stackToRW(AnchorType anchorObj, Boxable dstObj, AnchorType anchorType, double gap) {
-//        return stackTo(anchorObj, dstObj, anchorType, gap * this.getWidth());
-//    }
-//
-//    /**
-//     * Stack the object to another using a specified anchor. For example stackTo(UPPER, obj, RIGHT) will move this
-//     * object so that its UPPER anchor matchs the RIGHT anchor of the destiny. The difference with similar methods is
-//     * that the gap is given relative to this object height.
-//     *
-//     * @param anchorObj  Anchor of this object to use
-//     * @param dstObj     Destiny object to stack with
-//     * @param anchorType Anchor of destiny object to use
-//     * @param gap        Amount of gap, relative to this object height, to leave between the anchors, in math units.
-//     * @return This object
-//     */
-//    public T stackToRH(AnchorType anchorObj, Boxable dstObj, AnchorType anchorType, double gap) {
-//        return stackTo(anchorObj, dstObj, anchorType, gap * this.getHeight());
-//    }
-//
-//    /**
-//     * Stack the object to another using a specified anchor. For example stackTo(obj, RIGHT) will move this object so
-//     * that its LEFT anchor matchs the RIGHT anchor of the destiny. The difference with similar methods is that the gap
-//     * is given relative to this object height.
-//     *
-//     * @param dstObj     Destiny object to stack with
-//     * @param anchorType Anchor of destiny object to use
-//     * @param gap        Amount of gap, relative to this object height, to leave between the anchors, in math units.
-//     * @return This object
-//     */
-//    public T stackToRH(Boxable dstObj, AnchorType anchorType, double gap) {
-//        return stackToRH(Anchor.reverseAnchorPoint(anchorType), dstObj, anchorType, gap);
-//    }
-//
-//    /**
-//     * Stack the object to another using a specified anchor. For example stackTo(obj, RIGHT) will move this object so
-//     * that its LEFT anchor matchs the RIGHT anchor of the destiny. The difference with similar methods is that the gap
-//     * is given relative to this object width.
-//     *
-//     * @param dstObj     Destiny object to stack with
-//     * @param anchorType Anchor of destiny object to use
-//     * @param gap        Amount of gap, relative to this object width, to leave between the anchors, in math units.
-//     * @return This object
-//     */
-//    public T stackToRW(Boxable dstObj, AnchorType anchorType, double gap) {
-//        return stackToRW(Anchor.reverseAnchorPoint(anchorType), dstObj, anchorType, gap);
-//    }
-//
-//    /**
-//     * Stack the object to another using a specified anchor.The anchor for the stacked object is automatically selected
-//     * as the reverse of the destiny anchor. For example stackTo(obj, RIGHT) will move this object so that its LEFT
-//     * anchor matchs the RIGHT anchor of the destiny.
-//     *
-//     * @param obj        The destiny object. Anyting that implements the Boxable interface, like MathObject or Rect
-//     * @param anchorType {@link Anchor} type
-//     * @param gap        Amount of gap to leave between the anchors, in math units
-//     * @return The current object
-//     */
-//    public T stackTo(Boxable obj, AnchorType anchorType, double gap) {
-//        return stackTo(Anchor.reverseAnchorPoint(anchorType), obj, anchorType, gap);
-//    }
-//
-//    /**
-//     * Stack the object to the given anchor, relative to the current camera view
-//     *
-//     * @param anchorType {@link Anchor} type
-//     * @return The current object
-//     */
-//    public final T stackToScreen(AnchorType anchorType) {
-//        return stackToScreen(anchorType, 0, 0);
-//    }
-//
-//    /**
-//     * Stack the object to the given anchor, relative to the current camera view, applying the specified margins.
-//     *
-//     * @param anchorType {@link Anchor} type
-//     * @param xMargin    x margin
-//     * @param yMargin    y margin
-//     * @return The current object
-//     */
-//    public T stackToScreen(AnchorType anchorType, double xMargin, double yMargin) {
-//        Vec B = Anchor.getScreenAnchorPoint(getCamera(), anchorType, xMargin, yMargin);
-//        Vec A = Anchor.getAnchorPoint(this, anchorType);
-//        return this.shift(A.to(B));
-//    }
-//
 
 
     /**
@@ -432,6 +289,7 @@ public abstract class MathObject<T extends MathObject<T>> implements
      */
     public T layer(int layer) {
         this.getMp().setLayer(layer);
+        changeVersion();
         return (T) this;
     }
 
@@ -453,6 +311,7 @@ public abstract class MathObject<T extends MathObject<T>> implements
      */
     public T style(String name) {
         getMp().loadFromStyle(name);
+        changeVersion();
         return (T) this;
     }
 
@@ -464,6 +323,7 @@ public abstract class MathObject<T extends MathObject<T>> implements
      */
     public T linecap(StrokeLineCap strokeLineCap) {
         this.getMp().setLinecap(strokeLineCap);
+        changeVersion();
         return (T) this;
     }
 
@@ -479,36 +339,20 @@ public abstract class MathObject<T extends MathObject<T>> implements
     public T registerUpdater(Updater updater) {
         updater.setMathObject(this);
         updaters.add(updater);
-        setUpdateLevel(getUpdateLevel());
+//        setUpdateLevel(getUpdateLevel());
         return (T) this;
     }
 
-    // Updateable methods
     @Override
-    public void update(JMathAnimScene scene) {
-        if (isHasBeenUpdated()) return;//This prevents updaters being called more than once per frame
-        for (Updater updater : updaters) {
-            updater.update(scene);
+    protected boolean applyUpdaters(JMathAnimScene scene) {
+        boolean resultFlag = false;
+        for (Updater u : updaters) {
+            u.update(scene);
+            resultFlag = true;//If at least one updater, the object is changed
         }
-//       setHasBeenUpdated(true);
+        return resultFlag;
     }
 
-    @Override
-    public final int getUpdateLevel() {
-//        if (updateLevel == -1) {//-1 means no update level has been defined yet
-//            registerUpdateableHook(scene);
-//            if (updateLevel == -1) {//If it is still undefined, makeLengthMeasure it 0, to avoid infinite recursion
-//                updateLevel = 0;
-//            }
-//        }
-        return updateLevel;
-    }
-
-    @Override
-    public void setUpdateLevel(int level) {
-        int maxUpdaterLevel = updaters.stream().mapToInt(Updater::getUpdateLevel).max().orElse(-1);
-        updateLevel = Math.max(level, maxUpdaterLevel + 1);
-    }
 
     protected String getDebugText() {
         return debugText;
@@ -541,12 +385,7 @@ public abstract class MathObject<T extends MathObject<T>> implements
      * @return The width
      */
     public double getWidth() {
-        Rect b = getBoundingBox();
-        if (b == null) {
-            return 0;
-        } else {
-            return b.getWidth();
-        }
+        return getBoundingBox().getWidth();
     }
 
     /**
@@ -566,12 +405,7 @@ public abstract class MathObject<T extends MathObject<T>> implements
      * @return The height
      */
     public double getHeight() {
-        Rect b = getBoundingBox();
-        if (b == null) {
-            return 0;
-        } else {
-            return b.getHeight();
-        }
+        return getBoundingBox().getHeight();
     }
 
     /**
@@ -642,6 +476,7 @@ public abstract class MathObject<T extends MathObject<T>> implements
             AffineJTransform compose = modelMatrix.compose(affineJTransform);
             modelMatrix.copyFrom(compose);
         }
+        changeVersion();
         return (T) this;// By default does nothing
     }
 
@@ -670,22 +505,6 @@ public abstract class MathObject<T extends MathObject<T>> implements
         setProperty("scene", null);
     }
 
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-    }
-
-    @Override
-    public void unregisterUpdateableHook(JMathAnimScene scene) {
-    }
-
-    protected boolean isHasBeenUpdated() {
-        return hasBeenUpdated;
-    }
-
-    protected void setHasBeenUpdated(boolean hasBeenUpdated) {
-        this.hasBeenUpdated = hasBeenUpdated;
-    }
-
     //    /**
 //     * Returns the set of objects that depend on this to be properly updated
 //     *
@@ -695,30 +514,6 @@ public abstract class MathObject<T extends MathObject<T>> implements
 //        return dependents;
 //    }
 
-    /**
-     * Register dependence of this MathObject to other Mathobjects. This is done to ensure proper updating order.
-     *
-     * @param scene Scene
-     * @param objs  Objects that this object depends on
-     */
-    protected void dependsOn(JMathAnimScene scene, Updateable... objs) {
-
-        //Ensure all objects in objs is registered
-        scene.registerUpdateable(objs);
-
-        //Sets the update level the max of objs +1
-        int currentUpdateLevel=getUpdateLevel();
-        int maxUpdateLevel = Arrays.stream(objs).filter(Objects::nonNull).mapToInt(Updateable::getUpdateLevel).max().orElse(-1);
-        setUpdateLevel(Math.max(currentUpdateLevel,maxUpdateLevel + 1));
-
-
-        //TODO: Implement this
-//        //Register this object in the dependent list of objs
-//        for (Updateable obj : objs) {
-//            if (obj != null)
-//                obj.dependents.add(this);
-//        }
-    }
 
     /**
      * Sets the gaps for this object. These gaps will be added to the bounding box of the object.
@@ -734,6 +529,7 @@ public abstract class MathObject<T extends MathObject<T>> implements
         this.upperGap = upperGap;
         this.leftGap = leftGap;
         this.lowerGap = lowerGap;
+        changeVersion();
         return (T) this;
     }
 
@@ -781,44 +577,6 @@ public abstract class MathObject<T extends MathObject<T>> implements
     }
 
 
-
-//    //Style hooks
-//    @Override
-//    public void on_setDrawColor(PaintStyle color) {
-//    }
-//
-//    @Override
-//    public void on_setDrawAlpha(double alpha) {
-//    }
-//
-//    @Override
-//    public void on_setFillColor(PaintStyle color) {
-//    }
-//
-//    @Override
-//    public void on_setFillAlpha(double alpha) {
-//    }
-//
-//    @Override
-//    public void on_setThickness(double thickness) {
-//    }
-//
-//    @Override
-//    public void on_setVisible(boolean visible) {
-//    }
-//
-//    @Override
-//    public void on_setDashStyle(DashStyle style) {
-//    }
-//
-//    @Override
-//    public void on_setLineCap(StrokeLineCap linecap) {
-//    }
-//
-//    @Override
-//    public void on_setLineJoin(StrokeLineJoin linejoin) {
-//    }
-
     @Override
     public RendererEffects getRendererEffects() {
         return rendererEffects;
@@ -829,91 +587,110 @@ public abstract class MathObject<T extends MathObject<T>> implements
 
     @Override
     public T drawColor(PaintStyle<?> dc) {
+        changeVersion();
         return Stylable.super.drawColor(dc);
     }
 
     @Override
     public T drawColor(String str) {
+        changeVersion();
         return Stylable.super.drawColor(str);
     }
 
     @Override
     public T drawAlpha(double alpha) {
+        changeVersion();
         return Stylable.super.drawAlpha(alpha);
     }
 
     @Override
     public T fillAlpha(double alpha) {
+        changeVersion();
         return Stylable.super.fillAlpha(alpha);
     }
 
     @Override
     public T thickness(double newThickness) {
+        changeVersion();
         return Stylable.super.thickness(newThickness);
     }
 
     @Override
     public T dashStyle(DashStyle dashStyle) {
+        changeVersion();
         return Stylable.super.dashStyle(dashStyle);
     }
 
     @Override
     public T visible(boolean visible) {
+        changeVersion();
         return Stylable.super.visible(visible);
     }
 
     @Override
     public T color(PaintStyle dc) {
+        changeVersion();
         return Stylable.super.color(dc);
     }
 
     @Override
     public T color(String str) {
+        changeVersion();
         return Stylable.super.color(str);
     }
 
     @Override
     public T fillColor(PaintStyle fc) {
+        changeVersion();
         return Stylable.super.fillColor(fc);
+
     }
 
     @Override
     public T fillColor(String str) {
+        changeVersion();
         return Stylable.super.fillColor(str);
     }
 
     @Override
     public T shift(Coordinates<?> shiftVector) {
+        changeVersion();
         return AffineTransformable.super.shift(shiftVector);
     }
 
     @Override
     public T shift(double x, double y) {
+        changeVersion();
         return AffineTransformable.super.shift(x, y);
     }
 
     @Override
     public T shift(double x, double y, double z) {
+        changeVersion();
         return AffineTransformable.super.shift(x, y, z);
     }
 
     @Override
     public T scale(double sx, double sy) {
+        changeVersion();
         return AffineTransformable.super.scale(sx, sy);
     }
 
     @Override
     public T scale(double s) {
+        changeVersion();
         return AffineTransformable.super.scale(s);
     }
 
     @Override
     public T scale(Coordinates<?> scaleCenter, double scale) {
+        changeVersion();
         return AffineTransformable.super.scale(scaleCenter, scale);
     }
 
     @Override
     public T scale(Coordinates<?> scaleCenter, double sx, double sy) {
+        changeVersion();
         return AffineTransformable.super.scale(scaleCenter, sx, sy);
     }
 
@@ -924,46 +701,55 @@ public abstract class MathObject<T extends MathObject<T>> implements
 
     @Override
     public T scale(Coordinates<?> scaleCenter, double sx, double sy, double sz) {
+        changeVersion();
         return AffineTransformable.super.scale(scaleCenter, sx, sy, sz);
     }
 
     @Override
     public T rotate(double angle) {
+        changeVersion();
         return AffineTransformable.super.rotate(angle);
     }
 
     @Override
     public T rotate(Coordinates<?> center, double angle) {
+        changeVersion();
         return AffineTransformable.super.rotate(center, angle);
     }
 
     @Override
     public T rotate3d(double anglex, double angley, double anglez) {
+        changeVersion();
         return AffineTransformable.super.rotate3d(anglex, angley, anglez);
     }
 
     @Override
     public T rotate3d(Coordinates<?> center, double anglex, double angley, double anglez) {
+        changeVersion();
         return AffineTransformable.super.rotate3d(center, anglex, angley, anglez);
     }
 
     @Override
     public T moveTo(Coordinates<?> p) {
+        changeVersion();
         return AffineTransformable.super.moveTo(p);
     }
 
     @Override
     public T moveTo(double x, double y) {
+        changeVersion();
         return AffineTransformable.super.moveTo(x, y);
     }
 
     @Override
     public T smash(Boxable containerBox, double horizontalGap, double verticalGap) {
+        changeVersion();
         return AffineTransformable.super.smash(containerBox, horizontalGap, verticalGap);
     }
 
     @Override
     public T smash(Boxable containerBox) {
+        changeVersion();
         return AffineTransformable.super.smash(containerBox);
     }
 }

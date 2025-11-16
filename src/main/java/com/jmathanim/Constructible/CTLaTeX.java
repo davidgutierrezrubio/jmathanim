@@ -21,7 +21,6 @@ import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.MathObjects.Text.LatexMathObject;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  * A constructible LaTeX expression, anchored to a CTPoint
@@ -90,10 +89,5 @@ public class CTLaTeX extends Constructible<CTLaTeX> {
         copy.tex.copyStateFrom(tex);
         copy.getMp().copyFrom(this.getMp());
         return copy;
-    }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, this.anchor);
     }
 }

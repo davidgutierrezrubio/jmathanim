@@ -19,13 +19,18 @@ package com.jmathanim.Renderers.FXRenderer;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Enum.GradientCycleMethod;
+import com.jmathanim.MathObjects.AbstractShape;
 import com.jmathanim.MathObjects.JMImage;
 import com.jmathanim.MathObjects.Point;
 import com.jmathanim.MathObjects.Shapes.JMPath;
 import com.jmathanim.MathObjects.Shapes.JMPathPoint;
 import com.jmathanim.Styling.*;
 import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import javafx.scene.Node;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.paint.*;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
@@ -66,10 +71,10 @@ public class JavaFXRendererUtils {
      * @param camera Camera to convert from math coordinates to screen coordinates
      * @return
      */
-    public static Path createFXPathFromJMPath(JMPath jmpath, Vec shiftVector, Camera camera) {
+    public static Path createFXPathFromJMPath(JMPath jmpath, Camera camera) {
         Path path = new Path();
         Vec p = jmpath.getJmPathPoints().get(0).getV();
-        double[] prev = camera.mathToScreen(p.x + shiftVector.x, p.y + shiftVector.y);
+        double[] prev = camera.mathToScreen(p.x, p.y);
         path.getElements().add(new MoveTo(prev[0], prev[1]));
         for (int n = 1; n < jmpath.size() + 1; n++) {
             Vec point = jmpath.getJmPathPoints().get(n).getV();
@@ -78,9 +83,9 @@ public class JavaFXRendererUtils {
 
             double[] xy, cxy1, cxy2;
 
-            xy = camera.mathToScreen(point.x + shiftVector.x, point.y + shiftVector.y);
-            cxy1 = camera.mathToScreen(cpoint1.x + shiftVector.x, cpoint1.y + shiftVector.y);
-            cxy2 = camera.mathToScreen(cpoint2.x + shiftVector.x, cpoint2.y + shiftVector.y);
+            xy = camera.mathToScreen(point.x, point.y);
+            cxy1 = camera.mathToScreen(cpoint1.x, cpoint1.y);
+            cxy2 = camera.mathToScreen(cpoint2.x, cpoint2.y);
 
             if (jmpath.getJmPathPoints().get(n).isSegmentToThisPointVisible()) {
                 JMPathPoint jp = jmpath.getJmPathPoints().get(n);
@@ -288,14 +293,14 @@ public class JavaFXRendererUtils {
     private static Stop[] gradientStopsToFXStop(GradientStop stops, double alpha) {
         TreeMap<Double, JMColor> colors = stops.getColorTreeMap();
         if (colors.isEmpty()) {//Generate a basic white-black gradient
-            stops.add(0, JMColor.WHITE);
-            stops.add(1, JMColor.BLACK);
+            stops.add(0, JMColor.parse("white"));
+            stops.add(1, JMColor.parse("black"));
         }
         Stop[] resul = new Stop[colors.size()];
         int k = 0;
         for (Double t : colors.keySet()) {
             JMColor col = colors.get(t);
-            Color fxColor = getFXColor(colors.get(t), alpha*colors.get(t).getAlpha());
+            Color fxColor = getFXColor(colors.get(t), alpha * colors.get(t).getAlpha());
             resul[k] = new Stop(t, fxColor);
             k++;
         }
@@ -314,9 +319,9 @@ public class JavaFXRendererUtils {
     }
 
 
-    private static Paint getImagePatternFXPaint(JMImagePattern jmImagePattern,JavaFXRenderer r, Camera cam) {
+    private static Paint getImagePatternFXPaint(JMImagePattern jmImagePattern, JavaFXRenderer r, Camera cam) {
         JMImage img = jmImagePattern.getImage();
-        return new ImagePattern(img.getImage(),0,0,img.getWidth(),img.getHeight(),true);
+        return new ImagePattern(img.getImage(), 0, 0, img.getWidth(), img.getHeight(), true);
     }
 
     public static JMPath createJMPathFromFXPath(Path pa, Camera cam) {
@@ -409,4 +414,141 @@ public class JavaFXRendererUtils {
             n++;
         }
     }
+    public static Affine createWorldToScreenTransform(double width, double height, Camera camera) {
+        Rect bb=camera.getMathView();
+        double xmin = bb.xmin;
+        double xmax = bb.xmax;
+        double ymin = bb.ymin;
+        double ymax = bb.ymax;
+
+        double scaleX = width / (xmax - xmin);
+        double scaleY = height / (ymax - ymin);
+
+        Affine affine = new Affine();
+
+        // Fórmula:
+        // X = (x - xmin) * scaleX
+        // Y = height - (y - ymin) * scaleY
+
+        // Paso 1: trasladar -xmin, -ymin
+        affine.prependTranslation(-xmin, -ymin);
+
+        // Paso 2: escalar
+        affine.prependScale(scaleX, scaleY);
+
+        // Paso 3: invertir eje Y y trasladar hacia abajo
+        affine.prependScale(1, -1);
+        affine.prependTranslation(0, height);
+
+        return affine;
+    }
+
+    public static Affine createScreenToWorldTransform(double width, double height, Camera camera) {
+        Rect mathView = camera.getMathView();
+        double scaleX = width / (mathView.xmax - mathView.xmin);
+        double scaleY = height / (mathView.ymax - mathView.ymin);
+
+        Affine inverse = new Affine();
+
+        // 1. Deshacer la traslación final
+        inverse.appendTranslation(0, -height);
+
+        // 2. Deshacer el escalado (invirtiendo el signo del eje Y)
+        inverse.appendScale(1.0 / scaleX, -1.0 / scaleY);
+
+        // 3. Deshacer la traslación inicial
+        inverse.appendTranslation(mathView.xmin, mathView.ymin);
+
+        return inverse;
+    }
+    public static void createFXPathGeometryFromJMPath(JMPath jmpath, Path fxPath) {
+        fxPath.getElements().clear();
+        Vec p = jmpath.getJmPathPoints().get(0).getV();
+        double[] prev = new double[]{p.x, p.y};
+        fxPath.getElements().add(new MoveTo(prev[0], prev[1]));
+        for (int n = 1; n < jmpath.size() + 1; n++) {
+            Vec point = jmpath.getJmPathPoints().get(n).getV();
+            Vec cpoint1 = jmpath.getJmPathPoints().get(n - 1).getVExit();
+            Vec cpoint2 = jmpath.getJmPathPoints().get(n).getVEnter();
+
+            double[] xy, cxy1, cxy2;
+            xy = new double[]{point.x, point.y};
+            cxy1 = new double[]{cpoint1.x, cpoint1.y};
+            cxy2 = new double[]{cpoint2.x, cpoint2.y};
+
+//            xy = camera.mathToScreen(point.x, point.y);
+//            cxy1 = camera.mathToScreen(cpoint1.x, cpoint1.y);
+//            cxy2 = camera.mathToScreen(cpoint2.x, cpoint2.y);
+
+            if (jmpath.getJmPathPoints().get(n).isSegmentToThisPointVisible()) {
+                JMPathPoint jp = jmpath.getJmPathPoints().get(n);
+                //JavaFX has problems drawing CubicCurves when control points are equal to points
+                if ((!jp.isSegmentToThisPointCurved()) || ((isAbsEquiv(prev, cxy1, .000001)) && (isAbsEquiv(xy, cxy2, .000001)))) {
+                    final LineTo el = new LineTo(xy[0], xy[1]);
+                    fxPath.getElements().add(el);
+                } else {
+                    final CubicCurveTo el = new CubicCurveTo(cxy1[0], cxy1[1], cxy2[0], cxy2[1], xy[0], xy[1]);
+                    fxPath.getElements().add(el);
+                }
+            } else {
+                if (n < jmpath.size() + 1) {
+                    final MoveTo el = new MoveTo(xy[0], xy[1]);
+                    // If it is the last point, don't move (it creates a strange point at the
+                    // beginning)
+                    fxPath.getElements().add(el);
+                }
+            }
+            prev[0] = xy[0];
+            prev[1] = xy[1];
+        }
+//        Affine affine = createWorldToScreenTransform(1280, 720, camera);
+//        Point2D po=affine.transform(0,0);
+//        System.out.println(po);
+//        path.getTransforms().add(affine);
+    }
+
+    public static void applyRendererEffects(Node node, RendererEffects rendererEffects) {
+        if (rendererEffects.getGaussianBlurRadius() > 0) {
+            node.setEffect(new GaussianBlur(rendererEffects.getGaussianBlurRadius()));
+        }
+
+        if (rendererEffects.getShadowKernelSize() > 0) {
+            DropShadow newDropShadow = new DropShadow();
+            newDropShadow.setRadius(rendererEffects.getShadowKernelSize());
+            newDropShadow.setOffsetX(rendererEffects.getShadowOffsetX());
+            newDropShadow.setOffsetY(rendererEffects.getShadowOffsetY());
+            newDropShadow.setColor(JavaFXRendererUtils.getFXColor(rendererEffects.getShadowColor()));
+            node.setEffect(newDropShadow);
+        }
+    }
+
+    public static void applyShiftVectorToNode(Node node, JavaFXRenderCommand rc) {
+        //Creates shiftVector
+        node.setTranslateX(rc.shiftVector_x * rc.camera.getScreenWidth() / rc.camera.getMathView().getWidth());
+        node.setTranslateY(-rc.shiftVector_y * rc.camera.getScreenHeight() / rc.camera.getMathView().getHeight());
+        rc.previous_shiftVector_x = rc.shiftVector_x;
+        rc.previous_shiftVector_y = rc.shiftVector_y;
+    }
+
+    public static void applyCameraToNode(Node node, JavaFXRenderCommand rc, int width, int height) {
+        if (rc.cameraVersion < rc.camera.getVersion()) {
+            Affine affine = createWorldToScreenTransform(width, height, rc.camera);
+            node.getTransforms().clear();
+            node.getTransforms().add(affine);
+            //If camera changed, thickness must be recomputed
+            if (rc.object instanceof AbstractShape<?>) {
+                AbstractShape<?> mobj = (AbstractShape<?>) rc.object;
+                Path path = (Path) node;
+                if (mobj.getMp().isAbsoluteThickness()) {
+                    path.setStrokeWidth(mobj.getMp().getThickness() * mobj.getCamera().getMathView().getWidth() / 5000);
+                } else {
+                    path.setStrokeWidth(mobj.getMp().getThickness() * 4 / 5000);
+                }
+            }
+
+            rc.cameraVersion = rc.camera.getVersion();//Updates camera version
+        }
+    }
+
+
 }

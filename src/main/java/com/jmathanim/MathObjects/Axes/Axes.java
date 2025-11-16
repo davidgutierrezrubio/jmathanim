@@ -294,7 +294,7 @@ public class Axes extends MathObject<Axes> implements shouldUdpateWithCamera,has
     }
 
     @Override
-    protected Rect computeBoundingBox() {
+    public Rect computeBoundingBox() {
         return camera.getMathView();
     }
 
@@ -357,9 +357,8 @@ public class Axes extends MathObject<Axes> implements shouldUdpateWithCamera,has
     }
 
     @Override
-    public void update(JMathAnimScene scene) {
-        super.update(scene);
-
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+        //Nothing, it should update only when camera moves in the updateWithCamera method
     }
 
     @Override

@@ -93,18 +93,15 @@ public abstract class Constructible<T extends Constructible<T>> extends MathObje
     }
 
     @Override
-    public void update(JMathAnimScene scene) {
-        super.update(scene);
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
         rebuildShape();
-        setHasBeenUpdated(true);
     }
 
     abstract public void rebuildShape();
 
     @Override
-    protected Rect computeBoundingBox() {
-        rebuildShape();
-        return getMathObject().getBoundingBox();
+    public Rect computeBoundingBox() {
+        return getMathObject().computeBoundingBox();
     }
 
     @Override

@@ -7,13 +7,13 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  * This class encpasulates several internal methods of MathObject
  */
 public class DebugTools {
-    public static void setHasBeenUpdated(MathObject<?> obj, boolean hasBeenUpdated) {
-        obj.setHasBeenUpdated(hasBeenUpdated);
-    }
+//    public static void setHasBeenUpdated(MathObject<?> obj, boolean hasBeenUpdated) {
+//        obj.setHasBeenUpdated(hasBeenUpdated);
+//    }
 
-    public static boolean isHasBeenUpdated(MathObject<?> obj) {
-        return obj.isHasBeenUpdated();
-    }
+//    public static boolean isHasBeenUpdated(MathObject<?> obj) {
+//        return obj.isHasBeenUpdated();
+//    }
 
     public static String getDebugText(MathObject<?> obj) {
         if (obj instanceof Constructible) {

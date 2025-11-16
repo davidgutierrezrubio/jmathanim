@@ -1,10 +1,10 @@
 package com.jmathanim.MathObjects;
 
-import com.jmathanim.MathObjects.UpdateableObjects.Updateable;
 import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.Dependable;
 
-public interface Coordinates<T extends Coordinates<T>> extends Boxable, Updateable {
+public interface Coordinates<T extends Coordinates<T>> extends Boxable, Dependable {
 
     Vec getVec();
 
@@ -21,12 +21,14 @@ public interface Coordinates<T extends Coordinates<T>> extends Boxable, Updateab
             v1.y = v2.y;
             v1.z = v2.z;
         }
+        changeVersion();
     }
 
     default void copyCoordinatesFrom(double x, double y) {
         Vec v1 = getVec();
         v1.x = x;
         v1.y = y;
+        changeVersion();
     }
 
 
@@ -43,6 +45,7 @@ public interface Coordinates<T extends Coordinates<T>> extends Boxable, Updateab
         v1.x += v2.x;
         v1.y += v2.y;
         v1.z += v2.z;
+        changeVersion();
         return (T) this;
     }
 
@@ -60,6 +63,7 @@ public interface Coordinates<T extends Coordinates<T>> extends Boxable, Updateab
         v1.x -= v2.x;
         v1.y -= v2.y;
         v1.z -= v2.z;
+        changeVersion();
         return (T) this;
     }
 
@@ -75,6 +79,7 @@ public interface Coordinates<T extends Coordinates<T>> extends Boxable, Updateab
         v1.x *= lambda;
         v1.y *= lambda;
         v1.z *= lambda;
+        changeVersion();
         return (T) this;
     }
 

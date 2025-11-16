@@ -166,6 +166,7 @@ public class Point extends AbstractPoint<Point> {
         return copy;
     }
 
+
     @Override
     public String toString() {
         String pattern = "##0.##";

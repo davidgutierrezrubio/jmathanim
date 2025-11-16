@@ -1850,9 +1850,9 @@ public class Commands {
     public static Animation crossOut(double runtime, MathObject<?> obj) {
         Rect bbox = obj.getBoundingBox();
         Shape s1 = Shape.segment(bbox.getUpperLeft(), bbox.getLowerRight()).scale(.75).linecap(StrokeLineCap.BUTT)
-                .drawColor(JMColor.RED).layer(Integer.MAX_VALUE);
+                .drawColor(JMColor.parse("red")).layer(Integer.MAX_VALUE);
         Shape s2 = Shape.segment(bbox.getUpperRight(), bbox.getLowerLeft()).scale(.75).linecap(StrokeLineCap.BUTT)
-                .drawColor(JMColor.RED).layer(Integer.MAX_VALUE);
+                .drawColor(JMColor.parse("red")).layer(Integer.MAX_VALUE);
         double longi = .25 * s1.getPoint(0).to(s1.getPoint(1)).norm();
         double width = JMathAnimConfig.getConfig().getRenderer().MathWidthToThickness(longi);
         s1.thickness(width).getMp().setAbsoluteThickness(false);

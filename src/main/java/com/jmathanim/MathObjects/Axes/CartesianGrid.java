@@ -269,9 +269,11 @@ public class CartesianGrid extends MathObject<CartesianGrid> implements shouldUd
 
 
     @Override
-    protected Rect computeBoundingBox() {
+    public Rect computeBoundingBox() {
         return getCamera().getMathView();
     }
+
+
 
     public void rebuildShape() {
         final Rect mathView = getCamera().getMathView();
@@ -282,6 +284,11 @@ public class CartesianGrid extends MathObject<CartesianGrid> implements shouldUd
             alignGridToScreen();
             this.currentView.copyFrom(mathView);
         }
+    }
+
+    @Override
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+
     }
 
     @Override

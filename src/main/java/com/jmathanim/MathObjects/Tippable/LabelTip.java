@@ -166,16 +166,6 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
         return laTeXMathObject.getArg(n);
     }
 
-    @Override
-    protected boolean isHasBeenUpdated() {
-        return super.isHasBeenUpdated() && DebugTools.isHasBeenUpdated(laTeXMathObject);
-    }
-
-    @Override
-    protected void setHasBeenUpdated(boolean hasBeenUpdated) {
-        super.setHasBeenUpdated(hasBeenUpdated);
-        if (!hasBeenUpdated) DebugTools.setHasBeenUpdated(laTeXMathObject,hasBeenUpdated);
-    }
 
 
 

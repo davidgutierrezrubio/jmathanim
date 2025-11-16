@@ -25,7 +25,6 @@ import com.jmathanim.MathObjects.Shapes.JMPathPoint;
 import com.jmathanim.MathObjects.Stateable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  * Creates the only ellipse with 2 given focus that pass through a third point
@@ -50,6 +49,9 @@ public class CTEllipse extends Constructible<CTEllipse> {
         this.focus1 = focus1.getVec();
         this.focus2 = focus2.getVec();
         this.A = A.getVec();
+        addDependency(this.focus1);
+        addDependency(this.focus2);
+        addDependency(this.A);
         originalShape = Shape.circle();
         ellipseToDraw = Shape.circle();
     }
@@ -116,8 +118,4 @@ public class CTEllipse extends Constructible<CTEllipse> {
         super.copyStateFrom(obj);
     }
 
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, this.focus1, this.focus2, this.A);
-    }
 }

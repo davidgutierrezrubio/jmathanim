@@ -20,7 +20,7 @@ package com.jmathanim.Renderers;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.MathObjects.AbstractJMImage;
 import com.jmathanim.MathObjects.AbstractShape;
-import com.jmathanim.MathObjects.DebugTools;
+import com.jmathanim.MathObjects.Drawable;
 import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Renderers.MovieEncoders.SoundItem;
@@ -87,6 +87,9 @@ public abstract class Renderer {
     public int getMediaHeight() {
         return config.getMediaHeight();
     }
+
+    abstract public void addObject(Drawable drawable);
+    abstract public void removeObject(Drawable drawable);
 
     /**
      * Saves the generated frame to movie or a set of still images, according to
@@ -183,9 +186,9 @@ public abstract class Renderer {
      * Clear current renderer, with the background color
      */
     public void clearAndPrepareCanvasForAnotherFrame() {
-        for (MathObject<?> obj: scene.getMathObjects()) {
-            DebugTools.setHasBeenUpdated(obj,false);
-        }
+//        for (MathObject<?> obj: scene.getMathObjects()) {
+//            DebugTools.setHasBeenUpdated(obj,false);
+//        }
     };
 
     /**

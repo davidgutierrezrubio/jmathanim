@@ -1,13 +1,17 @@
 package com.jmathanim.Styling;
 
+import com.jmathanim.MathObjects.AbstractVersioned;
+import com.jmathanim.jmathanim.Dependable;
+
 /**
  * This interface represents any style that can be applied to a fill or draw, currently a color, a fill or a pattern
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class PaintStyle<T extends PaintStyle<T>> {
+public abstract class PaintStyle<T extends PaintStyle<T>> extends AbstractVersioned {
 
     private double alpha;
+    private long version;
 
     public PaintStyle() {
         this.alpha = 1;

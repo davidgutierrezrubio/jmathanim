@@ -18,10 +18,10 @@
 package com.jmathanim.Constructible.Others;
 
 import com.jmathanim.Constructible.Constructible;
-import com.jmathanim.Constructible.Points.CTAbstractPoint;
+import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.MathObjects.JMImage;
 import com.jmathanim.MathObjects.MathObject;
-import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.Utils.Vec;
 
 /**
  *
@@ -30,17 +30,19 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 public class CTImage extends Constructible<CTImage> {
 
     private final JMImage image;
-    private final CTAbstractPoint<?> A;
-    private final CTAbstractPoint<?> B;
+    private final Vec A;
+    private final Vec B;
 
-    public static CTImage make(CTAbstractPoint<?> A, CTAbstractPoint<?> B, JMImage image) {
+    public static CTImage make(Coordinates<?> A, Coordinates<?> B, JMImage image) {
         return new CTImage(A, B, image);
     }
 
-    private CTImage(CTAbstractPoint<?> A, CTAbstractPoint<?> B, JMImage image) {
+    private CTImage(Coordinates<?> A, Coordinates<?> B, JMImage image) {
         this.image = image;
-        this.A = A;
-        this.B = B;
+        this.A = A.getVec();
+        this.B = B.getVec();
+        addDependency(this.A);
+        addDependency(this.B);
     }
 
     @Override
@@ -50,7 +52,7 @@ public class CTImage extends Constructible<CTImage> {
 
     @Override
     public void rebuildShape() {
-        image.adjustTo(A.getMathObject(), B.getMathObject());
+        image.adjustTo(A.getVec(), B.getVec());
     }
 
     @Override
@@ -58,10 +60,5 @@ public class CTImage extends Constructible<CTImage> {
         CTImage copy = make(A.copy(), B.copy(), image.copy());
         copy.copyStateFrom(this);
         return this;
-    }
-
-   @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, this.A, this.B);
     }
 }

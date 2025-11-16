@@ -22,13 +22,14 @@ import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.Enum.StrokeLineCap;
 import com.jmathanim.Enum.StrokeLineJoin;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.Dependable;
 
 /**
  * The {@code Stylable} interface provides a contract for objects that possess styling properties such as colors,
  * transparency, thickness, and other graphical attributes. It also supports state management, interpolation, and
  * hierarchical styling through child sub-properties.
  */
-public interface DrawStyleProperties extends Stylable<DrawStyleProperties> {
+public interface DrawStyleProperties extends Stylable<DrawStyleProperties>, Dependable {
 
     /**
      * Returns a copy of this object. All objects are raw-copied.
@@ -156,9 +157,9 @@ public interface DrawStyleProperties extends Stylable<DrawStyleProperties> {
     DrawStyleProperties multFillAlpha(double mult);
 
     MODrawProperties getFirstMP();
-
-    boolean hasBeenChanged();
-
-    void setHasBeenChanged(boolean hasBeenChanged);
+//
+//    boolean hasBeenChanged();
+//
+//    void setHasBeenChanged(boolean hasBeenChanged);
 
 }

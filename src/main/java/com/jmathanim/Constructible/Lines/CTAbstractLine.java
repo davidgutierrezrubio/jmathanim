@@ -23,7 +23,6 @@ import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.MathObjects.Shapes.Line;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
@@ -32,17 +31,18 @@ public abstract class CTAbstractLine<T extends CTAbstractLine<T>> extends Constr
 
     protected final Vec P2draw;
     protected final Vec P1draw;
-    protected final Coordinates<?> P1;
-    protected final Coordinates<?> P2;
+    protected final Vec P1;
+    protected final Vec P2;
     protected final Line lineToDraw;
     protected LineType lineType;
 
     public CTAbstractLine(Coordinates<?> P1, Coordinates<?> P2) {
         this.P1draw = P1.getVec().copy();
         this.P2draw = P2.getVec().copy();
-        this.P1 = P1;
-        this.P2 = P2;
+        this.P1 = P1.getVec();//Points that define the line. These should be recomputed for dependent lines
+        this.P2 = P2.getVec();
         lineToDraw = Line.make(this.P1draw, this.P2draw);
+        addDependency(lineToDraw.getMp());
     }
 
     @Override
@@ -60,6 +60,7 @@ public abstract class CTAbstractLine<T extends CTAbstractLine<T>> extends Constr
 
     @Override
     public Vec getDirection() {
+        update(scene);
         return P1.to(P2);
     }
 
@@ -77,12 +78,13 @@ public abstract class CTAbstractLine<T extends CTAbstractLine<T>> extends Constr
         Vec v2 = coordinates.minus(getP1());
         return getP1().add(v1.mult(v1.dot(v2))).getVec();
     }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        super.registerUpdateableHook(scene);
-        dependsOn(scene, P1, P2);
-    }
+//
+//    @Override
+//    public boolean needsUpdate() {
+//        newLastMaxDependencyVersion = DependableUtils.maxVersion(this.P1, this.P2, getMp());
+//        if (dirty) return true;
+//        return newLastMaxDependencyVersion != lastCleanedDepsVersionSum;
+//    }
 
     protected enum LineType {
         POINT_POINT, POINT_DIRECTION

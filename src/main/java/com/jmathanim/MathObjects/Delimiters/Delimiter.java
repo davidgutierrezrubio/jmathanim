@@ -13,7 +13,7 @@ import com.jmathanim.MathObjects.Text.TextUpdaters.TextUpdaterFactory;
 import com.jmathanim.MathObjects.Updaters.Updater;
 import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.Rect;
+import com.jmathanim.Utils.DependableUtils;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -22,7 +22,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
     public final Vec labelMarkPoint;
     protected final Coordinates<?> A;
     protected final Coordinates<?> B;
-    protected final Shape delimiterShapeToDraw;
+    public final Shape delimiterShapeToDraw;
 //    protected final MODrawProperties mpDelimiterShape;
     protected final DrawStylePropertiesObjectsArray mpDelimiter;
     /**
@@ -49,10 +49,12 @@ public abstract class Delimiter extends Constructible<Delimiter> {
     protected double gap;
 
 
-    public Delimiter(Coordinates<?> A, Coordinates<?> B, DelimiterType type, double gap) {
+    protected Delimiter(Coordinates<?> A, Coordinates<?> B, DelimiterType type, double gap) {
         super();
         this.A = A;
         this.B = B;
+        addDependency(A.getVec());
+        addDependency(B.getVec());
         this.type = type;
         this.gap = gap;
 
@@ -64,6 +66,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
         this.mpDelimiter.add(delimiterShapeToDraw);
         this.mpDelimiter.loadFromStyle("DEFAULT");
 
+        addDependency(this.mpDelimiter);
 
         labelMarkPoint = Vec.to(0, 0);
         this.rotationType = RotationType.SMART;
@@ -75,6 +78,11 @@ public abstract class Delimiter extends Constructible<Delimiter> {
         groupElementsToBeDrawn = MathObjectGroup.make();
         groupElementsToBeDrawn.addWithKey("shape", this.delimiterShapeToDraw);
         groupElementsToBeDrawn.addWithKey("label", this.delimiterLabelRigidBox);
+
+
+//        addDependency(this.A);
+//        addDependency(this.B);
+//        addDependency(this.groupElementsToBeDrawn);
 
         delimiterScale = 1;
         amplitudeScale = 1;
@@ -323,6 +331,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
 
         this.delimiterLabelRigidBox.setMathObjectReference(label);
 
+
         rebuildShape();
         return (T) this;
     }
@@ -351,26 +360,17 @@ public abstract class Delimiter extends Constructible<Delimiter> {
     }
 
     @Override
-    public void update(JMathAnimScene scene) {
-        super.update(scene);
-        groupElementsToBeDrawn.update(scene);
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
         rebuildShape();
     }
 
-
-
     @Override
-    protected Rect computeBoundingBox() {
-        Rect bb = super.computeBoundingBox();
-//        if (getL != null) {
-//            return Rect.union(bb, labelTip.getBoundingBox());
-//        } else
-            return bb;
-    }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        super.registerUpdateableHook(scene);
-        dependsOn(scene, A,B);
+    public boolean needsUpdate() {
+        newLastMaxDependencyVersion= DependableUtils.maxVersion(
+                A.getVec(),
+                B.getVec(),
+                getMp()
+        );
+        return dirty || (newLastMaxDependencyVersion != lastCleanedDepsVersionSum);
     }
 }

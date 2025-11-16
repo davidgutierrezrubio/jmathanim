@@ -69,8 +69,9 @@ public class CTVector extends CTAbstractLine<CTVector> {
         if (!isFreeMathObject()) {
             arrowToDraw.getStart().copyCoordinatesFrom(this.P1);
             arrowToDraw.getEnd().copyCoordinatesFrom(this.P2);
+            arrowToDraw.rebuildShape();
         }
-        arrowToDraw.rebuildShape();
+
     }
 
     @Override

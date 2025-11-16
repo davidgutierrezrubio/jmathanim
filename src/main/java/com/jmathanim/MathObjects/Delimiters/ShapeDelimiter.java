@@ -12,7 +12,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
 public class ShapeDelimiter extends Delimiter {
 
-    private MultiShapeObject body;
+    public MultiShapeObject body;
 
 
     protected ShapeDelimiter(Coordinates<?>  A, Coordinates<?>  B, DelimiterType type, double gap) {
@@ -142,6 +142,7 @@ public class ShapeDelimiter extends Delimiter {
 //        if (amplitudeScale != 1)
 //            groupElementsToBeDrawn.scale(this.amplitudeScale);
         tr.applyTransform(groupElementsToBeDrawn);
+        boundingBox=computeBoundingBox();
     }
 
 }

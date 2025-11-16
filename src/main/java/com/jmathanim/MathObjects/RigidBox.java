@@ -15,8 +15,7 @@ public class RigidBox extends MathObject<RigidBox> {
     private boolean isCopyToDrawTransformedByMatrix;
 
     public RigidBox(MathObject<?> mathObject) {
-        this.mathObjectReference = mathObject;
-        this.mathObjectCopyToDraw = mathObject.copy();
+        setMathObjectReference(mathObject);
         isCopyToDrawTransformedByMatrix = false;
         baseModelMatrix = new AffineJTransform();
         setObjectLabel("rigidbox");
@@ -32,8 +31,9 @@ public class RigidBox extends MathObject<RigidBox> {
     }
 
     public void setMathObjectReference(MathObject<?> mathObjectReference) {
-
+        removeDependency(this.mathObjectReference);
         this.mathObjectReference = (mathObjectReference == null ? new CTNullMathObject() : mathObjectReference);
+        addDependency(this.mathObjectReference);
         this.mathObjectCopyToDraw = this.mathObjectReference.copy();
     }
 
@@ -62,8 +62,9 @@ public class RigidBox extends MathObject<RigidBox> {
     }
 
     @Override
-    protected Rect computeBoundingBox() {
-        return mathObjectReference.getBoundingBox().getTransformedRect(modelMatrix);
+    public Rect computeBoundingBox() {
+        Rect boundingBox1 = mathObjectReference.computeBoundingBox();
+        return boundingBox1.getTransformedRect(modelMatrix);
     }
 
     @Override
@@ -93,25 +94,12 @@ public class RigidBox extends MathObject<RigidBox> {
     }
 
     @Override
-    public void update(JMathAnimScene scene) {
-        super.update(scene);
-        mathObjectReference.update(scene);
-        setHasBeenUpdated(true);
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+
     }
 
     @Override
     public String toString() {
         return "RigidBox[" + mathObjectReference + ']';
-    }
-
-    @Override
-    protected boolean isHasBeenUpdated() {
-        return super.isHasBeenUpdated() && mathObjectReference.isHasBeenUpdated();
-    }
-
-    @Override
-    protected void setHasBeenUpdated(boolean hasBeenUpdated) {
-        super.setHasBeenUpdated(hasBeenUpdated);
-        if (!hasBeenUpdated) mathObjectReference.setHasBeenUpdated(hasBeenUpdated);
     }
 }

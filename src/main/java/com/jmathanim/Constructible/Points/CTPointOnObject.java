@@ -20,7 +20,6 @@ package com.jmathanim.Constructible.Points;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.PointOwner;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  *
@@ -39,6 +38,7 @@ public class CTPointOnObject extends CTAbstractPoint<CTPointOnObject> {
     private CTPointOnObject(PointOwner owner) {
         super(Vec.to(0,0));
         this.owner = owner;
+        addDependency(this.owner);
     }
 
     @Override
@@ -51,21 +51,10 @@ public class CTPointOnObject extends CTAbstractPoint<CTPointOnObject> {
     }
 
     @Override
-    public void update(JMathAnimScene scene) {
-        super.update(scene);
-        rebuildShape();
-    }
-
-    @Override
     public CTPointOnObject copy() {
         CTPointOnObject copy = CTPointOnObject.make((PointOwner)((Constructible)owner).copy());
         copy.copyStateFrom(this);
         return copy;
-    }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, (Constructible)owner);
     }
 
 }

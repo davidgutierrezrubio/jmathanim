@@ -215,4 +215,19 @@ public class JMLinearGradient extends PaintStyle<JMLinearGradient> {
     public Vec getEnd() {
         return end;
     }
+
+    @Override
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+
+    }
+
+    @Override
+    public void performUpdateBoundingBox(JMathAnimScene scene) {
+
+    }
+
+    @Override
+    protected boolean applyUpdaters(JMathAnimScene scene) {
+        return false;
+    }
 }

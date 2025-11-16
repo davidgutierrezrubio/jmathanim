@@ -21,9 +21,11 @@ import com.jmathanim.Enum.DashStyle;
 import com.jmathanim.Enum.DotStyle;
 import com.jmathanim.Enum.StrokeLineCap;
 import com.jmathanim.Enum.StrokeLineJoin;
+import com.jmathanim.MathObjects.AbstractVersioned;
 import com.jmathanim.Utils.LatexStyle;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimConfig;
+import com.jmathanim.jmathanim.JMathAnimScene;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,19 +33,19 @@ import java.util.Arrays;
 /**
  * Represents an array of mathematical object drawing properties.
  * <p>
- * This class encapsulates a collection of Stylable instances, along with reference properties used for styling
- * and drawing. It provides functionality for managing the styling, visibility, state preservation, interpolations, and
- * visual attributes of associated Stylable. The core functionality includes copying, restoring, saving states,
- * and managing layers and colors for the drawing and filling processes.
+ * This class encapsulates a collection of Stylable instances, along with reference properties used for styling and
+ * drawing. It provides functionality for managing the styling, visibility, state preservation, interpolations, and
+ * visual attributes of associated Stylable. The core functionality includes copying, restoring, saving states, and
+ * managing layers and colors for the drawing and filling processes.
  * <p>
- * Fields: - `objects`: A list containing the associated Stylable instances. - `mpRef`: A reference to the main
- * Stylable used for styling and rendering.
+ * Fields: - `objects`: A list containing the associated Stylable instances. - `mpRef`: A reference to the main Stylable
+ * used for styling and rendering.
  * <p>
- * This class is intended as a utility for handling collections of Stylable within a visual or computational
- * context. Instances can be initialized with default properties or copied from existing objects, with modifications
- * propagating across associated entities.
+ * This class is intended as a utility for handling collections of Stylable within a visual or computational context.
+ * Instances can be initialized with default properties or copied from existing objects, with modifications propagating
+ * across associated entities.
  */
-public class DrawStylePropertiesArray implements DrawStyleProperties {
+public class DrawStylePropertiesArray extends AbstractVersioned implements DrawStyleProperties {
 
     private final MODrawPropertiesLaTeX mpRef;
     private ArrayList<DrawStyleProperties> mpArray;
@@ -51,8 +53,8 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
     private boolean hasBeenChanged;
 
     /**
-     * Constructs a new MODrawPropertiesArray instance by copying the properties from the provided Stylable
-     * object. Initializes an empty list of objects.
+     * Constructs a new MODrawPropertiesArray instance by copying the properties from the provided Stylable object.
+     * Initializes an empty list of objects.
      *
      * @param mp The Stylable object from which the properties are copied to initialize the new instance.
      */
@@ -66,9 +68,8 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
      * Default constructor for the MODrawPropertiesArray class.
      * <p>
      * This constructor initializes a new instance of MODrawPropertiesArray with the following defaults: - Creates a new
-     * instance of Stylable and assigns it to mpRef. - Copies the default Stylable settings from
-     * JMathAnimConfig's configuration into mpRef. - Initializes the objects field as an empty ArrayList of
-     * Stylable.
+     * instance of Stylable and assigns it to mpRef. - Copies the default Stylable settings from JMathAnimConfig's
+     * configuration into mpRef. - Initializes the objects field as an empty ArrayList of Stylable.
      */
     public DrawStylePropertiesArray() {
         mpRef = new MODrawPropertiesLaTeX();
@@ -86,7 +87,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
         mpRef = new MODrawPropertiesLaTeX();
     }
 
-    public DrawStylePropertiesArray(DrawStyleProperties...mpArray) {
+    public DrawStylePropertiesArray(DrawStyleProperties... mpArray) {
         this.mpArray = new ArrayList<>();
         for (DrawStyleProperties mp : mpArray) {
             this.mpArray.add(mp);
@@ -124,7 +125,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
      */
     public void setLatexStyle(LatexStyle latexStyle) {
         this.latexStyle = latexStyle;
-        setHasBeenChanged(true);
+       changeVersion();
     }
 
 
@@ -144,7 +145,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
      */
     public void setMpArray(ArrayList<DrawStyleProperties> mpArray) {
         this.mpArray = mpArray;
-        setHasBeenChanged(true);
+       changeVersion();
     }
 
     /**
@@ -154,7 +155,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
      */
     public void add(DrawStyleProperties... objs) {
         mpArray.addAll(Arrays.asList(objs));
-        setHasBeenChanged(true);
+       changeVersion();
     }
 
     /**
@@ -169,7 +170,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
             obj.setVisible(visible);
         }
         mpRef.setVisible(visible);
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -190,7 +191,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
      * @return true if the Stylable was successfully removed; false otherwise.
      */
     public boolean remove(DrawStyleProperties o) {
-        setHasBeenChanged(true);
+       changeVersion();
         return mpArray.remove(o);
     }
 
@@ -205,9 +206,10 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
     }
 
     /**
-     * Copies the properties from the given {@link DrawStyleProperties} object to the current instance. This method iterates
-     * through all the objects in the current instance, copying the properties from the provided {@link DrawStyleProperties} object
-     * for each object's `mp` attribute and the `mpRef` attribute of the current instance.
+     * Copies the properties from the given {@link DrawStyleProperties} object to the current instance. This method
+     * iterates through all the objects in the current instance, copying the properties from the provided
+     * {@link DrawStyleProperties} object for each object's `mp` attribute and the `mpRef` attribute of the current
+     * instance.
      *
      * @param prop The {@link DrawStyleProperties} object whose properties will be copied.
      */
@@ -228,7 +230,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
                 mpRef.latexStyle = moDrawPropertiesLaTeX.latexStyle;
 
         }
-        setHasBeenChanged(true);
+       changeVersion();
     }
 
     public void copyFrom(DrawStylePropertiesArray prop) {
@@ -240,7 +242,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
         } else {
             copyFrom(prop.mpRef);
         }
-        setHasBeenChanged(true);
+       changeVersion();
     }
 
     /**
@@ -257,7 +259,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
             obj.interpolateFrom(dst, alpha);
         }
         mpRef.interpolateFrom(dst, alpha);
-        setHasBeenChanged(true);
+       changeVersion();
     }
 
     /**
@@ -274,7 +276,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
             obj.interpolateFrom(a, b, alpha);
         }
         mpRef.interpolateFrom(a, b, alpha);
-        setHasBeenChanged(true);
+       changeVersion();
     }
 
     /**
@@ -289,13 +291,13 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
 
         }
         mpRef.loadFromStyle(name);
-        setHasBeenChanged(true);
+       changeVersion();
     }
 
     /**
-     * Copies the raw properties from another {@code Stylable} instance to this instance. The method performs a
-     * deep copy by iterating over associated math objects and updating their properties, as well as updating a
-     * reference to the provided properties.
+     * Copies the raw properties from another {@code Stylable} instance to this instance. The method performs a deep
+     * copy by iterating over associated math objects and updating their properties, as well as updating a reference to
+     * the provided properties.
      *
      * @param mp The {@code Stylable} instance from which properties will be copied.
      */
@@ -305,7 +307,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
             obj.rawCopyFrom((MODrawProperties) mp);
         }
         mpRef.rawCopyFrom((MODrawProperties) mp);
-        setHasBeenChanged(true);
+       changeVersion();
     }
 
     /**
@@ -320,7 +322,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
             obj.setDrawAlpha(alpha);
         }
         mpRef.setDrawAlpha(alpha);
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -337,7 +339,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
             obj.setFillAlpha(alpha);
         }
         mpRef.setFillAlpha(alpha);
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -353,7 +355,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
             obj.multDrawAlpha(mult);
         }
         mpRef.multDrawAlpha(mult);
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -370,7 +372,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
             obj.multFillAlpha(mult);
         }
         mpRef.multFillAlpha(mult);
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -396,7 +398,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
             obj.setLayer(layer);
         }
         mpRef.setLayer(layer);
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -421,7 +423,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
             obj.setDrawColor(drawColor);
         }
         mpRef.setDrawColor(drawColor);
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -448,7 +450,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
             obj.setFillColor(fillColor);
         }
         mpRef.setFillColor(fillColor);
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -460,16 +462,6 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
     @Override
     public MODrawPropertiesLaTeX getFirstMP() {
         return mpRef;
-    }
-
-    @Override
-    public boolean hasBeenChanged() {
-       return this.hasBeenChanged;
-    }
-
-    @Override
-    public void setHasBeenChanged(boolean hasBeenChanged) {
-        this.hasBeenChanged=hasBeenChanged;
     }
 
     /**
@@ -494,8 +486,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
     }
 
     /**
-     * Sets the style of the line join for all contained Stylable instances and the reference drawing
-     * properties.
+     * Sets the style of the line join for all contained Stylable instances and the reference drawing properties.
      *
      * @param linejoin the {@link StrokeLineJoin} style to be applied to configure the way lines in shapes are joined.
      * @return
@@ -506,7 +497,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
             obj.setLineJoin(linejoin);
         }
         mpRef.setLineJoin(linejoin);
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -523,7 +514,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
             obj.setLinecap(linecap);
         }
         mpRef.setLinecap(linecap);
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -549,7 +540,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
             obj.setThickness(thickness);
         }
         mpRef.setThickness(thickness);
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -564,8 +555,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
     }
 
     /**
-     * Sets the dot style of all Stylable instances in the collection as well as the referenced Stylable
-     * object.
+     * Sets the dot style of all Stylable instances in the collection as well as the referenced Stylable object.
      *
      * @param dotStyle The dot style to apply. This parameter is of type Point.DotStyle, which determines the style of
      *                 dots to be set.
@@ -577,7 +567,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
             obj.setDotStyle(dotStyle);
         }
         mpRef.setDotStyle(dotStyle);
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -585,6 +575,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
     public DrawStyleProperties getMp() {
         return this;
     }
+
     /**
      * Retrieves the dash style property from the referenced Stylable.
      *
@@ -607,7 +598,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
             obj.setDashStyle(dashStyle);
         }
         mpRef.setDashStyle(dashStyle);
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -635,7 +626,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
             obj.setAbsoluteThickness(absThickness);
         }
         mpRef.setAbsoluteThickness(absThickness);
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -652,7 +643,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
             obj.multThickness(multT);
         }
         mpRef.multThickness(multT);
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -667,8 +658,8 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
     }
 
     /**
-     * Sets the face-to-camera property for each {@code Stylable} in the collection and updates the reference
-     * object. This property determines whether the object should always face the camera or not.
+     * Sets the face-to-camera property for each {@code Stylable} in the collection and updates the reference object.
+     * This property determines whether the object should always face the camera or not.
      *
      * @param faceToCamera A {@code Boolean} value indicating whether the objects should face the camera. If
      *                     {@code true}, the objects will face the camera; otherwise, they won't.
@@ -680,7 +671,7 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
             obj.setFaceToCamera(faceToCamera);
         }
         mpRef.setFaceToCamera(faceToCamera);
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
@@ -707,8 +698,22 @@ public class DrawStylePropertiesArray implements DrawStyleProperties {
             obj.setFaceToCameraPivot(pivot);
         }
         mpRef.setFaceToCameraPivot(pivot);
-        setHasBeenChanged(true);
+       changeVersion();
         return this;
     }
 
+    @Override
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+
+    }
+
+    @Override
+    public void performUpdateBoundingBox(JMathAnimScene scene) {
+        
+    }
+
+    @Override
+    protected boolean applyUpdaters(JMathAnimScene scene) {
+        return false;
+    }
 }

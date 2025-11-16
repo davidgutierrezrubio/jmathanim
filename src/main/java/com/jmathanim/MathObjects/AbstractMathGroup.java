@@ -31,23 +31,21 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
     }
 
     protected AbstractMathGroup(ArrayList<MathObject<?>> objects) {
-        this.objects = objects;
-        this.dict = new HashMap<>();
-        mpArray = new DrawStylePropertiesObjectsArray();
-        for (MathObject<?> o : objects) {
-            mpArray.add(o);
+        this();
+        for (MathObject<?> obj : objects) {
+            add(obj);
         }
 
     }
 
-    protected AbstractMathGroup(HashMap<String, MathObject<?>> dict) {
-        this.dict = dict;
-        this.objects = new ArrayList<>(dict.values());
-        this.mpArray = new DrawStylePropertiesObjectsArray();
-        for (MathObject<?> o : objects) {
-            mpArray.add(o);
-        }
-    }
+//    protected AbstractMathGroup(HashMap<String, MathObject<?>> dict) {
+//        this.dict = dict;
+//        this.objects = new ArrayList<>(dict.values());
+//        this.mpArray = new DrawStylePropertiesObjectsArray();
+//        for (MathObject<?> o : objects) {
+//            mpArray.add(o);
+//        }
+//    }
 
     /**
      * Computes a MathObjectgroup with the same elements, divided en equally sized subgroups. The current group is
@@ -107,6 +105,7 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
             if (obj != null) {
                 objects.add(obj);
                 mpArray.add(obj);
+                addDependency(obj);
             }
         }
         return (MathObjectGroup) this;
@@ -310,17 +309,19 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
     }
 
     @Override
-    protected Rect computeBoundingBox() {
+    public Rect computeBoundingBox() {
+        if (!needsUpdate()) return boundingBox;
         //If group is empty, returns an empty rect
         if (objects.isEmpty()) {
             return new EmptyRect();
         }
 
-        Rect bbox = objects.get(0).getBoundingBox();
+        boundingBox = objects.get(0).computeBoundingBox();
         for (MathObject<?> obj : objects) {
-            bbox = Rect.union(bbox, obj.getBoundingBox());
+            Rect b = obj.computeBoundingBox();
+            boundingBox = Rect.union(boundingBox, b);
         }
-        return bbox;
+        return boundingBox;
     }
 
     public ArrayList<MathObject<?>> getObjects() {
@@ -353,12 +354,13 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
     public T setLayout(LayoutType layoutType, double hGap, double vGap) {
         return setLayout(null, layoutType, hGap, vGap);
     }
+
     public T setLayout(LayoutType layoutType, double gap) {
         return setLayout(null, layoutType, gap, gap);
     }
 
     public T setLayout(Boxable corner, LayoutType layoutType, double gap) {
-        return setLayout(corner, layoutType, gap,gap);
+        return setLayout(corner, layoutType, gap, gap);
     }
 
     public T setLayout(Boxable corner, LayoutType layoutType, double hGap, double vGap) {
@@ -424,14 +426,14 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
 //            objects.get(0).stackTo(corner, anchor, gap);
             objects.get(0).stack()
                     .withDestinyAnchor(anchor)
-                    .withGaps(hGap,vGap)
+                    .withGaps(hGap, vGap)
                     .toObject(corner);
         }
         for (int n = 1; n < objects.size(); n++) {
 //            objects.get(n).stackTo(objects.get(n - 1), anchor, gap);
             objects.get(n).stack()
                     .withDestinyAnchor(anchor)
-                    .withGaps(hGap,vGap)
+                    .withGaps(hGap, vGap)
                     .toObject(objects.get(n - 1));
         }
         return (T) this;
@@ -513,6 +515,11 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
         homogeneizeBoundingBoxesTo(anchorType, wmax, hmax, upperGap, rightGap, lowerGap, leftGap);
 
         return (T) this;
+    }
+
+    @Override
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+
     }
 
     /**

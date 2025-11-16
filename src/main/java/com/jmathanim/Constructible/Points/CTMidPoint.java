@@ -21,7 +21,6 @@ import com.jmathanim.Constructible.Lines.CTSegment;
 import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.MathObjects.Point;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  * This class represents a Midpoint, from 2 given points or a segment
@@ -48,6 +47,8 @@ public class CTMidPoint extends CTAbstractPoint<CTMidPoint> {
      */
     public static CTMidPoint make(Coordinates<?> A, Coordinates<?> B) {
         CTMidPoint resul = new CTMidPoint(MidPointType.TWO_POINTS, A, B, null);
+        resul.addDependency(A.getVec());
+        resul.addDependency(B.getVec());
         return resul;
     }
 
@@ -59,6 +60,7 @@ public class CTMidPoint extends CTAbstractPoint<CTMidPoint> {
      */
     public static CTMidPoint make(CTSegment segment) {
         CTMidPoint resul = new CTMidPoint(MidPointType.SEGMENT, null, null, segment);
+        resul.addDependency(segment);
         return resul;
     }
 
@@ -103,23 +105,6 @@ public class CTMidPoint extends CTAbstractPoint<CTMidPoint> {
         }
         if (!isFreeMathObject()) {
             copyCoordinatesFrom(coordinatesOfPoint);
-        }
-    }
-
-    @Override
-    public void update(JMathAnimScene scene) {
-        super.update(scene);
-        rebuildShape();
-    }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-        switch (midPointType) {
-            case SEGMENT:
-                dependsOn(scene, this.segment);
-                break;
-            case TWO_POINTS:
-                dependsOn(scene, this.A, this.B);
         }
     }
 }

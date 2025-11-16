@@ -7,6 +7,7 @@ import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.DependableUtils;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimConfig;
@@ -22,6 +23,8 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
     protected final Vec previousVecPosition;
     protected final Shape dotShape;
     private final MODrawProperties mpPoint;
+    private long mpVersion;
+    private long dotShapeVersion;
 
     protected AbstractPoint() {
         this(Vec.to(0, 0));
@@ -32,10 +35,23 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
         this.v = v;
         previousVecPosition = this.getVec().copy();
         this.dotShape = new Shape();
+        dotShapeVersion=-1L;
+        mpVersion=-1L;
         mpPoint = JMathAnimConfig.getConfig().getDefaultMP();
         mpPoint.copyFrom(JMathAnimConfig.getConfig().getStyles().get("dotdefault"));
         mpPoint.setAbsoluteThickness(true);
+        addDependency(this.v);
+        addDependency(mpPoint);
         generateDotShape();
+    }
+
+    @Override
+    public boolean needsUpdate() {
+        newLastMaxDependencyVersion= DependableUtils.maxVersion(
+               this.v,
+                getMp()
+        );
+        return dirty || (newLastMaxDependencyVersion != lastCleanedDepsVersionSum);
     }
 
     @Override
@@ -66,14 +82,14 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
             generateStyleForDot();
             dotShape.setAbsoluteSize(v);
         }
-        if (getMp().hasBeenChanged()) {
+        if (getMp().getVersion()>mpVersion) {
             generateDotShape();
             generateStyleForDot();
             dotShape.setAbsoluteSize(v);
-            getMp().setHasBeenChanged(false);
+            mpVersion=getMp().getVersion();
         }
         if (!previousVecPosition.equals(v)) {
-            dotShape.shift(v.minus(previousVecPosition));
+            dotShape.shift(v.minus(previousVecPosition));//TODO Improve this
             previousVecPosition.copyCoordinatesFrom(v);
         }
         return dotShape;
@@ -101,6 +117,12 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
     public T dotStyle(DotStyle dotStyle) {
         this.getMp().setDotStyle(dotStyle);
         return (T) this;
+    }
+
+
+    @Override
+    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+        generateDotShape();
     }
 
     private void generateDotShape() {
@@ -160,13 +182,13 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
         double sc = .5 * st;
         switch (getMp().getDotStyle()) {
             case CROSS:
-                dotShape.drawColor(getMp().getDrawColor()) .fillColor(JMColor.NONE).thickness(.25 * th);
+                dotShape.drawColor(getMp().getDrawColor()) .fillColor(JMColor.parse("none")).thickness(.25 * th);
                 break;
             case PLUS:
-                dotShape.drawColor(getMp().getDrawColor()) .fillColor(JMColor.NONE).thickness(.25 * th);
+                dotShape.drawColor(getMp().getDrawColor()) .fillColor(JMColor.parse("none")).thickness(.25 * th);
                 break;
             case TRIANGLE_DOWN_HOLLOW:
-                dotShape.drawColor(getMp().getDrawColor()) .fillColor(JMColor.NONE).thickness(.25 * th);
+                dotShape.drawColor(getMp().getDrawColor()) .fillColor(JMColor.parse("none")).thickness(.25 * th);
                 break;
             case TRIANGLE_UP_HOLLOW:
                 dotShape.drawColor(getMp().getDrawColor()).thickness(.25 * th);
@@ -178,7 +200,7 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
                 dotShape.drawColor(getMp().getDrawColor()).fillColor(getMp().getDrawColor()).thickness(0);
                 break;
             case RING:
-                dotShape.drawColor(getMp().getDrawColor()).fillColor(JMColor.NONE).thickness(.25 * th);
+                dotShape.drawColor(getMp().getDrawColor()).fillColor(JMColor.parse("none")).thickness(.25 * th);
                 break;
             default:// Default case, includes CIRCLE
                 dotShape.drawColor(getMp().getDrawColor())
@@ -236,7 +258,7 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
     }
 
     @Override
-    protected Rect computeBoundingBox() {
+    public Rect computeBoundingBox() {
         return new Rect(v.x, v.y, v.z, v.x, v.y, v.z);
     }
 

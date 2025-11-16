@@ -609,7 +609,7 @@ public class ColorParser {
 
             default:
                 JMathAnimScene.logger.warn("Color format not supported: " + LogUtils.method(hex) + ". Using WHITE color instead");
-                return JMColor.WHITE;
+                return JMColor.rgba(1,1,1,1);
         }
 
         // 4. Convertir los componentes hexadecimales a enteros decimales (0-255)
@@ -622,7 +622,7 @@ public class ColorParser {
             return JMColor.rgbaInt(r, g, b, a);
         } catch (NumberFormatException e) {
             JMathAnimScene.logger.warn("Color format not supported: " + LogUtils.method(hex) + ". Using WHITE color instead");
-            return JMColor.WHITE;
+            return JMColor.rgba(1,1,1,1);
         }
     }
 
@@ -634,7 +634,7 @@ public class ColorParser {
     public static JMColor parseRGBorRGBA(String colorString) {
         if (colorString == null) {
           JMathAnimScene.logger.warn("Null color string, returning WHITE color instead");
-          return JMColor.WHITE;
+          return JMColor.rgba(1,1,1,1);
         }
 
         String cleanedString = colorString.replaceAll("\\s", "").trim();
@@ -681,7 +681,7 @@ public class ColorParser {
     public static JMColor parseHSL(String colorString) {
         if (colorString == null) {
             JMathAnimScene.logger.warn("Null color string, returning WHITE color instead");
-            return JMColor.WHITE;
+            return JMColor.rgba(1,1,1,1);
         }
         String cleanedString = colorString.replaceAll("\\s", "").trim();
 

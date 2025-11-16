@@ -51,7 +51,7 @@ public abstract class AbstractJMImage<T extends AbstractJMImage<T>>  extends Mat
     
     
     @Override
-    protected Rect computeBoundingBox() {
+    public Rect computeBoundingBox() {
         return bbox.getTransformedRect(currentViewTransform);
     }
 
