@@ -588,19 +588,8 @@ public class JavaFXRenderer extends Renderer {
 
     @Override
     public double ThicknessToMathWidth(MathObject<?> obj) {
-        Camera cam = null;
-        double th;
-        try {
-            cam = (obj.getMp().isAbsoluteThickness() ? fixedCamera : camera);
-
-
-//        return obj.getMp().getThickness() / 1066 * 4 / cam.getMathView().getWidth();
-         th = obj.getMp().getThickness();
-        } catch (Exception e) {
-            cam = camera;
-            th=0;
-        }
-        return th * cam.getMathView().getWidth() / THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH;
+        Camera cam = (obj.getMp().isAbsoluteThickness() ? fixedCamera : camera);
+        return obj.getMp().getThickness() * cam.getMathView().getWidth() / THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH;
     }
 
     @Override
