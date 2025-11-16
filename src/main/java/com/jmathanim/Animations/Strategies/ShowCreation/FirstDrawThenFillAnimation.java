@@ -21,9 +21,10 @@ import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.Commands;
 import com.jmathanim.Animations.JoinAnimation;
-import com.jmathanim.MathObjects.AbstractMultiShapeObject;
 import com.jmathanim.MathObjects.AbstractShape;
+import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.MathObjects.MathObjectGroup;
+import com.jmathanim.MathObjects.hasShapes;
 import com.jmathanim.Styling.MODrawProperties;
 
 /**
@@ -35,11 +36,11 @@ import com.jmathanim.Styling.MODrawProperties;
 public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
 
     public final AnimationGroup anim;
-    private final AbstractMultiShapeObject<?,?> originObject;
+    private final hasShapes originObject;
     private AbstractShape<?>[] originShapes;
     private AbstractShape<?>[] intermediateShapes;
 
-    public FirstDrawThenFillAnimation(double runtime, AbstractMultiShapeObject<?,?> origin) {
+    public FirstDrawThenFillAnimation(double runtime, hasShapes origin) {
         super(runtime);
         this.originObject = origin;
 
@@ -49,7 +50,7 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
     @Override
     public boolean doInitialization() {
         super.doInitialization();
-        originShapes=originObject.toArray();
+        originShapes=originObject.toShapesArray();
         this.intermediateShapes = new AbstractShape<?>[originShapes.length];
         for (int i = 0; i < originShapes.length; i++) {
             this.intermediateShapes[i] = originShapes[i].copy();
@@ -105,17 +106,17 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
         anim.cleanAnimationAt(t);
         if (lt == 1) {
             removeObjectsFromScene(intermediateShapes);
-            addObjectsToscene(originObject);
+            addObjectsToscene((MathObject<?>) originObject);
             return;
         }
         if (lt == 0) {
             removeObjectsFromScene(intermediateShapes);
-            removeObjectsFromScene(originObject);
+            removeObjectsFromScene((MathObject<?>) originObject);
             return;
         }
         //Case 0<t<1
         addObjectsToscene(intermediateShapes);
-        removeObjectsFromScene(originObject);
+        removeObjectsFromScene((MathObject<?>)originObject);
     }
 
     @Override
@@ -125,7 +126,7 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
 
     @Override
     public void prepareForAnim(double t) {
-        removeObjectsFromScene(originObject);
+        removeObjectsFromScene((MathObject<?>)originObject);
     }
 
     @Override

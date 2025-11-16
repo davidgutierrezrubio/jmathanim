@@ -330,7 +330,7 @@ public class ShowCreation extends Animation {
                 JMathAnimScene.logger.debug("ShowCreation method: "+ LogUtils.method("MultiShapeCreationStrategy"));
                 break;
             case FIRST_DRAW_AND_THEN_FILL:
-                creationStrategy = new FirstDrawThenFillAnimation(runTime, convertToMultiShapeObject(mobj));
+                creationStrategy = new FirstDrawThenFillAnimation(runTime, (hasShapes) mobj);
                 JMathAnimScene.logger.debug("ShowCreation method: "+ LogUtils.method("FirstDrawThenFillStrategy"));
                 break;
             case LATEX_CREATION:

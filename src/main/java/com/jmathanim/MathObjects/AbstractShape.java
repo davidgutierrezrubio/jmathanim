@@ -21,7 +21,7 @@ import java.util.Objects;
 
 public abstract class
 AbstractShape<T extends AbstractShape<T>>
-        extends MathObject<T> implements hasPath {
+        extends MathObject<T> implements hasPath,hasShapes {
     protected final JMPath jmpath;
     private final DrawStyleProperties mpShape;
     protected boolean showDebugPoints = false;
@@ -42,6 +42,12 @@ AbstractShape<T extends AbstractShape<T>>
         addDependency(this.mpShape);
 
     }
+    @Override
+    public AbstractShape<?>[] toShapesArray() {
+        return new AbstractShape<?>[]{this};
+    }
+
+
 
     public abstract Shape toShape();
 

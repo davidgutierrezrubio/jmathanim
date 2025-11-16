@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public abstract class AbstractMultiShapeObject<
         S extends AbstractMultiShapeObject<S, T>,
         T extends AbstractShape<T>>
-        extends MathObject<S> implements Iterable<T> {
+        extends MathObject<S> implements Iterable<T>,hasShapes {
 
 
     protected final DrawStylePropertiesObjectsArray mpMultiShape;
@@ -320,7 +320,8 @@ public abstract class AbstractMultiShapeObject<
      *
      * @return The array
      */
-    public T[] toArray() {
+    @Override
+    public T[] toShapesArray() {
         @SuppressWarnings("unchecked")
         T[] arr = (T[]) java.lang.reflect.Array.newInstance(clazz, shapes.size());
         return shapes.toArray(arr);
