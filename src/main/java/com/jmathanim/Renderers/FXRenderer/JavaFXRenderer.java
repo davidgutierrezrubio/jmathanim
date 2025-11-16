@@ -178,6 +178,7 @@ public class JavaFXRenderer extends Renderer {
         if (rc != null) {
             rc.type = JavaFXRenderCommand.COMMAND_TYPE.REMOVE;
             deleteRenderCommands.add(rc);
+            renderCommands.remove(rc);
         }
 
     }
@@ -319,16 +320,18 @@ public class JavaFXRenderer extends Renderer {
 
             // Add all elements
 //            mainGroupOfObjectsToRender.getChildren().addAll(fxnodes);
+            //Delete objects removed from scene
+            for (JavaFXRenderCommand rc : deleteRenderCommands) {
+                Node remove = drawablesToNodes.remove(rc.object);
+                mainGroupOfObjectsToRender.getChildren().remove(remove);
+            }
             for (JavaFXRenderCommand rc : renderCommands) {
                 Node node = retrieveFXNodeForRenderCommand(rc);
                 if (!mainGroupOfObjectsToRender.getChildren().contains(node))
                     mainGroupOfObjectsToRender.getChildren().add(node);
             }
 
-            //Delete objects removed from scene
-            for (JavaFXRenderCommand rc : deleteRenderCommands) {
-                mainGroupOfObjectsToRender.getChildren().remove(drawablesToNodes.remove(rc.object));
-            }
+
 
 
 //            System.out.println("render size "+renderCommands.size());
@@ -435,19 +438,19 @@ public class JavaFXRenderer extends Renderer {
                 AbstractShape<?> shape = (AbstractShape<?>) rc.object;
                 JMPath path = shape.getPath();
                 if (path.getVersion() > rc.pathVersion) {//Different path, must update everything
-                    System.out.println("Regenerando PATH completo");
+//                    System.out.println("Regenerando PATH completo");
                     generateFullShapeObject((Path) node, rc);
                 }
                 if (((AbstractShape<?>) rc.object).getCamera().getVersion() > rc.cameraVersion) {
-                    System.out.println("Actualizando camera de PATH");
+//                    System.out.println("Actualizando camera de PATH");
                     applyCameraToNode(node, rc, config.getMediaWidth(), config.getMediaHeight());
                 }
                 if (rc.previous_shiftVector_x != rc.shiftVector_x || rc.previous_shiftVector_y != rc.shiftVector_y) {
-                    System.out.println("Actualizando shiftVector de PATH");
+//                    System.out.println("Actualizando shiftVector de PATH");
                     JavaFXRendererUtils.applyShiftVectorToNode(node, rc);
                 }
                 if (shape.getMp().getVersion() > rc.mpVersion) {
-                    System.out.println("Actualizando MP de PATH");
+//                    System.out.println("Actualizando MP de PATH");
                     applyDrawingStyles((Path) node, rc);
                 }
 
