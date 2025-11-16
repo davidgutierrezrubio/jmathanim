@@ -311,13 +311,12 @@ public class JavaFXRenderer extends Renderer {
 
 //            // Add all elements
             mainGroupOfObjectsToRender.getChildren().clear();
-            for (JavaFXRenderCommand rc: currentFrame.renderCommands) {
+            for (JavaFXRenderCommand rc : currentFrame.renderCommands) {
                 Node node = retrieveFXNodeForRenderCommand(rc);
 //                Parent parent = node.getParent();
 //                if (parent != null) {
 //                    ((Group) parent).getChildren().remove(node);
 //                }
-                System.out.println(node);
 
                 mainGroupOfObjectsToRender.getChildren().add(node);
             }
@@ -400,7 +399,6 @@ public class JavaFXRenderer extends Renderer {
             return node;
         } else {
             Node e = processNewRenderCommand(renderCommand);
-            System.out.println("new node");
             drawablesToNodes.put(renderCommand.object, e);
             return e;
         }
@@ -434,12 +432,11 @@ public class JavaFXRenderer extends Renderer {
 //                    System.out.println("Actualizando MP de PATH");
                     applyDrawingStyles((Path) node, rc);
                 }
-
-
                 break;
 //                return makePath(rc);
             case IMAGE:
-                JMathAnimScene.logger.warn("Image still not implemented");
+                updateImageNode((ImageView) node,rc);
+//                JMathAnimScene.logger.warn("Image still not implemented");
         }
     }
 
@@ -630,11 +627,11 @@ public class JavaFXRenderer extends Renderer {
         Image image;
         if (!images.containsKey(fileName)) {// If the image is not already loaded...
 //            try {
-                ResourceLoader rl = new ResourceLoader();
+            ResourceLoader rl = new ResourceLoader();
 //                final URL imageResource = rl.getExternalResource(fileName, "images");
-                image = new Image(stream);
-                images.put(fileName, image);
-                JMathAnimScene.logger.info("Loaded image " + fileName);
+            image = new Image(stream);
+            images.put(fileName, image);
+            JMathAnimScene.logger.info("Loaded image " + fileName);
 //            } catch (FileNotFoundException e) {
 //                JMathAnimScene.logger.error("File " + LogUtils.CYAN + fileName + LogUtils.RESET + " not found. Returning EmptyRect");
 //                return new EmptyRect();
@@ -671,7 +668,7 @@ public class JavaFXRenderer extends Renderer {
     }
 
 
-    private Node createNewImageNode(JavaFXRenderCommand rc){
+    private Node createNewImageNode(JavaFXRenderCommand rc) {
         AbstractJMImage<?> jmImage = (AbstractJMImage<?>) rc.object;
         Rect bbox = getBboxFromImageCatalog(jmImage.getId());
         ImageView imageNode;
@@ -695,6 +692,32 @@ public class JavaFXRenderer extends Renderer {
         imageNode.getTransforms().add(new Scale(1, -1));
         return imageNode;
     }
+
+    private void updateImageNode(ImageView imageNode,JavaFXRenderCommand rc) {
+        AbstractJMImage<?> jmImage = (AbstractJMImage<?>) rc.object;
+        Rect bbox = getBboxFromImageCatalog(jmImage.getId());
+//        ImageView imageNode;
+//        if (jmImage.isCached()) {
+//            Image image = getImageFromCatalog(jmImage);
+//            imageNode = new ImageView(image);
+//        } else {
+//            imageNode = new ImageView(jmImage.getImage());
+//        }
+//        imageNode.setFitHeight(bbox.getHeight());
+//        imageNode.setFitWidth(bbox.getWidth());
+
+        imageNode.setOpacity(jmImage.getMp().getDrawColor().getAlpha());
+
+        Affine camToScreen = JavaFXRendererUtils.camToScreenAffineTransform(rc.camera);
+        imageNode.getTransforms().clear();
+        imageNode.getTransforms().add(camToScreen);
+
+//        //Swap y coordinate
+        imageNode.getTransforms().add(new Scale(1, -1));
+        imageNode.getTransforms().add(JavaFXRendererUtils.affineJToAffine(jmImage.getCurrentViewTransform()));
+        imageNode.getTransforms().add(new Scale(1, -1));
+    }
+
 
     @Override
     public void debugText(String text, Vec loc) {
