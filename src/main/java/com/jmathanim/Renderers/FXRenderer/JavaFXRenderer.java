@@ -61,7 +61,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
@@ -314,35 +313,15 @@ public class JavaFXRenderer extends Renderer {
 //                    new Translate(-config.getMediaWidth() / 2, -config.getMediaHeight() / 2, 0));
 
 //            // Add all elements
-////            mainGroupOfObjectsToRender.getChildren().addAll(fxnodes);
-//            //Delete objects removed from scene
-//            for (JavaFXRenderCommand rc : deleteRenderCommands) {
-//                Node remove = drawablesToNodes.remove(rc.object);
-//                mainGroupOfObjectsToRender.getChildren().remove(remove);
-//            }
-//            for (JavaFXRenderCommand rc : renderCommands) {
-//                Node node = retrieveFXNodeForRenderCommand(rc);
-//                if (!mainGroupOfObjectsToRender.getChildren().contains(node))
-//                    mainGroupOfObjectsToRender.getChildren().add(node);
-//            }
-            List<JavaFXRenderCommand> copyRC = List.copyOf(currentFrame.renderCommands);
-
             mainGroupOfObjectsToRender.getChildren().clear();
-            for (JavaFXRenderCommand rc: copyRC) {
+            for (JavaFXRenderCommand rc: currentFrame.renderCommands) {
                 Node node = retrieveFXNodeForRenderCommand(rc);
-                System.out.println("Rendering "+rc.object.getClass().getSimpleName());
-                Parent parent = node.getParent();
-                if (parent != null) {
-                    ((Group) parent).getChildren().remove(node);
-                }
+//                Parent parent = node.getParent();
+//                if (parent != null) {
+//                    ((Group) parent).getChildren().remove(node);
+//                }
                 mainGroupOfObjectsToRender.getChildren().add(node);
             }
-
-
-
-//            System.out.println("render size "+renderCommands.size());
-//            System.out.println(mainGroupOfObjectsToRender.getChildren().size());
-
             if (config.showFrameNumbers) {
                 showDebugFrame(frameCount, 1d * frameCount / config.getFps());
             }
@@ -368,8 +347,6 @@ public class JavaFXRenderer extends Renderer {
         }
 //        fxnodes.clear();
         debugFXnodes.clear();
-        previousFrame = currentFrame;
-        currentFrame = new DataFrame(0);
         return bi;
     }
 
@@ -404,7 +381,8 @@ public class JavaFXRenderer extends Renderer {
     @Override
     public void clearAndPrepareCanvasForAnotherFrame() {
         super.clearAndPrepareCanvasForAnotherFrame();
-
+        previousFrame = currentFrame;
+        currentFrame = new DataFrame(0);
     }
 
     @Override
@@ -422,7 +400,6 @@ public class JavaFXRenderer extends Renderer {
             updateRendererCommandNode(node, renderCommand);
             return node;
         } else {
-            System.out.println("creando nuevo nodo");
             Node e = processNewRenderCommand(renderCommand);
             drawablesToNodes.put(renderCommand.object, e);
             return e;
