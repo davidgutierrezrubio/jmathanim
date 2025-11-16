@@ -335,6 +335,7 @@ public abstract class JMathAnimScene {
     private void addSingleObjectToScene(MathObject<?> obj) {
         sceneObjects.add(obj);
         dependencyGraph.addNode(obj);
+        renderer.addObject(obj);
     }
     public void addDependency(Dependable dep) {
         dependencyGraph.addNode(dep);
@@ -376,6 +377,7 @@ public abstract class JMathAnimScene {
                 }
 
                 sceneObjects.remove(obj);
+                renderer.removeObject(obj);
 
                 DebugTools.removedFromSceneHook(obj, this);
             }

@@ -80,9 +80,10 @@ public class JavaFXRenderer extends Renderer {
     public final JavaFXRendererUtils fXRendererUtilsJava;
     public final Camera camera;
     public final Camera fixedCamera;
-    protected final HashMap<JavaFXRenderCommand, Node> rendererCommandsToNodes;
+    protected final HashMap<Drawable, Node> drawablesToNodes;
     protected final HashMap<Drawable, JavaFXRenderCommand> drawablesToRendererCommands;
     protected final ArrayList<JavaFXRenderCommand> renderCommands;
+    protected final ArrayList<JavaFXRenderCommand> deleteRenderCommands;
     protected final ArrayList<Node> debugFXnodes;
     protected final ArrayList<Node> javaFXNodes;
     private final HashMap<JMPath, Path> storedPaths;
@@ -105,7 +106,8 @@ public class JavaFXRenderer extends Renderer {
     public JavaFXRenderer(JMathAnimScene parentScene) throws Exception {
         super(parentScene);
         renderCommands = new ArrayList<>();
-        rendererCommandsToNodes = new HashMap<>();
+        deleteRenderCommands = new ArrayList<>();
+        drawablesToNodes = new HashMap<>();
         drawablesToRendererCommands = new HashMap<>();
 
 
@@ -164,6 +166,22 @@ public class JavaFXRenderer extends Renderer {
             Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    @Override
+    public void addObject(Drawable drawable) {
+
+    }
+
+    @Override
+    public void removeObject(Drawable drawable) {
+        JavaFXRenderCommand rc = drawablesToRendererCommands.get(drawable);
+        if (rc != null) {
+            rc.type = JavaFXRenderCommand.COMMAND_TYPE.REMOVE;
+            deleteRenderCommands.add(rc);
+        }
+
+    }
+
 
     public final void prepareEncoder() throws Exception {
 
@@ -306,6 +324,13 @@ public class JavaFXRenderer extends Renderer {
                 if (!mainGroupOfObjectsToRender.getChildren().contains(node))
                     mainGroupOfObjectsToRender.getChildren().add(node);
             }
+
+            //Delete objects removed from scene
+            for (JavaFXRenderCommand rc : deleteRenderCommands) {
+                mainGroupOfObjectsToRender.getChildren().remove(drawablesToNodes.remove(rc.object));
+            }
+
+
 //            System.out.println("render size "+renderCommands.size());
 //            System.out.println(mainGroupOfObjectsToRender.getChildren().size());
 
@@ -334,6 +359,8 @@ public class JavaFXRenderer extends Renderer {
         }
 //        fxnodes.clear();
         debugFXnodes.clear();
+        renderCommands.clear();
+        deleteRenderCommands.clear();
         return bi;
     }
 
@@ -368,7 +395,7 @@ public class JavaFXRenderer extends Renderer {
     @Override
     public void clearAndPrepareCanvasForAnotherFrame() {
         super.clearAndPrepareCanvasForAnotherFrame();
-        renderCommands.clear();
+
 //        fxnodes.clear();
 //        debugFXnodes.clear();
     }
@@ -383,14 +410,14 @@ public class JavaFXRenderer extends Renderer {
     }
 
     private Node retrieveFXNodeForRenderCommand(JavaFXRenderCommand renderCommand) {
-        if (rendererCommandsToNodes.containsKey(renderCommand)) {
-            Node node = rendererCommandsToNodes.get(renderCommand);
+        if (drawablesToNodes.containsKey(renderCommand.object)) {
+            Node node = drawablesToNodes.get(renderCommand.object);
             updateRendererCommandNode(node, renderCommand);
             return node;
         } else {
             System.out.println("creando nuevo nodo");
             Node e = processNewRenderCommand(renderCommand);
-            rendererCommandsToNodes.put(renderCommand, e);
+            drawablesToNodes.put(renderCommand.object, e);
             return e;
         }
     }
@@ -411,15 +438,15 @@ public class JavaFXRenderer extends Renderer {
                     System.out.println("Regenerando PATH completo");
                     generateFullShapeObject((Path) node, rc);
                 }
-                if (((AbstractShape<?>) rc.object).getCamera().getVersion()> rc.cameraVersion) {
-//                    System.out.println("Actualizando camera de PATH");
+                if (((AbstractShape<?>) rc.object).getCamera().getVersion() > rc.cameraVersion) {
+                    System.out.println("Actualizando camera de PATH");
                     applyCameraToNode(node, rc, config.getMediaWidth(), config.getMediaHeight());
                 }
-                if (rc.previous_shiftVector_x!=rc.shiftVector_x || rc.previous_shiftVector_y!=rc.shiftVector_y) {
+                if (rc.previous_shiftVector_x != rc.shiftVector_x || rc.previous_shiftVector_y != rc.shiftVector_y) {
                     System.out.println("Actualizando shiftVector de PATH");
                     JavaFXRendererUtils.applyShiftVectorToNode(node, rc);
                 }
-                if (shape.getMp().getVersion()>rc.mpVersion) {
+                if (shape.getMp().getVersion() > rc.mpVersion) {
                     System.out.println("Actualizando MP de PATH");
                     applyDrawingStyles((Path) node, rc);
                 }
@@ -547,9 +574,8 @@ public class JavaFXRenderer extends Renderer {
                 path.setStrokeLineCap(StrokeLineCap.BUTT);
                 break;
         }
-        rc.mpVersion=mobj.getMp().getVersion();
+        rc.mpVersion = mobj.getMp().getVersion();
     }
-
 
 
     public double computeThickness(MathObject mobj) {

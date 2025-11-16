@@ -4,7 +4,7 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.MathObjects.Drawable;
 
 public class JavaFXRenderCommand {
-    public enum COMMAND_TYPE {SHAPE, SHAPE_ABSOLUTE, IMAGE}
+    public enum COMMAND_TYPE {SHAPE, SHAPE_ABSOLUTE, IMAGE,REMOVE}
     public COMMAND_TYPE type;
     public Drawable object;
     public double shiftVector_x;

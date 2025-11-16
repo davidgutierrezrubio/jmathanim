@@ -3,6 +3,7 @@ package com.jmathanim.Renderers;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.MathObjects.AbstractJMImage;
 import com.jmathanim.MathObjects.AbstractShape;
+import com.jmathanim.MathObjects.Drawable;
 import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Styling.RendererEffects;
@@ -45,6 +46,16 @@ public class DummyRenderer extends Renderer{
     @Override
     public <T extends Camera> T getFixedCamera() {
         return (T) fixedCamera;
+    }
+
+    @Override
+    public void addObject(Drawable drawable) {
+
+    }
+
+    @Override
+    public void removeObject(Drawable drawable) {
+
     }
 
     @Override
