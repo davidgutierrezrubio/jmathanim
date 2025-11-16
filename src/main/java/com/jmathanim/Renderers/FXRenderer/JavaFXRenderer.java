@@ -61,6 +61,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
@@ -77,13 +78,9 @@ public class JavaFXRenderer extends Renderer {
 
     private static final double MIN_THICKNESS = .2d;
     private static final double THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH = 5000;
-    public final JavaFXRendererUtils fXRendererUtilsJava;
     public final Camera camera;
     public final Camera fixedCamera;
     protected final HashMap<Drawable, Node> drawablesToNodes;
-    protected final HashMap<Drawable, JavaFXRenderCommand> drawablesToRendererCommands;
-    protected final ArrayList<JavaFXRenderCommand> renderCommands;
-    protected final ArrayList<JavaFXRenderCommand> deleteRenderCommands;
     protected final ArrayList<Node> debugFXnodes;
     protected final ArrayList<Node> javaFXNodes;
     private final HashMap<JMPath, Path> storedPaths;
@@ -103,23 +100,21 @@ public class JavaFXRenderer extends Renderer {
     protected VideoEncoder videoEncoder;
     protected File saveFilePath;
 
+    private DataFrame currentFrame;
+    private DataFrame previousFrame;
+
+
     public JavaFXRenderer(JMathAnimScene parentScene) throws Exception {
         super(parentScene);
-        renderCommands = new ArrayList<>();
-        deleteRenderCommands = new ArrayList<>();
         drawablesToNodes = new HashMap<>();
-        drawablesToRendererCommands = new HashMap<>();
-
-
+        previousFrame = new DataFrame(-1);
+        currentFrame = new DataFrame(-1);
         debugFXnodes = new ArrayList<>();
         javaFXNodes = new ArrayList<>();
         images = new HashMap<>();
         storedPaths = new HashMap<>();
-        fXRendererUtilsJava = new JavaFXRendererUtils();
         camera = parentScene.getCamera();
         fixedCamera = parentScene.getFixedCamera();
-//        camera = new Camera(scene, config.mediaW, config.mediaH);
-//        fixedCamera = new Camera(scene, config.mediaW, config.mediaH);
         correctionThickness = config.getMediaWidth() * 1d / THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH;//Correction factor for thickness
 
     }
@@ -174,12 +169,12 @@ public class JavaFXRenderer extends Renderer {
 
     @Override
     public void removeObject(Drawable drawable) {
-        JavaFXRenderCommand rc = drawablesToRendererCommands.get(drawable);
-        if (rc != null) {
-            rc.type = JavaFXRenderCommand.COMMAND_TYPE.REMOVE;
-            deleteRenderCommands.add(rc);
-            renderCommands.remove(rc);
-        }
+//        JavaFXRenderCommand rc = drawablesToRendererCommands.get(drawable);
+//        if (rc != null) {
+//            rc.type = JavaFXRenderCommand.COMMAND_TYPE.REMOVE;
+//            deleteRenderCommands.add(rc);
+//            renderCommands.remove(rc);
+//        }
 
     }
 
@@ -318,19 +313,30 @@ public class JavaFXRenderer extends Renderer {
 ////                    new Rotate(FxCamerarotateZ, Rotate.Z_AXIS),
 //                    new Translate(-config.getMediaWidth() / 2, -config.getMediaHeight() / 2, 0));
 
-            // Add all elements
-//            mainGroupOfObjectsToRender.getChildren().addAll(fxnodes);
-            //Delete objects removed from scene
-            for (JavaFXRenderCommand rc : deleteRenderCommands) {
-                Node remove = drawablesToNodes.remove(rc.object);
-                mainGroupOfObjectsToRender.getChildren().remove(remove);
-            }
-            for (JavaFXRenderCommand rc : renderCommands) {
-                Node node = retrieveFXNodeForRenderCommand(rc);
-                if (!mainGroupOfObjectsToRender.getChildren().contains(node))
-                    mainGroupOfObjectsToRender.getChildren().add(node);
-            }
+//            // Add all elements
+////            mainGroupOfObjectsToRender.getChildren().addAll(fxnodes);
+//            //Delete objects removed from scene
+//            for (JavaFXRenderCommand rc : deleteRenderCommands) {
+//                Node remove = drawablesToNodes.remove(rc.object);
+//                mainGroupOfObjectsToRender.getChildren().remove(remove);
+//            }
+//            for (JavaFXRenderCommand rc : renderCommands) {
+//                Node node = retrieveFXNodeForRenderCommand(rc);
+//                if (!mainGroupOfObjectsToRender.getChildren().contains(node))
+//                    mainGroupOfObjectsToRender.getChildren().add(node);
+//            }
+            List<JavaFXRenderCommand> copyRC = List.copyOf(currentFrame.renderCommands);
 
+            mainGroupOfObjectsToRender.getChildren().clear();
+            for (JavaFXRenderCommand rc: copyRC) {
+                Node node = retrieveFXNodeForRenderCommand(rc);
+                System.out.println("Rendering "+rc.object.getClass().getSimpleName());
+                Parent parent = node.getParent();
+                if (parent != null) {
+                    ((Group) parent).getChildren().remove(node);
+                }
+                mainGroupOfObjectsToRender.getChildren().add(node);
+            }
 
 
 
@@ -362,8 +368,8 @@ public class JavaFXRenderer extends Renderer {
         }
 //        fxnodes.clear();
         debugFXnodes.clear();
-        renderCommands.clear();
-        deleteRenderCommands.clear();
+        previousFrame = currentFrame;
+        currentFrame = new DataFrame(0);
         return bi;
     }
 
@@ -399,8 +405,6 @@ public class JavaFXRenderer extends Renderer {
     public void clearAndPrepareCanvasForAnotherFrame() {
         super.clearAndPrepareCanvasForAnotherFrame();
 
-//        fxnodes.clear();
-//        debugFXnodes.clear();
     }
 
     @Override
@@ -513,22 +517,14 @@ public class JavaFXRenderer extends Renderer {
     }
 
     @Override
-    public void drawPath(AbstractShape<?> mobj, Vec shiftVector, Camera cam) {
-
-        JavaFXRenderCommand rc = drawablesToRendererCommands.getOrDefault(mobj, null);
-        if (rc == null) {
-            rc = new JavaFXRenderCommand();
-            rc.object = mobj;
-            drawablesToRendererCommands.put(mobj, rc);
-
-        }
+    public void drawPath(AbstractShape<?> shape, Vec shiftVector, Camera cam) {
+        JavaFXRenderCommand rc = new JavaFXRenderCommand();
+        rc.object = shape;
         rc.type = JavaFXRenderCommand.COMMAND_TYPE.SHAPE;
         rc.shiftVector_x = shiftVector.x;
         rc.shiftVector_y = shiftVector.y;
         rc.camera = camera;
-
-
-        renderCommands.add(rc);
+        currentFrame.add(rc);
     }
 
     private void applyDrawingStyles(Path path, JavaFXRenderCommand rc) {
@@ -627,19 +623,13 @@ public class JavaFXRenderer extends Renderer {
     @Override
     public void drawAbsoluteCopy(AbstractShape<?> mobj, Vec anchor) {
         Vec vFixed = defaultToFixedCamera(anchor).minus(anchor);
-
-        JavaFXRenderCommand rc = drawablesToRendererCommands.getOrDefault(mobj, null);
-        if (rc == null) {
-            rc = new JavaFXRenderCommand();
-            rc.object = mobj;
-            rc.type = JavaFXRenderCommand.COMMAND_TYPE.SHAPE;
-            drawablesToRendererCommands.put(mobj, rc);
-        }
+        JavaFXRenderCommand rc = new JavaFXRenderCommand();
+        rc.object = mobj;
         rc.shiftVector_x = vFixed.x;
         rc.shiftVector_y = vFixed.y;
         rc.camera = fixedCamera;
         rc.type = JavaFXRenderCommand.COMMAND_TYPE.SHAPE_ABSOLUTE;
-        renderCommands.add(rc);
+        currentFrame.add(rc);
     }
 
     /**
