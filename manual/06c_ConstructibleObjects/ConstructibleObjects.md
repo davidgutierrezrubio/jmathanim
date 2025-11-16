@@ -53,7 +53,7 @@ Where `ct1` and `ct2` can be `CTLine`, `CTSegment`, `CTRay` and `CTCircle`. In t
 For example, the following code:
 
 ```java
-CTPoint A = CTPoint.at(.3, .0).drawCCTPoint A = CTPoint.at(.3, .0).drawColor("blue");
+CTPoint A = CTPoint.at(.3, .0).drawColor("blue");
 CTPoint B = CTPoint.at(-.5, -.1).drawColor("red");
 CTLine toIntersect = CTLine.make(A, B);
 CTCircle circle = CTCircle.makeCenterRadius(Point.origin(), 1);
