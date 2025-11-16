@@ -18,8 +18,8 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Animations.Strategies.ShowCreation.*;
-import com.jmathanim.Constructible.CTNullMathObject;
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Constructible.NullMathObject;
 import com.jmathanim.Enum.ShowCreationStrategy;
 import com.jmathanim.MathObjects.*;
 import com.jmathanim.MathObjects.Axes.Axes;
@@ -45,8 +45,8 @@ import java.util.function.DoubleUnaryOperator;
 public class ShowCreation extends Animation {
 
     protected final Vec[] pencilPosition;
-    MathObject mobj;//Mathobject that will be created
-    MathObject origObj;//Original constructible object, in case
+    MathObject<?> mobj;//Mathobject that will be created
+    MathObject<?> origObj;//Original constructible object, in case
     private Animation creationStrategy;
     private ShowCreationStrategy strategyType = ShowCreationStrategy.NONE;
 
@@ -56,7 +56,7 @@ public class ShowCreation extends Animation {
      * @param runtime Run time in seconds
      * @param mobj    Mathobject to animate
      */
-    public ShowCreation(double runtime, MathObject mobj) {
+    public ShowCreation(double runtime, MathObject<?> mobj) {
         super(runtime);
         setDebugName("showCreation");
         pencilPosition = new Vec[]{Vec.to(0,0), Vec.to(0,0)};
@@ -79,6 +79,11 @@ public class ShowCreation extends Animation {
     }
 
     private boolean extractMathObjectToCreate(MathObject<?> mobj) {
+        if (mobj instanceof NullMathObject) {
+            this.mobj = mobj;
+            addThisAtTheEnd.add(origObj);
+            return true;
+        }
         if (mobj instanceof Delimiter) {
             this.mobj = mobj;
             addThisAtTheEnd.add(origObj);
@@ -89,7 +94,7 @@ public class ShowCreation extends Animation {
             addThisAtTheEnd.add(origObj);
             return true;
         }
-        if (mobj instanceof Constructible) {
+        if (mobj instanceof Constructible<?>) {
             this.mobj = ((Constructible<?>) mobj).getMathObject();
             removeThisAtTheEnd.add(this.mobj);
             addThisAtTheEnd.add(origObj);
@@ -126,7 +131,7 @@ public class ShowCreation extends Animation {
         super.doInitialization();
         //First, extract MathObjects if passed object is a container (RigidBox, Constructible, etc.)
         while (!extractMathObjectToCreate(this.mobj));
-//        try {
+        try {
             if (strategyType == ShowCreationStrategy.NONE) {
                 determineCreationStrategy(this.mobj);
             }
@@ -136,10 +141,10 @@ public class ShowCreation extends Animation {
             creationStrategy.setShouldInterpolateStyles(this.isShouldInterpolateStyles());
             creationStrategy.setUseObjectState(this.isUseObjectState());
             creationStrategy.initialize(scene);
-//        } catch (NullPointerException | ClassCastException e) {
-//            JMathAnimScene.logger.error("Couldn't create ShowCreation strategy for "
-//                    + this.mobj.getClass().getCanonicalName() + ". No animation will be done. (" + e + ")");
-//        }
+        } catch (NullPointerException | ClassCastException e) {
+            JMathAnimScene.logger.error("Couldn't create ShowCreation strategy for "
+                    + LogUtils.method(this.mobj.getClass().getSimpleName()) + ". No animation will be done.");
+        }
         return true;
     }
 
@@ -183,7 +188,7 @@ public class ShowCreation extends Animation {
      *
      * @param mobj MathObject which will be animated. Its type determines the type of animation to perform.
      */
-    private void determineCreationStrategy(MathObject mobj) {
+    private void determineCreationStrategy(MathObject<?> mobj) {
 
         if (mobj instanceof Point) {
             this.strategyType = ShowCreationStrategy.POINT_CREATION;
@@ -396,7 +401,7 @@ public class ShowCreation extends Animation {
 
     @Override
     public MathObject<?> getIntermediateObject() {
-        if (creationStrategy == null) return new CTNullMathObject();
+        if (creationStrategy == null) return NullMathObject.make();
         return creationStrategy.getIntermediateObject();
     }
 

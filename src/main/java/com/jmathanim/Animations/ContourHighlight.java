@@ -100,7 +100,7 @@ public class ContourHighlight extends Animation {
     }
 
     public static ContourHighlight makeBBox(double runTime, double gap, Boxable... objs) {
-//        MathObject[] toArray = Arrays.stream(objs).map(t -> Shape.rectangle(t.getBoundingBox().addGap(gap, gap))).toArray(new MathObject[0]);
+//        MathObject<?>[] toArray = Arrays.stream(objs).map(t -> Shape.rectangle(t.getBoundingBox().addGap(gap, gap))).toArray(new MathObject[0]);
         ArrayList<JMPath> paths = new ArrayList<>();
         for (int i = 0; i < objs.length; i++) {
             paths.add(Shape.rectangle(objs[i].getBoundingBox().addGap(gap, gap)).getPath());

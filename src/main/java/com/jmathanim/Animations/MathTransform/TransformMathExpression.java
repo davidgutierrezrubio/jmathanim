@@ -336,7 +336,7 @@ public class TransformMathExpression extends Animation {
         toDelete.add(sh);
     }
 
-    private void createTransformSubAnimation(MathObject<?> sh, MathObject sh2, TransformMathExpressionParameters par) {
+    private void createTransformSubAnimation(MathObject<?> sh, MathObject<?> sh2, TransformMathExpressionParameters par) {
         AnimationWithEffects transform = null;
         switch (par.getTransformStyle()) {
             case INTERPOLATION:
@@ -425,7 +425,7 @@ public class TransformMathExpression extends Animation {
         animations.finishAnimation();
         super.finishAnimation();
 
-        for (MathObject sh : toDelete) {
+        for (MathObject<?>  sh : toDelete) {
             removeObjectsFromScene(sh);
         }
 //        addObjectsToscene(latexDestiny);
@@ -680,7 +680,7 @@ public class TransformMathExpression extends Animation {
     }
 
     @Override
-    public MathObject getIntermediateObject() {
+    public MathObject<?>  getIntermediateObject() {
         return null;
     }
 

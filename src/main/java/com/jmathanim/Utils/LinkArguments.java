@@ -69,8 +69,8 @@ public final class LinkArguments extends Link {
 
             //Apply data
             //*********************************************************
-            if (destiny instanceof MathObject) {
-                MathObject mathObject = (MathObject) destiny;
+            if (destiny instanceof MathObject<?>) {
+                MathObject<?> mathObject = (MathObject<?>) destiny;
                 Vec vshift = Vec.to(0, 0);
                 Vec center = mathObject.getCenter();
 

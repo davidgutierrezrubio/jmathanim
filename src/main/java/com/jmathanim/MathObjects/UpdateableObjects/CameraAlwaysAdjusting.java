@@ -52,7 +52,7 @@ public class CameraAlwaysAdjusting  {
         if (!scene.getMathObjects().isEmpty()) {
             Vec cameraGaps=camera.getGaps();
             Rect bbox = camera.getMathView().addGap(-hgap, -vgap).addGap(-cameraGaps.x,-cameraGaps.y);
-            for (MathObject obj : scene.getMathObjects()) {
+            for (MathObject<?>  obj : scene.getMathObjects()) {
                 bbox = Rect.union(bbox, obj.getBoundingBox());
             }
 //            camera.adjustToRect(bbox.addGap(hgap, vgap));

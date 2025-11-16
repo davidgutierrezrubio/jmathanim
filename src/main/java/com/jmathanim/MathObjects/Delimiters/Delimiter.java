@@ -1,7 +1,7 @@
 package com.jmathanim.MathObjects.Delimiters;
 
-import com.jmathanim.Constructible.CTNullMathObject;
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Constructible.NullMathObject;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.DelimiterType;
 import com.jmathanim.Enum.RotationType;
@@ -70,7 +70,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
 
         labelMarkPoint = Vec.to(0, 0);
         this.rotationType = RotationType.SMART;
-        this.delimiterLabel = new CTNullMathObject();
+        this.delimiterLabel = NullMathObject.make();
         delimiterLabelRigidBox=new RigidBox(this.delimiterLabel);
         this.mpDelimiter.add(delimiterLabelRigidBox);
 
@@ -183,7 +183,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
     }
 
     @Override
-    public MathObject getMathObject() {
+    public MathObject<?>  getMathObject() {
         return groupElementsToBeDrawn;
     }
 
@@ -196,7 +196,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
     /*
      * @return The label
      */
-    public MathObject getLabel() {
+    public MathObject<?>  getLabel() {
         return delimiterLabel;
     }
 

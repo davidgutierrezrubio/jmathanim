@@ -108,7 +108,7 @@ public class PlaySoundAt extends Animation {
     }
 
     @Override
-    public MathObject getIntermediateObject() {
+    public MathObject<?>  getIntermediateObject() {
         return null;
     }
 }

@@ -552,7 +552,7 @@ public class JavaFXRenderer extends Renderer {
     }
 
 
-    public double computeThickness(MathObject mobj) {
+    public double computeThickness(MathObject<?> mobj) {
 
         Camera cam = (mobj.getMp().isAbsoluteThickness() ? fixedCamera : camera);
         //We use the correction factor mediaW/1066 in order to obtain the same apparent thickness

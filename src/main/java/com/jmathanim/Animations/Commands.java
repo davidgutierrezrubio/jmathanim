@@ -112,25 +112,25 @@ public class Commands {
     public static Animation highlight(double runtime, double scale, MathObject<?>... mathObjects) {
 
         Runnable initHook = () -> {
-            for (MathObject obj : mathObjects) {
-                if (obj instanceof Constructible) {
-                    Constructible cnstr = (Constructible) obj;
+            for (MathObject<?> obj : mathObjects) {
+                if (obj instanceof Constructible<?>) {
+                    Constructible<?> cnstr = (Constructible<?>) obj;
                     cnstr.setFreeMathObject(true);
                 }
             }
         };
 
         Runnable finishHook = () -> {
-            for (MathObject obj : mathObjects) {
-                if (obj instanceof Constructible) {
-                    Constructible cnstr = (Constructible) obj;
+            for (MathObject<?> obj : mathObjects) {
+                if (obj instanceof Constructible<?>) {
+                    Constructible<?> cnstr = (Constructible<?>) obj;
                     cnstr.setFreeMathObject(false);
                 }
             }
         };
 
         AnimationGroup anim = AnimationGroup.make();
-        for (MathObject mathObject : mathObjects) {
+        for (MathObject<?> mathObject : mathObjects) {
             anim.add(Commands.scale(runtime, scale, mathObject));
         }
 //        Animation anim = Commands.scale(runtime, center, scale, group);
@@ -164,11 +164,11 @@ public class Commands {
      * @return The animation, ready to play with the playAnim method
      */
     public static AnimationGroup twistAndScale(double runtime, double scale, double twistAngle, MathObject<?>... mathObjects) {
-        HashMap<Constructible, Boolean> constructiblesFreeStatus = new HashMap<Constructible, Boolean>();
+        HashMap<Constructible<?>, Boolean> constructiblesFreeStatus = new HashMap<Constructible<?>, Boolean>();
         Runnable initHook = () -> {
-            for (MathObject obj : mathObjects) {
-                if (obj instanceof Constructible) {
-                    Constructible cnstr = (Constructible) obj;
+            for (MathObject<?>  obj : mathObjects) {
+                if (obj instanceof Constructible<?>) {
+                    Constructible<?> cnstr = (Constructible<?>) obj;
                     constructiblesFreeStatus.put(cnstr, cnstr.isFreeMathObject());
                     cnstr.setFreeMathObject(true);
                 }
@@ -176,9 +176,9 @@ public class Commands {
         };
 
         Runnable finishHook = () -> {
-            for (MathObject obj : mathObjects) {
-                if (obj instanceof Constructible) {
-                    Constructible cnstr = (Constructible) obj;
+            for (MathObject<?>  obj : mathObjects) {
+                if (obj instanceof Constructible<?>) {
+                    Constructible<?> cnstr = (Constructible<?>) obj;
                     cnstr.setFreeMathObject(constructiblesFreeStatus.get(cnstr));
                 }
             }
@@ -208,7 +208,7 @@ public class Commands {
     public static Animation scale(double runtime, double sc, MathObject<?>... mathObjects) {
         AnimationGroup ag = new AnimationGroup();
         Vec center = MathObjectGroup.make(mathObjects).getCenter();
-        for (MathObject obj : mathObjects) {
+        for (MathObject<?>  obj : mathObjects) {
             ag.add(Commands.scale(runtime, center, sc, obj));
         }
         return ag;
@@ -325,7 +325,7 @@ public class Commands {
                 shouldBeAdded = new boolean[objectsToRotate.length];
                 for (int i = 0; i < objectsToRotate.length; i++) {
                     //True if object is NOT added to the scene
-                    if (objectsToRotate[i] instanceof MathObject) {
+                    if (objectsToRotate[i] instanceof MathObject<?>) {
                         MathObject<?> mathObject = (MathObject<?>) objectsToRotate[i];
                         shouldBeAdded[i] = !scene.isInScene(mathObject);
 
@@ -368,7 +368,7 @@ public class Commands {
                     for (int i = 0; i < objectsToRotate.length; i++) {
                         //If object initially wasn't in the scene, remove it
                         if (shouldBeAdded[i]) {
-                            if (objectsToRotate[i] instanceof MathObject) {
+                            if (objectsToRotate[i] instanceof MathObject<?>) {
                                 MathObject<?> mathObject = (MathObject<?>) objectsToRotate[i];
                                 scene.remove(mathObject);
                             }
@@ -398,7 +398,7 @@ public class Commands {
             final double anglex = angx;
             final double angley = angy;
             final double anglez = angz;
-            final MathObject[] mathObjects = objects;
+            final MathObject<?>[] mathObjects = objects;
             Vec rotationCenter = null;
 
             @Override
@@ -421,7 +421,7 @@ public class Commands {
                 super.doAnim(t);
                 double lt = getLT(t);
                 restoreStates(mathObjects);
-                for (MathObject obj : mathObjects) {
+                for (MathObject<?>  obj : mathObjects) {
                     if (rotationCenter == null) {
                         obj.rotate3d(obj.getCenter(), anglex * lt, angley * lt, anglez * lt);
                     } else {
@@ -463,7 +463,7 @@ public class Commands {
     public static AnimationWithEffects affineTransform(double runtime, Coordinates A, Coordinates B, Coordinates C, Coordinates D, Coordinates E,
                                                        Coordinates F, MathObject<?>... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
-            final MathObject[] mathObjects = objects;
+            final MathObject<?>[] mathObjects = objects;
             Vec orig1, orig2, orig3, dst1, dst2, dst3;
             AffineJTransform tr;
 
@@ -477,7 +477,7 @@ public class Commands {
                 dst3 = F.getVec().copy();
                 super.doInitialization();
                 saveStates(mathObjects);
-                for (MathObject obj : mathObjects) {
+                for (MathObject<?>  obj : mathObjects) {
                     tr = AffineJTransform.createAffineTransformation(orig1, orig2, orig3, dst1, dst2, dst3, 1);
                     Vec center = obj.getCenter();
                     prepareJumpPath(center, center.applyAffineTransform(tr), obj);
@@ -495,7 +495,7 @@ public class Commands {
                 super.doAnim(t);
                 restoreStates(mathObjects);
                 double lt = getLT(t);
-                for (MathObject obj : mathObjects) {
+                for (MathObject<?>  obj : mathObjects) {
                     tr = AffineJTransform.createAffineTransformation(orig1, orig2, orig3, dst1, dst2, dst3, lt);
                     tr.applyTransform(obj);
                     applyAnimationEffects(lt, obj);
@@ -572,7 +572,7 @@ public class Commands {
                 double lt = getLT(t);
                 restoreStates(mathObjects);
                 tr = AffineJTransform.createDirect2DIsomorphic(A, B, C, D, lt);
-                for (MathObject obj : mathObjects) {
+                for (MathObject<?>  obj : mathObjects) {
                     tr.applyTransform(obj);
                     applyAnimationEffects(lt, obj);
                 }
@@ -636,7 +636,7 @@ public class Commands {
                 double lt = getLT(t);
                 restoreStates(mathObjects);
                 tr = AffineJTransform.createDirect3DIsomorphic(A, B1, B2, C, D1, D2, lt);
-                for (MathObject obj : mathObjects) {
+                for (MathObject<?>  obj : mathObjects) {
                     tr.applyTransform(obj);
                     applyAnimationEffects(lt, obj);
                 }
@@ -676,7 +676,7 @@ public class Commands {
     public static AnimationWithEffects inverseIsomorphism(double runtime, Coordinates a, Coordinates b, Coordinates c, Coordinates d,
                                                           MathObject<?>... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
-            final MathObject[] mathObjects = objects;
+            final MathObject<?>[] mathObjects = objects;
             AffineJTransform tr;
             Vec A = a.getVec().copy();
             Vec B = b.getVec().copy();
@@ -688,7 +688,7 @@ public class Commands {
                 super.doInitialization();
                 saveStates(mathObjects);
                 tr = AffineJTransform.createInverse2DIsomorphic(A, B, C, D, 1);
-                for (MathObject obj : mathObjects) {
+                for (MathObject<?>  obj : mathObjects) {
                     Vec center = obj.getCenter();
                     prepareJumpPath(center, center.applyAffineTransform(tr), obj);
                 }
@@ -706,7 +706,7 @@ public class Commands {
                 double lt = getLT(t);
                 restoreStates(mathObjects);
                 tr = AffineJTransform.createInverse2DIsomorphic(A, B, C, D, lt);
-                for (MathObject obj : mathObjects) {
+                for (MathObject<?>  obj : mathObjects) {
                     tr.applyTransform(obj);
                     applyAnimationEffects(lt, obj);
                 }
@@ -751,7 +751,7 @@ public class Commands {
             public boolean doInitialization() {
                 super.doInitialization();
                 saveStates(mathObjects);
-                for (MathObject obj : mathObjects) {
+                for (MathObject<?>  obj : mathObjects) {
                     tr = AffineJTransform.createReflection(axis1, axis2, 1);
                     Vec center = obj.getCenter();
                     prepareJumpPath(center, center.applyAffineTransform(tr), obj);
@@ -769,7 +769,7 @@ public class Commands {
                 super.doAnim(t);
                 double lt = getLT(t);
                 restoreStates(mathObjects);
-                for (MathObject obj : mathObjects) {
+                for (MathObject<?>  obj : mathObjects) {
                     tr = AffineJTransform.createReflection(axis1, axis2, lt);
                     tr.applyTransform(obj);
                     applyAnimationEffects(lt, obj);
@@ -806,7 +806,7 @@ public class Commands {
      */
     public static AnimationWithEffects reflectionByAxis(double runtime, Coordinates A, Coordinates B, MathObject<?>... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
-            final MathObject[] mathObjects = objects;
+            final MathObject<?>[] mathObjects = objects;
             final Vec axisPoint1 = A.getVec().copy();
             final Vec axisPoint2 = B.getVec().copy();
             AffineJTransform tr;
@@ -815,7 +815,7 @@ public class Commands {
             public boolean doInitialization() {
                 super.doInitialization();
                 saveStates(mathObjects);
-                for (MathObject obj : mathObjects) {
+                for (MathObject<?>  obj : mathObjects) {
                     tr = AffineJTransform.createReflectionByAxis(axisPoint1, axisPoint2, 1);
                     Vec center = obj.getCenter();
                     prepareJumpPath(center, center.applyAffineTransform(tr), obj);
@@ -833,7 +833,7 @@ public class Commands {
                 super.doAnim(t);
                 double lt = getLT(t);
                 restoreStates(mathObjects);
-                for (MathObject obj : mathObjects) {
+                for (MathObject<?>  obj : mathObjects) {
                     tr = AffineJTransform.createReflectionByAxis(axisPoint1, axisPoint2, lt);
                     tr.applyTransform(obj);
                     applyAnimationEffects(lt, obj);
@@ -894,7 +894,7 @@ public class Commands {
      */
     public static Animation setMP(double runtime, DrawStyleProperties mp, MathObject<?>... objects) {
         Animation resul = new Animation(runtime) {
-            final MathObject[] mathObjects = objects;
+            final MathObject<?>[] mathObjects = objects;
             final DrawStyleProperties mpDst = mp;
 
             @Override
@@ -914,7 +914,7 @@ public class Commands {
                 super.doAnim(t);
                 double lt = getLT(t);
                 restoreStates(mathObjects);
-                for (MathObject obj : mathObjects) {
+                for (MathObject<?>  obj : mathObjects) {
                     obj.getMp().interpolateFrom(mpDst, lt);
                 }
             }
@@ -963,7 +963,7 @@ public class Commands {
      */
     public static Animation cameraZoomToObjects(double runtime, Camera camera, MathObject<?>... objs) {
         Rect r = objs[0].getBoundingBox();
-        for (MathObject obj : objs) {
+        for (MathObject<?>  obj : objs) {
             r = Rect.union(r, obj.getBoundingBox());
         }
         r.addGap(camera.getGaps().x, camera.getGaps().y);
@@ -1003,7 +1003,7 @@ public class Commands {
                 }
 
                 @Override
-                public MathObject getIntermediateObject() {
+                public MathObject<?>  getIntermediateObject() {
                     return null;
                 }
 
@@ -1121,14 +1121,14 @@ public class Commands {
      */
     public static Animation shrinkOut(double runtime, double angle, OrientationType shrinkType, MathObject<?>... objects) {
         Animation anim = new Animation(runtime) {
-            final MathObject[] mathObjects = objects;
+            final MathObject<?>[] mathObjects = objects;
 
             @Override
             public boolean doInitialization() {
 
-                for (MathObject obj : mathObjects) {
-                    if (obj instanceof Constructible) {
-                        Constructible cnstr = (Constructible) obj;
+                for (MathObject<?>  obj : mathObjects) {
+                    if (obj instanceof Constructible<?>) {
+                        Constructible<?> cnstr = (Constructible<?>) obj;
                         cnstr.setFreeMathObject(true);
                     }
                 }
@@ -1149,7 +1149,7 @@ public class Commands {
                 double sx = (shrinkType == OrientationType.VERTICAL ? 1 : 1 - lt);
                 double sy = (shrinkType == OrientationType.HORIZONTAL ? 1 : 1 - lt);
                 restoreStates(mathObjects);
-                for (MathObject obj : mathObjects) {
+                for (MathObject<?>  obj : mathObjects) {
                     obj.scale(sx, sy);
                     obj.drawAlpha(obj.getMp().getDrawColor().getAlpha() * (1 - lt));
                     obj.fillAlpha(obj.getMp().getFillColor().getAlpha() * (1 - lt));
@@ -1163,9 +1163,9 @@ public class Commands {
                 doAnim(t);
                 super.finishAnimation();
                 removeObjectsFromScene(mathObjects);
-                for (MathObject obj : mathObjects) {
-                    if (obj instanceof Constructible) {
-                        Constructible cnstr = (Constructible) obj;
+                for (MathObject<?>  obj : mathObjects) {
+                    if (obj instanceof Constructible<?>) {
+                        Constructible<?> cnstr = (Constructible<?>) obj;
                         cnstr.setFreeMathObject(false);
                     }
                 }
@@ -1225,7 +1225,7 @@ public class Commands {
      */
     public static Animation growIn(double runtime, double angle, OrientationType growType, MathObject<?>... objects) {
         Animation anim = new Animation(runtime) {
-            MathObject[] mathObjects = objects;
+            MathObject<?>[] mathObjects = objects;
 
             @Override
             public boolean doInitialization() {
@@ -1234,10 +1234,10 @@ public class Commands {
                         .filter(Objects::nonNull)
                         .toArray(size -> Arrays.copyOf(objects, size));
 
-                for (MathObject obj : mathObjects) {
+                for (MathObject<?>  obj : mathObjects) {
 //                    obj.visible(false);
-                    if (obj instanceof Constructible) {
-                        Constructible cnstr = (Constructible) obj;
+                    if (obj instanceof Constructible<?>) {
+                        Constructible<?> cnstr = (Constructible<?>) obj;
                         cnstr.setFreeMathObject(true);
                     }
                 }
@@ -1258,7 +1258,7 @@ public class Commands {
                 double sx = (growType == OrientationType.VERTICAL ? 1 : lt);
                 double sy = (growType == OrientationType.HORIZONTAL ? 1 : lt);
                 restoreStates(mathObjects);
-                for (MathObject obj : mathObjects) {
+                for (MathObject<?>  obj : mathObjects) {
                     obj.scale(sx, sy);
                     obj.drawAlpha(obj.getMp().getDrawColor().getAlpha() * lt);
                     obj.fillAlpha(obj.getMp().getFillColor().getAlpha() * lt);
@@ -1270,9 +1270,9 @@ public class Commands {
             public void finishAnimation() {
                 doAnim(t);
                 super.finishAnimation();
-                for (MathObject obj : mathObjects) {
-                    if (obj instanceof Constructible) {
-                        Constructible cnstr = (Constructible) obj;
+                for (MathObject<?>  obj : mathObjects) {
+                    if (obj instanceof Constructible<?>) {
+                        Constructible<?> cnstr = (Constructible<?>) obj;
                         cnstr.setFreeMathObject(false);
                     }
                 }
@@ -1332,7 +1332,7 @@ public class Commands {
                 super.doAnim(t);
                 double lt = getLT(t);
                 restoreStates(mathObjects);
-                for (MathObject obj : mathObjects) {
+                for (MathObject<?>  obj : mathObjects) {
                     obj.getMp().multDrawAlpha(lt);
                     obj.getMp().multFillAlpha(lt);
                     applyAnimationEffects(lt, obj);
@@ -1377,7 +1377,7 @@ public class Commands {
      */
     public static AnimationWithEffects fadeOut(double runtime, MathObject<?>... objects) {
         AnimationWithEffects anim = new AnimationWithEffects(runtime) {
-            MathObject[] mathObjects = objects;
+            MathObject<?>[] mathObjects = objects;
 
             @Override
             public boolean doInitialization() {
@@ -1399,7 +1399,7 @@ public class Commands {
                 super.doAnim(t);
                 double lt = getLT(t);
                 restoreStates(mathObjects);
-                for (MathObject obj : mathObjects) {
+                for (MathObject<?>  obj : mathObjects) {
                     obj.getMp().multDrawAlpha(1 - lt);
                     obj.getMp().multFillAlpha(1 - lt);
                     applyAnimationEffects(lt, obj);
@@ -1467,7 +1467,7 @@ public class Commands {
             public boolean doInitialization() {
                 super.doInitialization();
                 JMathAnimScene.logger.debug("Initialized setLayout animation");
-                for (MathObject obj :group ) {
+                for (MathObject<?>  obj :group ) {
                     Vec dst = centers.get(obj);
                     setShiftVector(obj, obj.getCenter().to(dst));
                 }
@@ -1489,7 +1489,7 @@ public class Commands {
      */
     public static ShiftAnimation setLayout(double runtime, GroupLayout layout, MathObjectGroup group) {
 
-        MathObject[] mathobjects = group.getObjects().toArray(new MathObject[group.size()]);
+        MathObject<?>[] mathobjects = group.getObjects().toArray(new MathObject[group.size()]);
 
         ShiftAnimation resul = new ShiftAnimation(runtime, mathobjects) {
             final HashMap<MathObject<?>, Vec> centers = new HashMap<>();
@@ -1504,7 +1504,7 @@ public class Commands {
                 }
 
                 JMathAnimScene.logger.debug("Initialized setLayout animation");
-                for (MathObject obj : mathobjects) {
+                for (MathObject<?>  obj : mathobjects) {
                     Vec dst = centers.get(obj);
                     setShiftVector(obj, obj.getCenter().to(dst));
                 }
@@ -1525,7 +1525,7 @@ public class Commands {
      */
     public static AnimationWithEffects changeFillAlpha(double runTime, MathObject<?>... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runTime) {
-            final MathObject[] mathObjects = objects;
+            final MathObject<?>[] mathObjects = objects;
             final ArrayList<Double> alphaOrig = new ArrayList<>();
 
             @Override
@@ -1546,7 +1546,7 @@ public class Commands {
                 super.doAnim(t);
                 restoreStates(mathObjects);
                 double lt = getLT(t);
-                for (MathObject obj : objects) {
+                for (MathObject<?>  obj : objects) {
                     obj.getMp().setFillAlpha(obj.getMp().getFillColor().getAlpha() * lt);
                     applyAnimationEffects(lt, obj);
                 }
@@ -1587,7 +1587,7 @@ public class Commands {
                 Renderer rend = JMathAnimConfig.getConfig().getRenderer();
                 JMathAnimScene.logger.debug("Initialized moveOut animation");
                 for (MathObject<?> obj : mathObjects) {//Free constructible objects before saving states
-                    if (obj instanceof Constructible) {
+                    if (obj instanceof Constructible<?>) {
                         Constructible<?> cnstr = (Constructible<?>) obj;
                         cnstr.setFreeMathObject(true);
                     }
@@ -1648,12 +1648,12 @@ public class Commands {
                 super.finishAnimation();
                 double lt = getTotalLambda().applyAsDouble(1);
 
-                for (MathObject obj : mathObjects) {
+                for (MathObject<?>  obj : mathObjects) {
                     if (lt == 1) {//Remove objects if completely moved out
                         removeObjectsFromScene(obj);
                     }
-                    if (obj instanceof Constructible) {
-                        Constructible cnstr = (Constructible) obj;
+                    if (obj instanceof Constructible<?>) {
+                        Constructible<?> cnstr = (Constructible<?>) obj;
                         cnstr.setFreeMathObject(false);
                     }
                 }
@@ -1677,15 +1677,15 @@ public class Commands {
         Renderer rend = JMathAnimConfig.getConfig().getRenderer();
         ArrayList<MathObject<?>> toRemove = new ArrayList<>();
         ArrayList<MathObject<?>> toAnimateArrayList = new ArrayList<>(Arrays.asList(mathObjects));
-        final MathObject[] toAnimateArray = toAnimateArrayList.toArray(new MathObject[0]);
+        final MathObject<?>[] toAnimateArray = toAnimateArrayList.toArray(new MathObject[0]);
         ShiftAnimation resul = new ShiftAnimation(runtime, toAnimateArray) {
             @Override
             public boolean doInitialization() {
                 Camera camera;
 
-                for (MathObject obj : toAnimateArray) {
-                    if (obj instanceof Constructible) {
-                        Constructible cnstr = (Constructible) obj;
+                for (MathObject<?>  obj : toAnimateArray) {
+                    if (obj instanceof Constructible<?>) {
+                        Constructible<?> cnstr = (Constructible<?>) obj;
                         cnstr.setFreeMathObject(true);
                     }
                 }
@@ -1752,9 +1752,9 @@ public class Commands {
                     removeObjectsFromScene(mathObjects);
                     restoreStates(mathObjects);
                 }
-                for (MathObject obj : mathObjects) {
-                    if (obj instanceof Constructible) {
-                        Constructible cnstr = (Constructible) obj;
+                for (MathObject<?>  obj : mathObjects) {
+                    if (obj instanceof Constructible<?>) {
+                        Constructible<?> cnstr = (Constructible<?>) obj;
                         cnstr.setFreeMathObject(false);
                     }
                 }
@@ -1774,7 +1774,7 @@ public class Commands {
      * @param horizontal If true, an horizontal flipping is done, vertical otherwise
      * @return The animation
      */
-    public static FlipTransform flipTransform(double runtime, boolean horizontal, MathObject ob1, MathObject ob2) {
+    public static FlipTransform flipTransform(double runtime, boolean horizontal, MathObject<?> ob1, MathObject<?> ob2) {
         return FlipTransform.make(runtime,
                 (horizontal ? OrientationType.HORIZONTAL : OrientationType.VERTICAL), ob1, ob2);
     }
@@ -1788,14 +1788,14 @@ public class Commands {
      * @param mathobjects Mathobjects to animate
      * @return The created animation
      */
-    public static ShiftAnimation align(double runtime, MathObject dst, AlignType type,
+    public static ShiftAnimation align(double runtime, MathObject<?> dst, AlignType type,
                                        MathObject<?>... mathobjects) {
         ShiftAnimation resul = new ShiftAnimation(runtime, mathobjects) {
             @Override
             public boolean doInitialization() {
                 super.doInitialization();
                 JMathAnimScene.logger.debug("Initialized align animation");
-                for (MathObject obj : mathobjects) {
+                for (MathObject<?>  obj : mathobjects) {
                     Vec dstCenter = Shape.rectangle(obj.getBoundingBox()).align(dst, type).getCenter();
                     setShiftVector(obj, obj.getCenter().to(dstCenter));
                 }
@@ -1865,7 +1865,7 @@ public class Commands {
         return resul;
     }
 
-    public static JoinAnimation crossAndFadeOut(double runtime, MathObject obj) {
+    public static JoinAnimation crossAndFadeOut(double runtime, MathObject<?> obj) {
         JoinAnimation resul = JoinAnimation.make(runtime);
         Rect bb = obj.getBoundingBox();
         final Vec a = bb.getUpperRight();
@@ -1879,7 +1879,7 @@ public class Commands {
         return resul;
     }
 
-    public static JoinAnimation crossAndShrink(double runtime, MathObject obj) {
+    public static JoinAnimation crossAndShrink(double runtime, MathObject<?> obj) {
         JoinAnimation resul = JoinAnimation.make(runtime);
         Rect bb = obj.getBoundingBox();
         final Vec a = bb.getUpperRight();

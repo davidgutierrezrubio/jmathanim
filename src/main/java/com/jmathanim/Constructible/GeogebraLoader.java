@@ -52,7 +52,7 @@ import java.util.zip.ZipFile;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class GeogebraLoader implements Iterable<Constructible>, hasCameraParameters {
+public class GeogebraLoader implements Iterable<Constructible<?>>, hasCameraParameters {
 
     private final ResourceLoader rl;
     private URL url;
@@ -219,11 +219,11 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
 
         // If element already belongs to the hashMap, process styling options
         if (cp.containsKey(label)) {
-            Constructible ob = cp.get(label);
+            Constructible<?> ob = cp.get(label);
             ob.getMp().copyFrom(cp.parseStylingOptions(el));
             //Workaround: LaTeX Geogebra objects have the same fill and draw color
             if (ob instanceof CTLaTeX) {
-                PaintStyle col = ob.getMp().getDrawColor();
+                PaintStyle<?> col = ob.getMp().getDrawColor();
                 ob.getMp().setFillColor(col);
             }
         } else {
@@ -313,12 +313,8 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
      * @param key Name of object. Should be the same as in the Geogebra file
      * @return The Constructible object imported
      */
-    public Constructible get(String key) {
-        if (cp.containsKey(key)) {
+    public Constructible<?> get(String key) {
             return cp.get(key);
-        } else {
-            return new CTNullMathObject();
-        }
     }
 
     /**
@@ -326,7 +322,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
      *
      * @return An array with all objects imported
      */
-    public Constructible[] getObjects() {
+    public Constructible<?>[] getObjects() {
         return cp.geogebraElements.values().toArray(new Constructible[0]);
     }
 
@@ -336,12 +332,13 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
      *
      * @return The dictionary
      */
-    public HashMap<String, Constructible> getDict() {
+    public HashMap<String, Constructible<?>> getDict() {
         return cp.geogebraElements;
     }
 
+
     @Override
-    public Iterator<Constructible> iterator() {
+    public Iterator<Constructible<?>> iterator() {
         return cp.geogebraElements.values().iterator();
     }
 
@@ -396,8 +393,8 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
      *
      * @return An array of MathObjects
      */
-    public MathObject[] getMathObjects() {
-        MathObject[] resul = new MathObject[cp.geogebraElements.size()];
+    public MathObject<?>[] getMathObjects() {
+        MathObject<?>[] resul = new MathObject[cp.geogebraElements.size()];
         int counter = 0;
         for (String key : cp.geogebraElements.keySet()) {
             resul[counter] = cp.geogebraElements.get(key).getMathObject();

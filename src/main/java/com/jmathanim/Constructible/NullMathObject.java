@@ -29,26 +29,31 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
- * A null MathObject. This object should be used when the result of an operation
- * gives an undetermined object (like an undefined point)
+ * A null MathObject. This object should be used when the result of an operation gives an undetermined object (like an
+ * undefined point)
  *
  * @author David Gutierrez Rubio
  */
-public class CTNullMathObject extends Constructible<CTNullMathObject> {
+public class NullMathObject extends Constructible<NullMathObject> {
     public static Rect boundingBox = new EmptyRect();
-    public CTNullMathObject() {
+    public static NullMathObject instance=new NullMathObject();
+
+    private NullMathObject() {
     }
 
 
+    public static NullMathObject make() {
+        return instance;
+    }
 
     @Override
-    public CTNullMathObject applyAffineTransform(AffineJTransform affineJTransform) {
+    public NullMathObject applyAffineTransform(AffineJTransform affineJTransform) {
         return this;
     }
 
     @Override
-    public CTNullMathObject copy() {
-        return new CTNullMathObject();
+    public NullMathObject copy() {
+        return new NullMathObject();
     }
 
     @Override
@@ -66,7 +71,7 @@ public class CTNullMathObject extends Constructible<CTNullMathObject> {
     }
 
     @Override
-    public void draw(JMathAnimScene scene, Renderer r,Camera cam) {
+    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
         //Nothing to draw, folks, it's the NullMathObject!!
     }
 
@@ -81,7 +86,7 @@ public class CTNullMathObject extends Constructible<CTNullMathObject> {
 
     @Override
     public DrawStyleProperties getMp() {
-        return MODrawProperties.makeNullValues();
+        return MODrawProperties.createFromStyle("default");
     }
 
     @Override

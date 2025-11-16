@@ -171,7 +171,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
     @Override
     public void copyStateFrom(Stateable obj) {
         if (!(obj instanceof MathObject<?>)) return;
-        MathObject mathObject = (MathObject) obj;
+        MathObject mathObject = (MathObject<?>) obj;
         this.setCamera(mathObject.getCamera());
         getMp().copyFrom(mathObject.getMp());
 //        this.getMp().copyFrom(obj.getMp());

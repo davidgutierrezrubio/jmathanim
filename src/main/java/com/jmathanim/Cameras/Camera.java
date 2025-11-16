@@ -268,7 +268,7 @@ public class Camera implements Boxable, Dependable {
     public Camera adjustToAllObjects() {
         if (!scene.getMathObjects().isEmpty()) {
 //            MathObject<?>[] objs = scene.getMathObjects().toArray(new MathObject[0]);
-            MathObject<?>[] objs = scene.getMathObjects().stream().filter(t -> (t.getCamera() == this)).toArray(MathObject[]::new);
+            MathObject<?>[] objs = scene.getMathObjects().stream().filter(t -> (t.getCamera() == this)).toArray(MathObject<?>[]::new);
             adjustToObjects(objs);
         }
         return this;
@@ -334,7 +334,7 @@ public class Camera implements Boxable, Dependable {
      */
     public Camera centerAtAllObjects() {
         if (!scene.getMathObjects().isEmpty()) {
-            MathObject[] objs = scene.getMathObjects().toArray(new MathObject[0]);
+            MathObject<?>[] objs = scene.getMathObjects().toArray(new MathObject[0]);
             centerAtObjects(objs);
         }
         adjustToAllObjects();
@@ -369,7 +369,7 @@ public class Camera implements Boxable, Dependable {
     public Camera zoomToAllObjects() {
         if (!scene.getMathObjects().isEmpty()) {
 //            MathObject<?>[] objs = scene.getMathObjects().toArray(new MathObject[0]);
-            MathObject<?>[] objs = scene.getMathObjects().stream().filter(t -> (t.getCamera() == this)).toArray(MathObject[]::new);
+            MathObject<?>[] objs = scene.getMathObjects().stream().filter(t -> (t.getCamera() == this)).toArray(MathObject<?>[]::new);
             zoomToObjects(objs);
         }
         return this;

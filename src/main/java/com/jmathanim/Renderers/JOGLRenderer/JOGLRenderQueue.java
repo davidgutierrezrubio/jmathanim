@@ -194,7 +194,7 @@
 //
 //            computeRectifiedVersionOfAllShapes();
 //
-//            for (MathObject obj : objectsToDraw) {
+//            for (MathObject<?>  obj : objectsToDraw) {
 //                if (obj instanceof Shape) {
 //                    drawShape(obj);
 //                }
@@ -239,7 +239,7 @@
 //                .forEach(Shape::computePolygonalPieces); //Compute rectified path (need to optimize this!!)
 ////        }
 ////        int numberOfBezierCurves=0;//Number of Bezier Curves to interpolate TODO: consider straight segments case
-////        for (MathObject obj : objectsToDraw) {
+////        for (MathObject<?>  obj : objectsToDraw) {
 ////            if (obj instanceof Shape) {
 ////                Shape shape = (Shape) obj;
 ////                numberOfBezierCurves+=shape.getPath().jmPathPoints.stream().filter(t->t.isThisSegmentVisible).count();

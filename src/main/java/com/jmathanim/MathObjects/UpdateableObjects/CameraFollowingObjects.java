@@ -47,7 +47,7 @@
 //        return new CameraFollowingObjects(camera, objs);
 //    }
 //
-//    private final MathObject[] objects;
+//    private final MathObject<?>[] objects;
 //    private final Camera camera;
 //    private int updateLevel;
 //

@@ -87,7 +87,7 @@ public class Anchor {
                     Vec v = ((Coordinates<?>) obj).getVec();
                     resul = v.copy();
                 } else {
-                    if (obj instanceof MathObject) {
+                    if (obj instanceof MathObject<?>) {
                         MathObject<?> o = (MathObject<?>) obj;
                         resul = o.getAbsoluteAnchorVec().copy();
                     }

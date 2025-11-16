@@ -73,7 +73,7 @@ public class ScalarAnimation extends Animation {
     }
 
     @Override
-    public MathObject getIntermediateObject() {
+    public MathObject<?>  getIntermediateObject() {
         return null;
     }
 }

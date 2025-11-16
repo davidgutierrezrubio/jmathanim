@@ -49,7 +49,7 @@ public class CTPolygon extends Constructible<CTPolygon> {
     }
 
     @Override
-    public MathObject getMathObject() {
+    public MathObject<?>  getMathObject() {
         return shapeToDraw;
     }
 

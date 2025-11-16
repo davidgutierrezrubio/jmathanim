@@ -35,7 +35,7 @@ import com.jmathanim.Utils.Vec;
 public class MoveAlongPath extends Animation {
 
     private final JMPath path;
-    private final MathObject mobjTransformed;
+    private final MathObject<?> mobjTransformed;
     private final AnchorType anchorType;
     boolean shouldRotate;
     boolean parametrized;

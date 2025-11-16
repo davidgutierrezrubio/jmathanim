@@ -269,7 +269,7 @@ public class Arrow extends Constructible<Arrow> {
     }
 
     @Override
-    public MathObject getMathObject() {
+    public MathObject<?>  getMathObject() {
         return groupElementsToBeDrawn;
     }
 

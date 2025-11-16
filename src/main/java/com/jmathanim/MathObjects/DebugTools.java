@@ -16,7 +16,7 @@ public class DebugTools {
 //    }
 
     public static String getDebugText(MathObject<?> obj) {
-        if (obj instanceof Constructible) {
+        if (obj instanceof Constructible<?>) {
             return ((Constructible<?>) obj).getMathObject().getDebugText();
         }else {
             return obj.getDebugText();
@@ -24,7 +24,7 @@ public class DebugTools {
     }
 
     public static void setDebugText(MathObject<?> obj, String text) {
-       if (obj instanceof Constructible) {
+       if (obj instanceof Constructible<?>) {
            ((Constructible<?>) obj).getMathObject().setDebugText(text);
        }else {
            obj.setDebugText(text);

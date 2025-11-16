@@ -46,7 +46,7 @@ public class CTImage extends Constructible<CTImage> {
     }
 
     @Override
-    public MathObject getMathObject() {
+    public MathObject<?>  getMathObject() {
         return image;
     }
 

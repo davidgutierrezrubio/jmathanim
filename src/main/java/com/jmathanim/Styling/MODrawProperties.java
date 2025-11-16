@@ -200,7 +200,7 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
         changeVersion();
     }
 
-    public void setParent(MathObject parent) {
+    public void setParent(MathObject<?> parent) {
         this.parent = parent;
     }
 

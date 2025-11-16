@@ -63,7 +63,7 @@ public class PascalLayout extends GroupLayout {
         }
         double w = 0;
         double h = 0;
-        for (MathObject g : group) {
+        for (MathObject<?>  g : group) {
             w = Math.max(w, g.getWidth());
             h = Math.max(h, g.getHeight());
         }

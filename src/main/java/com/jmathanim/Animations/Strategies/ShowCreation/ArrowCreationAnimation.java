@@ -79,7 +79,7 @@ public class ArrowCreationAnimation extends AbstractCreationStrategy {
     }
 
     @Override
-    public MathObject getIntermediateObject() {
+    public MathObject<?>  getIntermediateObject() {
         return this.obj;
     }
 }

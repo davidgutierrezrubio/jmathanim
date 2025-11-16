@@ -348,7 +348,7 @@ public abstract class JMathAnimScene {
      */
     public synchronized final void remove(ArrayList<MathObject<?>> objs) {
         remove((MathObject<?>[]) objs.toArray());
-//        remove((MathObject[]) objs.toArray(value -> new MathObject[value]));
+//        remove((MathObject<?>[]) objs.toArray(value -> new MathObject[value]));
 
     }
 

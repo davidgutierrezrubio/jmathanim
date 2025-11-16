@@ -175,7 +175,7 @@ public class FlipTransform extends TransformStrategy<MathObject<?>> {
      * @return The currently object being animated (origin or destiny)
      */
     @Override
-    public MathObject getIntermediateObject() {
+    public MathObject<?>  getIntermediateObject() {
         return intermediateObject;
     }
 }

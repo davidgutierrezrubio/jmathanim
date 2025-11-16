@@ -170,8 +170,8 @@ public class GroovyUtils {
 //            public Void doCall(Object arg) {
 //                if (arg instanceof MathObject) {
 //                    scene.add((MathObject) arg);
-//                } else if (arg instanceof MathObject[]) {
-//                    scene.add((MathObject[]) arg);
+//                } else if (arg instanceof MathObject<?>[]) {
+//                    scene.add((MathObject<?>[]) arg);
 //                } else if (arg instanceof GeogebraLoader) {
 //                    scene.add((GeogebraLoader) arg);
 //                } else {
@@ -186,9 +186,9 @@ public class GroovyUtils {
 //                }
 //                // Si todos los argumentos son MathObject, conviértelos a un array
 //                if (Arrays.stream(args).allMatch(arg -> arg instanceof MathObject)) {
-//                    MathObject[] objs = Arrays.stream(args)
+//                    MathObject<?>[] objs = Arrays.stream(args)
 //                            .map(arg -> (MathObject) arg)
-//                            .toArray(MathObject[]::new);
+//                            .toArray(MathObject<?>[]::new);
 //                    scene.add(objs);
 //                } else {
 //                    throw new IllegalArgumentException("Tipos no soportados en múltiples argumentos");

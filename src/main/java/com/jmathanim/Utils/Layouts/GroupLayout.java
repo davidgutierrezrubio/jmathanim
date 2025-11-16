@@ -80,7 +80,7 @@ public abstract class GroupLayout {
 
     private void saveGaps(AbstractMathGroup<?> group) {
         backupGaps.clear();
-        for (MathObject ob : group) {
+        for (MathObject<?>  ob : group) {
             backupGaps.add(ob.getGaps());
         }
     }
@@ -151,7 +151,7 @@ public abstract class GroupLayout {
      */
     protected MathObjectGroup createBoxedGroup(MathObjectGroup group, double hgap, double vgap) {
         MathObjectGroup resul = MathObjectGroup.make();
-        for (MathObject ob : group) {
+        for (MathObject<?>  ob : group) {
             resul.add(Shape.rectangle(ob.getBoundingBox().addGap(hgap, vgap)));
         }
         return resul;

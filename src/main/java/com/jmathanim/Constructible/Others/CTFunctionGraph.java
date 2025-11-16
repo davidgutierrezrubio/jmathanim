@@ -58,7 +58,7 @@ public class CTFunctionGraph extends Constructible implements shouldUdpateWithCa
     }
 
     @Override
-    public MathObject getMathObject() {
+    public MathObject<?>  getMathObject() {
         return fg;
     }
 

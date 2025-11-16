@@ -220,7 +220,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
             copyFrom(drawStylePropertiesObjectsArray);
             return;
         }
-        for (MathObject obj : objects) {
+        for (MathObject<?>  obj : objects) {
             obj.getMp().copyFrom(prop);
         }
         mpRef.copyFrom(prop);
@@ -254,7 +254,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      */
     @Override
     public void interpolateFrom(DrawStyleProperties dst, double alpha) {
-        for (MathObject obj : objects) {
+        for (MathObject<?>  obj : objects) {
             obj.getMp().interpolateFrom(dst, alpha);
         }
         mpRef.interpolateFrom(dst, alpha);
@@ -272,7 +272,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      */
     @Override
     public void interpolateFrom(DrawStyleProperties a, DrawStyleProperties b, double alpha) {
-        for (MathObject obj : objects) {
+        for (MathObject<?>  obj : objects) {
             obj.getMp().interpolateFrom(a, b, alpha);
         }
         mpRef.interpolateFrom(a, b, alpha);
@@ -286,7 +286,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      */
     @Override
     public void loadFromStyle(String name) {
-        for (MathObject obj : objects) {
+        for (MathObject<?>  obj : objects) {
             obj.getMp().loadFromStyle(name);
 
         }
@@ -303,7 +303,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      */
     @Override
     public void rawCopyFrom(MODrawProperties mp) {
-        for (MathObject obj : objects) {
+        for (MathObject<?>  obj : objects) {
             obj.getMp().rawCopyFrom(mp);
         }
         mpRef.rawCopyFrom(mp);
@@ -318,7 +318,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      */
     @Override
     public DrawStyleProperties setDrawAlpha(double alpha) {
-        for (MathObject obj : objects) {
+        for (MathObject<?>  obj : objects) {
             obj.getMp().setDrawAlpha(alpha);
         }
         mpRef.setDrawAlpha(alpha);
@@ -336,7 +336,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      */
     @Override
     public DrawStyleProperties setFillAlpha(double alpha) {
-        for (MathObject obj : objects) {
+        for (MathObject<?>  obj : objects) {
             obj.getMp().setFillAlpha(alpha);
         }
         mpRef.setFillAlpha(alpha);
@@ -352,7 +352,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      */
     @Override
     public DrawStyleProperties multDrawAlpha(double mult) {
-        for (MathObject obj : objects) {
+        for (MathObject<?>  obj : objects) {
             obj.getMp().multDrawAlpha(mult);
         }
         mpRef.multDrawAlpha(mult);
@@ -369,7 +369,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      */
     @Override
     public DrawStyleProperties multFillAlpha(double mult) {
-        for (MathObject obj : objects) {
+        for (MathObject<?>  obj : objects) {
             obj.getMp().multFillAlpha(mult);
         }
         mpRef.multFillAlpha(mult);
@@ -395,7 +395,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      */
     @Override
     public DrawStyleProperties setLayer(int layer) {
-        for (MathObject obj : objects) {
+        for (MathObject<?>  obj : objects) {
             obj.getMp().setLayer(layer);
         }
         mpRef.setLayer(layer);
@@ -420,7 +420,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      */
     @Override
     public DrawStyleProperties setDrawColor(PaintStyle drawColor) {
-        for (MathObject obj : objects) {
+        for (MathObject<?>  obj : objects) {
             obj.getMp().setDrawColor(drawColor);
         }
         mpRef.setDrawColor(drawColor);
@@ -448,7 +448,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      */
     @Override
     public DrawStyleProperties setFillColor(PaintStyle fillColor) {
-        for (MathObject obj : objects) {
+        for (MathObject<?>  obj : objects) {
             obj.getMp().setFillColor(fillColor);
         }
         mpRef.setFillColor(fillColor);
@@ -506,7 +506,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      */
     @Override
     public DrawStyleProperties setLineJoin(StrokeLineJoin linejoin) {
-        for (MathObject obj : objects) {
+        for (MathObject<?>  obj : objects) {
             obj.getMp().setLineJoin(linejoin);
         }
         mpRef.setLineJoin(linejoin);
@@ -522,7 +522,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      */
     @Override
     public DrawStyleProperties setLinecap(StrokeLineCap linecap) {
-        for (MathObject obj : objects) {
+        for (MathObject<?>  obj : objects) {
             obj.getMp().setLinecap(linecap);
         }
         mpRef.setLinecap(linecap);
@@ -548,7 +548,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      */
     @Override
     public DrawStyleProperties setThickness(Double thickness) {
-        for (MathObject obj : objects) {
+        for (MathObject<?>  obj : objects) {
             obj.getMp().setThickness(thickness);
         }
         mpRef.setThickness(thickness);
@@ -574,7 +574,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      */
     @Override
     public DrawStyleProperties setDotStyle(DotStyle dotStyle) {
-        for (MathObject obj : objects) {
+        for (MathObject<?>  obj : objects) {
             obj.getMp().setDotStyle(dotStyle);
         }
         mpRef.setDotStyle(dotStyle);
@@ -600,7 +600,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      */
     @Override
     public DrawStyleProperties setDashStyle(DashStyle dashStyle) {
-        for (MathObject obj : objects) {
+        for (MathObject<?>  obj : objects) {
             obj.getMp().setDashStyle(dashStyle);
         }
         mpRef.setDashStyle(dashStyle);
@@ -627,7 +627,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      */
     @Override
     public DrawStyleProperties setAbsoluteThickness(Boolean absThickness) {
-        for (MathObject obj : objects) {
+        for (MathObject<?>  obj : objects) {
             obj.getMp().setAbsoluteThickness(absThickness);
         }
         mpRef.setAbsoluteThickness(absThickness);
@@ -644,7 +644,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      */
     @Override
     public DrawStyleProperties multThickness(double multT) {
-        for (MathObject obj : objects) {
+        for (MathObject<?>  obj : objects) {
             obj.getMp().multThickness(multT);
         }
         mpRef.multThickness(multT);
@@ -673,7 +673,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      */
     @Override
     public DrawStyleProperties setFaceToCamera(Boolean faceToCamera) {
-        for (MathObject obj : objects) {
+        for (MathObject<?>  obj : objects) {
             obj.getMp().setFaceToCamera(faceToCamera);
         }
         mpRef.setFaceToCamera(faceToCamera);
@@ -700,7 +700,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      */
     @Override
     public DrawStyleProperties setFaceToCameraPivot(Vec pivot) {
-        for (MathObject obj : objects) {
+        for (MathObject<?>  obj : objects) {
             obj.getMp().setFaceToCameraPivot(pivot);
         }
         mpRef.setFaceToCameraPivot(pivot);

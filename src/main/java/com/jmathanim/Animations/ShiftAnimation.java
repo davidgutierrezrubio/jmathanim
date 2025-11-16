@@ -135,7 +135,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
      * @param obj MathObject to get it shift vector
      * @return The shift vector
      */
-    public Vec getShiftVector(MathObject obj) {
+    public Vec getShiftVector(MathObject<?> obj) {
         return this.shiftVectors.get(obj);
     }
 
@@ -164,7 +164,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
      * @param obj Mathobject to get the jump height from
      * @return the jump height of the given object. A value or null or zero means no jump at all.
      */
-    public double getJumpHeight(MathObject obj) {
+    public double getJumpHeight(MathObject<?> obj) {
         return effects.get(obj).jumpHeight;
     }
 
@@ -174,7 +174,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
      * @param obj Mathobject to get the rotation numTurns from
      * @return Angle to rotate the object. A value of null or 0 means no effect
      */
-    public double getNumTurns(MathObject obj) {
+    public double getNumTurns(MathObject<?> obj) {
         return effects.get(obj).numTurns;
     }
 
@@ -184,7 +184,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
      * @param obj Mathobject to get the scale from
      * @return Amount of scale to apply to the object. A value of null or 1 means no effect
      */
-    public double getScaleEffect(MathObject obj) {
+    public double getScaleEffect(MathObject<?> obj) {
         return effects.get(obj).scaleEffect;
     }
 

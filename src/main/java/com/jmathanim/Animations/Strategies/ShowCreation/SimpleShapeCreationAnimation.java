@@ -84,7 +84,7 @@ public class SimpleShapeCreationAnimation extends AbstractCreationStrategy {
     }
 
     @Override
-    public MathObject getIntermediateObject() {
+    public MathObject<?>  getIntermediateObject() {
         return intermediateShape;
     }
 }

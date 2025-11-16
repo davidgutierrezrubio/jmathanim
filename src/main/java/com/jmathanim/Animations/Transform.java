@@ -334,7 +334,7 @@ public class Transform extends AnimationWithEffects {
      *
      * @return The intermediate transformed object.
      */
-    public MathObject getIntermediateTransformedObject() {
+    public MathObject<?>  getIntermediateTransformedObject() {
         if (transformStrategy != null) {
             return transformStrategy.getIntermediateObject();
         } else {
@@ -352,7 +352,7 @@ public class Transform extends AnimationWithEffects {
     }
 
     @Override
-    public MathObject getIntermediateObject() {
+    public MathObject<?>  getIntermediateObject() {
         return transformStrategy.getIntermediateObject();
     }
 

@@ -55,7 +55,7 @@ import java.util.zip.ZipFile;
 class GeogebraCommandParser {
 
     public static final int SCALING_FACTOR_THICKNESS_POINT = 10;
-    protected final LinkedHashMap<String, Constructible> geogebraElements;
+    protected final LinkedHashMap<String, Constructible<?>> geogebraElements;
     protected final LinkedHashMap<String, String> expressions;
 
     public GeogebraCommandParser() {
@@ -87,7 +87,7 @@ class GeogebraCommandParser {
             try {
                 return CTPoint.at(Point.at(Double.parseDouble(matcher.group(1)), Double.parseDouble(matcher.group(2))));
             } catch (NumberFormatException numberFormatException) {
-                JMathAnimScene.logger.warn("Unrecognized number in point coordinates at geogebra import: " + argument + ". Returning (0,0) instead!");
+                JMathAnimScene.logger.error("Unrecognized number in point coordinates at geogebra import: " + argument + ". Returning (0,0) instead!");
                 return CTPoint.at(0, 0);
             }
         }
@@ -107,7 +107,7 @@ class GeogebraCommandParser {
         }
 
         // Nothing recognized so far, returns null and a warning
-        JMathAnimScene.logger.warn("Skipped unrecognized argument: " + argument);
+        JMathAnimScene.logger.error("Skipped unrecognized argument: " + argument);
 //        try {
 //            throw new Exception("Don't know how to parse this argument " + argument);
 //        } catch (Exception ex) {
@@ -116,11 +116,12 @@ class GeogebraCommandParser {
         return null;
     }
 
-    public Constructible get(String key) {
+    public Constructible<?> get(String key) {
         if (containsKey(key)) {
             return geogebraElements.get(key);
         } else {
-            return new CTNullMathObject();
+            JMathAnimScene.logger.error("Geogebra element "+ LogUtils.method(key)+" does not exists. Returning "+LogUtils.method("NullMathObject")+" instead.");
+            return NullMathObject.make();
         }
     }
 
@@ -128,7 +129,7 @@ class GeogebraCommandParser {
         return geogebraElements.containsKey(key);
     }
 
-    public void registerGeogebraElement(String label, Constructible resul) {
+    public void registerGeogebraElement(String label, Constructible<?> resul) {
         if (resul != null) {
             resul.setObjectLabel(label);
             geogebraElements.put(label, resul);
@@ -155,15 +156,15 @@ class GeogebraCommandParser {
         // Layer
         Element layer = firstElementWithTag(el, "layer");
         if (layer != null)
-            resul.setLayer(Integer.valueOf(layer.getAttribute("val")));
+            resul.setLayer(Integer.parseInt(layer.getAttribute("val")));
 
         // Color
         Element objColor = firstElementWithTag(el, "objColor");
         if (objColor != null) {
-            int r = Integer.valueOf(objColor.getAttribute("r"));
-            int g = Integer.valueOf(objColor.getAttribute("g"));
-            int b = Integer.valueOf(objColor.getAttribute("b"));
-            double alpha = Double.valueOf(objColor.getAttribute("alpha"));
+            int r = Integer.parseInt(objColor.getAttribute("r"));
+            int g = Integer.parseInt(objColor.getAttribute("g"));
+            int b = Integer.parseInt(objColor.getAttribute("b"));
+            double alpha = Double.parseDouble(objColor.getAttribute("alpha"));
             JMColor col = JMColor.rgbaInt(r, g, b, 255);
             JMColor colFill = JMColor.rgbaInt(r, g, b, 255);
             colFill.setAlpha(alpha);
@@ -174,7 +175,7 @@ class GeogebraCommandParser {
         // Line style. Only thickness
         Element lineStyle = firstElementWithTag(el, "lineStyle");
         if (lineStyle != null) {
-            double thickness = Double.valueOf(lineStyle.getAttribute("thickness"))*4d;
+            double thickness = Double.parseDouble(lineStyle.getAttribute("thickness"))*4d;
             resul.setThickness(thickness);
             //Dash Style
             //0 :         DashStyle.SOLID
@@ -182,7 +183,7 @@ class GeogebraCommandParser {
             //20:        DashStyle.DOTTED
             //30:         DashStyle.DASHDOTTED
             DashStyle dashStyle;
-            int dashType = Integer.valueOf(lineStyle.getAttribute("type"));
+            int dashType = Integer.parseInt(lineStyle.getAttribute("type"));
             switch (dashType) {
                 case 0:
                     dashStyle = DashStyle.SOLID;
@@ -205,7 +206,7 @@ class GeogebraCommandParser {
         // Point size
         Element pointSize = firstElementWithTag(el, "pointSize");
         if (pointSize != null) {
-            double thickness = Double.valueOf(pointSize.getAttribute("val")) * SCALING_FACTOR_THICKNESS_POINT;// Scaling factor guessed...
+            double thickness = Double.parseDouble(pointSize.getAttribute("val")) * SCALING_FACTOR_THICKNESS_POINT;// Scaling factor guessed...
             resul.setThickness(thickness);
         }
 
@@ -222,10 +223,10 @@ class GeogebraCommandParser {
         }
     }
 
-    private MathObject[] getArrayOfParameters(Element el) {
+    private MathObject<?>[] getArrayOfParameters(Element el) {
         Element elInput = firstElementWithTag(el, "input");
         int k = 0;
-        MathObject[] objs = new MathObject[elInput.getAttributes().getLength()];
+        MathObject<?>[] objs = new MathObject[elInput.getAttributes().getLength()];
         int numberAttributes = elInput.getAttributes().getLength();
         for (int i = 0; i < numberAttributes; i++) {
             String label = elInput.getAttribute("a" + i);
@@ -256,8 +257,8 @@ class GeogebraCommandParser {
         CTAbstractPoint<?> resul;
         // Get the coordinates
         Element elCoords = firstElementWithTag(el, "coords");
-        double x = Double.valueOf(elCoords.getAttribute("x"));
-        double y = Double.valueOf(elCoords.getAttribute("y"));
+        double x = Double.parseDouble(elCoords.getAttribute("x"));
+        double y = Double.parseDouble(elCoords.getAttribute("y"));
         if (!geogebraElements.containsKey(label)) {
             resul = CTPoint.at(Vec.to(x, y));
         } else {
@@ -265,7 +266,7 @@ class GeogebraCommandParser {
             resul.moveTo(x, y);
         }
         Element pointSize = firstElementWithTag(el, "pointSize");
-        double th = Double.valueOf(pointSize.getAttribute("val")) * SCALING_FACTOR_THICKNESS_POINT;
+        double th = Double.parseDouble(pointSize.getAttribute("val")) * SCALING_FACTOR_THICKNESS_POINT;
         // TODO: Add a z value here
 
         resul.thickness(th);
@@ -404,7 +405,7 @@ class GeogebraCommandParser {
     protected void processVectorCommand(Element el) {
         String label = getOutputArgument(el, 0);
 
-        MathObject[] params = getArrayOfParameters(el);
+        MathObject<?>[] params = getArrayOfParameters(el);
         CTAbstractPoint<?> A;
         CTAbstractPoint<?> B;
         if (params.length > 1) {
@@ -420,9 +421,9 @@ class GeogebraCommandParser {
 
     protected void processOrthogonalLine(Element el) {
         String label = getOutputArgument(el, 0);
-        MathObject[] params = getArrayOfParameters(el);
+        MathObject<?>[] params = getArrayOfParameters(el);
         CTAbstractPoint<?> A = (CTAbstractPoint<?>) params[0]; // First argument is always a point
-        MathObject B = params[1];
+        MathObject<?> B = params[1];
         if (B instanceof HasDirection) {
             registerGeogebraElement(label, CTLineOrthogonal.makePointDir(A, (HasDirection) B));
         }
@@ -430,7 +431,7 @@ class GeogebraCommandParser {
 
     void processPerpBisector(Element el) {
         String label = getOutputArgument(el, 0);
-        MathObject[] params = getArrayOfParameters(el);
+        MathObject<?>[] params = getArrayOfParameters(el);
         CTPerpBisector resul=null;
         if (params.length == 2) {// 2 points
             CTAbstractPoint<?> A = (CTAbstractPoint<?>) params[0];
@@ -449,7 +450,7 @@ class GeogebraCommandParser {
 
     protected void processAngleBisector(Element el) {
         String label = getOutputArgument(el, 0);
-        MathObject[] params = getArrayOfParameters(el);
+        MathObject<?>[] params = getArrayOfParameters(el);
         if (params.length == 3) {// 3 points
             CTAbstractPoint<?> A = (CTAbstractPoint<?>) params[0];
             CTAbstractPoint<?> B = (CTAbstractPoint<?>) params[1];
@@ -459,7 +460,7 @@ class GeogebraCommandParser {
     }
 
     protected void processPolygonCommand(Element el) {
-        MathObject[] objs = getArrayOfParameters(el);
+        MathObject<?>[] objs = getArrayOfParameters(el);
         // Array of points of the polygon
         //If a2 is a Scalar, is a regular polygon
         if (objs[2] instanceof Scalar) {
@@ -473,7 +474,7 @@ class GeogebraCommandParser {
     protected void processSimplePolygonCommand(Element el) {
         String[] outputs = getArrayOfOutputs(el);
         String label = outputs[0];
-        MathObject[] objs = getArrayOfParameters(el);
+        MathObject<?>[] objs = getArrayOfParameters(el);
         CTAbstractPoint<?>[] points = new CTAbstractPoint<?>[objs.length];
         for (int i = 0; i < objs.length; i++) {
             points[i] = (CTAbstractPoint<?>) objs[i];
@@ -491,7 +492,7 @@ class GeogebraCommandParser {
     protected void processRegularPolygonCommand(Element el) {
         String[] outputs = getArrayOfOutputs(el);
 
-        MathObject[] objs = getArrayOfParameters(el);
+        MathObject<?>[] objs = getArrayOfParameters(el);
         final double dSides = ((Scalar) objs[2]).getValue();
         int sides = (int) dSides;
         ArrayList<CTSegment> segments = new ArrayList<>();
@@ -547,8 +548,8 @@ class GeogebraCommandParser {
             String str0 = elInput.getAttribute("a0");
             String str1 = elInput.getAttribute("a1");
 
-            MathObject arg0 = parseArgument(str0);
-            MathObject arg1 = parseArgument(str1);
+            MathObject<?> arg0 = parseArgument(str0);
+            MathObject<?> arg1 = parseArgument(str1);
 
             // A circle with center a point and another one in the perimeter
             if ((arg0 instanceof CTAbstractPoint) && (arg1 instanceof CTAbstractPoint)) {
@@ -572,9 +573,9 @@ class GeogebraCommandParser {
 
     void processTangentCommand(Element el) {
         String label = getOutputArgument(el, 0);
-        MathObject[] objs = getArrayOfParameters(el);
-        Constructible ob1 = (Constructible) objs[0];
-        Constructible ob2 = (Constructible) objs[1];
+        MathObject<?>[] objs = getArrayOfParameters(el);
+        Constructible<?> ob1 = (Constructible<?>) objs[0];
+        Constructible<?> ob2 = (Constructible<?>) objs[1];
         //If Point-Circle: 2 tangent lines
         //If Circle-Circle: 4 tangent lines (exterior and interior ones)
 
@@ -599,7 +600,7 @@ class GeogebraCommandParser {
     void processIntersectionCommand(Element el) {
         int numPoint = 0;
         String label = getOutputArgument(el, 0);
-        MathObject[] objs = getArrayOfParameters(el);
+        MathObject<?>[] objs = getArrayOfParameters(el);
 
         long nonNullArgs = Arrays.stream(objs).filter(obj -> obj != null).count();
         CTIntersectionPoint resul1 = null;
@@ -633,13 +634,13 @@ class GeogebraCommandParser {
     void processPointOnObject(Element el) {
         //TODO: Implement PointIn command for points inside a region (polygon, circle...)
         String label = getOutputArgument(el, 0);
-        MathObject[] objs = getArrayOfParameters(el);
+        MathObject<?>[] objs = getArrayOfParameters(el);
         try {
             PointOwner ob1 = (PointOwner) objs[0];
             final CTPointOnObject p = CTPointOnObject.make(ob1);
             registerGeogebraElement(label, p);
         } catch (ClassCastException e) {
-            JMathAnimScene.logger.warn("Object type " + objs[0].getClass().getName() + " not implement yet to hold a point on object, sorry");
+            JMathAnimScene.logger.error("Object type " + objs[0].getClass().getName() + " not implement yet to hold a point on object, sorry");
         }
 
     }
@@ -664,7 +665,7 @@ class GeogebraCommandParser {
 
     void processMirror(Element el) {//Right now, it only mirror points
         String label = getOutputArgument(el, 0);
-        MathObject[] objs = getArrayOfParameters(el);
+        MathObject<?>[] objs = getArrayOfParameters(el);
         //TODO: An image (CTImage) can also be mirrored for example.
         //Trying to import a mirrored image leads a to cast exception
         if (objs[0] instanceof CTAbstractPoint<?>) {
@@ -693,7 +694,7 @@ class GeogebraCommandParser {
 
     void processTranslate(Element el) {
         String label = getOutputArgument(el, 0);
-        MathObject[] objs = getArrayOfParameters(el);
+        MathObject<?>[] objs = getArrayOfParameters(el);
         if (objs[0] instanceof CTAbstractPoint<?>) {
             CTAbstractPoint<?> pointToTranslate = (CTAbstractPoint<?>) objs[0];
             CTVector translateVector = (CTVector) objs[1];
@@ -711,8 +712,8 @@ class GeogebraCommandParser {
 
     void processRotate(Element el) {
         String label = getOutputArgument(el, 0);
-        MathObject[] objs = getArrayOfParameters(el);
-        MathObject aa = objs[0];
+        MathObject<?>[] objs = getArrayOfParameters(el);
+        MathObject<?> aa = objs[0];
         if (objs[0] instanceof CTAbstractPoint<?>) {
             CTAbstractPoint<?> pointToRotate = (CTAbstractPoint<?>) objs[0];
             Scalar angle = (Scalar) objs[1];
@@ -739,7 +740,7 @@ class GeogebraCommandParser {
 
     void processMidPoint(Element el) {
         String label = getOutputArgument(el, 0);
-        MathObject[] objs = getArrayOfParameters(el);
+        MathObject<?>[] objs = getArrayOfParameters(el);
         //If there are 2 elements, they must be 2 points
         if (objs.length == 2) {
             CTAbstractPoint<?> A = (CTAbstractPoint<?>) objs[0];
@@ -755,7 +756,7 @@ class GeogebraCommandParser {
     void processNumericElement(Element el) {
         String label = el.getAttribute("label");
         Element elCoords = firstElementWithTag(el, "value");
-        double value = Double.valueOf(elCoords.getAttribute("val"));
+        double value = Double.parseDouble(elCoords.getAttribute("val"));
         registerGeogebraElement(label, Scalar.make(value));
         JMathAnimScene.logger.debug("Imported Geogebra scalar value " + label + "=" + value);
 
@@ -763,7 +764,7 @@ class GeogebraCommandParser {
 
     void processSemicircle(Element el) {
         String label = getOutputArgument(el, 0);
-        MathObject[] objs = getArrayOfParameters(el);
+        MathObject<?>[] objs = getArrayOfParameters(el);
         CTAbstractPoint<?> A = (CTAbstractPoint<?>) objs[0];
         CTAbstractPoint<?> B = (CTAbstractPoint<?>) objs[1];
         registerGeogebraElement(label, CTSemiCircle.make(A, B));
@@ -771,7 +772,7 @@ class GeogebraCommandParser {
 
     void processCircleArc(Element el) {
         String label = getOutputArgument(el, 0);
-        MathObject[] objs = getArrayOfParameters(el);
+        MathObject<?>[] objs = getArrayOfParameters(el);
         CTAbstractPoint<?> A = (CTAbstractPoint<?>) objs[0];
         CTAbstractPoint<?> B = (CTAbstractPoint<?>) objs[1];
         CTAbstractPoint<?> C = (CTAbstractPoint<?>) objs[2];
@@ -780,7 +781,7 @@ class GeogebraCommandParser {
 
     void processCircleSector(Element el) {
         String label = getOutputArgument(el, 0);
-        MathObject[] objs = getArrayOfParameters(el);
+        MathObject<?>[] objs = getArrayOfParameters(el);
         CTAbstractPoint<?> A = (CTAbstractPoint<?>) objs[0];
         CTAbstractPoint<?> B = (CTAbstractPoint<?>) objs[1];
         CTAbstractPoint<?> C = (CTAbstractPoint<?>) objs[2];

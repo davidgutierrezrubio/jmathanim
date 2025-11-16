@@ -139,7 +139,7 @@ public class PlayAnim {
      * @param runtime Duration in seconds
      */
     public void fadeOutAll(double runtime) {
-        MathObject[] objects = scene.getMathObjects().toArray(new MathObject[0]);
+        MathObject<?>[] objects = scene.getMathObjects().toArray(new MathObject[0]);
         scene.playAnimation(Commands.fadeOut(runtime, objects));
     }
 
@@ -152,21 +152,21 @@ public class PlayAnim {
     public void fadeOutAllBut(double runtime, MathObject<?>... objs) {
         ArrayList<MathObject<?>> toRemove = new ArrayList<>();
         toRemove.addAll(scene.getMathObjects());
-        for (MathObject obj : objs) {
+        for (MathObject<?>  obj : objs) {
             if (obj instanceof MultiShapeObject) {
                 for (Shape sh : (MultiShapeObject) obj) {
                     toRemove.remove(sh);
                 }
             }
             if (obj instanceof MathObjectGroup) {
-                for (MathObject o : (MathObjectGroup) obj) {
+                for (MathObject<?>  o : (MathObjectGroup) obj) {
                     toRemove.remove(o);
                 }
             }
 
             toRemove.remove(obj);
         }
-        MathObject[] objects = toRemove.toArray(new MathObject[0]);
+        MathObject<?>[] objects = toRemove.toArray(new MathObject[0]);
         scene.playAnimation(Commands.fadeOut(runtime, objects));
     }
 
@@ -375,7 +375,7 @@ public class PlayAnim {
      * @param transformed Object that will be transformed
      * @param destiny     Object destiny
      */
-    public void transform(double runTime, MathObject transformed, MathObject destiny) {
+    public void transform(double runTime, MathObject<?> transformed, MathObject<?> destiny) {
         scene.playAnimation(Transform.make(runTime, transformed, destiny));
     }
 
@@ -617,7 +617,7 @@ public class PlayAnim {
      *
      * @param mobj Object to animate
      */
-    public void shrinkOut(MathObject mobj) {
+    public void shrinkOut(MathObject<?> mobj) {
         shrinkOut(defaultRunTimeShrinkOut, mobj);
 
     }
@@ -633,7 +633,7 @@ public class PlayAnim {
      */
     public void showCreation(double runtime, MathObject<?>... mobjects) {
         ArrayList<Animation> anims = new ArrayList<>();
-        for (MathObject obj : mobjects) {
+        for (MathObject<?> obj : mobjects) {
             anims.add(new ShowCreation(runtime, obj));
         }
         scene.playAnimation(anims);

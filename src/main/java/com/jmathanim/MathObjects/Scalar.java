@@ -18,8 +18,8 @@
 package com.jmathanim.MathObjects;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Constructible.CTNullMathObject;
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Constructible.NullMathObject;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.EmptyRect;
@@ -76,8 +76,8 @@ public class Scalar extends Constructible<Scalar> implements hasScalarParameter{
     }
 
     @Override
-    public MathObject getMathObject() {
-        return new CTNullMathObject();
+    public MathObject<?>  getMathObject() {
+        return NullMathObject.make();
     }
 
     @Override

@@ -258,7 +258,7 @@ public class JoinAnimation extends Animation {
     }
 
     @Override
-    public MathObject getIntermediateObject() {
+    public MathObject<?>  getIntermediateObject() {
         return previous.getIntermediateObject();
     }
 

@@ -47,7 +47,7 @@ public class WaitAnimation extends Animation {
     public void prepareForAnim(double t) {
     }
      @Override
-    public MathObject getIntermediateObject() {
+    public MathObject<?>  getIntermediateObject() {
         return null;
     }
 }
