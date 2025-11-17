@@ -296,14 +296,15 @@ public abstract class Delimiter extends Constructible<Delimiter> {
         this.mpDelimiter.copyFrom(del.mpDelimiter);
 
 
-        if (isFreeMathObject()) {
-//            setLabel(del.delimiterLabelRigidBox.copy(), del.labelMarkGap);
-            delimiterLabelRigidBox.copyStateFrom(del.delimiterLabelRigidBox);
-        }
-        else
+//        if (isFreeMathObject()) {
+////            setLabel(del.delimiterLabelRigidBox.copy(), del.labelMarkGap);
+//            delimiterLabelRigidBox.copyStateFrom(del.delimiterLabelRigidBox);
+//        }
+//        else
         if (del.delimiterLabel != null) {
             if (del.textUpdaterFactory instanceof LengthUpdaterFactory) {
                 addLengthLabelTip(del.textUpdaterFactory.getFormat());
+                getLabel().copyStateFrom(del.getLabel());
             } else if (del.textUpdaterFactory instanceof CountUpdaterFactory) {
 //                addCountLabelTip(del.labelMarkGap,((CountUpdaterFactory)del.textUpdaterFactory).getObjectToCount());
             }
@@ -311,6 +312,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
             {
                 addlabelTip(del.getLabel().copy());
             }
+
             getLabel().getMp().copyFrom(del.getLabel().getMp());
         }
         setLabelMarkGap(del.labelMarkGap);
@@ -338,10 +340,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
     public <T extends Delimiter> T addlabelTip(MathObject<?> label) {
         this.labelMarkGap = .1;
         this.delimiterLabel = label;
-
         this.delimiterLabelRigidBox.setMathObjectReference(label);
-
-
         rebuildShape();
         return (T) this;
     }
@@ -353,7 +352,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
      * @param format Format to print the length, for example "0.00"
      * @return The Label, a LatexMathObject
      */
-    public LatexMathObject addLengthLabelTip(
+    public Delimiter addLengthLabelTip(
                                              String format) {
         Delimiter label = addlabelTip("${#0}$");
         LatexMathObject t = (LatexMathObject) getLabel();
@@ -365,7 +364,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
         t.update(scene);
         rebuildShape();
 
-        return (LatexMathObject) getLabel();
+        return this;
     }
 
     @Override
