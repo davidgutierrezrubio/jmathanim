@@ -12,8 +12,9 @@ Vec u=Vec.to(4,5);//Creates a vector with coordinates (4,5)
 double x=v.x;//The x-coordinate of the vector
 double y=v.y;//The x-coordinate of the vector
 double norm=v.norm();//returns the euclidean norm of the vector.
-Vec w=v.mult(2);//Returns a copy of the vector scaled by 2. The vector v is not modified.
-v.multInSite(3);//Multiplies the vector v by 3. The vector v is modified.
+v.scale(3);//Multiplies the vector v by 3. The vector v is modified.
+v.shift(w);//Adds w to v
+Vec vw=v.to(vw);//Returns the vector w-v. The original vectors are unaltered
 double dot=w.dot(v);//Computes the dot product of v and w
 double angle=v.getAngle();//Returns the angle of v, from 0 to 2*PI
 ```
@@ -25,7 +26,7 @@ Everything that you can draw on the screen is a subclass of the `MathObject` cla
 The `Point` class is the most basic `MathObject` and, yes, you’re right, it represents a single point.
 
 ``` java
-Point p = Point.at(1,1); //You can create a point using statict constructors
+Point p = Point.at(1,1); //You can create a point using static constructors
 Point q = Point.origin();//Same as Point.at(0,0)
 ```
 
@@ -34,7 +35,7 @@ A ` Point` object contains a `Vec` object which stores its coordinates.
 ``` java
 Vec v=p.getVec(); //Coordinates of Point p
 double x=p.getVec().x; //x-coordinate of p
-double d=p.getVec().norm(); //Distance of p to the origin
+double d=p.norm(); //Distance of p to the origin
 Vec AB=A.to(B); //Vector from Point A to Point B
 ```
 
