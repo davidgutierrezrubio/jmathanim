@@ -1434,7 +1434,7 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
     @Override
     public void performUpdateBoundingBox(JMathAnimScene scene) {
         if (getJmPathPoints().isEmpty()) {
-            boundingBox = new EmptyRect();
+            boundingBox = EmptyRect.make();
             return;
         }
         double xmin = Double.MAX_VALUE;

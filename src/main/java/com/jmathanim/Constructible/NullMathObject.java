@@ -35,7 +35,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  * @author David Gutierrez Rubio
  */
 public class NullMathObject extends Constructible<NullMathObject> {
-    public static Rect boundingBox = new EmptyRect();
+    public static Rect boundingBox = EmptyRect.make();
     public static NullMathObject instance=new NullMathObject();
 
     private NullMathObject() {

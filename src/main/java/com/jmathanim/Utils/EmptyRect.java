@@ -26,7 +26,12 @@ import com.jmathanim.MathObjects.Coordinates;
  */
 public class EmptyRect extends Rect {
 
-    public EmptyRect() {
+    private static final EmptyRect EMPTY_RECT = new EmptyRect();
+    public static EmptyRect make() {
+        return EMPTY_RECT;
+    }
+
+    private EmptyRect() {
         super(0, 0, 0, 0);
     }
 

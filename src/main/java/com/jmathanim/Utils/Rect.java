@@ -110,7 +110,7 @@ public class Rect implements Boxable {// TODO: Adjust this to 3D coordinates
      * @return The generated Rect
      */
     public static Rect make(List<Boxable> objs) {
-        Rect resul = new EmptyRect();
+        Rect resul = EmptyRect.make();
         for (Boxable obj : objs) {
             resul = Rect.union(resul, obj.getBoundingBox());
         }

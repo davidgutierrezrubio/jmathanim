@@ -390,7 +390,7 @@ public class PlayAnim {
     public void adjustCameraToAllObjects(double runtime) {
         Camera camera = scene.getCamera();
         final Vec gaps = camera.getGaps();
-        Rect r = new EmptyRect();
+        Rect r = EmptyRect.make();
         for (MathObject<?> obj : scene.getMathObjects()) {
             if (obj.getCamera() == camera) {
                 r = Rect.union(r, obj.getBoundingBox());
@@ -414,7 +414,7 @@ public class PlayAnim {
     public void zoomCameraToAllObjects(double runtime) {
         Camera camera = scene.getCamera();
         final Vec gaps = camera.getGaps();
-        Rect r = new EmptyRect();
+        Rect r = EmptyRect.make();
         for (MathObject<?> obj : scene.getMathObjects()) {
             if (obj.getCamera() == camera) {
                 r = Rect.union(r, obj.getBoundingBox());
@@ -438,7 +438,7 @@ public class PlayAnim {
      */
     public void adjustCameraToObjects(double runTime, MathObject<?>... objs) {
         final Vec gaps = scene.getCamera().getGaps();
-        Rect r = new EmptyRect();
+        Rect r = EmptyRect.make();
         r = Rect.union(r, Rect.make(objs));
         r.addGap(gaps.x, gaps.y);
         if (scene.getCamera().getMathView().contains(r)) {

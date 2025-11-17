@@ -8,7 +8,10 @@ import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 //public abstract class
@@ -146,13 +149,13 @@ public abstract class AbstractMultiShapeObject<
 
     @Override
     public Rect computeBoundingBox() {
-        Rect resul = null;
+        Rect resul = EmptyRect.make();
         for (T jmp : shapes) {
             if (!jmp.isEmpty()) {
                 resul = Rect.union(resul, jmp.getBoundingBox());
             }
         }
-        return Objects.requireNonNullElseGet(resul, EmptyRect::new);
+        return resul;
     }
 
     public T get(int n) {

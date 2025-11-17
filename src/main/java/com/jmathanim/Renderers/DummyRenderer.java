@@ -90,7 +90,7 @@ public class DummyRenderer extends Renderer{
 
     @Override
     public Rect createImage(InputStream stream) {
-        return new EmptyRect();
+        return EmptyRect.make();
     }
 
     @Override

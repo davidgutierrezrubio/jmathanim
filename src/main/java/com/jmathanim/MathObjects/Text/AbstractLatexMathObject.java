@@ -265,7 +265,7 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
         }
 
         if (resul == null) {
-            return new EmptyRect();
+            return EmptyRect.make();
         } else {
             return resul;
         }

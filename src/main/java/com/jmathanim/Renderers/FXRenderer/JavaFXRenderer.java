@@ -631,7 +631,7 @@ public class JavaFXRenderer extends Renderer {
             JMathAnimScene.logger.info("Loaded image " + fileName);
 //            } catch (FileNotFoundException e) {
 //                JMathAnimScene.logger.error("File " + LogUtils.CYAN + fileName + LogUtils.RESET + " not found. Returning EmptyRect");
-//                return new EmptyRect();
+//                return EmptyRect.make();
 //            }
         } else {
             image = images.get(fileName);

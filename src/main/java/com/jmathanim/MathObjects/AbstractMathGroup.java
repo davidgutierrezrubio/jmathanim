@@ -313,7 +313,7 @@ public abstract class AbstractMathGroup<T extends AbstractMathGroup<T>>
         if (!needsUpdate()) return boundingBox;
         //If group is empty, returns an empty rect
         if (objects.isEmpty()) {
-            return new EmptyRect();
+            return EmptyRect.make();
         }
 
         boundingBox = objects.get(0).computeBoundingBox();

@@ -43,7 +43,7 @@ public class JMImage extends AbstractJMImage<JMImage> {
         renderer = (JavaFXRenderer) JMathAnimConfig.getConfig().getRenderer();
         this.stream = stream;
         if (stream == null){
-            this.bbox = new EmptyRect();
+            this.bbox = EmptyRect.make();
         }
         else {
             setCached(true);

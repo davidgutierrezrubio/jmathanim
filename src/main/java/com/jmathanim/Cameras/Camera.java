@@ -287,7 +287,7 @@ public class Camera implements Boxable, Dependable {
         if (objs.length == 0) {
             return adjustToAllObjects();
         }
-        Rect r = new EmptyRect();
+        Rect r = EmptyRect.make();
         for (Boxable obj : objs) {
             if (!(r instanceof hasTrivialBoundingBox)) {
                 Rect boundingBox = obj.getBoundingBox();
@@ -351,7 +351,7 @@ public class Camera implements Boxable, Dependable {
         if (objs.length == 0) {
             return zoomToAllObjects();
         }
-        Rect r = new EmptyRect();
+        Rect r = EmptyRect.make();
         for (Boxable obj : objs) {
             if (!(r instanceof hasTrivialBoundingBox))
                 r = Rect.union(r, obj.getBoundingBox());
