@@ -102,4 +102,10 @@ public class RigidBox extends MathObject<RigidBox> {
     public String toString() {
         return "RigidBox[" + mathObjectReference + ']';
     }
+
+    @Override
+    public boolean update(JMathAnimScene scene) {
+        mathObjectCopyToDraw.update(scene);
+        return super.update(scene);
+    }
 }
