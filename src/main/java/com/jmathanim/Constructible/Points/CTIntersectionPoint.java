@@ -180,8 +180,8 @@ public class CTIntersectionPoint extends CTAbstractPoint<CTIntersectionPoint> {
                 double radius = ctcircle1.getCircleRadius().getValue();
                 Vec center = ctcircle1.getCircleCenter().getVec();
 
-                Vec A = ctline1.getP1().copy().add(center.mult(-1)).getVec();
-                Vec B = ctline1.getP2().copy().add(center.mult(-1)).getVec();
+                Vec A = ctline1.getP1().copy().add(center.copy().scale(-1)).getVec();
+                Vec B = ctline1.getP2().copy().add(center.copy().scale(-1)).getVec();
 
                 double dx = A.to(B).x;
                 double dy = A.to(B).y;
@@ -213,7 +213,7 @@ public class CTIntersectionPoint extends CTAbstractPoint<CTIntersectionPoint> {
                     }
                 }
                 this.copyCoordinatesFrom(inter);
-                this.getVec().addInSite(center);
+                this.getVec().shift(center);
                 break;
             case CIRCLE_CIRCLE:
                 final Vec vecCenterCircles = ctcircle1.getCircleCenter().to(ctcircle2.getCircleCenter()).copy();
@@ -245,7 +245,7 @@ public class CTIntersectionPoint extends CTAbstractPoint<CTIntersectionPoint> {
         Vec A = line.getP1().getVec();
         Vec B = line.getP2().getVec();
         Vec vLine = A.to(B);
-        Vec vP = v.minus(A);
+        Vec vP = A.to(v);
                 //Vec.to(x - A.x, y - A.y);
         double lambda;
         if (vLine.x != 0) {

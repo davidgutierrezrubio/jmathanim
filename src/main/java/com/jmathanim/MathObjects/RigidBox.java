@@ -95,7 +95,7 @@ public class RigidBox extends MathObject<RigidBox> {
 
     @Override
     public void performMathObjectUpdateActions(JMathAnimScene scene) {
-
+        mathObjectCopyToDraw.update(scene);
     }
 
     @Override

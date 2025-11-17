@@ -289,25 +289,6 @@ public class JMPathPoint  implements
         return getV();
     }
 
-    @Override
-    public JMPathPoint addInSite(Coordinates<?> coords) {
-        //Add to the 3 components
-        getV().addInSite(coords);
-        getVEnter().addInSite(coords);
-        getVExit().addInSite(coords);
-        changeVersion();
-        return this;
-    }
-
-    @Override
-    public JMPathPoint minusInSite(Coordinates<?> coords) {
-        //Substract from the 3 components
-        getV().minusInSite(coords);
-        getVEnter().minusInSite(coords);
-        getVExit().minusInSite(coords);
-        changeVersion();
-        return this;
-    }
 
     @Override
     public void copyCoordinatesFrom(Coordinates<?> coords) {
@@ -319,33 +300,12 @@ public class JMPathPoint  implements
     }
 
     @Override
-    public JMPathPoint minus(Coordinates<?> v2) {
-        JMPathPoint copy = copy();
-        copy.getV().minusInSite(v2);
-        copy.getVEnter().minusInSite(v2);
-        copy.getVExit().minusInSite(v2);
-        changeVersion();
-        return copy;
-    }
-
-    @Override
     public JMPathPoint add(Coordinates<?> v2) {
         JMPathPoint copy = copy();
         //Substract from the 3 components
-        copy.getV().addInSite(v2);
-        copy.getVEnter().addInSite(v2);
-        copy.getVExit().addInSite(v2);
-        changeVersion();
-        return copy;
-    }
-
-    @Override
-    public JMPathPoint mult(double lambda) {
-        JMPathPoint copy = copy();
-        //Multiply the 3 components
-        copy.getV().multInSite(lambda);
-        copy.getVEnter().multInSite(lambda);
-        copy.getVExit().multInSite(lambda);
+        copy.getV().shift(v2);
+        copy.getVEnter().shift(v2);
+        copy.getVExit().shift(v2);
         changeVersion();
         return copy;
     }

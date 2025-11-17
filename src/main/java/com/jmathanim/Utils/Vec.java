@@ -114,21 +114,10 @@ public class Vec implements Dependable, HasDirection, Coordinates<Vec>, AffineTr
     }
 
 
-    @Override
-    public Vec mult(double lambda) {
-        return this.copy().multInSite(lambda);
-    }
-
-
-    public Vec minus(Coordinates<?> v2) {
-
-        return (Vec) this.copy().minusInSite(v2);
-    }
-
 
     @Override
     public Vec add(Coordinates<?> v2) {
-        return (Vec) this.copy().addInSite(v2);
+        return (Vec) this.copy().shift(v2);
     }
 
     /**
@@ -176,48 +165,6 @@ public class Vec implements Dependable, HasDirection, Coordinates<Vec>, AffineTr
         return Math.atan(this.y / this.x);
     }
 
-    /**
-     * Rotates the vector the specified angle, storing the result in the original vector (2d version)
-     *
-     * @param angle Rotation angle
-     * @return This vector
-     */
-    public Vec rotateInSite(double angle) {
-        double c = Math.cos(angle);
-        double s = Math.sin(angle);
-        double a = this.x;
-        double b = this.y;
-        this.x = c * a - s * b;
-        this.y = s * a + c * b;
-        changeVersion();
-        return this;
-    }
-
-    /**
-     * Rotates the coordinates given by the vector the specified angle around the given center, storing the result in
-     * the original vector (2d version)
-     *
-     * @param center Rotation center
-     * @param angle  Rotation angle
-     * @return This vector
-     */
-    public Vec rotate(Coordinates<?> center, double angle) {
-        Vec vCenter = center.getVec();
-        Vec rotatedVector = Vec.to(x - vCenter.x, y - vCenter.y);
-        rotatedVector.rotateInSite(angle);
-        return rotatedVector.addInSite(vCenter);
-    }
-
-
-    /**
-     * Rotates the vector the specified angle, and returns the result.The original vector is unaltered (2d version).
-     *
-     * @param angle Rotation angle
-     * @return A new vector with the resul
-     */
-    public Vec rotate(double angle) {
-        return this.copy().rotateInSite(angle);
-    }
 
 
     @Override
@@ -230,15 +177,15 @@ public class Vec implements Dependable, HasDirection, Coordinates<Vec>, AffineTr
      * Return the normalized vector, with modulus 1. If the vector is the null vector, does nothing. The original vector
      * is unaltered.
      *
-     * @return The normalized vector if the modulus is positive. The original otherwise.
+     * @return The normalized vector if the modulus is positive. A copy of the original otherwise.
      */
     public Vec normalize() {
         double norm = this.norm();
         changeVersion();
         if (norm > 0) {
-            return this.mult(1d / norm);
+            return this.copy().scale(1d / norm);
         } else {
-            return this;
+            return this.copy();
         }
     }
 

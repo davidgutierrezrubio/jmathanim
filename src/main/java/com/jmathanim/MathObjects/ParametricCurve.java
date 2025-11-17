@@ -247,13 +247,13 @@ public class ParametricCurve extends Shape implements hasScalarParameter {
             if (n < tPoints.size() - 1) {
                 Vec tv = getTangentVector(t, 1);
                 final double delta = .3 * (tPoints.get(n + 1) - t);
-                Vec v = tv.mult(delta);
+                Vec v = tv.copy().scale(delta);
                 jmp.getVExit().copyCoordinatesFrom(jmp.getV().add(v));
             }
             if (n > 0) {
                 Vec tv = getTangentVector(t, -1);
                 final double delta = .3 * (tPoints.get(n - 1) - t);
-                Vec v = tv.mult(delta);
+                Vec v = tv.scale(delta);
                 jmp.getVEnter().copyCoordinatesFrom(jmp.getV().add(v));
             }
 
@@ -330,7 +330,7 @@ public class ParametricCurve extends Shape implements hasScalarParameter {
         double delta = direction * DELTA_DERIVATIVE;
         Vec v1 = getFunctionValue(t + delta);
         Vec v2 = getFunctionValue(t);
-        return v1.minusInSite(v2).multInSite(1 / delta);
+        return v2.to(v1).scale(1 / delta);
     }
 
     @Override

@@ -77,7 +77,7 @@ public class MoveUpdater extends Updater {
         if (v.dot(v) < speedt2) {//If it is "too close"
             return v;
         } else {
-            return v.normalize().multInSite(speedt);
+            return v.normalize().scale(speedt);
         }
     }
 

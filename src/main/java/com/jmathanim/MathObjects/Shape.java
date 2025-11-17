@@ -276,18 +276,18 @@ public class Shape extends AbstractShape<Shape> {
      * @return The created arc
      */
 
-    public static Shape arc(Coordinates startPoint, Coordinates endPoint, double radius, boolean isCounterClockwise) {
+    public static Shape arc(Coordinates<?> startPoint, Coordinates<?> endPoint, double radius, boolean isCounterClockwise) {
         // First, compute arc center
         Vec startVec = startPoint.getVec();
         Vec endVec = endPoint.getVec();
 
-        Vec midpointVector = startVec.to(endVec).mult(0.5);
-        Vec radiusVector = midpointVector.rotate(PI / 2).normalize();
+        Vec midpointVector = startVec.to(endVec).scale(0.5);
+        Vec radiusVector = midpointVector.copy().rotate(PI / 2).normalize();
 
         double squaredDistance = midpointVector.dot(midpointVector);
         double discriminant = Math.max(0, radius * radius - squaredDistance);
         double radiusOffset = Math.sqrt(discriminant);
-        Vec arcCenter = startVec.add(midpointVector).add(radiusVector.mult(radiusOffset));
+        Vec arcCenter = startVec.add(midpointVector).add(radiusVector.copy().scale(radiusOffset));
 
         AffineJTransform transformation = AffineJTransform.createDirect2DIsomorphic(
                 startVec, arcCenter,

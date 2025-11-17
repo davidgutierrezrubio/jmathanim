@@ -81,9 +81,9 @@
 //        Vec centroid = Vec.to(0, 0);
 //        for (int i = 0; i < objects.length; i++) {
 //            Vec v = objects[i].getCenter();
-//            centroid.addInSite(v);
+//            centroid.shift(v);
 //        }
-//        centroid.multInSite(1d / objects.length);
+//        centroid.scale(1d / objects.length);
 //        Vec vcenter = camera.getMathView().getCenter();
 //        camera.shift(centroid.minus(vcenter));
 //        Rect r = camera.getMathView();

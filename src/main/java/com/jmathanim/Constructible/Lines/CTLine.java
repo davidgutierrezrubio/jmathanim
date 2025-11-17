@@ -119,8 +119,8 @@ public class CTLine extends CTAbstractLine<CTLine> {
     @Override
     public Vec getHoldCoordinates(Vec coordinates) {
         Vec v1 = getDirection().normalize();
-        Vec v2 = coordinates.minus(getP1());
-        return getP1().add(v1.mult(v1.dot(v2))).getVec();
+        Vec v2 = getP1().to(coordinates);
+        return getP1().add(v1.copy().scale(v1.dot(v2))).getVec();
     }
 
 

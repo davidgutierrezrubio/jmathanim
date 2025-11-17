@@ -58,7 +58,7 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
     // This factor represents % of height relative to the screen that a "X"
     // character has
     public static final double DEFAULT_SCALE_FACTOR = .05;
-    public final HashMap<Integer, Scalar> variables;
+    private final HashMap<Integer, Scalar> variables;
     protected final AffineJTransform modelMatrix;
     protected AnchorType anchor;
     protected LatexParser latexParser;
@@ -187,43 +187,43 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
         Vec v = Vec.to(0, 0);
         switch (anchor) {
             case CENTER:
-                v = Anchor.getAnchorPoint(this, anchor).mult(-1);
+                v = Anchor.getAnchorPoint(this, anchor).scale(-1);
                 break;
             case UPPER:
-                v = Anchor.getAnchorPoint(this, anchor).mult(-1);
+                v = Anchor.getAnchorPoint(this, anchor).scale(-1);
                 break;
             case LOWER:
-                v = Anchor.getAnchorPoint(this, anchor).mult(-1);
+                v = Anchor.getAnchorPoint(this, anchor).scale(-1);
                 break;
             case LEFT:
-                v = Anchor.getAnchorPoint(this.get(0), anchor).mult(-1);
+                v = Anchor.getAnchorPoint(this.get(0), anchor).scale(-1);
                 break;
             case LEFT_AND_ALIGNED_UPPER:
-                v = Anchor.getAnchorPoint(this.get(0), anchor).mult(-1);
+                v = Anchor.getAnchorPoint(this.get(0), anchor).scale(-1);
                 break;
             case LEFT_AND_ALIGNED_LOWER:
-                v = Anchor.getAnchorPoint(this.get(0), anchor).mult(-1);
+                v = Anchor.getAnchorPoint(this.get(0), anchor).scale(-1);
                 break;
             case LOWER_AND_ALIGNED_LEFT:
-                v = Anchor.getAnchorPoint(this.get(0), anchor).mult(-1);
+                v = Anchor.getAnchorPoint(this.get(0), anchor).scale(-1);
                 break;
             case UPPER_AND_ALIGNED_LEFT:
-                v = Anchor.getAnchorPoint(this.get(0), anchor).mult(-1);
+                v = Anchor.getAnchorPoint(this.get(0), anchor).scale(-1);
                 break;
             case RIGHT:
-                v = Anchor.getAnchorPoint(this.get(-1), anchor).mult(-1);
+                v = Anchor.getAnchorPoint(this.get(-1), anchor).scale(-1);
                 break;
             case RIGHT_AND_ALIGNED_UPPER:
-                v = Anchor.getAnchorPoint(this.get(-1), anchor).mult(-1);
+                v = Anchor.getAnchorPoint(this.get(-1), anchor).scale(-1);
                 break;
             case RIGHT_AND_ALIGNED_LOWER:
-                v = Anchor.getAnchorPoint(this.get(-1), anchor).mult(-1);
+                v = Anchor.getAnchorPoint(this.get(-1), anchor).scale(-1);
                 break;
             case LOWER_AND_ALIGNED_RIGHT:
-                v = Anchor.getAnchorPoint(this.get(-1), anchor).mult(-1);
+                v = Anchor.getAnchorPoint(this.get(-1), anchor).scale(-1);
                 break;
             case UPPER_AND_ALIGNED_RIGHT:
-                v = Anchor.getAnchorPoint(this.get(-1), anchor).mult(-1);
+                v = Anchor.getAnchorPoint(this.get(-1), anchor).scale(-1);
                 break;
 
         }
@@ -545,6 +545,10 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
      */
     public void setArgumentsFormat(String format) {
         df = new DecimalFormat(format);
+    }
+
+    public HashMap<Integer, Scalar> getVariables() {
+        return variables;
     }
 
     /**

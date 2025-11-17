@@ -106,7 +106,7 @@ public class CTCircleArc extends CTAbstractCircle<CTCircleArc> {
     public Vec getHoldCoordinates(Vec coordinates) {
         //TODO: Implement this, for now, act as a simple circle
         logger.warn("Hold coordinates not fully implemented yet for CTCircleArc");
-        Vec v = coordinates.minus(getCircleCenter()).normalize().mult(getCircleRadius().getValue());
+        Vec v = getCircleCenter().to(coordinates).normalize().scale(getCircleRadius().getValue());
         return getCircleCenter().add(v).getVec();
 
     }

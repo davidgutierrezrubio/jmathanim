@@ -73,21 +73,7 @@ public abstract class CTAbstractPoint<T extends CTAbstractPoint<T>> extends Cons
     @Override
     public T add(Coordinates<?> v2) {
         T copy = copy();
-        copy.coordinatesOfPoint.addInSite(v2.getVec());
-        return copy;
-    }
-
-    @Override
-    public T minus(Coordinates<?> v2) {
-        T copy = copy();
-        copy.coordinatesOfPoint.minusInSite(v2.getVec());
-        return copy;
-    }
-
-    @Override
-    public T mult(double lambda) {
-        T copy = copy();
-        copy.coordinatesOfPoint.mult(lambda);
+        copy.coordinatesOfPoint.shift(v2.getVec());
         return copy;
     }
 

@@ -230,19 +230,19 @@ AbstractShape<T extends AbstractShape<T>>
         return jmpath.size();
     }
 
-    /**
-     * Gets the normal vector of the shape, asumming the shape is planar.
-     *
-     * @return The normal vector
-     */
-    public Vec getNormalVector() {
-        if (size() < 3) {
-            return Vec.to(0, 0, 0);
-        }
-        Vec v1 = get(0).getV().minus(get(size() / 3).getV());
-        Vec v2 = get(size() / 2).getV().minus(get(size() / 3).getV());
-        return v1.cross(v2);
-    }
+//    /**
+//     * Gets the normal vector of the shape, asumming the shape is planar.
+//     *
+//     * @return The normal vector
+//     */
+//    public Vec getNormalVector() {
+//        if (size() < 3) {
+//            return Vec.to(0, 0, 0);
+//        }
+//        Vec v1 = get(0).getV().to(get(size() / 3).getV());//This should be reversed when changed from minus() to to()
+//        Vec v2 = get(size() / 2).getV().to(get(size() / 3).getV());
+//        return v1.cross(v2);
+//    }
 
     /**
      * Reverse the points of the path. First point becomes last. The object is altered

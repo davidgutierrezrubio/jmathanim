@@ -333,7 +333,7 @@ public class SVGUtils {
         }
         O2.applyAffineTransform(tr);
         //If radius is too small, upscale it
-        double halfDistanceO1O2 = O2.minus(O1).norm() * .5;
+        double halfDistanceO1O2 = O1.to(O2).norm() * .5;
         if (rad < halfDistanceO1O2) {
             rad = halfDistanceO1O2;
         }

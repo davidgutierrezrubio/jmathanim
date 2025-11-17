@@ -89,7 +89,7 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
             mpVersion=getMp().getVersion();
         }
         if (!previousVecPosition.equals(v)) {
-            dotShape.shift(v.minus(previousVecPosition));//TODO Improve this
+            dotShape.shift(previousVecPosition.to(v));//TODO Improve this
             previousVecPosition.copyCoordinatesFrom(v);
         }
         return dotShape;
@@ -239,7 +239,7 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
      */
     public T add(Vec addVector) {
         T resul = this.copy();
-        resul.v.addInSite(addVector);
+        resul.v.shift(addVector);
         return resul;
     }
 
@@ -293,18 +293,7 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
     @Override
     public T add(Coordinates<?> coords) {
         T copy = copy();
-        return copy.addInSite(coords);
-    }
-
-    @Override
-    public T minus(Coordinates<?> coords) {
-        T copy = copy();
-        return copy.minusInSite(coords);
-    }
-
-    @Override
-    public T mult(double lambda) {
-        return copy().multInSite(lambda);
+        return copy.shift(coords);
     }
 
     @Override

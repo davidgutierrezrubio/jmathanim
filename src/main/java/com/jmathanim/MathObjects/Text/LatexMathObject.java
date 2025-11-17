@@ -100,8 +100,8 @@ public class LatexMathObject extends AbstractLatexMathObject<LatexMathObject> im
         this.origText = copy.origText;
         this.anchor = copy.anchor;
         //copy all variable values
-        for (Map.Entry<Integer, Scalar> pair : copy.variables.entrySet()) {
-            variables.get(pair.getKey()).setValue(pair.getValue().getValue());
+        for (Map.Entry<Integer, Scalar> pair : copy.getVariables().entrySet()) {
+            getVariables().get(pair.getKey()).setValue(pair.getValue().getValue());
         }
 
     }

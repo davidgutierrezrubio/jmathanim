@@ -122,7 +122,7 @@ public class CTCircle extends CTAbstractCircle<CTCircle> {
 
     @Override
     public Vec getHoldCoordinates(Vec coordinates) {
-        Vec v = coordinates.minus(getCircleCenter()).normalize().mult(getCircleRadius().getValue());
+        Vec v = getCircleCenter().to(coordinates).normalize().scale(getCircleRadius().getValue());
         return getCircleCenter().add(v).getVec();
 
     }

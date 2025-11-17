@@ -17,8 +17,7 @@
 package com.jmathanim.Constructible.Others;
 
 import com.jmathanim.Constructible.Constructible;
-import com.jmathanim.Constructible.Points.CTPoint;
-import com.jmathanim.MathObjects.Point;
+import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.MathObjects.Shapes.JMPath;
 import com.jmathanim.MathObjects.Stateable;
@@ -29,13 +28,13 @@ import com.jmathanim.Utils.Vec;
  */
 public class CTAngleMark extends Constructible<CTAngleMark> {
 
-    private final CTPoint center, A, B;
+    private final Coordinates<?> center, A, B;
     private final Shape arcToDraw;
     double radius;
     private boolean isRight;
     private double angle;
 
-    public CTAngleMark(CTPoint center, CTPoint A, CTPoint B) {
+    protected CTAngleMark(Coordinates<?> center, Coordinates<?> A, Coordinates<?> B) {
         this.center = center;
         this.A = A;
         this.B = B;
@@ -53,23 +52,12 @@ public class CTAngleMark extends Constructible<CTAngleMark> {
      * @param endingPoint   Ending point
      * @return The CTAngle created
      */
-    public static CTAngleMark make(CTPoint center, CTPoint startingPoint, CTPoint endingPoint) {
+    public static CTAngleMark make(Coordinates<?> center, Coordinates<?> startingPoint, Coordinates<?> endingPoint) {
         CTAngleMark resul = new CTAngleMark(center, startingPoint, endingPoint);
         resul.rebuildShape();
         return resul;
     }
 
-    /**
-     * Creates a constructible angle mark. The angle is defined by its center and starting and ending points.
-     *
-     * @param center        Center of the angle
-     * @param startingPoint Starting point
-     * @param endingPoint   Ending point
-     * @return The CTAngle created
-     */
-    public static CTAngleMark make(Point center, Point startingPoint, Point endingPoint) {
-        return CTAngleMark.make(CTPoint.at(center), CTPoint.at(startingPoint), CTPoint.at(endingPoint));
-    }
 
     @Override
     public CTAngleMark copy() {
@@ -107,20 +95,20 @@ public class CTAngleMark extends Constructible<CTAngleMark> {
         pa.clear();
 //        pa.addPoint(center.getMathObject().copy());
         pa.addPoint(center);
-        Vec v1 = center.to(A).normalize();
-        Vec v2 = center.to(B).normalize();
+        Vec v1 = center.to(A).normalize().scale(radius);
+        Vec v2 = center.to(B).normalize().scale(radius);
         double dotProduct = v1.dot(v2);
         if ((isRight) || (dotProduct == 0)) {//Right angle
             arc = Shape.polyLine(
-                    center.add(v1.mult(radius)),
-                    center.add(v1.mult(radius)).add(v2.mult(radius)),
-                    (center.add(v2.mult(radius)))
+                    center.add(v1),
+                    center.add(v1).add(v2),
+                    center.add(v2)
             );
         } else {
             angle = Math.acos(dotProduct);
             arc = Shape.arc(angle)
-                    .scale(Point.origin(), radius)
-                    .rotate(Point.origin(), v1.getAngle())
+                    .scale(Vec.origin(), radius)
+                    .rotate(Vec.origin(), v1.getAngle())
                     .shift(center.getVec());
         }
         arcToDraw.merge(arc, true, true);

@@ -111,9 +111,9 @@ public class CTRay extends CTAbstractLine<CTRay> {
     @Override
     public Vec getHoldCoordinates(Vec coordinates) {
         Vec v1 = getDirection().normalize();
-        Vec v2 = coordinates.minus(getP1());
+        Vec v2 = getP1().to(coordinates);
         double dotProd = v1.dot(v2);
         dotProd = Math.max(dotProd, 0);
-        return getP1().add(v1.mult(dotProd)).getVec();
+        return getP1().add(v1.copy().scale(dotProd)).getVec();
     }
 }

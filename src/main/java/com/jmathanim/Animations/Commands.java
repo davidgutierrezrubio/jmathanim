@@ -984,7 +984,7 @@ public class Commands {
             Camera3D camera3d = (Camera3D) camera;
             Vec vecLook = camera3d.look.to(rectToZoom.getCenter());
             Vec vecEye = camera3d.eye.to(rectToZoom.getCenter());
-            vecEye.addInSite(Vec.to(0, 0, camera3d.getProperEyeHeight(rectToZoom)));
+            vecEye.shift(Vec.to(0, 0, camera3d.getProperEyeHeight(rectToZoom)));
             resul = AnimationGroup.make(
                     shift(runtime, vecEye, camera3d.eye),
                     shift(runtime, vecLook, camera3d.look)
@@ -1062,7 +1062,7 @@ public class Commands {
         Animation resul;
         if (cam instanceof Camera3D) {
             Camera3D camera3d = (Camera3D) cam;
-            Vec shiftVector = camera3d.look.to(camera3d.eye).multInSite(scale - 1);
+            Vec shiftVector = camera3d.look.to(camera3d.eye).scale(scale - 1);
             resul = shift(runtime, shiftVector, camera3d.eye);
         } else {
             resul = Commands.cameraZoomToRect(runtime, cam, cam.getMathView().scale(scale, scale));

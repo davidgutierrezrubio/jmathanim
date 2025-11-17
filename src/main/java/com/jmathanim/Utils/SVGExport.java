@@ -102,7 +102,7 @@ public class SVGExport {
             AffineJTransform fixedToMedia = cameraToScreen(scene.getFixedCamera());
             AffineJTransform cameraToMedia = cameraToScreen(scene.getCamera());
             Vec vFixed = anchor.copy().applyAffineTransform(cameraToMedia.compose(fixedToMedia.getInverse()));
-            dotShape.shift(vFixed.minus(anchor));
+            dotShape.shift(anchor.to(vFixed));
             processObjectsToSVG(dotShape);
         }
         if (mathObject instanceof Axes) {

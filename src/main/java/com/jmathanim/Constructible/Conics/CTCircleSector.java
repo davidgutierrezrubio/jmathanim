@@ -130,7 +130,7 @@ public class CTCircleSector extends CTAbstractCircle<CTCircleSector> {
     public Vec getHoldCoordinates(Vec coordinates) {
         //TODO: Implement this, for now, act as a simple circle
         JMathAnimScene.logger.warn("Hold coordinates not implemented yet for CTCircleSector");
-        Vec v = coordinates.minus(getCircleCenter()).normalize().mult(getCircleRadius().getValue());
+        Vec v = getCircleCenter().to(coordinates).normalize().scale(getCircleRadius().getValue());
         return getCircleCenter().add(v).getVec();
 
     }

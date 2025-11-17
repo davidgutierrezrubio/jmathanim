@@ -258,7 +258,7 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
 
 
         double dist = (distanceToShapeRelative ? distanceToShape * tipObjectRigidBox.getHeight() : distanceToShape);
-        pivotPointRefShape.addInSite(normal.multInSite(dist));
+        pivotPointRefShape.shift(normal.scale(dist));
 
 
         Vec shiftVector = pivotPointRefMathObject.to(pivotPointRefShape);

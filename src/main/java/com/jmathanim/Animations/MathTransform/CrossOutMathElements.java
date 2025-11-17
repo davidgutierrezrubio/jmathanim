@@ -214,11 +214,11 @@ public class CrossOutMathElements extends AnimationGroup {
         Vec diag = ur.to(dl);
         Vec normal = Vec.to(-diag.y, diag.x).normalize();
         final double th = diag.norm() * ratio;
-        normal.multInSite(th);
+        normal.scale(th);
         Shape cross = Shape.polygon(
                 ur.add(normal),
                 dl.add(normal),
-                dl.add(normal.multInSite(-1)),
+                dl.add(normal.scale(-1)),
                 ur.add(normal)
         );
 

@@ -594,7 +594,7 @@ public class JavaFXRenderer extends Renderer {
 
     @Override
     public void drawAbsoluteCopy(AbstractShape<?> mobj, Vec anchor) {
-        Vec vFixed = defaultToFixedCamera(anchor).minus(anchor);
+        Vec vFixed = anchor.to(defaultToFixedCamera(anchor));
         JavaFXRenderCommand rc = new JavaFXRenderCommand();
         rc.object = mobj;
         rc.shiftVector_x = vFixed.x;

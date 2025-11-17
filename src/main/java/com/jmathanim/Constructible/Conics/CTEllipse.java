@@ -84,9 +84,9 @@ public class CTEllipse extends Constructible<CTEllipse> {
 
         Vec centerEllipse = focus1.interpolate(focus2, .5);
         Vec centerToRightPoint = centerEllipse.to(focus2.normalize());
-        Vec rightPoint = centerEllipse.add(centerToRightPoint.mult(maxAxis));
+        Vec rightPoint = centerEllipse.add(centerToRightPoint.copy().scale(maxAxis));
         Vec centerToUpperPoint = Vec.to(-centerToRightPoint.y, centerToRightPoint.x);//Rotated 90 degrees
-        Vec upperPoint = centerEllipse.add(centerToUpperPoint.mult(minAxis));
+        Vec upperPoint = centerEllipse.add(centerToUpperPoint.copy().scale(minAxis));
 
         //Now we "reset" the shape to draw to a unit circle and apply a linear transformation
         for (int i = 0; i < ellipseToDraw.size(); i++) {

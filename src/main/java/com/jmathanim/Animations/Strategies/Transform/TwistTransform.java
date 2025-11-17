@@ -357,7 +357,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy<Shape> {
     private void applyPivotalAlign(Vec pivotPoint, double lt) {
         AbstractShape<?> inter = getIntermediateObject();
         // 1. Translate the whole shape to align the pivotal points.
-        inter.shift(vShift.mult(lt));
+        inter.shift(vShift.copy().scale(lt));
 
         // 2. Rotate the whole shape around the pivotal point to align the pivotal segment's angle.
         inter.rotate(pivotPoint, pivotalAngle * lt);
@@ -377,7 +377,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy<Shape> {
         if (numPivotalSegment + 1 < inter.size()) {
             Vec nextPoint = inter.get(numPivotalSegment + 1).getV();
             Vec v = pivotPoint.to(nextPoint);
-            Vec shiftVector = v.mult(pivotalLengthRatio * lt);
+            Vec shiftVector = v.copy().scale(pivotalLengthRatio * lt);
             // Apply shift only to points after the pivotal segment.
             for (int i = numPivotalSegment + 1; i < inter.size(); i++) {
                 inter.get(i).getV().add(shiftVector);
@@ -421,7 +421,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy<Shape> {
             Vec v = currentPivot.getV().to(nextPoint.getV());
             // The shift amount depends on the length ratio and time.
             // This effectively scales the segment (i, i+1).
-            Vec shiftVector = v.mult(ratioLengths[i] * ltd);
+            Vec shiftVector = v.copy().scale(ratioLengths[i] * ltd);
 
             // The rotation angle for the current vertex to match the destiny shape's angle.
             double ang = destinyAngles[i] - originAngles[i];
@@ -471,7 +471,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy<Shape> {
             Vec v = currentPivot.getV().to(prevPoint.getV());
             // The shift amount depends on the length ratio of the previous segment and time.
             // This effectively scales the segment (i-1, i).
-            Vec shiftVector = v.mult(ratioLengths[i - 1] * ltd);
+            Vec shiftVector = v.copy().scale(ratioLengths[i - 1] * ltd);
 
             // The rotation angle for the current vertex.
             double ang = destinyAngles[i] - originAngles[i];

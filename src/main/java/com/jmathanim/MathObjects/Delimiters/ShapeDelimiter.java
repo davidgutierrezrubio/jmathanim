@@ -102,7 +102,7 @@ public class ShapeDelimiter extends Delimiter {
         delimiterShapeToDraw.shift(0, gap * amplitudeScale);
 
 //        labelMarkPoint.stackTo(delimiterShapeToDraw, AnchorType.UPPER, labelMarkGap * amplitudeScale);
-        labelMarkPoint.copyCoordinatesFrom(Anchor.getAnchorPoint(delimiterShapeToDraw, AnchorType.UPPER, labelMarkGap * amplitudeScale));
+        labelMarkPoint.copyCoordinatesFrom(Anchor.getAnchorPoint(delimiterShapeToDraw, AnchorType.UPPER, getLabel().getHeight()*labelMarkGap * amplitudeScale));
 
         if (!(getLabel() instanceof NullMathObject)) {
 

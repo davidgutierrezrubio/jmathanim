@@ -4,7 +4,7 @@ import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.Dependable;
 
-public interface Coordinates<T extends Coordinates<T>> extends Boxable, Dependable {
+public interface Coordinates<T extends Coordinates<T>> extends Boxable, Dependable, AffineTransformable<T> {
 
     Vec getVec();
 
@@ -31,17 +31,10 @@ public interface Coordinates<T extends Coordinates<T>> extends Boxable, Dependab
         changeVersion();
     }
 
-
-    /**
-     * Adds the given vector to this and stores the resul. The original vector is altered and the method returns this
-     * object.
-     *
-     * @param coords The vector to add
-     * @return The Coordinates object
-     */
-    default T addInSite(Coordinates<?> coords) {
+    @Override
+    default T shift(Coordinates<?> shiftVector) {
         Vec v1 = getVec();
-        Vec v2 = coords.getVec();
+        Vec v2 = shiftVector.getVec();
         v1.x += v2.x;
         v1.y += v2.y;
         v1.z += v2.z;
@@ -51,38 +44,72 @@ public interface Coordinates<T extends Coordinates<T>> extends Boxable, Dependab
 
 
     /**
-     * Substracts the given vector to this and stores the resul. The original vector is altered and the method returns
-     * this object.
+     * Rotates the vector the specified angle around the specified center.The vector is altered (2d version).
      *
-     * @param coords The vector to substract
+     * @param center Rotation center
+     * @param angle  Rotation angle
      * @return This vector
      */
-    default T minusInSite(Coordinates<?> coords) {
-        Vec v1 = getVec();
-        Vec v2 = coords.getVec();
-        v1.x -= v2.x;
-        v1.y -= v2.y;
-        v1.z -= v2.z;
+    default T rotate(Coordinates<?> center, double angle) {
+//        Vec vCenter = center.getVec();
+//        Vec rotatedVector = Vec.to(x - vCenter.x, y - vCenter.y);
+//        rotatedVector.rotateInSite(angle);
+//        return rotatedVector.shift(vCenter);
+        Vec v = center.getVec();
+        shift(v.scale(-1));
+        rotate(angle);
+        shift(v);
         changeVersion();
         return (T) this;
     }
+
 
     /**
-     * Multiplies the vector by a scalar and stores the resul. The original vector is altered and the method returns
-     * this object.
+     * Rotates the vector the specified angle.The vector is altered (2d version).
      *
-     * @param lambda The scalar to multiply
+     * @param angle Rotation angle
      * @return This vector
      */
-    default T multInSite(double lambda) {
-        Vec v1 = getVec();
-        v1.x *= lambda;
-        v1.y *= lambda;
-        v1.z *= lambda;
+    default T rotate(double angle) {
+        Vec v = getVec();
+        double c = Math.cos(angle);
+        double s = Math.sin(angle);
+        double a = v.x;
+        double b = v.y;
+        v.x = c * a - s * b;
+        v.y = s * a + c * b;
         changeVersion();
         return (T) this;
     }
 
+
+    @Override
+    default T scale(double s) {
+        Vec v1 = getVec();
+        v1.x *= s;
+        v1.y *= s;
+        v1.z *= s;
+        return (T) this;
+    }
+
+    @Override
+    default T scale(Coordinates<?> scaleCenter, double sx, double sy, double sz) {
+        Vec v1 = getVec();
+        Vec vc = scaleCenter.getVec();
+        v1.x -= vc.x;
+        v1.y -= vc.y;
+        v1.z -= vc.z;
+
+        v1.x *= sx;
+        v1.y *= sy;
+        v1.z *= sz;
+
+        v1.x += vc.x;
+        v1.y += vc.y;
+        v1.z += vc.z;
+        changeVersion();
+        return (T) this;
+    }
 
     /**
      * Add the given coordinates to this and return the result. The original coordinates object is unaltered.
@@ -104,27 +131,22 @@ public interface Coordinates<T extends Coordinates<T>> extends Boxable, Dependab
         return add(Vec.to(x, y));
     }
 
-    /**
-     * Substracts the given vector to this and return the result. The original coordinates object is unaltered.
-     *
-     * @param v2 The coordinates to substract
-     * @return The substraction result
-     */
-    public T minus(Coordinates<?> v2);
 
     /**
-     * Returns a new vector representing this vector scaled by a factor. The current vector is unaltered.
+     * Computes the vector from this coordinates to the given ones. The original object is unaltered.
      *
-     * @param lambda The factor
-     * @return The new vector
+     * @param destiny The destiny coordinates
+     * @return A Vec from this object to the given coordinates
      */
-    public T mult(double lambda);
-
-
-    default Vec to(Coordinates<?> b2) {
-        return Vec.to(b2.getVec().x - this.getVec().x, b2.getVec().y - this.getVec().y, b2.getVec().z - this.getVec().z);
+    default Vec to(Coordinates<?> destiny) {
+        return Vec.to(destiny.getVec().x - this.getVec().x, destiny.getVec().y - this.getVec().y, destiny.getVec().z - this.getVec().z);
     }
 
+    /**
+     * Computes the euclidean norm from the origin to this coordinates.
+     *
+     * @return The norm, a double value.
+     */
     default double norm() {
         Vec v = getVec();
         return Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
@@ -138,7 +160,7 @@ public interface Coordinates<T extends Coordinates<T>> extends Boxable, Dependab
      * @return True if x, y or z is NaN. False otherwise
      */
     default boolean isNaN() {
-        Vec v1=getVec();
+        Vec v1 = getVec();
         return (Double.isNaN(v1.x)) || (Double.isNaN(v1.y)) || Double.isNaN(v1.z);
     }
 }

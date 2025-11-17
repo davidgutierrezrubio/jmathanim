@@ -162,15 +162,15 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
                     Vec rectVecPoint = arArRectPoint.get(i);
                     rectifiedVecPoints.add(rectVecPoint);
                     if (i > 0) {
-                        double distance = rectVecPoint.minus(previous).norm();
+                        double distance = rectVecPoint.to(previous).norm();
                         rectifiedPointDistances.add(distance);
                         computedPathLength += distance;
                     }
                     //check if path is convex
                     if (isConvex) {
 
-                        Vec v1 = previous.minus(prePrevious);
-                        Vec v2 = rectVecPoint.minus(previous);
+                        Vec v1 = prePrevious.to(previous);
+                        Vec v2 = previous.to(rectVecPoint);
                         double z = v1.x * v2.y - v1.y * v2.x;
 
                         if (i == 0) {
@@ -635,8 +635,8 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
         Vec B = getJmPathPoints().get(nmax - 1).getV();
         Vec C = getJmPathPoints().get(nmax + 1).getV();
 
-        Vec AB = B.minus(A);
-        Vec AC = C.minus(A);
+        Vec AB = A.to(B);
+        Vec AC = A.to(C);
         double cross = AB.cross(AC).z;
         int resul = (Math.signum(cross) < 0 ? -1 : 1);
 
@@ -875,11 +875,19 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
     }
 
     private Vec evaluateBezier(Vec P0, Vec P1, Vec P2, Vec P3, double t) {
-        Vec a = P3.add(P2.mult(-3)).add(P1.mult(3)).add(P0.mult(-1));
-        Vec b = P2.mult(3).add(P1.mult(-6)).add(P0.mult(3));
-        Vec c = P1.mult(3).add(P0.mult(-3));
+        Vec a = P3
+                .add(P2.copy().scale(-3))
+                .add(P1.copy().scale(3))
+                .add(P0.copy().scale(-1));
+        Vec b = P2.copy().scale(3)
+                .add(P1.copy().scale(-6))
+                .add(P0.copy().scale(3));
+        Vec c = P1.copy().scale(3)
+                .add(P0.copy().scale(-3));
         Vec d = P0.copy();
-        return d.add(c.mult(t)).add(b.mult(t * t)).add(a.mult(t * t * t));
+        return d.add(c.copy().scale(t))
+                .add(b.copy().scale(t * t))
+                .add(a.copy().scale(t * t * t));
     }
 
     private ArrayList<Vec> getCriticalPoints(JMPathPoint pOrig, JMPathPoint pDst) {
@@ -892,9 +900,9 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
         Vec v;
         // a,b,c are the coefficients of the derivative of the Bezier function
         // f'(t)=at^2+bt+c
-        Vec a = P3.add(P2.mult(-3)).add(P1.mult(3)).add(P0.mult(-1)).mult(3);
-        Vec b = P2.mult(3).add(P1.mult(-6)).add(P0.mult(3)).mult(2);
-        Vec c = P1.mult(3).add(P0.mult(-3));
+        Vec a = P3.add(P2.copy().scale(-3)).add(P1.copy().scale(3)).add(P0.copy().scale(-1)).copy().scale(3);
+        Vec b = P2.copy().scale(3).add(P1.copy().scale(-6)).add(P0.copy().scale(3)).copy().scale(2);
+        Vec c = P1.copy().scale(3).add(P0.copy().scale(-3));
         // We compute the roots for this derivative
         // First, for x
         double[] solsX = quadraticSolutions(a.x, b.x, c.x);
@@ -1240,7 +1248,7 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
     public Vec getSlopeAt(double t, boolean positiveDirection) {
         Vec v1 = getJMPointAt(t).getV();
         Vec v2 = getJMPointAt(positiveDirection ? t + DELTA_DERIVATIVE : t - DELTA_DERIVATIVE).getV();
-        return v2.minus(v1);
+        return v1.to(v2);
     }
 
     public Vec getParametrizedSlopeAt(double t, boolean positiveDirection) {
@@ -1297,13 +1305,13 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
             int num = appropiateSubdivisionNumber(p.getV(), q.getV(), cam);
             for (int n = 1; n < num; n++) {
                 Vec vNext = p.interpolate(q, n * 1d / num).getVec();
-                double d = vPrevious.minus(vNext).norm();
+                double d = vPrevious.to(vNext).norm();
                 addPoint(connectedSegments, vNext, d);
                 vPrevious = vNext;
             }
 
         }
-        double d = vPrevious.minus(q.getV()).norm();
+        double d = vPrevious.to(q.getV()).norm();
         addPoint(connectedSegments, q.getV(), d);
     }
 
@@ -1316,7 +1324,7 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
         if (cam instanceof Camera3D) {
             Camera3D cam3D = (Camera3D) cam;
 
-            double zDepth = v1.interpolate(v2, .5).minus(cam3D.eye.v).norm();
+            double zDepth = v1.interpolate(v2, .5).to(cam3D.eye.v).norm();
             mathviewHeight = cam3D.getMathViewHeight3D(zDepth);
         } else {
             mathviewHeight = cam.getMathView().getHeight();

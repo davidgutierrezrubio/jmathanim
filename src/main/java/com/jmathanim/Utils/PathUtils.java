@@ -93,9 +93,9 @@ public class PathUtils {
 //                double mod31 = Math.sqrt((x3 - x1) * (x3 - x1) + (y3 - y1) * (y3 - y1));//||p1-p3||
 //                double mod42 = Math.sqrt((x4 - x2) * (x4 - x2) + (y4 - y2) * (y4 - y2));//||p2-p4||
 //                double mod23 = Math.sqrt((x3 - x2) * (x3 - x2) + (y3 - y2) * (y3 - y2));//||p2-p3||
-            double mod31 = p1.getV().minus(p3.getV()).norm();
-            double mod42 = p4.getV().minus(p2.getV()).norm();
-            double mod23 = p2.getV().minus(p3.getV()).norm();
+            double mod31 = p3.getV().to(p1.getV()).norm();
+            double mod42 = p4.getV().to(p2.getV()).norm();
+            double mod23 = p2.getV().to(p3.getV()).norm();
             double cx1 = x2 + mod23 / mod31 * (1 - tension) * (x3 - x1);
             double cy1 = y2 + mod23 / mod31 * (1 - tension) * (y3 - y1);
             double cz1 = z2 + mod23 / mod31 * (1 - tension) * (z3 - z1);
@@ -124,13 +124,13 @@ public class PathUtils {
         jp0 = path.getJmPathPoints().get(0);
         if (!jp0.isSegmentToThisPointVisible()) {
             jp1 = path.getJmPathPoints().get(1);
-            v = jp1.getVEnter().minus(jp0.getV()).multInSite(PathUtils.DEFAULT_TENSION);
+            v = jp1.getV().to(jp0.getVEnter()).scale(PathUtils.DEFAULT_TENSION);
             jp0.getVExit().copyCoordinatesFrom(jp0.getV().add(v));
 
             jp1 = path.getJmPathPoints().get(numPoints - 2);
             jp0 = path.getJmPathPoints().get(numPoints - 1);
 //            if (jp0.isCurved) {
-            v = jp1.getVExit().minus(jp0.getV()).multInSite(PathUtils.DEFAULT_TENSION);
+            v = jp1.getV().to(jp0.getVExit()).scale(PathUtils.DEFAULT_TENSION);
             jp0.getVEnter().copyCoordinatesFrom(jp0.getV().add(v));
 //            }
         }
@@ -159,7 +159,7 @@ public class PathUtils {
     public static double pathLength(JMPath path) {
         double resul = 0;
         for (int i = 1; i < path.size(); i++) {
-            resul += path.get(i - 1).getV().minus(path.get(i).getV()).norm();
+            resul += path.get(i - 1).getV().to(path.get(i).getV()).norm();
         }
         return resul;
     }
@@ -237,7 +237,7 @@ public class PathUtils {
         for (int n = 0; n < path.size(); n++) {
             JMPathPoint p1 = jmPathPoints.get(n);
             JMPathPoint p2 = jmPathPoints.get(n + 1);
-            p2.setSegmentToThisPointCurved(!((p1.getV().minus(p1.getVExit()).norm() < .0001) && (p2.getV().minus(p2.getVEnter()).norm() < .0001)));
+            p2.setSegmentToThisPointCurved(!((p1.getV().to(p1.getVExit()).norm() < .0001) && (p2.getV().to(p2.getVEnter()).norm() < .0001)));
         }
     }
 
@@ -298,7 +298,7 @@ public class PathUtils {
         if (cam instanceof Camera3D) {
             Camera3D cam3D = (Camera3D) cam;
 
-            double zDepth = v1.interpolate(v2, .5).minus(cam3D.eye.v).norm();
+            double zDepth = v1.interpolate(v2, .5).to(cam3D.eye.v).norm();
             mathviewHeight = cam3D.getMathViewHeight3D(zDepth);
         } else {
             mathviewHeight = cam.getMathView().getHeight();

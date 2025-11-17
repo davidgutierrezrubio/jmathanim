@@ -118,7 +118,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
                 double newT = allocateToNewTime(a, a + b, t);
                 lt = getTotalLambda().applyAsDouble(newT);
             }
-            obj.shift(v.mult(lt));
+            obj.shift(v.copy().scale(lt));
             if (effects.containsKey(obj)) {
                 AnimationEffect animationEffect = effects.get(obj);
                 animationEffect.applyAnimationEffects(lt, obj);

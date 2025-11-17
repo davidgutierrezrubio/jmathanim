@@ -359,7 +359,7 @@ public class PlayAnim {
      * @param angle   Rotation angle, in radians
      * @param objs    Objects to animate (varargs)
      */
-    public void rotate(double runTime, Point center, double angle, AffineTransformable<?>... objs) {
+    public void rotate(double runTime, Coordinates<?> center, double angle, AffineTransformable<?>... objs) {
         scene.playAnimation(Commands.rotate(runTime, center, angle, objs));
     }
 

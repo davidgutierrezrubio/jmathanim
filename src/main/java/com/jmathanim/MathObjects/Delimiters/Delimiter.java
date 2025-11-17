@@ -346,7 +346,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
      */
     public LatexMathObject addLengthLabelTip(double gap,
                                              String format) {
-        addlabelTip("${#0}$", gap);
+        Delimiter label = addlabelTip("${#0}$", gap);
         LatexMathObject t = (LatexMathObject) getLabel();
         t.setArgumentsFormat(format);
 
