@@ -55,10 +55,23 @@ public interface Coordinates<T extends Coordinates<T>> extends Boxable, Dependab
 //        Vec rotatedVector = Vec.to(x - vCenter.x, y - vCenter.y);
 //        rotatedVector.rotateInSite(angle);
 //        return rotatedVector.shift(vCenter);
-        Vec v = center.getVec();
-        shift(v.scale(-1));
-        rotate(angle);
-        shift(v);
+        Vec v = getVec();
+        Vec vc = center.getVec();
+
+        v.x -= vc.x;
+        v.y -= vc.y;
+        v.z -= vc.z;
+        double c = Math.cos(angle);
+        double s = Math.sin(angle);
+        double a = v.x;
+        double b = v.y;
+        v.x = c * a - s * b;
+        v.y = s * a + c * b;
+
+
+        v.x += vc.x;
+        v.y += vc.y;
+        v.z += vc.z;
         changeVersion();
         return (T) this;
     }

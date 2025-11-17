@@ -34,6 +34,16 @@ public abstract class Delimiter extends Constructible<Delimiter> {
     public final RigidBox delimiterLabelRigidBox;
     protected double amplitudeScale;
     protected TextUpdaterFactory textUpdaterFactory;
+
+    public double getLabelMarkGap() {
+        return labelMarkGap;
+    }
+
+    public void setLabelMarkGap(double labelMarkGap) {
+        this.labelMarkGap = labelMarkGap;
+        changeVersion();
+    }
+
     protected double labelMarkGap;
     protected RotationType rotationType;
     protected double delimiterScale;
@@ -240,7 +250,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
      */
     public <T extends Delimiter> T setRotationType(RotationType rotationType) {
         this.rotationType = rotationType;
-        rebuildShape();
+        changeVersion();
         return (T) this;
     }
 
@@ -293,18 +303,18 @@ public abstract class Delimiter extends Constructible<Delimiter> {
         else
         if (del.delimiterLabel != null) {
             if (del.textUpdaterFactory instanceof LengthUpdaterFactory) {
-                addLengthLabelTip(del.labelMarkGap, del.textUpdaterFactory.getFormat());
+                addLengthLabelTip(del.textUpdaterFactory.getFormat());
             } else if (del.textUpdaterFactory instanceof CountUpdaterFactory) {
 //                addCountLabelTip(del.labelMarkGap,((CountUpdaterFactory)del.textUpdaterFactory).getObjectToCount());
             }
             else
             {
-                addlabelTip(del.getLabel().copy(), del.labelMarkGap);
+                addlabelTip(del.getLabel().copy());
             }
             getLabel().getMp().copyFrom(del.getLabel().getMp());
         }
-        labelMarkGap=del.labelMarkGap;
-        rotationType = del.rotationType;
+        setLabelMarkGap(del.labelMarkGap);
+        setRotationType(del.rotationType);
         minimumWidthToShrink = del.minimumWidthToShrink;
         amplitudeScale = del.amplitudeScale;
         delimiterScale = del.delimiterScale;
@@ -321,12 +331,12 @@ public abstract class Delimiter extends Constructible<Delimiter> {
     protected abstract void buildDelimiterShape();
 
 
-    public Delimiter addlabelTip(String text, double labelGap) {
-        return addlabelTip(LatexMathObject.make(text), labelGap);
+    public Delimiter addlabelTip(String text) {
+        return addlabelTip(LatexMathObject.make(text));
     }
 
-    public <T extends Delimiter> T addlabelTip(MathObject label, double labelGap) {
-        this.labelMarkGap = labelGap;
+    public <T extends Delimiter> T addlabelTip(MathObject<?> label) {
+        this.labelMarkGap = .1;
         this.delimiterLabel = label;
 
         this.delimiterLabelRigidBox.setMathObjectReference(label);
@@ -340,13 +350,12 @@ public abstract class Delimiter extends Constructible<Delimiter> {
      * Adds a label with the length.The points mark the beginning and end of the delimiter.The delimiter lies at the
      * "left" of vector AB.
      *
-     * @param gap    Gap between control delimiter and label
      * @param format Format to print the length, for example "0.00"
      * @return The Label, a LatexMathObject
      */
-    public LatexMathObject addLengthLabelTip(double gap,
+    public LatexMathObject addLengthLabelTip(
                                              String format) {
-        Delimiter label = addlabelTip("${#0}$", gap);
+        Delimiter label = addlabelTip("${#0}$");
         LatexMathObject t = (LatexMathObject) getLabel();
         t.setArgumentsFormat(format);
 
