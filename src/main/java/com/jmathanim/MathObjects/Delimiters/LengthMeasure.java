@@ -56,7 +56,7 @@ public class LengthMeasure extends Delimiter {
         Shape verticalBar = Shape.polyLine(Vec.to(xOffset, -vCenter), Vec.to(0, 0), Vec.to(xOffset, vCenter));
         delimiterShapeToDraw.getPath().addJMPointsFrom(verticalBar.getPath());
 
-        if (getLabel() instanceof NullMathObject) {
+        if (getLabelTip() instanceof NullMathObject) {
 
             final Shape segment = Shape.segment(Vec.to(0, 0), Vec.to(width, 0));
             delimiterShapeToDraw.getPath().addJMPointsFrom(segment.getPath());
@@ -65,9 +65,9 @@ public class LengthMeasure extends Delimiter {
 
 
 //            double realAmplitudeScale = UsefulLambdas.allocateTo(0, minimumWidthToShrink).applyAsDouble(width);
-            double realAmplitudeScale = UsefulLambdas.allocateTo(0, getLabel().getWidth() * 2.5).applyAsDouble(width);
+            double realAmplitudeScale = UsefulLambdas.allocateTo(0, getLabelTip().getWidth() * 2.5).applyAsDouble(width);
             double gapToUse = hgap * realAmplitudeScale;
-            double segmentLength = .5 * (width - getLabel().getWidth()) - gapToUse;
+            double segmentLength = .5 * (width - getLabelTip().getWidth()) - gapToUse;
             delimiterLabelRigidBox.scale(realAmplitudeScale);
 //            delimiterLabelRigidBox.performMathObjectUpdateActions(scene);
 

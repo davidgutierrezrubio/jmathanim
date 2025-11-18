@@ -30,7 +30,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
      * Usually one Shape (delimiter) and optionally a MathObject as Label
      */
     protected final MathObjectGroup groupElementsToBeDrawn;
-    private MathObject<?> delimiterLabel;
+    private MathObject<?> delimiterLabelTip;
     public final RigidBox delimiterLabelRigidBox;
     protected double amplitudeScale;
     protected TextUpdaterFactory textUpdaterFactory;
@@ -80,8 +80,8 @@ public abstract class Delimiter extends Constructible<Delimiter> {
 
         labelMarkPoint = Vec.to(0, 0);
         this.rotationType = RotationType.SMART;
-        this.delimiterLabel = NullMathObject.make();
-        delimiterLabelRigidBox=new RigidBox(this.delimiterLabel);
+        this.delimiterLabelTip = NullMathObject.make();
+        delimiterLabelRigidBox=new RigidBox(this.delimiterLabelTip);
         this.mpDelimiter.add(delimiterLabelRigidBox);
 
 
@@ -206,8 +206,8 @@ public abstract class Delimiter extends Constructible<Delimiter> {
     /*
      * @return The label
      */
-    public MathObject<?>  getLabel() {
-        return delimiterLabel;
+    public MathObject<?> getLabelTip() {
+        return delimiterLabelTip;
     }
 
     @Override
@@ -301,19 +301,19 @@ public abstract class Delimiter extends Constructible<Delimiter> {
 //            delimiterLabelRigidBox.copyStateFrom(del.delimiterLabelRigidBox);
 //        }
 //        else
-        if (del.delimiterLabel != null) {
+        if (del.delimiterLabelTip != null) {
             if (del.textUpdaterFactory instanceof LengthUpdaterFactory) {
                 addLengthLabelTip(del.textUpdaterFactory.getFormat());
-                getLabel().copyStateFrom(del.getLabel());
+                getLabelTip().copyStateFrom(del.getLabelTip());
             } else if (del.textUpdaterFactory instanceof CountUpdaterFactory) {
 //                addCountLabelTip(del.labelMarkGap,((CountUpdaterFactory)del.textUpdaterFactory).getObjectToCount());
             }
             else
             {
-                addlabelTip(del.getLabel().copy());
+                addlabelTip(del.getLabelTip().copy());
             }
 
-            getLabel().getMp().copyFrom(del.getLabel().getMp());
+            getLabelTip().getMp().copyFrom(del.getLabelTip().getMp());
         }
         setLabelMarkGap(del.labelMarkGap);
         setRotationType(del.rotationType);
@@ -339,7 +339,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
 
     public <T extends Delimiter> T addlabelTip(MathObject<?> label) {
         this.labelMarkGap = .1;
-        this.delimiterLabel = label;
+        this.delimiterLabelTip = label;
         this.delimiterLabelRigidBox.setMathObjectReference(label);
         rebuildShape();
         return (T) this;
@@ -355,7 +355,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
     public Delimiter addLengthLabelTip(
                                              String format) {
         Delimiter label = addlabelTip("${#0}$");
-        LatexMathObject t = (LatexMathObject) getLabel();
+        LatexMathObject t = (LatexMathObject) getLabelTip();
         t.setArgumentsFormat(format);
 
         textUpdaterFactory = new LengthUpdaterFactory(scene, t, A, B, format);

@@ -211,7 +211,16 @@ public class JMPathPoint  implements
         changeVersion();
         return this;
     }
-//
+
+    @Override
+    public JMPathPoint rotate(Coordinates<?> center, double angle) {
+        v.rotate(center, angle);
+        vEnter.rotate(center, angle);
+        vExit.rotate(center, angle);
+        return this;
+    }
+
+    //
 //    @Override
 //    public JMPathPoint rotate(Coordinates center, double angle) {
 //        applyAffineTransform(AffineJTransform.create2DRotationTransform(center, angle));

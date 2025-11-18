@@ -580,6 +580,7 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
         for (Integer index : variables.keySet()) {
             newText = newText.replace("{#" + index + "}", df.format(variables.get(index).getValue()));
         }
+
         if (!newText.equals(origText)) {//No need to update if text has not changed
             changeInnerLaTeX(newText);
         }

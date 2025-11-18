@@ -80,7 +80,7 @@ public abstract class Constructible<T extends Constructible<T>> extends MathObje
      *
      * @return The MathObject
      */
-    public abstract MathObject<?> getMathObject();
+    public abstract <T extends MathObject<?>> T getMathObject();
 
     @Override
     public abstract T copy();

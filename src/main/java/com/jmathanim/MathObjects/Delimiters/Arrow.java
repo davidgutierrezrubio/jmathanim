@@ -16,6 +16,7 @@
  */
 package com.jmathanim.MathObjects.Delimiters;
 
+import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Constructible.Conics.CTCircleArc;
 import com.jmathanim.Constructible.Constructible;
@@ -25,11 +26,15 @@ import com.jmathanim.Constructible.Points.CTIntersectionPoint;
 import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.ArrowType;
 import com.jmathanim.Enum.SlopeDirectionType;
-import com.jmathanim.MathObjects.*;
+import com.jmathanim.MathObjects.Coordinates;
+import com.jmathanim.MathObjects.MathObjectGroup;
+import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.MathObjects.Shapes.JMPath;
+import com.jmathanim.MathObjects.Stateable;
 import com.jmathanim.MathObjects.Text.AbstractLatexMathObject;
 import com.jmathanim.MathObjects.Tippable.LabelTip;
 import com.jmathanim.MathObjects.Updaters.Updater;
+import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.ResourceLoader;
@@ -269,8 +274,16 @@ public class Arrow extends Constructible<Arrow> {
     }
 
     @Override
-    public MathObject<?>  getMathObject() {
-        return groupElementsToBeDrawn;
+    public Shape getMathObject() {
+        return shapeToDraw;
+    }
+
+    public Shape getLabelArcUpside() {
+        return labelArcUpside;
+    }
+
+    public Shape getLabelArcDownside() {
+        return labelArcDownside;
     }
 
     private void loadModels() throws Exception {
@@ -448,12 +461,6 @@ public class Arrow extends Constructible<Arrow> {
         labelArcUpside.getPath().applyAffineTransform(tr);
         labelArcDownside.getPath().applyAffineTransform(tr);
 
-        if (labelTip != null) {
-            labelTip.performMathObjectUpdateActions(scene);
-            labelTip.getMathObject().scale(labelTip.pivotPointRefShape, getAmplitudeScale());
-
-        }
-
 
         //Now, rotate to face camera3d..
         if (is3D) {
@@ -556,6 +563,11 @@ public class Arrow extends Constructible<Arrow> {
     @Override
     public void performMathObjectUpdateActions(JMathAnimScene scene) {
         rebuildShape();
+        if (labelTip != null) {
+            labelTip.update(scene);
+            labelTip.getMathObject().scale(labelTip.pivotPointRefShape, getAmplitudeScale());
+
+        }
     }
 
     /**
@@ -765,7 +777,7 @@ public class Arrow extends Constructible<Arrow> {
      */
     public LabelTip addLengthLabelTip(String format, boolean upperSide) {
 
-        LabelTip label = LabelTip.makeLabelTip((upperSide ? labelArcUpside : labelArcDownside), .5, "${#0}$");
+        LabelTip label = LabelTip.makeLabelTip((upperSide ? labelArcUpside : labelArcDownside), .5, "{#0}");
         label.setProperty("upperSide", upperSide);//This will be useful when copying labels
         label.setDistanceToShape(.1);
         label.setDistanceToShapeRelative(true);
@@ -781,21 +793,21 @@ public class Arrow extends Constructible<Arrow> {
 
         AbstractLatexMathObject<?> t = labelTip.getLaTeXObject();
         t.setArgumentsFormat(format);
+//        t.getVariables().get(0).setValue(1);
+//        t.update(JMathAnimConfig.getConfig().getScene());
 
 
-        t.registerUpdater(new Updater() {
-//            @Override
-//            public int computeUpdateLevel() {
-//                return Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1;
-//            }
+        labelTip.registerUpdater(new Updater() {
 
             @Override
             public void update(JMathAnimScene scene) {
-                t.getArg(0).setValue(A.to(B).norm());
+                System.out.println("norm=" + A.to(B).norm());
+                labelTip.getLaTeXObject().getArg(0).setValue(A.to(B).norm());
+                labelTip.getLaTeXObject().update(scene);
 
             }
         });
-        t.performMathObjectUpdateActions(null);
+        t.update(null);
         return label;
     }
 
@@ -828,20 +840,25 @@ public class Arrow extends Constructible<Arrow> {
             @Override
             public void update(JMathAnimScene scene) {
                 Vec vAB = A.to(B);
-                t.getArg(0).setValue(vAB.x);
-                t.getArg(1).setValue(vAB.y);
+                labelTip.getLaTeXObject().getArg(0).setValue(vAB.x);
+                labelTip.getLaTeXObject().getArg(1).setValue(vAB.y);
+                labelTip.getLaTeXObject().update(scene);
             }
         });
-        t.performMathObjectUpdateActions(null);
+        t.update(null);
 
         return label;
 //        return (LaTeXMathObject) arrowLabel.getRefMathObject();
     }
-//
-//    @Override
-//    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
-//        super.draw(scene, r, cam);
-//    }
+
+    //
+    @Override
+    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
+        shapeToDraw.draw(scene, r, cam);
+        if (labelTip != null) {
+            labelTip.draw(scene, r, cam);
+        }
+    }
 
     /**
      * Returns the scale of the amplitude of arrow. A value of 1 draws the arrow from one anchor point to another.

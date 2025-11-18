@@ -102,13 +102,13 @@ public class ShapeDelimiter extends Delimiter {
         delimiterShapeToDraw.shift(0, gap * amplitudeScale);
 
 //        labelMarkPoint.stackTo(delimiterShapeToDraw, AnchorType.UPPER, labelMarkGap * amplitudeScale);
-        labelMarkPoint.copyCoordinatesFrom(Anchor.getAnchorPoint(delimiterShapeToDraw, AnchorType.UPPER, getLabel().getHeight()*labelMarkGap * amplitudeScale));
+        labelMarkPoint.copyCoordinatesFrom(Anchor.getAnchorPoint(delimiterShapeToDraw, AnchorType.UPPER, getLabelTip().getHeight()*labelMarkGap * amplitudeScale));
 
-        if (!(getLabel() instanceof NullMathObject)) {
+        if (!(getLabelTip() instanceof NullMathObject)) {
 
             delimiterLabelRigidBox.resetMatrix();
-            getLabel().update(scene);
-            double labelAmplitudeScale = UsefulLambdas.allocateTo(0, getLabel().getWidth() * 1.5).applyAsDouble(width);
+            getLabelTip().update(scene);
+            double labelAmplitudeScale = UsefulLambdas.allocateTo(0, getLabelTip().getWidth() * 1.5).applyAsDouble(width);
 
 //            double gapToUse = hgap * realAmplitudeScale;
             delimiterLabelRigidBox.scale(labelAmplitudeScale);

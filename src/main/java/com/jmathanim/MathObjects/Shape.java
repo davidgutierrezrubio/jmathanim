@@ -247,7 +247,7 @@ public class Shape extends AbstractShape<Shape> {
         double alphaC = 0;
         JMPathPoint jmp = JMPathPoint.make(1, 0, 1, -cte, 1, cte);
         for (int k = 0; k < numSegments; k++) {
-            path.addJMPoint(jmp.copy().rotate(Point.origin(), k * step));
+            path.addJMPoint(jmp.copy().rotate(Vec.origin(), k * step));
         }
         path.get(0).setSegmentToThisPointVisible(false);
         path.get(0).getVEnter().copyCoordinatesFrom(path.get(0).getV());
