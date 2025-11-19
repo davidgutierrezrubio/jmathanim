@@ -20,11 +20,8 @@ import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.ArrowType;
 import com.jmathanim.Enum.RotationType;
 import com.jmathanim.Enum.SlopeDirectionType;
-import com.jmathanim.MathObjects.AbstractShape;
+import com.jmathanim.MathObjects.*;
 import com.jmathanim.MathObjects.Delimiters.Arrow;
-import com.jmathanim.MathObjects.MathObject;
-import com.jmathanim.MathObjects.Point;
-import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.MathObjects.Shapes.MultiShapeObject;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
@@ -39,14 +36,14 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
  */
 public class TippableObject extends AbstractTippableObject<TippableObject> {
 
-    //    public static AbstractTippableObject makeLabel(Shape shape, String text, Type anchor, double location) {
+    //    public static AbstractTippableObject makeLabel(Shape path, String text, Type anchor, double location) {
 //        LaTeXMathObject tipObject = LaTeXMathObject.makeLengthMeasure(text);
 //        Point anchorPoint = Anchor.getAnchorPoint(tipObject, anchor);
-//        AbstractTippableObject resul = new TippableObject(shape, tipObject, anchorPoint, location);
+//        AbstractTippableObject resul = new TippableObject(path, tipObject, anchorPoint, location);
 //        return resul;
 //    }
-    protected TippableObject(AbstractShape<?> shape, MathObject<?> tipObject, double location) {
-        super(shape, tipObject, location);
+    protected TippableObject(hasPath path, MathObject<?> tipObject, double location) {
+        super(path, tipObject, location);
     }
 
     /**
@@ -109,7 +106,7 @@ public class TippableObject extends AbstractTippableObject<TippableObject> {
 
     @Override
     public TippableObject copy() {
-        TippableObject copy = new TippableObject(shape, tipObjectRigidBox.copy(), locationParameterOnShape);
+        TippableObject copy = new TippableObject(path, tipObjectRigidBox.copy(), locationParameterOnShape);
         copy.copyStateFrom(this);
         return copy;
     }

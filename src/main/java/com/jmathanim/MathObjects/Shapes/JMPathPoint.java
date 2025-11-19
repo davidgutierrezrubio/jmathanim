@@ -361,12 +361,11 @@ public class JMPathPoint  implements
 
     @Override
     public long getVersion() {
+        long verPoints=Math.max(v.getVersion(), Math.max(vEnter.getVersion(), vExit.getVersion()));
+        version = Math.max(version, verPoints);
         return version;
     }
 
-    public void markClean() {
-        lastCleanedDepsVersionSum = Math.max(v.getVersion(), Math.max(vEnter.getVersion(), vExit.getVersion()));
-    }
     @Override
     public void changeVersion() {
         version=++JMathAnimScene.globalVersion;

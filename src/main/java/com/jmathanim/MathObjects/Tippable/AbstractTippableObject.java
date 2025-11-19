@@ -40,7 +40,7 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
     public final Vec pivotPointRefShape;
     public final RigidBox tipObjectRigidBox;
     private final DrawStylePropertiesObjectsArray mpArray;
-    protected final AbstractShape<?> shape;
+    protected final hasPath path;
     public double locationParameterOnShape;
     //    public double rotationAngleAroundPivotPoint;
     public double rotationAngleAroundCenterOfMathObject;
@@ -56,10 +56,10 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
     private Vec anchorPoint;
 
 
-    protected AbstractTippableObject(AbstractShape<?> shape, MathObject<?> tipObject, double location) {
+    protected AbstractTippableObject(hasPath path, MathObject<?> tipObject, double location) {
         correctionAngle = PI / 2;
-        this.shape = shape;
-        addDependency(this.shape);
+        this.path = path;
+        addDependency(this.path.getPath());
 
         this.tipObjectRigidBox = new RigidBox(tipObject);
         this.locationParameterOnShape = location;
@@ -196,7 +196,7 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
 
     @Override
     public void rebuildShape() {
-        if ((isFreeMathObject()) || (shape.isEmpty()) || (alreadyRebuildingShape)) {
+        if ((isFreeMathObject()) || (path.getPath().isEmpty()) || (alreadyRebuildingShape)) {
             return;
         }
         //Reset. There may be a problem with scalars, as copyStateFrom overwrites scalars
@@ -211,9 +211,9 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
 
         Vec tangent;
         if (isParametrized) {
-            tangent = shape.getPath().getParametrizedSlopeAt(locationParameterOnShape, slopeDirectionType == SlopeDirectionType.POSITIVE);
+            tangent = path.getPath().getParametrizedSlopeAt(locationParameterOnShape, slopeDirectionType == SlopeDirectionType.POSITIVE);
         } else {
-            tangent = shape.getPath().getSlopeAt(locationParameterOnShape, slopeDirectionType == SlopeDirectionType.POSITIVE);
+            tangent = path.getPath().getSlopeAt(locationParameterOnShape, slopeDirectionType == SlopeDirectionType.POSITIVE);
         }
 
         Vec normal = Vec.to(-tangent.y, tangent.x).normalize();//Normal vec, rotated 90º counterclockwise
@@ -250,9 +250,9 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
 
 
         if (isParametrized) {
-            markPoint.copyCoordinatesFrom(shape.getParametrizedVecAt(locationParameterOnShape));
+            markPoint.copyCoordinatesFrom(path.getPath().getParametrizedVecAt(locationParameterOnShape));
         } else {
-            markPoint.copyCoordinatesFrom(shape.getVecAt(locationParameterOnShape));
+            markPoint.copyCoordinatesFrom(path.getPath().getJMPointAt(locationParameterOnShape));
         }
 //        Point labelAnchorPointDst=markPoint.copy();
         pivotPointRefShape.copyCoordinatesFrom(markPoint);

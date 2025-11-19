@@ -37,8 +37,8 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
 
     private final AbstractLatexMathObject<?> laTeXMathObject;
 
-    protected LabelTip(AbstractShape<?> shape, AbstractLatexMathObject<?> tipObject, AnchorType anchor, double locationParameter) {
-        super(shape, tipObject, locationParameter);
+    protected LabelTip(hasPath path, AbstractLatexMathObject<?> tipObject, AnchorType anchor, double locationParameter) {
+        super(path, tipObject, locationParameter);
         setAnchor(anchor);
         laTeXMathObject = tipObject;
         correctionAngle = 0;
@@ -46,8 +46,8 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
     }
 
 
-    protected LabelTip(AbstractShape<?> shape, AbstractLatexMathObject<?> tipObject, Coordinates<?> anchorPoint, double locationParameter) {
-        super(shape, tipObject, locationParameter);
+    protected LabelTip(hasPath path, AbstractLatexMathObject<?> tipObject, Coordinates<?> anchorPoint, double locationParameter) {
+        super(path, tipObject, locationParameter);
         setAnchorPoint(anchorPoint);
         laTeXMathObject = tipObject;
         correctionAngle = 0;
@@ -57,17 +57,17 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
     /**
      * Overloaded method. Creates a LaTeX label from a String to the given Shape
      *
-     * @param shape             Shape to add label
+     * @param path             Shape to add label
      * @param locationParameter Location parameter where to put the label, from 0 to 1
      * @param latexText         Text to display. A LaTeX String.
-     * @param upSide            If true, label will be located in the upper side of the shape. In this context, upper
+     * @param upSide            If true, label will be located in the upper side of the path. In this context, upper
      *                          means a 90 degrees counterclockwise deviation from positive tangent. If false, label
      *                          will be located in the opposite side. You should set this to false if you want labels in
      *                          the exterior or counterclockwise shapes like Shape.circle() for example.
      * @return The LabelTip object created
      */
-    public static LabelTip makeLabelTip(AbstractShape<?> shape, double locationParameter, String latexText, boolean upSide) {
-        LabelTip resul = makeLabelTip(shape, locationParameter, LatexMathObject.make(latexText), upSide);
+    public static LabelTip makeLabelTip(hasPath path, double locationParameter, String latexText, boolean upSide) {
+        LabelTip resul = makeLabelTip(path, locationParameter, LatexMathObject.make(latexText), upSide);
         if (!upSide) {
             resul.setSlopeDirection(SlopeDirectionType.NEGATIVE)
                     .setAnchor(AnchorType.LOWER);
@@ -81,13 +81,13 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
      * /** Overloaded method. Creates a LaTeX label from a String to the given Shape. Label is located in the upper side
      * of the Shape (90 degrees counterclockwise deviation from positive tangent)
      *
-     * @param shape             Shape to add label
+     * @param path             Shape to add label
      * @param locationParameter Location parameter where to put the label, from 0 to 1
      * @param latexText         Text to display. A LaTeX String.
      * @return The LabelTip object created
      */
-    public static LabelTip makeLabelTip(AbstractShape<?> shape, double locationParameter, String latexText) {
-        return makeLabelTip(shape, locationParameter, latexText, false);
+    public static LabelTip makeLabelTip(hasPath path, double locationParameter, String latexText) {
+        return makeLabelTip(path, locationParameter, latexText, false);
     }
 
 
@@ -127,18 +127,18 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
      * Attach an AbstractLaTeXMathObject instance to a specific point of a Shape. The LaTeX is attached outside the
      * point to a distance of 1/4 the LaTeX object height.
      *
-     * @param shape             Shape to attach the tip
-     * @param locationParameter Point of the shape to locate the tip. A parameter between 0 and 1. Values outside this
+     * @param path             Shape to attach the tip
+     * @param locationParameter Point of the path to locate the tip. A parameter between 0 and 1. Values outside this
      *                          range are normalized.
      * @param tipLabel          LaTeX object
-     * @param upSide            If true, label will be located in the upper side of the shape. In this context, upper
+     * @param upSide            If true, label will be located in the upper side of the path. In this context, upper
      *                          means a 90 degrees counterclockwise deviation from positive tangent. If false, label
      *                          will be located in the opposite side.
      * @return The tippable object
      */
-    public static LabelTip makeLabelTip(AbstractShape<?> shape, double locationParameter, AbstractLatexMathObject<?> tipLabel, boolean upSide) {
+    public static LabelTip makeLabelTip(hasPath path, double locationParameter, AbstractLatexMathObject<?> tipLabel, boolean upSide) {
 
-        LabelTip resul = new LabelTip(shape, tipLabel, AnchorType.LOWER, locationParameter);
+        LabelTip resul = new LabelTip(path, tipLabel, AnchorType.LOWER, locationParameter);
 //        resul.setDistanceToShape(tipLabel.getHeight() * .25);
         if (!upSide) {
             resul.setSlopeDirection(SlopeDirectionType.NEGATIVE)
@@ -151,7 +151,7 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
 
     @Override
     public LabelTip copy() {
-        LabelTip copy = new LabelTip(shape, laTeXMathObject.copy(), pivotPointRefMathObject.copy(), locationParameterOnShape);
+        LabelTip copy = new LabelTip(path, laTeXMathObject.copy(), pivotPointRefMathObject.copy(), locationParameterOnShape);
         copy.copyStateFrom(this);
         return copy;
     }
