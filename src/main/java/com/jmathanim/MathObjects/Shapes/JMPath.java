@@ -600,7 +600,7 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
 
     @Override
     public Rect getBoundingBox() {
-        update(JMathAnimConfig.getConfig().getScene());
+        update();
         return boundingBox;
     }
 
@@ -1395,9 +1395,9 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
 
 
     @Override
-    public boolean update(JMathAnimScene scene) {
+    public boolean update() {
         if (needsUpdate()) {
-            performUpdateBoundingBox(scene);
+            performUpdateBoundingBox();
             changeVersion();
             markClean();
             return true;
@@ -1435,12 +1435,12 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
     }
 
     @Override
-    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+    public void performMathObjectUpdateActions() {
 
     }
 
     @Override
-    public void performUpdateBoundingBox(JMathAnimScene scene) {
+    public void performUpdateBoundingBox() {
         if (getJmPathPoints().isEmpty()) {
             boundingBox = EmptyRect.make();
             return;
@@ -1477,7 +1477,7 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
     }
 
     @Override
-    protected boolean applyUpdaters(JMathAnimScene scene) {
+    protected boolean applyUpdaters() {
         return false;
     }
 

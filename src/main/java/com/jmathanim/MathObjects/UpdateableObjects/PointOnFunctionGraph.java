@@ -21,7 +21,6 @@ import com.jmathanim.MathObjects.AbstractPoint;
 import com.jmathanim.MathObjects.FunctionGraph;
 import com.jmathanim.MathObjects.Stateable;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  * Updateable point which updates the y-coordinate to be f(x). Shifting this point horizontally moves the point along
@@ -64,7 +63,7 @@ public class PointOnFunctionGraph extends AbstractPoint<PointOnFunctionGraph> {
 
 
     @Override
-    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+    public void performMathObjectUpdateActions() {
         computePoints();
     }
 

@@ -26,7 +26,6 @@ import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.Utils.LatexStyle;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimConfig;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -709,17 +708,17 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
     }
 
     @Override
-    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+    public void performMathObjectUpdateActions() {
 
     }
 
     @Override
-    public void performUpdateBoundingBox(JMathAnimScene scene) {
+    public void performUpdateBoundingBox() {
 
     }
 
     @Override
-    protected boolean applyUpdaters(JMathAnimScene scene) {
+    protected boolean applyUpdaters() {
         return false;
     }
 }

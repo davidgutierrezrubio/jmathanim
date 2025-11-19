@@ -23,7 +23,6 @@ import com.jmathanim.MathObjects.Axes.Axes;
 import com.jmathanim.MathObjects.Axes.TickAxes;
 import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimConfig;
 
 /**
  * Animation to crate axes. This strategy is automatically chosen by the
@@ -41,7 +40,7 @@ public final class AxesCreationAnimation extends AnimationGroup implements Creat
         this.runTime = runTime;
         this.axes = axes;
 //		objectsToRemoveWhenFinished = new ArrayList<>();
-        axes.update(JMathAnimConfig.getConfig().getScene());//In case we need to update elements
+        axes.update();//In case we need to update elements
         add(ShowCreation.make(runTime, axes.getxAxis()));
         add(ShowCreation.make(runTime, axes.getyAxis()));
         for (TickAxes t : axes.getXticks()) {

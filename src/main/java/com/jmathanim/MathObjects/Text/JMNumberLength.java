@@ -19,7 +19,6 @@ package com.jmathanim.MathObjects.Text;
 
 import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  *
@@ -36,11 +35,11 @@ public final class JMNumberLength extends JMNumber {
         this.B = B.getVec();
         addDependency(this.A);
         addDependency(this.B);
-        update(scene);
+        update();
     }
 
     @Override
-    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+    public void performMathObjectUpdateActions() {
         setValue(A.to(B).norm());
     }
 }

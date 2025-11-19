@@ -107,7 +107,7 @@
 //
 //    @Override
 //    public void update(JMathAnimScene scene) {
-//        super.update(scene);
+//        super.update();
 //        createRasterImage();
 //    }
 //

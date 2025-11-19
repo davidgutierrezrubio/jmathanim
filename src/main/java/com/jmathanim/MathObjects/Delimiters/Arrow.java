@@ -561,10 +561,10 @@ public class Arrow extends Constructible<Arrow> {
     }
 
     @Override
-    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+    public void performMathObjectUpdateActions() {
         rebuildShape();
 //        if (labelTip != null) {
-//            labelTip.update(scene);
+//            labelTip.update();
 //            labelTip.getMathObject().scale(labelTip.pivotPointRefShape, getAmplitudeScale());
 //
 //        }
@@ -797,22 +797,22 @@ public class Arrow extends Constructible<Arrow> {
         label.registerUpdater(new Updater() {
 
             @Override
-            public void update(JMathAnimScene scene) {
+            public void update() {
                 label.getLaTeXObject().getArg(0).setValue(A.to(B).norm());
-                label.getLaTeXObject().update(scene);
+                label.getLaTeXObject().update();
 
             }
         });
-        t.update(null);
+        t.update();
         return label;
     }
 
     @Override
-    public boolean update(JMathAnimScene scene) {
-        boolean flag = super.update(scene);
+    public boolean update() {
+        boolean flag = super.update();
         if ((labelTip!=null)) {
             if (flag) labelTip.markDirty();
-            labelTip.update(scene);
+            labelTip.update();
         }
         return flag;
     }
@@ -844,14 +844,14 @@ public class Arrow extends Constructible<Arrow> {
 //            }
 
             @Override
-            public void update(JMathAnimScene scene) {
+            public void update() {
                 Vec vAB = A.to(B);
                 labelTip.getLaTeXObject().getArg(0).setValue(vAB.x);
                 labelTip.getLaTeXObject().getArg(1).setValue(vAB.y);
-                labelTip.getLaTeXObject().update(scene);
+                labelTip.getLaTeXObject().update();
             }
         });
-        t.update(null);
+        t.update();
 
         return label;
 //        return (LaTeXMathObject) arrowLabel.getRefMathObject();

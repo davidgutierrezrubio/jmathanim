@@ -1,7 +1,6 @@
 package com.jmathanim.MathObjects.Updaters;
 
 import com.jmathanim.MathObjects.MathObject;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 public abstract class Updater {
     private MathObject mathObject;
@@ -24,7 +23,7 @@ public abstract class Updater {
     }
 //    public abstract  int computeUpdateLevel();
 
-    public abstract void update(JMathAnimScene scene);
+    public abstract void update();
 
     ;
 

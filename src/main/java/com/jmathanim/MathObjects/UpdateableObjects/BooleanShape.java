@@ -21,7 +21,6 @@ import com.jmathanim.Enum.BooleanOperation;
 import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.MathObjects.Shapes.JMPath;
 import com.jmathanim.MathObjects.Stateable;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
@@ -40,7 +39,7 @@ public class BooleanShape extends Shape {
     }
 
     @Override
-    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+    public void performMathObjectUpdateActions() {
         JMPath newPath = null;
         switch (this.booleanOperation) {
             case UNION:

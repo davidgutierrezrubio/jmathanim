@@ -60,7 +60,7 @@ public abstract class CTAbstractLine<T extends CTAbstractLine<T>> extends Constr
 
     @Override
     public Vec getDirection() {
-        update(scene);
+        update();
         return P1.to(P2);
     }
 

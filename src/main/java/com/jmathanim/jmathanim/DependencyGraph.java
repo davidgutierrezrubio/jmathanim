@@ -120,7 +120,7 @@ public class DependencyGraph {
         for (Dependable dep : topoOrder) {
             if (dep instanceof Updatable) {
                 Updatable dep1 = (Updatable) dep;
-                dep1.update(JMathAnimConfig.getConfig().getScene());
+                dep1.update();
 
             }
         }

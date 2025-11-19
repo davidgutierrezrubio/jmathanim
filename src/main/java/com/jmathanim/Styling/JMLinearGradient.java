@@ -217,17 +217,17 @@ public class JMLinearGradient extends PaintStyle<JMLinearGradient> {
     }
 
     @Override
-    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+    public void performMathObjectUpdateActions() {
 
     }
 
     @Override
-    public void performUpdateBoundingBox(JMathAnimScene scene) {
+    public void performUpdateBoundingBox() {
 
     }
 
     @Override
-    protected boolean applyUpdaters(JMathAnimScene scene) {
+    protected boolean applyUpdaters() {
         return false;
     }
 }

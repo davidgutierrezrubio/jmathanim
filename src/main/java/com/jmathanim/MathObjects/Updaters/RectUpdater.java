@@ -2,6 +2,7 @@ package com.jmathanim.MathObjects.Updaters;
 
 import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
@@ -9,9 +10,11 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  */
 public class RectUpdater extends Updater {
     private final Shape rect;
+    private final JMathAnimScene scene;
+
 
     public RectUpdater() {
-
+        scene= JMathAnimConfig.getConfig().getScene();
         rect = Shape.square().drawColor("gold");//default style
     }
 
@@ -21,7 +24,7 @@ public class RectUpdater extends Updater {
 //    }
 
     @Override
-    public void update(JMathAnimScene scene) {
+    public void update() {
         scene.add(rect);
         if (getMathObject() == null) {
             rect.visible(false);

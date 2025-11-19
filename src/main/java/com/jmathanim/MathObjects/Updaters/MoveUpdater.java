@@ -2,6 +2,7 @@ package com.jmathanim.MathObjects.Updaters;
 
 import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 public class MoveUpdater extends Updater {
@@ -12,8 +13,9 @@ public class MoveUpdater extends Updater {
     private final double speed;
     private boolean speedsNotComputed;
     private final boolean instant;
-
+    private final JMathAnimScene scene;
     public MoveUpdater(Boxable ref, Type moveType, double speed) {
+        scene= JMathAnimConfig.getConfig().getScene();
         this.ref = ref;
         this.speed = speed;
         this.moveType = moveType;
@@ -32,7 +34,7 @@ public class MoveUpdater extends Updater {
 //    }
 
     @Override
-    public void update(JMathAnimScene scene) {
+    public void update() {
         if (!instant && speedsNotComputed) {
             speedt = speed * scene.getDt();
             speedt2 = speedt * speedt;

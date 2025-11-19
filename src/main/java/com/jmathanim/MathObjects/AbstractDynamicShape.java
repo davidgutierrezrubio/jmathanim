@@ -13,7 +13,7 @@ public abstract class AbstractDynamicShape<T extends AbstractDynamicShape<T>> ex
     }
 
     @Override
-    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+    public void performMathObjectUpdateActions() {
         rebuildShape();
     }
 

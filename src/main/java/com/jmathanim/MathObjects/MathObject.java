@@ -193,12 +193,12 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
     public final Rect getBoundingBox() {
 //        return computeBoundingBox().addGap(rightGap, upperGap, leftGap, lowerGap);
         if (needsUpdate() | boundingBox == null) {
-            update(scene);//Updates and recomputes bounding box
+            update();//Updates and recomputes bounding box
         }
         return boundingBox.addGap(rightGap, upperGap, leftGap, lowerGap);
     }
 
-    public void performUpdateBoundingBox(JMathAnimScene scene) {
+    public void performUpdateBoundingBox() {
         boundingBox = computeBoundingBox();
     }
 
@@ -344,10 +344,10 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
     }
 
     @Override
-    protected boolean applyUpdaters(JMathAnimScene scene) {
+    protected boolean applyUpdaters() {
         boolean resultFlag = false;
         for (Updater u : updaters) {
-            u.update(scene);
+            u.update();
             resultFlag = true;//If at least one updater, the object is changed
         }
         return resultFlag;

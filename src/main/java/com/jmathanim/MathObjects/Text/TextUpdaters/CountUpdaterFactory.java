@@ -18,7 +18,7 @@ public class CountUpdaterFactory extends TextUpdaterFactory{
         this.objectToCount=objectToCount;
         this.updater=new Updater() {
             @Override
-            public void update(JMathAnimScene scene) {
+            public void update() {
                 t.getArg(0).setValue(getElementCount(objectToCount));
             }
         };

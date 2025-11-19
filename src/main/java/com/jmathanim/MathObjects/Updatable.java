@@ -1,7 +1,6 @@
 package com.jmathanim.MathObjects;
 
 import com.jmathanim.jmathanim.Dependable;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  * Represents an object whose state can be updated based on its dependencies.
@@ -25,5 +24,5 @@ public interface Updatable {
      * on other objects.
      * @return True if object needed to be updated and some changes were made
      */
-    boolean update(JMathAnimScene scene);
+    boolean update();
 }

@@ -121,7 +121,7 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
 
 
     @Override
-    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+    public void performMathObjectUpdateActions() {
         generateDotShape();
     }
 

@@ -23,7 +23,6 @@ import com.jmathanim.MathObjects.*;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  * Represents an infinite line, given by 2 points.
@@ -153,7 +152,7 @@ public class Line extends AbstractShape<Line> implements HasDirection, shouldUdp
      * @return A vector with the coordinates of the boundary point
      */
     public Vec getBorderPoint1() {
-        update(scene);
+        update();
         return borderPoint1.getVec();
     }
 
@@ -164,7 +163,7 @@ public class Line extends AbstractShape<Line> implements HasDirection, shouldUdp
      * @return A vector with the coordinates of the boundary point
      */
     public Vec getBorderPoint2() {
-        update(scene);
+        update();
         return borderPoint2.getVec();
     }
 
@@ -220,7 +219,7 @@ public class Line extends AbstractShape<Line> implements HasDirection, shouldUdp
 
 
     @Override
-    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+    public void performMathObjectUpdateActions() {
         rebuildShape();
     }
 

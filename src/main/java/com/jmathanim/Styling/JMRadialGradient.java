@@ -20,7 +20,6 @@ package com.jmathanim.Styling;
 import com.jmathanim.Enum.GradientCycleMethod;
 import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 import java.util.Objects;
 import java.util.TreeMap;
@@ -306,17 +305,17 @@ public class JMRadialGradient extends PaintStyle<JMRadialGradient> {
     }
 
     @Override
-    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+    public void performMathObjectUpdateActions() {
 
     }
 
     @Override
-    public void performUpdateBoundingBox(JMathAnimScene scene) {
+    public void performUpdateBoundingBox() {
 
     }
 
     @Override
-    protected boolean applyUpdaters(JMathAnimScene scene) {
+    protected boolean applyUpdaters() {
         return false;
     }
 }

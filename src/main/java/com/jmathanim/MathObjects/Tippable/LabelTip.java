@@ -23,7 +23,6 @@ import com.jmathanim.MathObjects.*;
 import com.jmathanim.MathObjects.Text.AbstractLatexMathObject;
 import com.jmathanim.MathObjects.Text.LatexMathObject;
 import com.jmathanim.MathObjects.Updaters.Updater;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
@@ -112,7 +111,7 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
         }
         t.registerUpdater(new Updater() {
             @Override
-            public void update(JMathAnimScene scene) {
+            public void update() {
                 t.getArg(0).setValue(A.to(B).norm());
             }
         });

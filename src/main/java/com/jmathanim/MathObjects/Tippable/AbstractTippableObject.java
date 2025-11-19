@@ -25,7 +25,6 @@ import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
@@ -204,7 +203,7 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
 //        tipObjectRigidBox.getReferenceMathObject().performMathObjectUpdateActions(scene);//This is needed as text content must be recreated if scalars changed
 //        tipObjectRigidBox.markDirty();
 //        tipObjectRigidBox.getReferenceMathObject().markDirty();
-//        tipObjectRigidBox.update(scene);//This is needed as text content must be recreated if scalars changed
+//        tipObjectRigidBox.update();//This is needed as text content must be recreated if scalars changed
         tipObjectRigidBox.resetMatrix();
         tipObjectRigidBox.rotate(rotationAngleAroundCenterOfMathObject);
 
@@ -294,7 +293,7 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
     }
 
     @Override
-    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+    public void performMathObjectUpdateActions() {
 //        System.out.println("AbstractTippableObject.performMathObjectUpdateActions!!!!!!!");
         rebuildShape();
     }

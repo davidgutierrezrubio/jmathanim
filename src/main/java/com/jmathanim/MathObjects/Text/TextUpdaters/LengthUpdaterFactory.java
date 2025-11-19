@@ -18,7 +18,7 @@ public class LengthUpdaterFactory extends TextUpdaterFactory{
         this.t=t;
         updater= new Updater() {
             @Override
-            public void update(JMathAnimScene scene) {
+            public void update() {
                 double norm = A.to(B).norm();
                 t.getArg(0).setValue(norm);
             }

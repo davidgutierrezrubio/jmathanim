@@ -287,7 +287,7 @@ public class CartesianGrid extends MathObject<CartesianGrid> implements shouldUd
     }
 
     @Override
-    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+    public void performMathObjectUpdateActions() {
 
     }
 

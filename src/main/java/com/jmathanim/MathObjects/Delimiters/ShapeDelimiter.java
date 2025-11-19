@@ -107,7 +107,7 @@ public class ShapeDelimiter extends Delimiter {
         if (!(getLabelTip() instanceof NullMathObject)) {
 
             delimiterLabelRigidBox.resetMatrix();
-            getLabelTip().update(scene);
+            getLabelTip().update();
             double labelAmplitudeScale = UsefulLambdas.allocateTo(0, getLabelTip().getWidth() * 1.5).applyAsDouble(width);
 
 //            double gapToUse = hgap * realAmplitudeScale;

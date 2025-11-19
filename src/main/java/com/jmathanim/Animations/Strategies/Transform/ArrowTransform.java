@@ -63,7 +63,7 @@ public class ArrowTransform extends TransformStrategy<Arrow> {
         if (isShouldInterpolateStyles()) {
             getIntermediateObject().getMp().interpolateFrom(getOriginObject().getMp(), getDestinyObject().getMp(), lt);
         }
-        getIntermediateObject().update(scene);
+        getIntermediateObject().update();
     }
 
     @Override

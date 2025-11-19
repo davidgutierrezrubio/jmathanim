@@ -21,7 +21,6 @@ import com.jmathanim.MathObjects.AbstractShape;
 import com.jmathanim.MathObjects.MathObject;
 import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.MathObjects.Shapes.JMPathPoint;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  * Shape representing the trail drawn by a moving a point
@@ -65,7 +64,7 @@ public class Trail extends AbstractShape<Trail> {
     }
 
     @Override
-    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+    public void performMathObjectUpdateActions() {
         if (draw) {
             JMPathPoint pa = JMPathPoint.lineTo(marker.getCenter());
             pa.setSegmentToThisPointVisible(!cutNext);

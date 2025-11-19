@@ -182,7 +182,7 @@ public class Ray extends AbstractShape<Ray> implements HasDirection {
      * @return A referenced copy of the boundary point
      */
     public Vec getBorderPoint1(JMathAnimScene scene) {
-        update(scene);
+        update();
         return boundaryPoint1.getV();
     }
 
@@ -194,7 +194,7 @@ public class Ray extends AbstractShape<Ray> implements HasDirection {
      * @return A referenced copy of the boundary point
      */
     public Vec getBorderPoint2(JMathAnimScene scene) {
-        update(scene);
+        update();
         return boundaryPoint2.getV();
     }
 
@@ -250,7 +250,7 @@ public class Ray extends AbstractShape<Ray> implements HasDirection {
 
 
     @Override
-    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+    public void performMathObjectUpdateActions() {
         rebuildShape();
     }
 }

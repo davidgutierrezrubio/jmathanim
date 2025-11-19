@@ -320,12 +320,12 @@ AbstractShape<T extends AbstractShape<T>>
     }
 
     @Override
-    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+    public void performMathObjectUpdateActions() {
 
     }
 
     @Override
-    public void performUpdateBoundingBox(JMathAnimScene scene) {
+    public void performUpdateBoundingBox() {
         boundingBox = jmpath.getBoundingBox();
     }
 

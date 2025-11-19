@@ -88,7 +88,7 @@ public class JMImage extends AbstractJMImage<JMImage> {
     }
 
     @Override
-    public void performMathObjectUpdateActions(JMathAnimScene scene) {
+    public void performMathObjectUpdateActions() {
 
     }
 
