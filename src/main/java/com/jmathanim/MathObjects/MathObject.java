@@ -193,6 +193,12 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
     public final Rect getBoundingBox() {
 //        return computeBoundingBox().addGap(rightGap, upperGap, leftGap, lowerGap);
         if (needsUpdate() | boundingBox == null) {
+            markDirty();
+            update();//Updates and recomputes bounding box
+        }
+        if (boundingBox==null) {
+            System.out.println("EEEEY");
+            markDirty();
             update();//Updates and recomputes bounding box
         }
         return boundingBox.addGap(rightGap, upperGap, leftGap, lowerGap);

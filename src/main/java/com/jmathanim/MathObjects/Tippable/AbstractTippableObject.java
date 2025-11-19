@@ -298,5 +298,15 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
         rebuildShape();
     }
 
+    @Override
+    public boolean needsUpdate() {
+        return super.needsUpdate();
+    }
+
+    @Override
+    public boolean update() {
+        return super.update();
+    }
+
     private enum AnchorTypeUsed {ANCHOR, FIXED_POINT}
 }

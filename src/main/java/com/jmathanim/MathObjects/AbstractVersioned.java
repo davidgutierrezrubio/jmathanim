@@ -11,6 +11,11 @@ public abstract class AbstractVersioned implements Dependable, Updatable {
 
     public ArrayList<Dependable> dependencies = new ArrayList<>();
     protected long version = 0;
+
+    public boolean isDirty() {
+        return dirty;
+    }
+
     protected boolean dirty = true;
     protected long lastCleanedDepsVersionSum = -2;
     protected long newLastMaxDependencyVersion = -1;
@@ -45,6 +50,7 @@ public abstract class AbstractVersioned implements Dependable, Updatable {
         updating=true;
         boolean flag = false;
         if (dirty||needsUpdate()) {
+            dirty=true;
             performMathObjectUpdateActions();
             flag = true;
         }

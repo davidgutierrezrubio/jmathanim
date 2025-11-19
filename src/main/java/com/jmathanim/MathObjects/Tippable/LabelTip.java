@@ -73,6 +73,7 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
         }
         resul.correctionAngle=0;
         resul.setRotationType(RotationType.SMART);
+        resul.update();
         return resul;
     }
 
