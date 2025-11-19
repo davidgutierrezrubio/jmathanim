@@ -310,7 +310,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
             }
             else
             {
-                addlabelTip(del.getLabelTip().copy());
+                addLabelTip(del.getLabelTip().copy());
             }
 
             getLabelTip().getMp().copyFrom(del.getLabelTip().getMp());
@@ -333,11 +333,11 @@ public abstract class Delimiter extends Constructible<Delimiter> {
     protected abstract void buildDelimiterShape();
 
 
-    public Delimiter addlabelTip(String text) {
-        return addlabelTip(LatexMathObject.make(text));
+    public Delimiter addLabelTip(String text) {
+        return addLabelTip(LatexMathObject.make(text));
     }
 
-    public <T extends Delimiter> T addlabelTip(MathObject<?> label) {
+    public <T extends Delimiter> T addLabelTip(MathObject<?> label) {
         this.labelMarkGap = .1;
         this.delimiterLabelTip = label;
         this.delimiterLabelRigidBox.setMathObjectReference(label);
@@ -354,7 +354,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
      */
     public Delimiter addLengthLabelTip(
                                              String format) {
-        Delimiter label = addlabelTip("${#0}$");
+        Delimiter label = addLabelTip("${#0}$");
         LatexMathObject t = (LatexMathObject) getLabelTip();
         t.setArgumentsFormat(format);
 
