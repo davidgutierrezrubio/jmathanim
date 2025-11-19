@@ -62,7 +62,6 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
         addDependency(this.shape);
 
         this.tipObjectRigidBox = new RigidBox(tipObject);
-        addDependency(this.tipObjectRigidBox);
         this.locationParameterOnShape = location;
         this.slopeDirectionType = SlopeDirectionType.POSITIVE;
         distanceToShape = .5;
@@ -203,9 +202,9 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
         //Reset. There may be a problem with scalars, as copyStateFrom overwrites scalars
         //TODO: This is not efficient. Both refMathObject and mathobject have to be updated with this code
 //        tipObjectRigidBox.getReferenceMathObject().performMathObjectUpdateActions(scene);//This is needed as text content must be recreated if scalars changed
-        tipObjectRigidBox.markDirty();
-        tipObjectRigidBox.getReferenceMathObject().markDirty();
-        tipObjectRigidBox.update(scene);//This is needed as text content must be recreated if scalars changed
+//        tipObjectRigidBox.markDirty();
+//        tipObjectRigidBox.getReferenceMathObject().markDirty();
+//        tipObjectRigidBox.update(scene);//This is needed as text content must be recreated if scalars changed
         tipObjectRigidBox.resetMatrix();
         tipObjectRigidBox.rotate(rotationAngleAroundCenterOfMathObject);
 
@@ -296,6 +295,7 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
 
     @Override
     public void performMathObjectUpdateActions(JMathAnimScene scene) {
+//        System.out.println("AbstractTippableObject.performMathObjectUpdateActions!!!!!!!");
         rebuildShape();
     }
 

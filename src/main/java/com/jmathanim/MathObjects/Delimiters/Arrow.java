@@ -17,7 +17,6 @@
 package com.jmathanim.MathObjects.Delimiters;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Constructible.Conics.CTCircleArc;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Lines.CTLine;
@@ -341,7 +340,6 @@ public class Arrow extends Constructible<Arrow> {
 
         double rbaseHeight1 = baseHeight1 * headStartMultiplier * rThickness / baseDist1;
         double rbaseHeight2 = baseHeight2 * headEndMultiplier * rThickness / baseDist2;
-        double aa = h1B.getHeight();
 
         Vec medA = h1A.get(0).getVec().interpolate(h1A.get(-1), .5);
 
@@ -350,29 +348,30 @@ public class Arrow extends Constructible<Arrow> {
         Vec medB = p1b.interpolate(p2b, .5);
 
         h1B.shift(medB.to(medA));
-//        scene.add(h1B.copy().layer(3).drawColor("blue"));
-//        h1B.shift(h1B.getPoint(-1).to(h1A.getPoint(0)));//Align points 0 of bot shapes
         double rgapA = gapA * headStartMultiplier * rThickness / baseDist1;
         double rgapB = gapB * headEndMultiplier * rThickness / baseDist2;
         shapeToDraw.getPath().clear();
         double longBody = dist - rbaseHeight1 - rbaseHeight2 - rgapA - rgapB;
-        Vec endPOintBEfore = h1B.getBoundingBox().getLower().add(0, -rgapB);
         h1B.shift(0, -longBody);
         Vec startPoint = h1A.getBoundingBox().getUpper().add(0, rgapA);
         Vec endPoint = h1B.getBoundingBox().getLower().add(0, -rgapB);
 
         if (angle == 0) {
+            h1A.get(0).setSegmentToThisPointVisible(true);
+            h1B.get(0).setSegmentToThisPointVisible(true);
             shapeToDraw.getPath().addJMPointsFrom(h1A.getPath());
-            shapeToDraw.merge(h1B, true, true);
+            shapeToDraw.getPath().addJMPointsFrom(h1B.getPath());
+//            shapeToDraw.merge(h1B, true, true);
 
             labelArcUpside.getPath().clear();
-            labelArcUpside.getPath().addPoint(h1A.get(0).copy());
-            labelArcUpside.getPath().addPoint(h1B.get(-1).copy());
+            labelArcUpside.getPath().addPoint(h1A.get(0));
+            labelArcUpside.getPath().addPoint(h1B.get(-1));
             labelArcUpside.get(0).setSegmentToThisPointVisible(false);
 
             labelArcDownside.getPath().clear();
-            labelArcDownside.getPath().addPoint(h1A.get(-1).copy());
-            labelArcDownside.getPath().addPoint(h1B.get(0).copy());
+            labelArcDownside.getPath().addPoint(h1A.get(-1));
+//            labelArcDownside.getPath().addPoint(B);
+            labelArcDownside.getPath().addPoint(h1B.get(0));//Es este el que falla
             labelArcDownside.get(0).setSegmentToThisPointVisible(false);
 
         } else {
@@ -435,44 +434,44 @@ public class Arrow extends Constructible<Arrow> {
 //        shapeToDraw.getPath().applyAffineTransform(trShift);
 //        shapeToDraw.getPath().applyAffineTransform(trRotate);
 
-        Vec C = null;
-        Vec z1 = null;
+//        Vec C = null;
+//        Vec z1 = null;
         AffineJTransform tr;
-        boolean is3D = scene.getCamera() instanceof Camera3D;
-        if (is3D) {
-            z1 = startPoint.copy().add(Vec.to(0, 0, 1));
-
-            Vec v = Acopy.to(Bcopy);
-            if ((v.x == 0) && (v.y == 0)) {
-                C = Acopy.getVec().copy().add(Vec.to(0, 1, 0));
-            } else {
-                C = Acopy.getVec().copy().add(Vec.to(0, 0, 1));
-            }
-        }
-
-
-        if (is3D) {
-            tr = AffineJTransform.createDirect3DIsomorphic(startPoint, endPoint, z1, Acopy, Bcopy, C, 1);
-        } else {
+//        boolean is3D = scene.getCamera() instanceof Camera3D;
+//        if (is3D) {
+//            z1 = startPoint.copy().add(Vec.to(0, 0, 1));
+//
+//            Vec v = Acopy.to(Bcopy);
+//            if ((v.x == 0) && (v.y == 0)) {
+//                C = Acopy.getVec().copy().add(Vec.to(0, 1, 0));
+//            } else {
+//                C = Acopy.getVec().copy().add(Vec.to(0, 0, 1));
+//            }
+//        }
+//
+//
+//        if (is3D) {
+//            tr = AffineJTransform.createDirect3DIsomorphic(startPoint, endPoint, z1, Acopy, Bcopy, C, 1);
+//        } else {
             tr = AffineJTransform.createDirect2DIsomorphic(startPoint, endPoint, Acopy, Bcopy, 1);
-        }
+//        }
 
         shapeToDraw.getPath().applyAffineTransform(tr);
-        labelArcUpside.getPath().applyAffineTransform(tr);
-        labelArcDownside.getPath().applyAffineTransform(tr);
+//        labelArcUpside.getPath().applyAffineTransform(tr);
+//        labelArcDownside.getPath().applyAffineTransform(tr);
 
 
-        //Now, rotate to face camera3d..
-        if (is3D) {
-            Camera3D cam = (Camera3D) scene.getCamera();
-//            Point C = A.copy().shift(0, 0, 1);
-            Vec v = cam.look.to(cam.eye);
-            Vec C2 = Acopy.copy().add(v);
-            tr = AffineJTransform.createDirect3DIsomorphic(Acopy, Bcopy, C, Acopy, Bcopy, C2, 1);
-//            shapeToDraw.applyAffineTransform(tr);
-            labelArcUpside.applyAffineTransform(tr);
-            labelArcDownside.applyAffineTransform(tr);
-        }
+//        //Now, rotate to face camera3d..
+//        if (is3D) {
+//            Camera3D cam = (Camera3D) scene.getCamera();
+////            Point C = A.copy().shift(0, 0, 1);
+//            Vec v = cam.look.to(cam.eye);
+//            Vec C2 = Acopy.copy().add(v);
+//            tr = AffineJTransform.createDirect3DIsomorphic(Acopy, Bcopy, C, Acopy, Bcopy, C2, 1);
+////            shapeToDraw.applyAffineTransform(tr);
+//            labelArcUpside.applyAffineTransform(tr);
+//            labelArcDownside.applyAffineTransform(tr);
+//        }
     }
 
     @Override
@@ -548,9 +547,10 @@ public class Arrow extends Constructible<Arrow> {
         this.head2.getPath().addJMPointsFrom(copyPath);
 
 
-        copyPath = ar.shapeToDraw.getPath().copy();
-        this.shapeToDraw.getPath().clear();
-        this.shapeToDraw.getPath().addJMPointsFrom(copyPath);
+//        copyPath = ar.shapeToDraw.getPath().copy();
+//        this.shapeToDraw.getPath().clear();
+//        this.shapeToDraw.getPath().addJMPointsFrom(copyPath);
+        this.shapeToDraw.getPath().copyStateFrom(ar.shapeToDraw.getPath());
 
 //            this.getMp().copyFrom(ar.getMp());
         this.shapeToDraw.getMp().copyFrom(ar.shapeToDraw.getMp());
@@ -563,11 +563,11 @@ public class Arrow extends Constructible<Arrow> {
     @Override
     public void performMathObjectUpdateActions(JMathAnimScene scene) {
         rebuildShape();
-        if (labelTip != null) {
-            labelTip.update(scene);
-            labelTip.getMathObject().scale(labelTip.pivotPointRefShape, getAmplitudeScale());
-
-        }
+//        if (labelTip != null) {
+//            labelTip.update(scene);
+//            labelTip.getMathObject().scale(labelTip.pivotPointRefShape, getAmplitudeScale());
+//
+//        }
     }
 
     /**
@@ -788,27 +788,33 @@ public class Arrow extends Constructible<Arrow> {
 
         labelType = labelTypeEnum.DISTANCE;
         this.stringFormat = format;
-        labelTip.addDependency(this.A);
-        labelTip.addDependency(this.B);
+        label.addDependency(this.A);
+        label.addDependency(this.B);
 
-        AbstractLatexMathObject<?> t = labelTip.getLaTeXObject();
+        AbstractLatexMathObject<?> t = label.getLaTeXObject();
         t.setArgumentsFormat(format);
-//        t.getVariables().get(0).setValue(1);
-//        t.update(JMathAnimConfig.getConfig().getScene());
 
-
-        labelTip.registerUpdater(new Updater() {
+        label.registerUpdater(new Updater() {
 
             @Override
             public void update(JMathAnimScene scene) {
-                System.out.println("norm=" + A.to(B).norm());
-                labelTip.getLaTeXObject().getArg(0).setValue(A.to(B).norm());
-                labelTip.getLaTeXObject().update(scene);
+                label.getLaTeXObject().getArg(0).setValue(A.to(B).norm());
+                label.getLaTeXObject().update(scene);
 
             }
         });
         t.update(null);
         return label;
+    }
+
+    @Override
+    public boolean update(JMathAnimScene scene) {
+        boolean flag = super.update(scene);
+        if ((labelTip!=null)) {
+            if (flag) labelTip.markDirty();
+            labelTip.update(scene);
+        }
+        return flag;
     }
 
     /**
@@ -892,14 +898,14 @@ public class Arrow extends Constructible<Arrow> {
         return shapeToDraw;
     }
 
-    @Override
-    public Arrow setFreeMathObject(boolean isMathObjectFree) {
-        super.setFreeMathObject(isMathObjectFree);
-        if (getLabelTip() != null) {
-            getLabelTip().setFreeMathObject(isMathObjectFree);
-        }
-        return this;
-    }
+//    @Override
+//    public Arrow setFreeMathObject(boolean isMathObjectFree) {
+//        super.setFreeMathObject(isMathObjectFree);
+//        if (getLabelTip() != null) {
+//            getLabelTip().setFreeMathObject(isMathObjectFree);
+//        }
+//        return this;
+//    }
 
     private enum labelTypeEnum {NORMAL, DISTANCE, COORDS}
 }

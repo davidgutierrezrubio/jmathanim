@@ -103,7 +103,7 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
      *               opposite side.
      * @return The LabelTip object created
      */
-    public static LabelTip makeLengthLabel(Point A, Point B, String format, boolean upSide) {
+    public static LabelTip makeLengthLabel(Coordinates<?> A, Coordinates<?> B, String format, boolean upSide) {
         LatexMathObject t = LatexMathObject.make("${#0}$");
         LabelTip resul = new LabelTip(Shape.segment(A, B), t, AnchorType.LOWER, .5);
         if (!upSide) {

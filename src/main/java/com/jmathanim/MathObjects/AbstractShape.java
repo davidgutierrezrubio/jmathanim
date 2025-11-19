@@ -271,7 +271,7 @@ AbstractShape<T extends AbstractShape<T>>
      * @return This object
      */
     public T merge(hasPath sh, boolean connectAtoB, boolean connectBtoA) {
-        jmpath.merge(sh.getPath().copy(), connectAtoB, connectBtoA);
+        jmpath.merge(sh.getPath(), connectAtoB, connectBtoA);
         return (T) this;
     }
 
