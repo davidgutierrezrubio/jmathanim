@@ -345,9 +345,14 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
     public T registerUpdater(Updater updater) {
         updater.setMathObject(this);
         updaters.add(updater);
-//        setUpdateLevel(getUpdateLevel());
         return (T) this;
     }
+
+    public T unregisterUpdater(Updater updater) {
+        updaters.remove(updater);
+        return (T) this;
+    }
+
 
     @Override
     protected boolean applyUpdaters() {

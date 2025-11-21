@@ -13,15 +13,15 @@ public class CountUpdaterFactory extends TextUpdaterFactory{
 
     private final Object objectToCount;
 
-    public CountUpdaterFactory(JMathAnimScene scene, LatexMathObject t, Object objectToCount, String format) {
-        super(scene, format);
+    public CountUpdaterFactory(LatexMathObject t, Object objectToCount, String format) {
+        super(format);
         this.objectToCount=objectToCount;
-        this.updater=new Updater() {
+        this.addUpdater(new Updater() {
             @Override
             public void update() {
                 t.getArg(0).setValue(getElementCount(objectToCount));
             }
-        };
+        });
     }
 
     public Object getObjectToCount() {

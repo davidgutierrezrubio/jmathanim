@@ -11,17 +11,17 @@ public class LengthUpdaterFactory extends TextUpdaterFactory{
     private final LatexMathObject t;
 
 
-    public LengthUpdaterFactory(JMathAnimScene scene, LatexMathObject t, Coordinates<?> a, Coordinates<?> b, String format) {
-        super(scene,format);
+    public LengthUpdaterFactory( LatexMathObject t, Coordinates<?> a, Coordinates<?> b, String format) {
+        super(format);
         A = a;
         B = b;
         this.t=t;
-        updater= new Updater() {
+       addUpdater(new Updater() {
             @Override
             public void update() {
                 double norm = A.to(B).norm();
                 t.getArg(0).setValue(norm);
             }
-        };
+        });
     }
 }

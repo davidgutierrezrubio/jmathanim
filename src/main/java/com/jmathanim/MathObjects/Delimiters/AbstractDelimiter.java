@@ -5,11 +5,13 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.MathObjects.Shapes.JMPath;
+import com.jmathanim.MathObjects.Stateable;
 import com.jmathanim.MathObjects.Text.AbstractLatexMathObject;
 import com.jmathanim.MathObjects.Tippable.LabelTip;
 import com.jmathanim.MathObjects.Updaters.Updater;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.DrawStyleProperties;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -19,7 +21,7 @@ public abstract class AbstractDelimiter<T extends AbstractDelimiter<T>> extends 
     protected final JMPath pathForLabelTip;
     protected Vec A;
     protected Vec B;
-    LabelTip labelTip;
+    public LabelTip labelTip;
     double amplitudeScale;
 
     protected AbstractDelimiter(Coordinates<?> a, Coordinates<?> b) {
@@ -29,6 +31,7 @@ public abstract class AbstractDelimiter<T extends AbstractDelimiter<T>> extends 
         addDependency(b);
         delimiterShape = new Shape();
         pathForLabelTip = new JMPath();
+        amplitudeScale=1;
     }
 
     @Override
@@ -82,11 +85,37 @@ public abstract class AbstractDelimiter<T extends AbstractDelimiter<T>> extends 
     }
 
     public LabelTip addLabelTip(String text) {
-        labelTip = LabelTip.makeLabelTip(pathForLabelTip, .15, text, true);
+        labelTip = LabelTip.makeLabelTip(pathForLabelTip, .5, text, true);
         labelTip.setDistanceToShapeRelative(true);
         labelTip.setDistanceToShape(.1);
         rebuildShape();
         return labelTip;
+    }
+
+    @Override
+    public AbstractDelimiter<T> setFreeMathObject(boolean isMathObjectFree) {
+        if (labelTip!=null) labelTip.setFreeMathObject(isMathObjectFree);
+        return super.setFreeMathObject(isMathObjectFree);
+    }
+
+    @Override
+    public AbstractDelimiter<T> applyAffineTransform(AffineJTransform affineJTransform) {
+        if (labelTip!=null) labelTip.applyAffineTransform(affineJTransform);
+        return super.applyAffineTransform(affineJTransform);
+    }
+
+    @Override
+    public void copyStateFrom(Stateable obj) {
+        if (obj instanceof AbstractDelimiter) {
+            AbstractDelimiter abDel = (AbstractDelimiter) obj;
+            super.copyStateFrom(obj);
+            if (labelTip!=null) {
+                labelTip.copyStateFrom(abDel.labelTip);
+            }
+            else
+                labelTip=abDel.labelTip!=null ? abDel.labelTip.copy() : null;
+        }
+
     }
 
     @Override
@@ -102,7 +131,7 @@ public abstract class AbstractDelimiter<T extends AbstractDelimiter<T>> extends 
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r, Camera camera) {
-        delimiterShape.draw(scene, r, camera);
+        getMathObject().draw(scene, r, camera);
         if (labelTip != null) labelTip.draw(scene, r, camera);
     }
 
@@ -115,5 +144,14 @@ public abstract class AbstractDelimiter<T extends AbstractDelimiter<T>> extends 
     @Override
     public Rect computeBoundingBox() {
         return delimiterShape.getBoundingBox();
+    }
+
+
+    public double getAmplitudeScale() {
+        return amplitudeScale;
+    }
+
+    public void setAmplitudeScale(double amplitudeScale) {
+        this.amplitudeScale = amplitudeScale;
     }
 }

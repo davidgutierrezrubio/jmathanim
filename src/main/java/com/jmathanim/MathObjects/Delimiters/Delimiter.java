@@ -358,8 +358,8 @@ public abstract class Delimiter extends Constructible<Delimiter> {
         LatexMathObject t = (LatexMathObject) getLabelTip();
         t.setArgumentsFormat(format);
 
-        textUpdaterFactory = new LengthUpdaterFactory(scene, t, A, B, format);
-        t.registerUpdater(textUpdaterFactory.getUpdater());
+        textUpdaterFactory = new LengthUpdaterFactory( t, A, B, format);
+        textUpdaterFactory.registerUpdaters(t);
         JMathAnimScene scene = JMathAnimConfig.getConfig().getScene();
         t.update();
         rebuildShape();
