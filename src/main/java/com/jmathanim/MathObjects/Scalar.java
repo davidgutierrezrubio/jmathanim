@@ -97,6 +97,12 @@ public class Scalar extends Constructible<Scalar> implements hasScalarParameter{
     @Override
     public void setValue(double scalar) {
         value=scalar;
+        changeVersion();
+    }
+
+    @Override
+    public void changeVersion() {
+        super.changeVersion();
     }
 
     @Override

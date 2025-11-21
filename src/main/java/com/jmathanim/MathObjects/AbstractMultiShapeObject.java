@@ -371,9 +371,11 @@ public abstract class AbstractMultiShapeObject<
     @Override
     public boolean needsUpdate() {
         ArrayList<Dependable> deps = new ArrayList<>(getShapes());
-        newLastMaxDependencyVersion = DependableUtils.maxVersion(deps);
-        if (dirty) return true;
-        return newLastMaxDependencyVersion != lastCleanedDepsVersionSum;
+//        newLastMaxDependencyVersion = DependableUtils.maxVersion(deps);
+        newLastMaxDependencyVersion = lastCleanedDepsVersionSum;
+//        if (dirty) return true;
+//        return newLastMaxDependencyVersion != lastCleanedDepsVersionSum;
+        return dirty;
     }
 
     public abstract S makeNewEmptyInstance();

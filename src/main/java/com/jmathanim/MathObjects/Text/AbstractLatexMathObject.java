@@ -24,6 +24,7 @@ import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.*;
+import com.jmathanim.jmathanim.Dependable;
 import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.jmathanim.LogUtils;
@@ -43,6 +44,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -57,7 +59,7 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
     // Default scale for latex objects (relative to screen height)
     // This factor represents % of height relative to the screen that a "X"
     // character has
-    public static final double DEFAULT_SCALE_FACTOR = .05;
+    public static final double DEFAULT_SCALE_FACTOR =.05;
     protected final AffineJTransform modelMatrix;
     private final HashMap<Integer, Scalar> variables;
     protected AnchorType anchor;
@@ -82,7 +84,9 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
         df = new DecimalFormat("0.00");
         df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.UK));
         for (int n = 0; n < 9; n++) {
-            variables.put(n, Scalar.make(0));
+            Scalar scalar = Scalar.make(0);
+            variables.put(n, scalar);
+            addDependency(scalar);
         }
     }
 
@@ -183,55 +187,57 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
         if ((mode == CompileMode.JLaTexMath) || (mode == CompileMode.RawJLaTexMath)) {
             sc *= 0.24906237699889464;
         }
-        boolean updatingBackup=updating;
-        updating=true;
         boundingBox = computeBoundingBox();
-        this.scale(sc, sc, 1);
-        Vec v = Vec.to(0, 0);
-        switch (anchor) {
-            case CENTER:
-                v = Anchor.getAnchorPoint(this, anchor).scale(-1);
-                break;
-            case UPPER:
-                v = Anchor.getAnchorPoint(this, anchor).scale(-1);
-                break;
-            case LOWER:
-                v = Anchor.getAnchorPoint(this, anchor).scale(-1);
-                break;
-            case LEFT:
-                v = Anchor.getAnchorPoint(this.get(0), anchor).scale(-1);
-                break;
-            case LEFT_AND_ALIGNED_UPPER:
-                v = Anchor.getAnchorPoint(this.get(0), anchor).scale(-1);
-                break;
-            case LEFT_AND_ALIGNED_LOWER:
-                v = Anchor.getAnchorPoint(this.get(0), anchor).scale(-1);
-                break;
-            case LOWER_AND_ALIGNED_LEFT:
-                v = Anchor.getAnchorPoint(this.get(0), anchor).scale(-1);
-                break;
-            case UPPER_AND_ALIGNED_LEFT:
-                v = Anchor.getAnchorPoint(this.get(0), anchor).scale(-1);
-                break;
-            case RIGHT:
-                v = Anchor.getAnchorPoint(this.get(-1), anchor).scale(-1);
-                break;
-            case RIGHT_AND_ALIGNED_UPPER:
-                v = Anchor.getAnchorPoint(this.get(-1), anchor).scale(-1);
-                break;
-            case RIGHT_AND_ALIGNED_LOWER:
-                v = Anchor.getAnchorPoint(this.get(-1), anchor).scale(-1);
-                break;
-            case LOWER_AND_ALIGNED_RIGHT:
-                v = Anchor.getAnchorPoint(this.get(-1), anchor).scale(-1);
-                break;
-            case UPPER_AND_ALIGNED_RIGHT:
-                v = Anchor.getAnchorPoint(this.get(-1), anchor).scale(-1);
-                break;
-
+        Vec center=boundingBox.getCenter();
+        for (LatexShape sh : this) {
+            sh.scale(center,sc, sc, 1);
         }
+//        this.scale(sc, sc, 1);
+//        Vec v = Vec.to(0, 0);
+//        switch (anchor) {
+//            case CENTER:
+//                v = Anchor.getAnchorPoint(boundingBox, anchor).scale(-1);
+//                break;
+//            case UPPER:
+//                v = Anchor.getAnchorPoint(boundingBox, anchor).scale(-1);
+//                break;
+//            case LOWER:
+//                v = Anchor.getAnchorPoint(boundingBox, anchor).scale(-1);
+//                break;
+//            case LEFT:
+//                v = Anchor.getAnchorPoint(this.get(0), anchor).scale(-1);
+//                break;
+//            case LEFT_AND_ALIGNED_UPPER:
+//                v = Anchor.getAnchorPoint(this.get(0), anchor).scale(-1);
+//                break;
+//            case LEFT_AND_ALIGNED_LOWER:
+//                v = Anchor.getAnchorPoint(this.get(0), anchor).scale(-1);
+//                break;
+//            case LOWER_AND_ALIGNED_LEFT:
+//                v = Anchor.getAnchorPoint(this.get(0), anchor).scale(-1);
+//                break;
+//            case UPPER_AND_ALIGNED_LEFT:
+//                v = Anchor.getAnchorPoint(this.get(0), anchor).scale(-1);
+//                break;
+//            case RIGHT:
+//                v = Anchor.getAnchorPoint(this.get(-1), anchor).scale(-1);
+//                break;
+//            case RIGHT_AND_ALIGNED_UPPER:
+//                v = Anchor.getAnchorPoint(this.get(-1), anchor).scale(-1);
+//                break;
+//            case RIGHT_AND_ALIGNED_LOWER:
+//                v = Anchor.getAnchorPoint(this.get(-1), anchor).scale(-1);
+//                break;
+//            case LOWER_AND_ALIGNED_RIGHT:
+//                v = Anchor.getAnchorPoint(this.get(-1), anchor).scale(-1);
+//                break;
+//            case UPPER_AND_ALIGNED_RIGHT:
+//                v = Anchor.getAnchorPoint(this.get(-1), anchor).scale(-1);
+//                break;
+//
+//        }
         //this.stackTo(anchor,Point.origin(), Type.CENTER,0);
-
+        Vec v = Anchor.getAnchorPoint(boundingBox, anchor).scale(-1);
         shift(v);
 
         modelMatrix.copyFrom(modelMatrixBackup);
@@ -239,7 +245,9 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
 //            sh.getMp().copyFrom(mpMultiShape);
             sh.applyAffineTransform(modelMatrix);
         }
-        updating=updatingBackup;
+        ArrayList<Dependable> deps = new ArrayList<>(getShapes());
+//        newLastMaxDependencyVersion = DependableUtils.maxVersion(deps);
+        lastCleanedDepsVersionSum=DependableUtils.maxVersion(deps);
     }
 
     private void addShapesFrom(MultiShapeObject latexdefault) {
@@ -550,6 +558,7 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
      */
     public void setArgumentsFormat(String format) {
         df = new DecimalFormat(format);
+        markDirty();
     }
 
     public HashMap<Integer, Scalar> getVariables() {
@@ -557,6 +566,7 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
     }
 
     public void performMathObjectUpdateActions() {
+        System.out.println("performMathObjectUpdateActions "+this);
         if (origText == null) {
             origText = getText();
         }
@@ -578,7 +588,7 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
     @Override
     public void markClean() {
         super.markClean();
-        lastCleanedDepsVersionSum = DependableUtils.maxVersion(getDependencies());
+//        lastCleanedDepsVersionSum = DependableUtils.maxVersion(getDependencies());
     }
 
 
@@ -601,5 +611,14 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
          * used for compatibiliy reasons and in the rare cases JLaTeXMath cannot compile the LaTeX string.
          */
         CompileFile
+    }
+
+    @Override
+    public boolean needsUpdate() {
+        System.out.println("scalar version:"+getArg(0).getVersion());
+        System.out.println("mp version:"+getMp().getVersion());
+        newLastMaxDependencyVersion = DependableUtils.maxVersion(getDependencies());
+        if (dirty) return true;
+        return newLastMaxDependencyVersion != lastCleanedDepsVersionSum;
     }
 }

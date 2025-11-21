@@ -58,8 +58,8 @@ public abstract class AbstractVersioned implements Dependable, Updatable {
         }
         flag = flag | applyUpdaters(false);
         if (flag) {
+            changeVersion();
             performUpdateBoundingBox();
-            changeVersionAndMarkDirty();
             markClean();
         }
         updating=false;

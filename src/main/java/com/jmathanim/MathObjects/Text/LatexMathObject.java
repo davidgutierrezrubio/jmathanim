@@ -80,6 +80,7 @@ public class LatexMathObject extends AbstractLatexMathObject<LatexMathObject> im
         if (!"".equals(text)) {
             resul.setLaTeX(text);
         }
+        resul.update();
         return resul;
     }
 

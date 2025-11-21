@@ -191,7 +191,6 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
      */
     @Override
     public final Rect getBoundingBox() {
-//        return computeBoundingBox().addGap(rightGap, upperGap, leftGap, lowerGap);
             update();//Updates and recomputes bounding box
         if (boundingBox==null) {
            boundingBox=computeBoundingBox();
@@ -667,20 +666,23 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
 
     @Override
     public T shift(Coordinates<?> shiftVector) {
+        AffineTransformable.super.shift(shiftVector);
         changeVersionAndMarkDirty();
-        return AffineTransformable.super.shift(shiftVector);
+        return (T) this;
     }
 
     @Override
     public T shift(double x, double y) {
+        AffineTransformable.super.shift(x, y);
         changeVersionAndMarkDirty();
-        return AffineTransformable.super.shift(x, y);
+        return (T) this;
     }
 
     @Override
     public T shift(double x, double y, double z) {
+        AffineTransformable.super.shift(x, y, z);
         changeVersionAndMarkDirty();
-        return AffineTransformable.super.shift(x, y, z);
+        return (T) this;
     }
 
     @Override
@@ -691,20 +693,23 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
 
     @Override
     public T scale(double s) {
+        AffineTransformable.super.scale(s);
         changeVersionAndMarkDirty();
-        return AffineTransformable.super.scale(s);
+        return (T) this;
     }
 
     @Override
     public T scale(Coordinates<?> scaleCenter, double scale) {
+        AffineTransformable.super.scale(scaleCenter, scale);
         changeVersionAndMarkDirty();
-        return AffineTransformable.super.scale(scaleCenter, scale);
+        return (T) this;
     }
 
     @Override
     public T scale(Coordinates<?> scaleCenter, double sx, double sy) {
+        AffineTransformable.super.scale(scaleCenter, sx, sy);
         changeVersionAndMarkDirty();
-        return AffineTransformable.super.scale(scaleCenter, sx, sy);
+        return (T) this;
     }
 
     @Override
@@ -714,55 +719,64 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
 
     @Override
     public T scale(Coordinates<?> scaleCenter, double sx, double sy, double sz) {
+        AffineTransformable.super.scale(scaleCenter, sx, sy, sz);
         changeVersionAndMarkDirty();
-        return AffineTransformable.super.scale(scaleCenter, sx, sy, sz);
+        return (T) this;
     }
 
     @Override
     public T rotate(double angle) {
+        AffineTransformable.super.rotate(angle);
         changeVersionAndMarkDirty();
-        return AffineTransformable.super.rotate(angle);
+        return (T) this;
     }
 
     @Override
     public T rotate(Coordinates<?> center, double angle) {
+        AffineTransformable.super.rotate(center, angle);
         changeVersionAndMarkDirty();
-        return AffineTransformable.super.rotate(center, angle);
+        return (T) this;
     }
 
     @Override
     public T rotate3d(double anglex, double angley, double anglez) {
+        AffineTransformable.super.rotate3d(anglex, angley, anglez);
         changeVersionAndMarkDirty();
-        return AffineTransformable.super.rotate3d(anglex, angley, anglez);
+        return (T) this;
     }
 
     @Override
     public T rotate3d(Coordinates<?> center, double anglex, double angley, double anglez) {
+        AffineTransformable.super.rotate3d(center, anglex, angley, anglez);
         changeVersionAndMarkDirty();
-        return AffineTransformable.super.rotate3d(center, anglex, angley, anglez);
+        return (T) this;
     }
 
     @Override
     public T moveTo(Coordinates<?> p) {
+        AffineTransformable.super.moveTo(p);
         changeVersionAndMarkDirty();
-        return AffineTransformable.super.moveTo(p);
+        return (T) this;
     }
 
     @Override
     public T moveTo(double x, double y) {
+        AffineTransformable.super.moveTo(x, y);
         changeVersionAndMarkDirty();
-        return AffineTransformable.super.moveTo(x, y);
+        return (T) this;
     }
 
     @Override
     public T smash(Boxable containerBox, double horizontalGap, double verticalGap) {
+        AffineTransformable.super.smash(containerBox, horizontalGap, verticalGap);
         changeVersionAndMarkDirty();
-        return AffineTransformable.super.smash(containerBox, horizontalGap, verticalGap);
+        return (T) this;
     }
 
     @Override
     public T smash(Boxable containerBox) {
+         AffineTransformable.super.smash(containerBox);
         changeVersionAndMarkDirty();
-        return AffineTransformable.super.smash(containerBox);
+        return (T) this;
     }
 }

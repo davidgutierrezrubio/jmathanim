@@ -31,7 +31,8 @@ public interface Boxable {
 	 * @return Vec object with center
 	 */
 	default Vec getCenter() {
-		return this.getBoundingBox().getCenter();
+        Rect boundingBox = this.getBoundingBox();
+        return boundingBox.getCenter();
 	}
 
 	boolean isEmpty();
