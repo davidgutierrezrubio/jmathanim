@@ -164,7 +164,7 @@ public class Camera implements Boxable, Dependable {
         this.ymax = ycenter + .5 * (xmax - xmin) / ratioScreen;
         this.ymin = ycenter - .5 * (xmax - xmin) / ratioScreen;
         updateDependentObjectsFromThisCamera();
-        changeVersion();
+        changeVersionAndMarkDirty();
         return this;
     }
 
@@ -493,7 +493,7 @@ public class Camera implements Boxable, Dependable {
     }
 
     @Override
-    public void changeVersion() {
+    public void changeVersionAndMarkDirty() {
         version=++JMathAnimScene.globalVersion;
     }
 

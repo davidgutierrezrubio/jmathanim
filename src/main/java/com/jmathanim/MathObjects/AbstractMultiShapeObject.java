@@ -6,6 +6,7 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.*;
+import com.jmathanim.jmathanim.Dependable;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public abstract class AbstractMultiShapeObject<
 
     public boolean add(T element) {
         mpMultiShape.add(element);
-        addDependency(element);
+//        addDependency(element);
         return shapes.add(element);
     }
 
@@ -74,7 +75,7 @@ public abstract class AbstractMultiShapeObject<
 
     @Override
     public S fillColor(PaintStyle fc) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         for (T jmp : shapes) {
             jmp.fillColor(fc);
         }
@@ -84,7 +85,7 @@ public abstract class AbstractMultiShapeObject<
 
     @Override
     public S drawColor(PaintStyle<?> dc) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         for (AbstractShape<?> jmp : shapes) {
             jmp.drawColor(dc);
         }
@@ -365,6 +366,14 @@ public abstract class AbstractMultiShapeObject<
             sh.setCamera(camera);
         }
         return (S) this;
+    }
+
+    @Override
+    public boolean needsUpdate() {
+        ArrayList<Dependable> deps = new ArrayList<>(getShapes());
+        newLastMaxDependencyVersion = DependableUtils.maxVersion(deps);
+        if (dirty) return true;
+        return newLastMaxDependencyVersion != lastCleanedDepsVersionSum;
     }
 
     public abstract S makeNewEmptyInstance();

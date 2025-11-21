@@ -116,7 +116,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
             camera.registerUpdateable((shouldUdpateWithCamera) this);
         }
         this.camera = camera;
-        changeVersion();
+        changeVersionAndMarkDirty();
         return (T) this;
     }
 
@@ -179,7 +179,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
             this.getRendererEffects().copyFrom(rendererEffects);
         }
         this.modelMatrix.copyFrom(mathObject.modelMatrix);
-        changeVersion();
+        changeVersionAndMarkDirty();
     }
 
 
@@ -192,14 +192,12 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
     @Override
     public final Rect getBoundingBox() {
 //        return computeBoundingBox().addGap(rightGap, upperGap, leftGap, lowerGap);
-        if (needsUpdate() | boundingBox == null) {
-            markDirty();
             update();//Updates and recomputes bounding box
-        }
         if (boundingBox==null) {
-            System.out.println("EEEEY");
-            markDirty();
-            update();//Updates and recomputes bounding box
+           boundingBox=computeBoundingBox();
+        }
+        if (boundingBox.version!=getVersion()) {
+            boundingBox=computeBoundingBox();
         }
         return boundingBox.addGap(rightGap, upperGap, leftGap, lowerGap);
     }
@@ -213,7 +211,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
     public void setAlpha(double t) {
         drawAlpha(t);
         fillAlpha(t);
-        changeVersion();
+        changeVersionAndMarkDirty();
     }
 
 
@@ -225,7 +223,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
      */
     public T setMp(MODrawProperties newMp) {
         this.getMp().copyFrom(newMp);
-        changeVersion();
+        changeVersionAndMarkDirty();
         return (T) this;
     }
 
@@ -250,7 +248,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
         this.absoluteAnchorVec = anchorVec;
         absoluteAnchorAnchorType = AnchorType.BY_POINT;
         absoluteSize = true;
-        changeVersion();
+        changeVersionAndMarkDirty();
         return (T) this;
     }
 
@@ -266,13 +264,13 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
         absoluteSize = true;
         absoluteAnchorAnchorType = anchorType;
         absoluteSize = true;
-        changeVersion();
+        changeVersionAndMarkDirty();
         return (T) this;
     }
 
     public T setRelativeSize() {
         absoluteSize = false;
-        changeVersion();
+        changeVersionAndMarkDirty();
         return (T) this;
     }
 
@@ -295,7 +293,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
      */
     public T layer(int layer) {
         this.getMp().setLayer(layer);
-        changeVersion();
+        changeVersionAndMarkDirty();
         return (T) this;
     }
 
@@ -317,7 +315,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
      */
     public T style(String name) {
         getMp().loadFromStyle(name);
-        changeVersion();
+        changeVersionAndMarkDirty();
         return (T) this;
     }
 
@@ -329,7 +327,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
      */
     public T linecap(StrokeLineCap strokeLineCap) {
         this.getMp().setLinecap(strokeLineCap);
-        changeVersion();
+        changeVersionAndMarkDirty();
         return (T) this;
     }
 
@@ -491,7 +489,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
             AffineJTransform compose = modelMatrix.compose(affineJTransform);
             modelMatrix.copyFrom(compose);
         }
-        changeVersion();
+        changeVersionAndMarkDirty();
         return (T) this;// By default does nothing
     }
 
@@ -544,7 +542,7 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
         this.upperGap = upperGap;
         this.leftGap = leftGap;
         this.lowerGap = lowerGap;
-        changeVersion();
+        changeVersionAndMarkDirty();
         return (T) this;
     }
 
@@ -602,110 +600,110 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
 
     @Override
     public T drawColor(PaintStyle<?> dc) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return Stylable.super.drawColor(dc);
     }
 
     @Override
     public T drawColor(String str) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return Stylable.super.drawColor(str);
     }
 
     @Override
     public T drawAlpha(double alpha) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return Stylable.super.drawAlpha(alpha);
     }
 
     @Override
     public T fillAlpha(double alpha) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return Stylable.super.fillAlpha(alpha);
     }
 
     @Override
     public T thickness(double newThickness) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return Stylable.super.thickness(newThickness);
     }
 
     @Override
     public T dashStyle(DashStyle dashStyle) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return Stylable.super.dashStyle(dashStyle);
     }
 
     @Override
     public T visible(boolean visible) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return Stylable.super.visible(visible);
     }
 
     @Override
     public T color(PaintStyle dc) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return Stylable.super.color(dc);
     }
 
     @Override
     public T color(String str) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return Stylable.super.color(str);
     }
 
     @Override
     public T fillColor(PaintStyle fc) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return Stylable.super.fillColor(fc);
 
     }
 
     @Override
     public T fillColor(String str) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return Stylable.super.fillColor(str);
     }
 
     @Override
     public T shift(Coordinates<?> shiftVector) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return AffineTransformable.super.shift(shiftVector);
     }
 
     @Override
     public T shift(double x, double y) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return AffineTransformable.super.shift(x, y);
     }
 
     @Override
     public T shift(double x, double y, double z) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return AffineTransformable.super.shift(x, y, z);
     }
 
     @Override
     public T scale(double sx, double sy) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return AffineTransformable.super.scale(sx, sy);
     }
 
     @Override
     public T scale(double s) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return AffineTransformable.super.scale(s);
     }
 
     @Override
     public T scale(Coordinates<?> scaleCenter, double scale) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return AffineTransformable.super.scale(scaleCenter, scale);
     }
 
     @Override
     public T scale(Coordinates<?> scaleCenter, double sx, double sy) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return AffineTransformable.super.scale(scaleCenter, sx, sy);
     }
 
@@ -716,55 +714,55 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
 
     @Override
     public T scale(Coordinates<?> scaleCenter, double sx, double sy, double sz) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return AffineTransformable.super.scale(scaleCenter, sx, sy, sz);
     }
 
     @Override
     public T rotate(double angle) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return AffineTransformable.super.rotate(angle);
     }
 
     @Override
     public T rotate(Coordinates<?> center, double angle) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return AffineTransformable.super.rotate(center, angle);
     }
 
     @Override
     public T rotate3d(double anglex, double angley, double anglez) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return AffineTransformable.super.rotate3d(anglex, angley, anglez);
     }
 
     @Override
     public T rotate3d(Coordinates<?> center, double anglex, double angley, double anglez) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return AffineTransformable.super.rotate3d(center, anglex, angley, anglez);
     }
 
     @Override
     public T moveTo(Coordinates<?> p) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return AffineTransformable.super.moveTo(p);
     }
 
     @Override
     public T moveTo(double x, double y) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return AffineTransformable.super.moveTo(x, y);
     }
 
     @Override
     public T smash(Boxable containerBox, double horizontalGap, double verticalGap) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return AffineTransformable.super.smash(containerBox, horizontalGap, verticalGap);
     }
 
     @Override
     public T smash(Boxable containerBox) {
-        changeVersion();
+        changeVersionAndMarkDirty();
         return AffineTransformable.super.smash(containerBox);
     }
 }

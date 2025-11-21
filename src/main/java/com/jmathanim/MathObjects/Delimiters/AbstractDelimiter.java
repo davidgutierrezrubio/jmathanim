@@ -103,22 +103,29 @@ public abstract class AbstractDelimiter<T extends AbstractDelimiter<T>> extends 
         return labelTip;
     }
 
-    public AbstractDelimiter<T> addLengthLabelTip(
+    public LabelTip addLengthLabelTip(
             String format) {
         labelTip = LabelTip.makeLabelTip(pathForLabelTip, .5, "{#0}", true);
         labelTip.setDistanceToShapeRelative(true);
         labelTip.setDistanceToShape(.1);
-        AbstractLatexMathObject<?> t = labelTip.getLaTeXObject();
-        textUpdaterFactory = new LengthUpdaterFactory( t, A, B, format);
-        textUpdaterFactory.registerUpdaters();
-        labelTip.update();
-        rebuildShape();
+//        AbstractLatexMathObject<?> t = labelTip.getLaTeXObject();
+//        textUpdaterFactory = new LengthUpdaterFactory( t, A, B, format);
+//        textUpdaterFactory.registerUpdaters();
+//        t.markDirty();
+//        labelTip.update();
+//        rebuildShape();
 
-        return this;
+        return labelTip;
     }
 
 
+    public LabelTip getLabelTip() {
+        return labelTip;
+    }
 
+    public void setLabelTip(LabelTip labelTip) {
+        this.labelTip = labelTip;
+    }
 
     @Override
     public AbstractDelimiter<T> setFreeMathObject(boolean isMathObjectFree) {
@@ -152,7 +159,7 @@ public abstract class AbstractDelimiter<T extends AbstractDelimiter<T>> extends 
             rebuildShape();
         }
         if (labelTip != null) {
-            pathForLabelTip.update();
+            pathForLabelTip.update();//No need to do this
             labelTip.update();
         }
     }

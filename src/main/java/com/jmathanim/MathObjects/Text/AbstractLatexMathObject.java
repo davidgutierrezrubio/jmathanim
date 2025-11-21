@@ -58,8 +58,8 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
     // This factor represents % of height relative to the screen that a "X"
     // character has
     public static final double DEFAULT_SCALE_FACTOR = .05;
-    private final HashMap<Integer, Scalar> variables;
     protected final AffineJTransform modelMatrix;
+    private final HashMap<Integer, Scalar> variables;
     protected AnchorType anchor;
     protected LatexParser latexParser;
     protected String text;
@@ -91,6 +91,7 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
         if (latexStyle != null) {
             latexStyle.apply(this);
         }
+        changeVersion();
     }
 
     public void setLatexStyle(String latexStyleName) {
@@ -98,6 +99,7 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
         if (latexStyles.containsKey(latexStyleName.toUpperCase())) {
             setLatexStyle(latexStyles.get(latexStyleName));
         }
+        changeVersion();
     }
 
     @Override
@@ -147,9 +149,9 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
                 addShapesFrom(svgImport.importSVGFromDOM(root));
                 latexParser.parse();
             } catch (ParseException e) {
-              JMathAnimScene.logger.error("LaTeX compilation error. Perhaps there is an error in the code "+
-                              LogUtils.GREEN+this.text+LogUtils.RESET+" ==> "+LogUtils.RED+e.getMessage()+LogUtils.RESET
-                      );
+                JMathAnimScene.logger.error("LaTeX compilation error. Perhaps there is an error in the code " +
+                        LogUtils.GREEN + this.text + LogUtils.RESET + " ==> " + LogUtils.RED + e.getMessage() + LogUtils.RESET
+                );
 
                 JMathAnimScene.logger.warn("An empty LaTeXMathObject will be created");
             }
@@ -181,8 +183,9 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
         if ((mode == CompileMode.JLaTexMath) || (mode == CompileMode.RawJLaTexMath)) {
             sc *= 0.24906237699889464;
         }
-        markClean();
-        boundingBox=computeBoundingBox();
+        boolean updatingBackup=updating;
+        updating=true;
+        boundingBox = computeBoundingBox();
         this.scale(sc, sc, 1);
         Vec v = Vec.to(0, 0);
         switch (anchor) {
@@ -236,6 +239,7 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
 //            sh.getMp().copyFrom(mpMultiShape);
             sh.applyAffineTransform(modelMatrix);
         }
+        updating=updatingBackup;
     }
 
     private void addShapesFrom(MultiShapeObject latexdefault) {
@@ -263,15 +267,15 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
                 resul = Rect.union(resul, jmp.getBoundingBox());
             }
         }
-
         if (resul == null) {
             return EmptyRect.make();
         } else {
+            resul.version=getVersion();
             return resul;
         }
     }
 
-    private Element generateDOMTreeFromLaTeX(String text) throws ParseException{
+    private Element generateDOMTreeFromLaTeX(String text) throws ParseException {
         Writer out = null;
         DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
         String latexText;
@@ -284,8 +288,8 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
         //Will throw ParseException if LaTeX code has errors
         TeXFormula formula = null;
         TeXFormula formula2 = null;
-            formula = new TeXFormula(latexText);
-            formula2 = new TeXFormula(latexText);
+        formula = new TeXFormula(latexText);
+        formula2 = new TeXFormula(latexText);
 //        TeXIcon icon = formula2.createTeXIcon(TeXConstants.ALIGN_LEFT, 40);
         latexParser.setJLatexFormulaParser(formula, formula2);
         latexParser.parse();
@@ -359,9 +363,9 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
             File dviFile = new File(baseFileName + ".dvi");
             String od = outputDir.getCanonicalPath();
             runExternalCommand("latex -output-directory=" + od + " " + this.latexFile.getCanonicalPath());
-            JMathAnimScene.logger.debug("Done compiling "+LogUtils.fileName(latexFile.getCanonicalPath()));
+            JMathAnimScene.logger.debug("Done compiling " + LogUtils.fileName(latexFile.getCanonicalPath()));
             runExternalCommand("dvisvgm -n1 " + dviFile.getCanonicalPath());
-            JMathAnimScene.logger.debug("Done converting "+ LogUtils.fileName(dviFile.getCanonicalPath()));
+            JMathAnimScene.logger.debug("Done converting " + LogUtils.fileName(dviFile.getCanonicalPath()));
         }
         return svgFilename;
     }
@@ -407,6 +411,7 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
         origText = text;
         text = replaceInnerReferencesInText(text);
         changeInnerLaTeX(text);
+        changeVersion();
         return (T) this;
     }
 
@@ -551,6 +556,32 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
         return variables;
     }
 
+    public void performMathObjectUpdateActions() {
+        if (origText == null) {
+            origText = getText();
+        }
+        //Update args
+        String newText = origText;
+        for (Integer index : variables.keySet()) {
+            newText = newText.replace("{#" + index + "}", df.format(variables.get(index).getValue()));
+        }
+
+        if (!newText.equals(origText)) {//No need to update if text has not changed
+            changeInnerLaTeX(newText);
+        }
+//        anchor3DA = getBoundingBox().getLower();
+//        anchor3DC = anchor3DA.copy().shift(0, 1, 0);
+//        anchor3DD = anchor3DA.copy().shift(0, 0, 1);
+//        alignTo3DView();
+    }
+
+    @Override
+    public void markClean() {
+        super.markClean();
+        lastCleanedDepsVersionSum = DependableUtils.maxVersion(getDependencies());
+    }
+
+
     /**
      * Determines how LaTeX shapes will be created
      */
@@ -570,23 +601,5 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
          * used for compatibiliy reasons and in the rare cases JLaTeXMath cannot compile the LaTeX string.
          */
         CompileFile
-    }
-    public void performMathObjectUpdateActions() {
-        if (origText == null) {
-            origText = getText();
-        }
-        //Update args
-        String newText = origText;
-        for (Integer index : variables.keySet()) {
-            newText = newText.replace("{#" + index + "}", df.format(variables.get(index).getValue()));
-        }
-
-        if (!newText.equals(origText)) {//No need to update if text has not changed
-            changeInnerLaTeX(newText);
-        }
-//        anchor3DA = getBoundingBox().getLower();
-//        anchor3DC = anchor3DA.copy().shift(0, 1, 0);
-//        anchor3DD = anchor3DA.copy().shift(0, 0, 1);
-//        alignTo3DView();
     }
 }

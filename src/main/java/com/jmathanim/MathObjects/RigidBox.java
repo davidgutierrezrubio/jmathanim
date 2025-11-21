@@ -46,8 +46,8 @@ public class RigidBox extends MathObject<RigidBox> {
     }
 
     @Override
-    public void changeVersion() {
-        super.changeVersion();
+    public void changeVersionAndMarkDirty() {
+        super.changeVersionAndMarkDirty();
     }
 
     @Override

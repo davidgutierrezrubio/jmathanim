@@ -19,7 +19,7 @@ public abstract class AbstractVersioned implements Dependable, Updatable {
     protected boolean dirty = true;
     protected long lastCleanedDepsVersionSum = -2;
     protected long newLastMaxDependencyVersion = -1;
-    private boolean updating = false;
+    protected boolean updating = false;
 
     @Override
     public void addDependency(Dependable dep) {
@@ -29,6 +29,7 @@ public abstract class AbstractVersioned implements Dependable, Updatable {
     public void removeDependency(Dependable dep) {
         dependencies.remove(dep);
     }
+
 
     @Override
     public boolean needsUpdate() {
@@ -58,7 +59,7 @@ public abstract class AbstractVersioned implements Dependable, Updatable {
         flag = flag | applyUpdaters(false);
         if (flag) {
             performUpdateBoundingBox();
-            changeVersion();
+            changeVersionAndMarkDirty();
             markClean();
         }
         updating=false;
@@ -75,9 +76,13 @@ public abstract class AbstractVersioned implements Dependable, Updatable {
 
 
     @Override
-    public void changeVersion() {
+    public void changeVersionAndMarkDirty() {
         version = ++JMathAnimScene.globalVersion;
         markDirty();
+    }
+
+    public void changeVersion() {
+        version = ++JMathAnimScene.globalVersion;
     }
 
     @Override

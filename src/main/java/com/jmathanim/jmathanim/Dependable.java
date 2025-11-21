@@ -19,7 +19,7 @@ public interface Dependable {
     /**
      * Updates version of object. This method should be called when the object changes.
      */
-    public void changeVersion();
+    public void changeVersionAndMarkDirty();
     /**
      * Returns an immutable list of direct dependencies of this object.
      *

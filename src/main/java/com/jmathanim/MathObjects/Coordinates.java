@@ -21,14 +21,14 @@ public interface Coordinates<T extends Coordinates<T>> extends Boxable, Dependab
             v1.y = v2.y;
             v1.z = v2.z;
         }
-        changeVersion();
+        changeVersionAndMarkDirty();
     }
 
     default void copyCoordinatesFrom(double x, double y) {
         Vec v1 = getVec();
         v1.x = x;
         v1.y = y;
-        changeVersion();
+        changeVersionAndMarkDirty();
     }
 
     @Override
@@ -38,7 +38,7 @@ public interface Coordinates<T extends Coordinates<T>> extends Boxable, Dependab
         v1.x += v2.x;
         v1.y += v2.y;
         v1.z += v2.z;
-        changeVersion();
+        changeVersionAndMarkDirty();
         return (T) this;
     }
 
@@ -72,7 +72,7 @@ public interface Coordinates<T extends Coordinates<T>> extends Boxable, Dependab
         v.x += vc.x;
         v.y += vc.y;
         v.z += vc.z;
-        changeVersion();
+        changeVersionAndMarkDirty();
         return (T) this;
     }
 
@@ -91,7 +91,7 @@ public interface Coordinates<T extends Coordinates<T>> extends Boxable, Dependab
         double b = v.y;
         v.x = c * a - s * b;
         v.y = s * a + c * b;
-        changeVersion();
+        changeVersionAndMarkDirty();
         return (T) this;
     }
 
@@ -120,7 +120,7 @@ public interface Coordinates<T extends Coordinates<T>> extends Boxable, Dependab
         v1.x += vc.x;
         v1.y += vc.y;
         v1.z += vc.z;
-        changeVersion();
+        changeVersionAndMarkDirty();
         return (T) this;
     }
 

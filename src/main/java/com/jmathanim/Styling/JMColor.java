@@ -355,7 +355,7 @@ public class JMColor extends PaintStyle<JMColor> {
 
     public void setBlue(double blue) {
         this.blue =Math.max(Math.min(blue, 1), 0);
-        changeVersion();
+        changeVersionAndMarkDirty();
     }
 
     @Override

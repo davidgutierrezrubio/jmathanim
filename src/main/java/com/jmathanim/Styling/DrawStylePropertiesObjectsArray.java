@@ -120,7 +120,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      */
     public void setLatexStyle(LatexStyle latexStyle) {
         this.latexStyle = latexStyle;
-     changeVersion();
+     changeVersionAndMarkDirty();
     }
 
 
@@ -140,7 +140,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      */
     public void setObjects(ArrayList<MathObject<?>> objects) {
         this.objects = objects;
-     changeVersion();
+     changeVersionAndMarkDirty();
     }
 
     /**
@@ -153,7 +153,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
 //        for (MathObject<?> obj:objs) {
 //            addDependency(obj);
 //        }
-     changeVersion();
+     changeVersionAndMarkDirty();
     }
 
     /**
@@ -168,7 +168,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
             obj.getMp().setVisible(visible);
         }
         mpRef.setVisible(visible);
-     changeVersion();
+     changeVersionAndMarkDirty();
         return this;
     }
 
@@ -189,7 +189,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
      * @return true if the MathObject was successfully removed; false otherwise.
      */
     public boolean remove(MathObject<?> o) {
-     changeVersion();
+     changeVersionAndMarkDirty();
         removeDependency(o);
         return objects.remove(o);
     }
@@ -229,7 +229,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
                 mpRef.latexStyle = moDrawPropertiesLaTeX.latexStyle;
 
         }
-     changeVersion();
+     changeVersionAndMarkDirty();
     }
 
     public void copyFrom(DrawStylePropertiesObjectsArray prop) {
@@ -241,7 +241,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
         } else {
             copyFrom(prop.mpRef);
         }
-     changeVersion();
+     changeVersionAndMarkDirty();
     }
 
     /**
@@ -257,7 +257,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
             obj.getMp().interpolateFrom(dst, alpha);
         }
         mpRef.interpolateFrom(dst, alpha);
-     changeVersion();
+     changeVersionAndMarkDirty();
     }
 
     /**
@@ -275,7 +275,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
             obj.getMp().interpolateFrom(a, b, alpha);
         }
         mpRef.interpolateFrom(a, b, alpha);
-     changeVersion();
+     changeVersionAndMarkDirty();
     }
 
     /**
@@ -290,7 +290,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
 
         }
         mpRef.loadFromStyle(name);
-     changeVersion();
+     changeVersionAndMarkDirty();
     }
 
     /**
@@ -306,7 +306,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
             obj.getMp().rawCopyFrom(mp);
         }
         mpRef.rawCopyFrom(mp);
-     changeVersion();
+     changeVersionAndMarkDirty();
     }
 
     /**
@@ -321,7 +321,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
             obj.getMp().setDrawAlpha(alpha);
         }
         mpRef.setDrawAlpha(alpha);
-     changeVersion();
+     changeVersionAndMarkDirty();
         return this;
     }
 
@@ -339,7 +339,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
             obj.getMp().setFillAlpha(alpha);
         }
         mpRef.setFillAlpha(alpha);
-     changeVersion();
+     changeVersionAndMarkDirty();
         return this;
     }
 
@@ -355,7 +355,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
             obj.getMp().multDrawAlpha(mult);
         }
         mpRef.multDrawAlpha(mult);
-     changeVersion();
+     changeVersionAndMarkDirty();
         return this;
     }
 
@@ -372,7 +372,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
             obj.getMp().multFillAlpha(mult);
         }
         mpRef.multFillAlpha(mult);
-     changeVersion();
+     changeVersionAndMarkDirty();
         return this;
     }
 
@@ -398,7 +398,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
             obj.getMp().setLayer(layer);
         }
         mpRef.setLayer(layer);
-     changeVersion();
+     changeVersionAndMarkDirty();
         return this;
     }
 
@@ -423,7 +423,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
             obj.getMp().setDrawColor(drawColor);
         }
         mpRef.setDrawColor(drawColor);
-     changeVersion();
+     changeVersionAndMarkDirty();
         return this;
     }
 
@@ -451,7 +451,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
             obj.getMp().setFillColor(fillColor);
         }
         mpRef.setFillColor(fillColor);
-     changeVersion();
+     changeVersionAndMarkDirty();
         return this;
     }
 
@@ -509,7 +509,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
             obj.getMp().setLineJoin(linejoin);
         }
         mpRef.setLineJoin(linejoin);
-     changeVersion();
+     changeVersionAndMarkDirty();
         return this;
     }
 
@@ -525,7 +525,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
             obj.getMp().setLinecap(linecap);
         }
         mpRef.setLinecap(linecap);
-     changeVersion();
+     changeVersionAndMarkDirty();
         return this;
     }
 
@@ -551,7 +551,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
             obj.getMp().setThickness(thickness);
         }
         mpRef.setThickness(thickness);
-     changeVersion();
+     changeVersionAndMarkDirty();
         return this;
     }
 
@@ -577,7 +577,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
             obj.getMp().setDotStyle(dotStyle);
         }
         mpRef.setDotStyle(dotStyle);
-     changeVersion();
+     changeVersionAndMarkDirty();
         return this;
     }
 
@@ -603,7 +603,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
             obj.getMp().setDashStyle(dashStyle);
         }
         mpRef.setDashStyle(dashStyle);
-     changeVersion();
+     changeVersionAndMarkDirty();
         return this;
     }
 
@@ -630,7 +630,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
             obj.getMp().setAbsoluteThickness(absThickness);
         }
         mpRef.setAbsoluteThickness(absThickness);
-     changeVersion();
+     changeVersionAndMarkDirty();
         return this;
     }
 
@@ -647,7 +647,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
             obj.getMp().multThickness(multT);
         }
         mpRef.multThickness(multT);
-     changeVersion();
+     changeVersionAndMarkDirty();
         return this;
     }
 
@@ -676,7 +676,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
             obj.getMp().setFaceToCamera(faceToCamera);
         }
         mpRef.setFaceToCamera(faceToCamera);
-     changeVersion();
+     changeVersionAndMarkDirty();
         return this;
     }
 
@@ -703,7 +703,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
             obj.getMp().setFaceToCameraPivot(pivot);
         }
         mpRef.setFaceToCameraPivot(pivot);
-     changeVersion();
+     changeVersionAndMarkDirty();
         return this;
     }
 

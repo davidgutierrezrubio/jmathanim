@@ -33,6 +33,7 @@ public class Rect implements Boxable {// TODO: Adjust this to 3D coordinates
 
     public double xmin, ymin, xmax, ymax, zmin, zmax;
     private Rect rBackup;
+    public long version=-1;
 
     /**
      * Generates a Rect with the given lower-left and upper-right corners (2D version)

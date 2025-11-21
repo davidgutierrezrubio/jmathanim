@@ -181,7 +181,7 @@ public class Vec implements Dependable, HasDirection, Coordinates<Vec>, AffineTr
      */
     public Vec normalize() {
         double norm = this.norm();
-        changeVersion();
+        changeVersionAndMarkDirty();
         if (norm > 0) {
             return this.copy().scale(1d / norm);
         } else {
@@ -209,7 +209,7 @@ public class Vec implements Dependable, HasDirection, Coordinates<Vec>, AffineTr
         x = pNew.getEntry(0, 1);
         y = pNew.getEntry(0, 2);
         z = pNew.getEntry(0, 3);
-        changeVersion();
+        changeVersionAndMarkDirty();
         return this;
     }
 
@@ -247,7 +247,7 @@ public class Vec implements Dependable, HasDirection, Coordinates<Vec>, AffineTr
     }
 
     @Override
-    public void changeVersion() {
+    public void changeVersionAndMarkDirty() {
         version = ++JMathAnimScene.globalVersion;
     }
 
@@ -262,7 +262,7 @@ public class Vec implements Dependable, HasDirection, Coordinates<Vec>, AffineTr
         if (!(obj instanceof Vec)) return;
         Vec v = (Vec) obj;
         copyCoordinatesFrom(v);
-        changeVersion();
+        changeVersionAndMarkDirty();
     }
 
 

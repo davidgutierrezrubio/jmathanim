@@ -158,7 +158,7 @@ public class JMPathPoint  implements
                 pCenter = jp.pCenter.copy();
             }
         }
-        changeVersion();
+        changeVersionAndMarkDirty();
 
     }
 
@@ -184,7 +184,7 @@ public class JMPathPoint  implements
         this.getV().copyCoordinatesFrom(jmPoint.getV());
         this.getVExit().copyCoordinatesFrom(jmPoint.getVExit());
         this.getVEnter().copyCoordinatesFrom(jmPoint.getVEnter());
-        changeVersion();
+        changeVersionAndMarkDirty();
     }
 
 
@@ -208,7 +208,7 @@ public class JMPathPoint  implements
         this.getV().applyAffineTransform(affineJTransform);
         this.getVExit().applyAffineTransform(affineJTransform);
         this.getVEnter().applyAffineTransform(affineJTransform);
-        changeVersion();
+        changeVersionAndMarkDirty();
         return this;
     }
 
@@ -305,7 +305,7 @@ public class JMPathPoint  implements
         getV().copyCoordinatesFrom(coords);
         getVEnter().copyCoordinatesFrom(coords);
         getVExit().copyCoordinatesFrom(coords);
-        changeVersion();
+        changeVersionAndMarkDirty();
     }
 
     @Override
@@ -315,7 +315,7 @@ public class JMPathPoint  implements
         copy.getV().shift(v2);
         copy.getVEnter().shift(v2);
         copy.getVExit().shift(v2);
-        changeVersion();
+        changeVersionAndMarkDirty();
         return copy;
     }
 
@@ -346,7 +346,7 @@ public class JMPathPoint  implements
 
     public void setSegmentToThisPointCurved(boolean segmentToThisPointCurved) {
         isSegmentToThisPointCurved = segmentToThisPointCurved;
-        changeVersion();
+        changeVersionAndMarkDirty();
     }
 
     @Override
@@ -367,7 +367,7 @@ public class JMPathPoint  implements
     }
 
     @Override
-    public void changeVersion() {
+    public void changeVersionAndMarkDirty() {
         version=++JMathAnimScene.globalVersion;
     }
 

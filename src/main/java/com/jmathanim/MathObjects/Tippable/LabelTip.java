@@ -139,6 +139,7 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
     public static LabelTip makeLabelTip(hasPath path, double locationParameter, AbstractLatexMathObject<?> tipLabel, boolean upSide) {
 
         LabelTip resul = new LabelTip(path, tipLabel, AnchorType.LOWER, locationParameter);
+        resul.addDependency(tipLabel);
 //        resul.setDistanceToShape(tipLabel.getHeight() * .25);
         if (!upSide) {
             resul.setSlopeDirection(SlopeDirectionType.NEGATIVE)

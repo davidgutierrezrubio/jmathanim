@@ -1398,7 +1398,7 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
     public boolean update() {
         if (needsUpdate()) {
             performUpdateBoundingBox();
-            changeVersion();
+            changeVersionAndMarkDirty();
             markClean();
             return true;
         } else return false;
@@ -1424,7 +1424,7 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
     }
 
     @Override
-    public void changeVersion() {
+    public void changeVersionAndMarkDirty() {
         version = ++JMathAnimScene.globalVersion;
     }
 

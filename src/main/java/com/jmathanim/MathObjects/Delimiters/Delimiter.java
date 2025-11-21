@@ -41,7 +41,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
 
     public void setLabelMarkGap(double labelMarkGap) {
         this.labelMarkGap = labelMarkGap;
-        changeVersion();
+        changeVersionAndMarkDirty();
     }
 
     protected double labelMarkGap;
@@ -255,7 +255,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
      */
     public <T extends Delimiter> T setRotationType(RotationType rotationType) {
         this.rotationType = rotationType;
-        changeVersion();
+        changeVersionAndMarkDirty();
         return (T) this;
     }
 
