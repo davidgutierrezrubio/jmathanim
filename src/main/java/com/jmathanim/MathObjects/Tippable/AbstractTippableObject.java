@@ -305,6 +305,7 @@ public abstract class AbstractTippableObject<T extends AbstractTippableObject<T>
 
     @Override
     public boolean update() {
+        tipObjectRigidBox.update();
         return super.update();
     }
 

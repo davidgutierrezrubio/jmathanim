@@ -1,6 +1,7 @@
 package com.jmathanim.MathObjects.Text.TextUpdaters;
 
 import com.jmathanim.MathObjects.MathObject;
+import com.jmathanim.MathObjects.Text.AbstractLatexMathObject;
 import com.jmathanim.MathObjects.Updaters.Updater;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
@@ -9,9 +10,11 @@ import java.util.ArrayList;
 public abstract class TextUpdaterFactory {
     protected final ArrayList<Updater> updaters;
     protected String format;
+    protected final AbstractLatexMathObject<?>  t;
 
-    public TextUpdaterFactory(  String format) {
+    public TextUpdaterFactory(AbstractLatexMathObject<?> t, String format) {
         this.format=format;
+        this.t=t;
         this.updaters = new ArrayList<>();
     }
     public ArrayList<Updater> getUpdaters() {
@@ -30,14 +33,14 @@ public abstract class TextUpdaterFactory {
         this.format = format;
     }
 
-    public void registerUpdaters(MathObject<?> object) {
+    public void registerUpdaters() {
         for (Updater updater:updaters) {
-            object.registerUpdater(updater);
+            t.registerUpdater(updater);
         }
     }
-    public void unregisterUpdaters(MathObject<?> object) {
+    public void unregisterUpdaters() {
         for (Updater updater:updaters) {
-            object.unregisterUpdater(updater);
+            t.unregisterUpdater(updater);
         }
     }
 

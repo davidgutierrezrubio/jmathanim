@@ -14,11 +14,17 @@ public class CountUpdaterFactory extends TextUpdaterFactory{
     private final Object objectToCount;
 
     public CountUpdaterFactory(LatexMathObject t, Object objectToCount, String format) {
-        super(format);
+        super(t,format);
         this.objectToCount=objectToCount;
         this.addUpdater(new Updater() {
+
+
             @Override
-            public void update() {
+            public void applyAfter() {
+
+            }
+            @Override
+            public void applyBefore() {
                 t.getArg(0).setValue(getElementCount(objectToCount));
             }
         });

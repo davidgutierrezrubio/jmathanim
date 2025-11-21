@@ -315,7 +315,7 @@ public class JMRadialGradient extends PaintStyle<JMRadialGradient> {
     }
 
     @Override
-    protected boolean applyUpdaters() {
+    protected boolean applyUpdaters(boolean previousToObjectUpdate){
         return false;
     }
 }

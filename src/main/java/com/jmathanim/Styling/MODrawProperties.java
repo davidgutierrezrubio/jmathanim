@@ -542,7 +542,7 @@ public class MODrawProperties extends AbstractVersioned implements DrawStyleProp
     }
 
     @Override
-    protected boolean applyUpdaters() {
+    protected boolean applyUpdaters(boolean previousToObjectUpdate) {
         return false;//TODO: May implement some updaters here
     }
 }

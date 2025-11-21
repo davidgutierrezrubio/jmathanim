@@ -797,9 +797,14 @@ public class Arrow extends Constructible<Arrow> {
         label.registerUpdater(new Updater() {
 
             @Override
-            public void update() {
+            public void applyBefore() {
                 label.getLaTeXObject().getArg(0).setValue(A.to(B).norm());
                 label.getLaTeXObject().update();
+
+            }
+
+            @Override
+            public void applyAfter() {
 
             }
         });
@@ -844,11 +849,16 @@ public class Arrow extends Constructible<Arrow> {
 //            }
 
             @Override
-            public void update() {
+            public void applyBefore() {
                 Vec vAB = A.to(B);
                 labelTip.getLaTeXObject().getArg(0).setValue(vAB.x);
                 labelTip.getLaTeXObject().getArg(1).setValue(vAB.y);
                 labelTip.getLaTeXObject().update();
+            }
+
+            @Override
+            public void applyAfter() {
+
             }
         });
         t.update();

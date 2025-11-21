@@ -34,7 +34,12 @@ public class MoveUpdater extends Updater {
 //    }
 
     @Override
-    public void update() {
+    public void applyBefore() {
+
+    }
+
+    @Override
+    public void applyAfter() {
         if (!instant && speedsNotComputed) {
             speedt = speed * scene.getDt();
             speedt2 = speedt * speedt;

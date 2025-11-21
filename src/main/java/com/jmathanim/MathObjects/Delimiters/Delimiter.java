@@ -174,7 +174,12 @@ public abstract class Delimiter extends Constructible<Delimiter> {
         Delimiter resul = Delimiter.make(A, B, delimiterType, gap);
         resul.registerUpdater(new Updater() {
             @Override
-            public void update() {
+            public void applyBefore() {
+
+            }
+
+            @Override
+            public void applyAfter() {
                 resul.getA().copyCoordinatesFrom(Anchor.getAnchorPoint(obj, anchorA));
                 resul.getB().copyCoordinatesFrom(Anchor.getAnchorPoint(obj, anchorB));
                 resul.rebuildShape();
@@ -359,7 +364,7 @@ public abstract class Delimiter extends Constructible<Delimiter> {
         t.setArgumentsFormat(format);
 
         textUpdaterFactory = new LengthUpdaterFactory( t, A, B, format);
-        textUpdaterFactory.registerUpdaters(t);
+        textUpdaterFactory.registerUpdaters();
         JMathAnimScene scene = JMathAnimConfig.getConfig().getScene();
         t.update();
         rebuildShape();

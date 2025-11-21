@@ -227,7 +227,7 @@ public class JMLinearGradient extends PaintStyle<JMLinearGradient> {
     }
 
     @Override
-    protected boolean applyUpdaters() {
+    protected boolean applyUpdaters(boolean previousToObjectUpdate){
         return false;
     }
 }

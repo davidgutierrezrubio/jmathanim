@@ -23,9 +23,9 @@ public abstract class Updater {
     }
 //    public abstract  int computeUpdateLevel();
 
-    public abstract void update();
+    public abstract void applyBefore();
+    public abstract void applyAfter();
 
-    ;
 
     public final int getUpdateLevel() {
         return updateLevel;

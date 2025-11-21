@@ -355,10 +355,14 @@ public abstract class MathObject<T extends MathObject<T>> extends AbstractVersio
 
 
     @Override
-    protected boolean applyUpdaters() {
+    protected boolean applyUpdaters(boolean previousToObjectUpdate) {
         boolean resultFlag = false;
         for (Updater u : updaters) {
-            u.update();
+            if (previousToObjectUpdate) {
+                u.applyBefore();
+            } else {
+                u.applyAfter();
+            }
             resultFlag = true;//If at least one updater, the object is changed
         }
         return resultFlag;

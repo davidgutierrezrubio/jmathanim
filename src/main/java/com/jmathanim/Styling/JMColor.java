@@ -369,7 +369,7 @@ public class JMColor extends PaintStyle<JMColor> {
     }
 
     @Override
-    protected boolean applyUpdaters() {
+    protected boolean applyUpdaters(boolean previousToObjectUpdate){
         return false;
     }
 }

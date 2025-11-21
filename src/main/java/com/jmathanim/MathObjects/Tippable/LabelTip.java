@@ -91,36 +91,36 @@ public class LabelTip extends AbstractTippableObject<LabelTip> implements hasArg
     }
 
 
-    /**
-     * Creates a label in the middle of segment AB with the distance between the points. Text is automatically updated
-     * every frame.
-     *
-     * @param A      First Point
-     * @param B      Second Point
-     * @param format Decimal format of length. Use a format string as defined in DecimalFormat class
-     * @param upSide If true, label will be located in the upper side of the shape. In this context, upper means a 90
-     *               degrees counterclockwise deviation from positive tangent. If false, label will be located in the
-     *               opposite side.
-     * @return The LabelTip object created
-     */
-    public static LabelTip makeLengthLabel(Coordinates<?> A, Coordinates<?> B, String format, boolean upSide) {
-        LatexMathObject t = LatexMathObject.make("${#0}$");
-        LabelTip resul = new LabelTip(Shape.segment(A, B), t, AnchorType.LOWER, .5);
-        if (!upSide) {
-            resul.setSlopeDirection(SlopeDirectionType.NEGATIVE)
-                    .setAnchor(AnchorType.LOWER);
-        }
-        t.registerUpdater(new Updater() {
-            @Override
-            public void update() {
-                t.getArg(0).setValue(A.to(B).norm());
-            }
-        });
-        resul.setRotationType(RotationType.SMART);
-//        resul.correctionAngle=PI;
-        resul.rebuildShape();
-        return resul;
-    }
+//    /**
+//     * Creates a label in the middle of segment AB with the distance between the points. Text is automatically updated
+//     * every frame.
+//     *
+//     * @param A      First Point
+//     * @param B      Second Point
+//     * @param format Decimal format of length. Use a format string as defined in DecimalFormat class
+//     * @param upSide If true, label will be located in the upper side of the shape. In this context, upper means a 90
+//     *               degrees counterclockwise deviation from positive tangent. If false, label will be located in the
+//     *               opposite side.
+//     * @return The LabelTip object created
+//     */
+//    public static LabelTip makeLengthLabel(Coordinates<?> A, Coordinates<?> B, String format, boolean upSide) {
+//        LatexMathObject t = LatexMathObject.make("${#0}$");
+//        LabelTip resul = new LabelTip(Shape.segment(A, B), t, AnchorType.LOWER, .5);
+//        if (!upSide) {
+//            resul.setSlopeDirection(SlopeDirectionType.NEGATIVE)
+//                    .setAnchor(AnchorType.LOWER);
+//        }
+//        t.registerUpdater(new Updater() {
+//            @Override
+//            public void update() {
+//                t.getArg(0).setValue(A.to(B).norm());
+//            }
+//        });
+//        resul.setRotationType(RotationType.SMART);
+////        resul.correctionAngle=PI;
+//        resul.rebuildShape();
+//        return resul;
+//    }
 
 
     /**

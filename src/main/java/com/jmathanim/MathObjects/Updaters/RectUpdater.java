@@ -23,8 +23,13 @@ public class RectUpdater extends Updater {
 //        return getMathObject().getUpdateLevel() + 1;
 //    }
 
+
     @Override
-    public void update() {
+    public void applyBefore() {
+    }
+
+    @Override
+    public void applyAfter() {
         scene.add(rect);
         if (getMathObject() == null) {
             rect.visible(false);

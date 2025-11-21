@@ -49,12 +49,13 @@ public abstract class AbstractVersioned implements Dependable, Updatable {
         if (updating) return false;
         updating=true;
         boolean flag = false;
+        flag = flag | applyUpdaters(true);
         if (dirty||needsUpdate()) {
             dirty=true;
             performMathObjectUpdateActions();
             flag = true;
         }
-        flag = flag | applyUpdaters();
+        flag = flag | applyUpdaters(false);
         if (flag) {
             performUpdateBoundingBox();
             changeVersion();
@@ -88,7 +89,7 @@ public abstract class AbstractVersioned implements Dependable, Updatable {
 
     public abstract void performUpdateBoundingBox();
 
-    protected abstract boolean applyUpdaters();
+    protected abstract boolean applyUpdaters(boolean previousToObjectUpdate);
 
 
     @Override

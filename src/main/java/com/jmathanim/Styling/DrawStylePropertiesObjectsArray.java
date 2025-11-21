@@ -718,7 +718,7 @@ public class DrawStylePropertiesObjectsArray extends AbstractVersioned implement
     }
 
     @Override
-    protected boolean applyUpdaters() {
+    protected boolean applyUpdaters(boolean previousToObjectUpdate){
         return false;
     }
 }

@@ -1477,7 +1477,7 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
     }
 
     @Override
-    protected boolean applyUpdaters() {
+    protected boolean applyUpdaters(boolean previousToObjectUpdate) {
         return false;
     }
 

@@ -7,6 +7,7 @@ import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.MathObjects.Shapes.JMPath;
 import com.jmathanim.MathObjects.Stateable;
 import com.jmathanim.MathObjects.Text.AbstractLatexMathObject;
+import com.jmathanim.MathObjects.Text.TextUpdaters.LengthUpdaterFactory;
 import com.jmathanim.MathObjects.Tippable.LabelTip;
 import com.jmathanim.MathObjects.Updaters.Updater;
 import com.jmathanim.Renderers.Renderer;
@@ -14,6 +15,7 @@ import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 public abstract class AbstractDelimiter<T extends AbstractDelimiter<T>> extends Constructible<AbstractDelimiter<T>> {
@@ -23,6 +25,7 @@ public abstract class AbstractDelimiter<T extends AbstractDelimiter<T>> extends 
     protected Vec B;
     public LabelTip labelTip;
     double amplitudeScale;
+    private LengthUpdaterFactory textUpdaterFactory;
 
     protected AbstractDelimiter(Coordinates<?> a, Coordinates<?> b) {
         this.A = a.getVec();
@@ -52,21 +55,29 @@ public abstract class AbstractDelimiter<T extends AbstractDelimiter<T>> extends 
 
         labelTip.registerUpdater(new Updater() {
 
+
             @Override
-            public void update() {
+            public void applyAfter() {
+
+            }
+            @Override
+            public void applyBefore() {
 //                if (labelTip.isDirty()) {
 //                    labelTip.tipObjectRigidBox.scale(A.to(B).norm());
 //                }
                 labelTip.getLaTeXObject().getArg(0).setValue(A.to(B).norm());
-                labelTip.getLaTeXObject().update();
-
             }
         });
         labelTip.registerUpdater(new Updater() {
             long version = -1;
 
             @Override
-            public void update() {
+            public void applyBefore() {
+
+            }
+
+            @Override
+            public void applyAfter() {
                 if (labelTip.isDirty()) {
                     labelTip.tipObjectRigidBox.scale(labelTip.getMarkLabelLocation(),A.to(B).norm());
                     System.out.println("change scale");
@@ -91,6 +102,23 @@ public abstract class AbstractDelimiter<T extends AbstractDelimiter<T>> extends 
         rebuildShape();
         return labelTip;
     }
+
+    public AbstractDelimiter<T> addLengthLabelTip(
+            String format) {
+        labelTip = LabelTip.makeLabelTip(pathForLabelTip, .5, "{#0}", true);
+        labelTip.setDistanceToShapeRelative(true);
+        labelTip.setDistanceToShape(.1);
+        AbstractLatexMathObject<?> t = labelTip.getLaTeXObject();
+        textUpdaterFactory = new LengthUpdaterFactory( t, A, B, format);
+        textUpdaterFactory.registerUpdaters();
+        labelTip.update();
+        rebuildShape();
+
+        return this;
+    }
+
+
+
 
     @Override
     public AbstractDelimiter<T> setFreeMathObject(boolean isMathObjectFree) {

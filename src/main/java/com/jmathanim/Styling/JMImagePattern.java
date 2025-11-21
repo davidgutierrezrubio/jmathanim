@@ -108,7 +108,7 @@ public class JMImagePattern extends PaintStyle<JMImagePattern> {
     }
 
     @Override
-    protected boolean applyUpdaters() {
+    protected boolean applyUpdaters(boolean previousToObjectUpdate){
         return false;
     }
 }
