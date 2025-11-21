@@ -192,51 +192,6 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
         for (LatexShape sh : this) {
             sh.scale(center,sc, sc, 1);
         }
-//        this.scale(sc, sc, 1);
-//        Vec v = Vec.to(0, 0);
-//        switch (anchor) {
-//            case CENTER:
-//                v = Anchor.getAnchorPoint(boundingBox, anchor).scale(-1);
-//                break;
-//            case UPPER:
-//                v = Anchor.getAnchorPoint(boundingBox, anchor).scale(-1);
-//                break;
-//            case LOWER:
-//                v = Anchor.getAnchorPoint(boundingBox, anchor).scale(-1);
-//                break;
-//            case LEFT:
-//                v = Anchor.getAnchorPoint(this.get(0), anchor).scale(-1);
-//                break;
-//            case LEFT_AND_ALIGNED_UPPER:
-//                v = Anchor.getAnchorPoint(this.get(0), anchor).scale(-1);
-//                break;
-//            case LEFT_AND_ALIGNED_LOWER:
-//                v = Anchor.getAnchorPoint(this.get(0), anchor).scale(-1);
-//                break;
-//            case LOWER_AND_ALIGNED_LEFT:
-//                v = Anchor.getAnchorPoint(this.get(0), anchor).scale(-1);
-//                break;
-//            case UPPER_AND_ALIGNED_LEFT:
-//                v = Anchor.getAnchorPoint(this.get(0), anchor).scale(-1);
-//                break;
-//            case RIGHT:
-//                v = Anchor.getAnchorPoint(this.get(-1), anchor).scale(-1);
-//                break;
-//            case RIGHT_AND_ALIGNED_UPPER:
-//                v = Anchor.getAnchorPoint(this.get(-1), anchor).scale(-1);
-//                break;
-//            case RIGHT_AND_ALIGNED_LOWER:
-//                v = Anchor.getAnchorPoint(this.get(-1), anchor).scale(-1);
-//                break;
-//            case LOWER_AND_ALIGNED_RIGHT:
-//                v = Anchor.getAnchorPoint(this.get(-1), anchor).scale(-1);
-//                break;
-//            case UPPER_AND_ALIGNED_RIGHT:
-//                v = Anchor.getAnchorPoint(this.get(-1), anchor).scale(-1);
-//                break;
-//
-//        }
-        //this.stackTo(anchor,Point.origin(), Type.CENTER,0);
         Vec v = Anchor.getAnchorPoint(boundingBox, anchor).scale(-1);
         shift(v);
 
@@ -247,7 +202,7 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
         }
         ArrayList<Dependable> deps = new ArrayList<>(getShapes());
 //        newLastMaxDependencyVersion = DependableUtils.maxVersion(deps);
-        lastCleanedDepsVersionSum=DependableUtils.maxVersion(deps);
+        lastCleanedDepsVersionSum=DependableUtils.maxVersion(getDependencies());
     }
 
     private void addShapesFrom(MultiShapeObject latexdefault) {
@@ -588,7 +543,7 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
     @Override
     public void markClean() {
         super.markClean();
-//        lastCleanedDepsVersionSum = DependableUtils.maxVersion(getDependencies());
+        lastCleanedDepsVersionSum = DependableUtils.maxVersion(getDependencies());
     }
 
 
@@ -615,8 +570,9 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
 
     @Override
     public boolean needsUpdate() {
-        System.out.println("scalar version:"+getArg(0).getVersion());
-        System.out.println("mp version:"+getMp().getVersion());
+//        System.out.println("scalar version:"+getArg(0).getVersion());
+//        System.out.println("mp version:"+getMp().getVersion());
+//        System.out.println("lastCleanedDepsVersionSum:"+lastCleanedDepsVersionSum);
         newLastMaxDependencyVersion = DependableUtils.maxVersion(getDependencies());
         if (dirty) return true;
         return newLastMaxDependencyVersion != lastCleanedDepsVersionSum;

@@ -42,7 +42,7 @@ public abstract class AbstractMultiShapeObject<
         isAddedToScene = false;
         this.shapes = new ArrayList<>();
         mpMultiShape = new DrawStylePropertiesObjectsArray();
-        addDependency(mpMultiShape);
+//        addDependency(mpMultiShape);
 
         for (T sh : shapes) {
             add(sh);

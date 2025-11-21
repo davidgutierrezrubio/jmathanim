@@ -127,6 +127,25 @@ public class DrawStylePropertiesArray extends AbstractVersioned implements DrawS
        changeVersionAndMarkDirty();
     }
 
+    @Override
+    public void markClean() {
+        super.markClean();
+    }
+
+    @Override
+    public void changeVersionAndMarkDirty() {
+        super.changeVersionAndMarkDirty();
+    }
+
+    @Override
+    public void changeVersion() {
+        super.changeVersion();
+    }
+
+    @Override
+    public void markDirty() {
+        super.markDirty();
+    }
 
     /**
      * Retrieves the list of Stylable instances contained within this object.
