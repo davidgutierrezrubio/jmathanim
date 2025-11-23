@@ -521,7 +521,7 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
     }
 
     public void performMathObjectUpdateActions() {
-//        System.out.println("performMathObjectUpdateActions "+this);
+        System.out.println("performMathObjectUpdateActions "+this);
         if (origText == null) {
             origText = getText();
         }
@@ -538,12 +538,17 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
 //        anchor3DC = anchor3DA.copy().shift(0, 1, 0);
 //        anchor3DD = anchor3DA.copy().shift(0, 0, 1);
 //        alignTo3DView();
+        markClean();
     }
 
     @Override
     public void markClean() {
-        super.markClean();
+
         lastCleanedDepsVersionSum = DependableUtils.maxVersion(getDependencies());
+        for (int i = 0; i < 9; i++) {
+            getArg(i).markClean();
+        }
+        super.markClean();
     }
 
 
@@ -574,6 +579,10 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
 //        System.out.println("mp version:"+getMp().getVersion());
 //        System.out.println("lastCleanedDepsVersionSum:"+lastCleanedDepsVersionSum);
         newLastMaxDependencyVersion = DependableUtils.maxVersion(getDependencies());
+        for (int i = 0; i < shapes.size(); i++) {
+            long v = shapes.get(i).getVersion();
+            if (v>newLastMaxDependencyVersion) newLastMaxDependencyVersion=v;
+        }
         if (dirty) return true;
         return newLastMaxDependencyVersion != lastCleanedDepsVersionSum;
     }

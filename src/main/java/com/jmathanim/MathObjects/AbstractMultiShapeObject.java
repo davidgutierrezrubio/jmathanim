@@ -6,7 +6,6 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.DrawStylePropertiesObjectsArray;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.*;
-import com.jmathanim.jmathanim.Dependable;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 import java.util.ArrayList;
@@ -370,12 +369,22 @@ public abstract class AbstractMultiShapeObject<
 
     @Override
     public boolean needsUpdate() {
-        ArrayList<Dependable> deps = new ArrayList<>(getShapes());
-//        newLastMaxDependencyVersion = DependableUtils.maxVersion(deps);
         newLastMaxDependencyVersion = lastCleanedDepsVersionSum;
 //        if (dirty) return true;
 //        return newLastMaxDependencyVersion != lastCleanedDepsVersionSum;
         return dirty;
+    }
+
+    @Override
+    public void markClean() {
+        long v=0;
+        for (int i = 0; i < shapes.size(); i++) {
+            T t = shapes.get(i);
+            t.markClean();
+            v = t.getVersion();
+            if (v>newLastMaxDependencyVersion) newLastMaxDependencyVersion=v;
+        }
+        super.markClean();
     }
 
     public abstract S makeNewEmptyInstance();

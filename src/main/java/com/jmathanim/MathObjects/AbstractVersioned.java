@@ -41,6 +41,7 @@ public abstract class AbstractVersioned implements Dependable, Updatable {
 //        }
         newLastMaxDependencyVersion = DependableUtils.maxVersion(getDependencies());
         if (dirty) return true;
+        if (getDependencies().isEmpty()) return false;
         return newLastMaxDependencyVersion != lastCleanedDepsVersionSum;
     }
 
