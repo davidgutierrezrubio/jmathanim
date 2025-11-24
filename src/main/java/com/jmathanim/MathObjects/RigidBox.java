@@ -46,11 +46,6 @@ public class RigidBox extends MathObject<RigidBox> {
     }
 
     @Override
-    public void changeVersionAndMarkDirty() {
-        super.changeVersionAndMarkDirty();
-    }
-
-    @Override
     public RigidBox copy() {
         RigidBox copy = new RigidBox(mathObjectReference);
         copy.setObjectLabel(this.objectLabel + "_copy");

@@ -74,4 +74,29 @@ public class EmptyRect extends Rect {
     public Rect getTransformedRect(AffineJTransform tr) {
         return this;
     }
+
+    @Override
+    public Rect addGap(double xgap, double ygap) {
+        return this;
+    }
+
+    @Override
+    public Rect interpolate(Rect rDst, double t) {
+        return this;
+    }
+
+    @Override
+    public Rect addGap(double xgap, double ygap, double zgap) {
+        return this;
+    }
+
+    @Override
+    public Rect addGap(double rightGap, double upperGap, double leftGap, double lowerGap) {
+        return this;
+    }
+
+    @Override
+    public Rect smash(Boxable containerBox, double horizontalGap, double verticalGap) {
+        return this;
+    }
 }
