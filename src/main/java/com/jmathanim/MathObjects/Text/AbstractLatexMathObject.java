@@ -521,7 +521,7 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
     }
 
     public void performMathObjectUpdateActions() {
-        System.out.println("performMathObjectUpdateActions "+this);
+//        System.out.println("performMathObjectUpdateActions "+this);
         if (origText == null) {
             origText = getText();
         }
