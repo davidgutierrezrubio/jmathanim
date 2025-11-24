@@ -74,6 +74,7 @@ public class CrossOutMathElements extends AnimationGroup {
         crossDrawProperties = MODrawProperties.createFromStyle("default");
         crossDrawProperties.setDrawColor(JMColor.parse("red"));
         crossDrawProperties.setFillColor(JMColor.parse("red"));
+        crossDrawProperties.getMp().setAbsoluteThickness(true);
         this.crossesShapes = new ArrayList<>();
         this.crossIndices = new ArrayList<>();
         this.ratio = .05;//Default ratio
