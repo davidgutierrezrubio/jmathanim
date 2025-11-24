@@ -58,6 +58,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
@@ -77,6 +78,7 @@ public class JavaFXRenderer extends Renderer {
     public final Camera camera;
     public final Camera fixedCamera;
     protected final HashMap<Drawable, Node> drawablesToNodes;
+    protected final HashSet<Drawable> drawablesInThisFrame;
     protected final ArrayList<Node> debugFXnodes;
     protected final ArrayList<Node> javaFXNodes;
     private final HashMap<JMPath, Path> storedPaths;
@@ -103,6 +105,7 @@ public class JavaFXRenderer extends Renderer {
     public JavaFXRenderer(JMathAnimScene parentScene) throws Exception {
         super(parentScene);
         drawablesToNodes = new HashMap<>();
+        drawablesInThisFrame = new HashSet<>();
         previousFrame = new DataFrame(-1);
         currentFrame = new DataFrame(-1);
         debugFXnodes = new ArrayList<>();
@@ -317,8 +320,8 @@ public class JavaFXRenderer extends Renderer {
 //                if (parent != null) {
 //                    ((Group) parent).getChildren().remove(node);
 //                }
-
-                mainGroupOfObjectsToRender.getChildren().add(node);
+//                if (!mainGroupOfObjectsToRender.getChildren().contains(node))
+                    mainGroupOfObjectsToRender.getChildren().add(node);
             }
             if (config.showFrameNumbers) {
                 showDebugFrame(frameCount, 1d * frameCount / config.getFps());
@@ -379,6 +382,7 @@ public class JavaFXRenderer extends Renderer {
     @Override
     public void clearAndPrepareCanvasForAnotherFrame() {
         super.clearAndPrepareCanvasForAnotherFrame();
+        drawablesInThisFrame.clear();
         previousFrame = currentFrame;
         currentFrame = new DataFrame(0);
     }
@@ -435,7 +439,7 @@ public class JavaFXRenderer extends Renderer {
                 break;
 //                return makePath(rc);
             case IMAGE:
-                updateImageNode((ImageView) node,rc);
+                updateImageNode((ImageView) node, rc);
 //                JMathAnimScene.logger.warn("Image still not implemented");
         }
     }
@@ -493,6 +497,8 @@ public class JavaFXRenderer extends Renderer {
 
     @Override
     public void drawPath(AbstractShape<?> shape, Vec shiftVector, Camera cam) {
+        if (drawablesInThisFrame.contains(shape)) return;
+        drawablesInThisFrame.add(shape);
         JavaFXRenderCommand rc = new JavaFXRenderCommand();
         rc.object = shape;
         rc.type = JavaFXRenderCommand.COMMAND_TYPE.SHAPE;
@@ -690,7 +696,7 @@ public class JavaFXRenderer extends Renderer {
         return imageNode;
     }
 
-    private void updateImageNode(ImageView imageNode,JavaFXRenderCommand rc) {
+    private void updateImageNode(ImageView imageNode, JavaFXRenderCommand rc) {
         AbstractJMImage<?> jmImage = (AbstractJMImage<?>) rc.object;
         Rect bbox = getBboxFromImageCatalog(jmImage.getId());
 //        ImageView imageNode;
