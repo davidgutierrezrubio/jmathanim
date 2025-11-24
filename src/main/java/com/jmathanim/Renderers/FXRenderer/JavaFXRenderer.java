@@ -18,10 +18,7 @@
 package com.jmathanim.Renderers.FXRenderer;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.MathObjects.AbstractJMImage;
-import com.jmathanim.MathObjects.AbstractShape;
-import com.jmathanim.MathObjects.Drawable;
-import com.jmathanim.MathObjects.MathObject;
+import com.jmathanim.MathObjects.*;
 import com.jmathanim.MathObjects.Shapes.JMPath;
 import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
@@ -498,8 +495,14 @@ public class JavaFXRenderer extends Renderer {
     @Override
     public void drawPath(AbstractShape<?> shape, Vec shiftVector, Camera cam) {
         if (drawablesInThisFrame.contains(shape)) return;
-        drawablesInThisFrame.add(shape);
         JavaFXRenderCommand rc = new JavaFXRenderCommand();
+        if (!DebugTools.getDebugText(shape).isEmpty()) {
+            debugText(DebugTools.getDebugText(shape), shape.getCenter());
+            rc.showDebugText=true;
+            rc.debugText=DebugTools.getDebugText(shape);
+        }
+        drawablesInThisFrame.add(shape);
+
         rc.object = shape;
         rc.type = JavaFXRenderCommand.COMMAND_TYPE.SHAPE;
         rc.shiftVector_x = shiftVector.x;

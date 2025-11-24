@@ -18,5 +18,7 @@ public class JavaFXRenderCommand {
     public long pathVersion=-1;
     public long mpVersion=-1;
     public long imageVersion=-1;
+    public boolean showDebugText=false;
+    public String debugText="";
 
 }

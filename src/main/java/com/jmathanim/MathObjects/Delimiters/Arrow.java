@@ -26,7 +26,6 @@ import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.Enum.ArrowType;
 import com.jmathanim.Enum.SlopeDirectionType;
 import com.jmathanim.MathObjects.Coordinates;
-import com.jmathanim.MathObjects.MathObjectGroup;
 import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.MathObjects.Shapes.JMPath;
 import com.jmathanim.MathObjects.Shapes.JMPathPoint;
@@ -61,7 +60,7 @@ public class Arrow extends Constructible<Arrow> {
     public final Shape labelArcUpside;
     public final Shape labelArcDownside;
     protected final DrawStylePropertiesObjectsArray mpArrow;
-    protected final MathObjectGroup groupElementsToBeDrawn;
+//    protected final MathObjectGroup groupElementsToBeDrawn;
     private final Vec Acopy, Bcopy;
     private final Shape shapeToDraw;
     private final JMPath head1, head2;
@@ -101,7 +100,7 @@ public class Arrow extends Constructible<Arrow> {
         Bcopy = this.B.getVec().copy();
         mpArrow = new DrawStylePropertiesObjectsArray();
         mpArrow.add(shapeToDraw);
-        groupElementsToBeDrawn = MathObjectGroup.make(shapeToDraw);
+//        groupElementsToBeDrawn = MathObjectGroup.make(shapeToDraw);
         getMp().loadFromStyle("ARROWDEFAULT");
     }
 
@@ -767,8 +766,8 @@ public class Arrow extends Constructible<Arrow> {
         this.labelTip = labelTip;
         labelType = labelTypeEnum.NORMAL;
         mpArrow.add(this.labelTip);
-        groupElementsToBeDrawn.clear();
-        groupElementsToBeDrawn.add(shapeToDraw, this.labelTip);
+//        groupElementsToBeDrawn.clear();
+//        groupElementsToBeDrawn.add(shapeToDraw, this.labelTip);
     }
 
 

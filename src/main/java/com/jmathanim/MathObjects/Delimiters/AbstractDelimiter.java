@@ -7,7 +7,7 @@ import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.MathObjects.Shapes.JMPath;
 import com.jmathanim.MathObjects.Stateable;
 import com.jmathanim.MathObjects.Text.AbstractLatexMathObject;
-import com.jmathanim.MathObjects.Text.TextUpdaters.LengthUpdaterFactory;
+import com.jmathanim.MathObjects.Text.TextUpdaters.TextUpdaterFactory;
 import com.jmathanim.MathObjects.Tippable.LabelTip;
 import com.jmathanim.MathObjects.Updaters.Updater;
 import com.jmathanim.Renderers.Renderer;
@@ -15,7 +15,6 @@ import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 public abstract class AbstractDelimiter<T extends AbstractDelimiter<T>> extends Constructible<AbstractDelimiter<T>> {
@@ -25,7 +24,7 @@ public abstract class AbstractDelimiter<T extends AbstractDelimiter<T>> extends 
     protected Vec B;
     public LabelTip labelTip;
     double amplitudeScale;
-    private LengthUpdaterFactory textUpdaterFactory;
+    private TextUpdaterFactory textUpdaterFactory;
 
     protected AbstractDelimiter(Coordinates<?> a, Coordinates<?> b) {
         this.A = a.getVec();

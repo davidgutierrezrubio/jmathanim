@@ -9,5 +9,5 @@ public enum ScreenAnchor {
     UPPER_RIGHT,
     UPPER_LEFT,
     LOWER_RIGHT,
-    LOWER_LEFT,
+    LOWER_LEFT
 }
