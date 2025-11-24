@@ -1190,7 +1190,7 @@ public class JMPath extends AbstractVersioned implements Dependable, Updatable, 
      * @return This object
      */
     public JMPath merge(hasPath secondPath, boolean connectAtoB, boolean connectBtoA) {
-        JMPath pa = secondPath.getPath().copy();
+        JMPath pa = secondPath.getPath();//.copy();
         //Special case: if this path is empty
         if (isEmpty()) {
             getJmPathPoints().addAll(pa.getJmPathPoints());

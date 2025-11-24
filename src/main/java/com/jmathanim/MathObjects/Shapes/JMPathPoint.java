@@ -38,9 +38,9 @@ public class JMPathPoint  implements
         Stateable, Serializable {
 
     //    public final Point p; // The vertex point
-    private final Vec v; // The vertex point
-    private final Vec vExit;
-    private final Vec vEnter; // Exit and Enter control points for Bezier curves
+    private  Vec v; // The vertex point
+    private  Vec vExit;
+    private  Vec vEnter; // Exit and Enter control points for Bezier curves
     public int numDivisions = 0;// This number is used for convenience to store easily number of divisions when
     private boolean isSegmentToThisPointVisible;
     private boolean isSegmentToThisPointCurved;
@@ -67,6 +67,14 @@ public class JMPathPoint  implements
 
         setSegmentToThisPointCurved(false);// By default, is not curved
         this.setSegmentToThisPointVisible(isVisible);
+    }
+    public  JMPathPoint clone(boolean cloneV, boolean cloneVenter, boolean cloneVexit) {
+        JMPathPoint clone=new JMPathPoint(Vec.to(0,0),isSegmentToThisPointVisible);
+        clone.v = (cloneV ? this.v : this.v.copy());
+        clone.vExit = (cloneV ? this.vExit : this.vExit.copy());
+        clone.vEnter = (cloneV ? this.vEnter : this.vEnter.copy());
+        clone.isSegmentToThisPointCurved=this.isSegmentToThisPointCurved;
+    return clone;
     }
 
     /**

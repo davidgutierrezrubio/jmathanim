@@ -29,6 +29,7 @@ import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.MathObjects.MathObjectGroup;
 import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.MathObjects.Shapes.JMPath;
+import com.jmathanim.MathObjects.Shapes.JMPathPoint;
 import com.jmathanim.MathObjects.Stateable;
 import com.jmathanim.MathObjects.Text.AbstractLatexMathObject;
 import com.jmathanim.MathObjects.Tippable.LabelTip;
@@ -357,6 +358,7 @@ public class Arrow extends Constructible<Arrow> {
         Vec endPoint = h1B.getBoundingBox().getLower().add(0, -rgapB);
 
         if (angle == 0) {
+            //Straight arrow
             h1A.get(0).setSegmentToThisPointVisible(true);
             h1B.get(0).setSegmentToThisPointVisible(true);
             shapeToDraw.getPath().addJMPointsFrom(h1A.getPath());
@@ -375,58 +377,73 @@ public class Arrow extends Constructible<Arrow> {
             labelArcDownside.get(0).setSegmentToThisPointVisible(false);
 
         } else {
+            //Curved arrow
 
             h1A.rotate(startPoint, angle);
             h1B.rotate(endPoint, -angle);
 
-            //Rectas
-//        CTLine ct1 = CTLine.makeLengthMeasure(h1A.get(0).p, h1A.get(-1).p);
             CTPerpBisector ct1 = CTPerpBisector.make(h1A.get(0), h1B.get(-1));
             CTLine ct2 = CTLine.make(h1B.get(0), h1B.get(-1));
             CTIntersectionPoint inter = CTIntersectionPoint.make(ct1, ct2);
-            CTCircleArc arc1, arc2;
-            Shape shArc1, shArc2;
+            CTCircleArc ctArc1, ctArc2;
+//            Shape shArc1, shArc2;
+            JMPath arc1,arc2;
             AffineJTransform tr;
             if (angle > 0) {
-                arc1 = CTCircleArc.make(inter.getMathObject(), h1B.get(-1), h1A.get(0));
-                arc2 = CTCircleArc.make(inter.getMathObject(), h1B.get(0), h1A.get(-1));
-                shArc1 = (Shape) arc1.getMathObject();
-                shArc2 = (Shape) arc2.getMathObject();
+                ctArc1 = CTCircleArc.make(inter.getMathObject(), h1B.get(-1), h1A.get(0));
+                ctArc2 = CTCircleArc.make(inter.getMathObject(), h1B.get(0), h1A.get(-1));
+//                shArc1 = (Shape) ctArc1.getMathObject();
+//                shArc2 = (Shape) ctArc2.getMathObject();
+                arc1 = ((Shape) ctArc1.getMathObject()).getPath();
+                arc2 = ((Shape) ctArc2.getMathObject()).getPath();
 
-                tr = AffineJTransform.createDirect2DIsomorphic(shArc1.get(0), shArc1.get(-1), h1B.get(-1), h1A.get(0), 1);
-                shArc1.applyAffineTransform(tr);
-                tr = AffineJTransform.createDirect2DIsomorphic(shArc2.get(0), shArc2.get(-1), h1B.get(0), h1A.get(-1), 1);
-                shArc2.applyAffineTransform(tr);
+                tr = AffineJTransform.createDirect2DIsomorphic(arc1.get(0), arc1.get(-1), h1B.get(-1), h1A.get(0), 1);
+                arc1.applyAffineTransform(tr);
+                tr = AffineJTransform.createDirect2DIsomorphic(arc2.get(0), arc2.get(-1), h1B.get(0), h1A.get(-1), 1);
+                arc2.applyAffineTransform(tr);
             } else {
-                arc1 = CTCircleArc.make(inter.getMathObject(), h1A.get(0), h1B.get(-1));
-                arc2 = CTCircleArc.make(inter.getMathObject(), h1A.get(-1), h1B.get(0));
-                shArc1 = (Shape) arc1.getMathObject();
-                shArc2 = (Shape) arc2.getMathObject();
+                ctArc1 = CTCircleArc.make(inter.getMathObject(), h1A.get(0), h1B.get(-1));
+                ctArc2 = CTCircleArc.make(inter.getMathObject(), h1A.get(-1), h1B.get(0));
+//                shArc1 = (Shape) ctArc1.getMathObject();
+//                shArc2 = (Shape) ctArc2.getMathObject();
+                arc1 = ((Shape) ctArc1.getMathObject()).getPath();
+                arc2 = ((Shape) ctArc2.getMathObject()).getPath();
 
                 //Move arrow extremes to the right point
-                tr = AffineJTransform.createDirect2DIsomorphic(shArc1.get(0), shArc1.get(-1), h1A.get(0), h1B.get(-1), 1);
-                shArc1.applyAffineTransform(tr);
-                tr = AffineJTransform.createDirect2DIsomorphic(shArc2.get(0), shArc2.get(-1), h1A.get(-1), h1B.get(0), 1);
-                shArc2.applyAffineTransform(tr);
+                tr = AffineJTransform.createDirect2DIsomorphic(arc1.get(0), arc1.get(-1), h1A.get(0), h1B.get(-1), 1);
+                arc1.applyAffineTransform(tr);
+                tr = AffineJTransform.createDirect2DIsomorphic(arc2.get(0), arc2.get(-1), h1A.get(-1), h1B.get(0), 1);
+                arc2.applyAffineTransform(tr);
             }
 
             if (angle > 0) {
-                shArc2.reverse();
+                arc2.reverse();
             } else {
-                shArc1.reverse();
+                arc1.reverse();
             }
             labelArcUpside.getPath().clear();
-            labelArcUpside.getPath().copyStateFrom(shArc1.getPath());
+//            labelArcUpside.getPath().copyStateFrom(shArc1.getPath());
+            for (JMPathPoint jmPathPoint : arc1.getJmPathPoints()) {
+                JMPathPoint jmp=jmPathPoint.clone(true,false,false);
+                labelArcUpside.getPath().addJMPoint(jmp);
+            }
+            labelArcUpside.getPath().get(0).setSegmentToThisPointVisible(false);
+
             labelArcDownside.getPath().clear();
-            labelArcDownside.getPath().copyStateFrom(shArc2.getPath());
-            labelArcUpside.getPath().reverse();
+            for (JMPathPoint jmPathPoint : arc2.getJmPathPoints()) {
+                JMPathPoint jmp=jmPathPoint.clone(true,false,false);
+                labelArcDownside.getPath().addJMPoint(jmp);
+            }
+            labelArcDownside.getPath().get(0).setSegmentToThisPointVisible(false);
+
 
             //Build the shape, adding h1c and merging with h2cF
             shapeToDraw.getPath().addJMPointsFrom(h1A.getPath());
-            shapeToDraw.merge(shArc2, true, false);
+            shapeToDraw.merge(arc2, true, false);
             shapeToDraw.merge(h1B, true, false);
-            shapeToDraw.merge(shArc1, true, true);
+            shapeToDraw.merge(arc1, true, true);
         }
+        AffineJTransform tr;
 
         //Finally, shift and rotate the built Shape to match A and B points
 //        AffineJTransform trShift = AffineJTransform.createTranslationTransform(startPoint.to(Acopy));
@@ -436,7 +453,7 @@ public class Arrow extends Constructible<Arrow> {
 
 //        Vec C = null;
 //        Vec z1 = null;
-        AffineJTransform tr;
+
 //        boolean is3D = scene.getCamera() instanceof Camera3D;
 //        if (is3D) {
 //            z1 = startPoint.copy().add(Vec.to(0, 0, 1));
@@ -781,7 +798,7 @@ public class Arrow extends Constructible<Arrow> {
         label.setProperty("upperSide", upperSide);//This will be useful when copying labels
         label.setDistanceToShape(.1);
         label.setDistanceToShapeRelative(true);
-        label.setSlopeDirection((upperSide ? SlopeDirectionType.POSITIVE : SlopeDirectionType.NEGATIVE));
+//        label.setSlopeDirection((upperSide ? SlopeDirectionType.POSITIVE : SlopeDirectionType.NEGATIVE));
         label.setAnchor(AnchorType.LOWER);
         registerLabel(label);
 
@@ -799,8 +816,8 @@ public class Arrow extends Constructible<Arrow> {
             @Override
             public void applyBefore() {
                 label.getLaTeXObject().getArg(0).setValue(A.to(B).norm());
+                label.scale(getAmplitudeScale());
                 label.getLaTeXObject().update();
-
             }
 
             @Override
