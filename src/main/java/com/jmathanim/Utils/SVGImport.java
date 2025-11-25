@@ -123,7 +123,7 @@ public class SVGImport {
         Element root = doc.getDocumentElement();
         processSVGAttributes(root);
         MODrawProperties mpCopy = base.copy();
-        processStyleAttributeCommands(root, mpCopy);
+        processStyleAttributeCommands(root, mpCopy,currentTransform);
         processChildNodes(root, mpCopy, currentTransform, msh);
         msh.getMp().setAbsoluteThickness(false);//Ensure this
         return msh;
@@ -151,9 +151,9 @@ public class SVGImport {
     }
 
 
-    private  void processStyleAttributeCommands(Element gradientElement, MODrawProperties ShMp) {
+    private  void processStyleAttributeCommands(Element gradientElement, MODrawProperties ShMp, AffineJTransform currentTransform) {
         if (!gradientElement.getAttribute("style").isEmpty()) {
-            parseStyleAttribute(gradientElement.getAttribute("style"), ShMp);
+            parseStyleAttribute(gradientElement.getAttribute("style"), ShMp,currentTransform);
         }
         if (!gradientElement.getAttribute("stroke").isEmpty()) {
             String stroke = gradientElement.getAttribute("stroke");
@@ -164,7 +164,7 @@ public class SVGImport {
 
         if (!gradientElement.getAttribute("stroke-width").isEmpty()) {
             double th = Double.parseDouble(gradientElement.getAttribute("stroke-width"));
-            ShMp.setThickness(computeThicknessFromSVGThickness(th));
+            ShMp.setThickness(computeThicknessFromSVGThickness(th,currentTransform));
         }
 
         if (!gradientElement.getAttribute("fill").isEmpty()) {
@@ -206,7 +206,7 @@ public class SVGImport {
         }
     }
 
-    private double computeThicknessFromSVGThickness(double th) {
+    private double computeThicknessFromSVGThickness(double th, AffineJTransform currentTransform) {
         if ((width == 0) || (height == 0)) {
             //Default values if no width/height are defined in SVG file
             width = 300;
@@ -214,7 +214,8 @@ public class SVGImport {
         }
 //        double porc= th/width;//% de ancho pantalla
 //        System.out.println("SVG Import: svgTh:"+th+" thickness:"+th / width*5000);
-        return th / width*5000;
+        double v = currentTransform.thicknessCorrectionFactor();
+        return th* v *5000;/// width*5000;
 
     }
 
@@ -264,7 +265,7 @@ public class SVGImport {
 //            return JMColor.rgba(0, 0, 0, 1);
     }
 
-    private  void processChildNodes(Element gNode, MODrawProperties localMP, AffineJTransform transform, MultiShapeObject msh) throws NumberFormatException {
+    private  void processChildNodes(Element gNode, MODrawProperties localMP, AffineJTransform currentTransform, MultiShapeObject msh) throws NumberFormatException {
         Shape shape;
         NodeList nList = gNode.getChildNodes();
         // localMP holds the base MODrawProperties to apply to all childs
@@ -274,9 +275,9 @@ public class SVGImport {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element el = (Element) node;
                 mpCopy = localMP.copy();
-                processStyleAttributeCommands(el, mpCopy);
+                processStyleAttributeCommands(el, mpCopy,currentTransform);
 
-                AffineJTransform transfCopy = transform.copy();
+                AffineJTransform transfCopy = currentTransform.copy();
                 processTransformAttributeCommands(el, transfCopy);
                 switch (el.getTagName()) {
                     case "g":
@@ -434,7 +435,7 @@ public class SVGImport {
         }
     }
 
-    private  void parseStyleAttribute(String str, MODrawProperties ShMp) {
+    private  void parseStyleAttribute(String str, MODrawProperties ShMp, AffineJTransform currentTransform) {
         str = str.replaceAll("(?<=[;:])\\s*", "");
         String[] decls = str.split(";");
         for (String pairs : decls) {
@@ -452,7 +453,7 @@ public class SVGImport {
                     double th = Double.parseDouble(decl[1]);
                     //Esto no es correcto!
                     double th2 = scene.getRenderer().MathWidthToThickness(th);
-                    ShMp.setThickness(computeThicknessFromSVGThickness(th));
+                    ShMp.setThickness(computeThicknessFromSVGThickness(th, currentTransform));
 
             }
 
@@ -471,6 +472,7 @@ public class SVGImport {
             String command = it.next().trim();
             String arguments = it.next().trim();
             AffineJTransform tr = parseTransformCommand(command.toUpperCase(), arguments);
+            double v=tr.thicknessCorrectionFactor();
             transforms.add(tr);//Add it at position 0 so the array is inverted
         }
 

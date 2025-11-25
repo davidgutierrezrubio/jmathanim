@@ -6,7 +6,7 @@
             <latexStyleItem>
                 <conditions>
                     <equals>
-                        <anchorType>NUMBER</anchorType>
+                        <type>NUMBER</type>
                     </equals>
                 </conditions>
                 <style>
@@ -17,7 +17,7 @@
             <latexStyleItem>
                 <conditions>
                     <equals>
-                        <anchorType>SYMBOL</anchorType>
+                        <type>SYMBOL</type>
                     </equals> 
                </conditions>
                 <style>
@@ -29,7 +29,7 @@
               <latexStyleItem>
                 <conditions>
                     <equals>
-                        <anchorType>ARROW</anchorType>
+                        <type>ARROW</type>
                     </equals> 
                </conditions>
                 <style>
@@ -40,7 +40,7 @@
              <latexStyleItem>
                 <conditions>
                     <equals>
-                        <anchorType>NAMED_FUNCTION</anchorType>
+                        <type>NAMED_FUNCTION</type>
                     </equals>
                 </conditions>
                 <style>
@@ -53,7 +53,7 @@
 <!--            <latexStyleItem>
                 <conditions>
                     <equals>
-                        <anchorType>BINARY_OPERATOR</anchorType>
+                        <type>BINARY_OPERATOR</type>
                     </equals>
                 </conditions>
                 <style>
@@ -64,7 +64,7 @@
              <latexStyleItem>
                 <conditions>
                     <equals>
-                        <anchorType>FRACTION_BAR</anchorType>
+                        <type>FRACTION_BAR</type>
                     </equals>
                 </conditions>
                 <style>
@@ -74,7 +74,7 @@
                 <latexStyleItem>
                 <conditions>
                     <equals>
-                        <anchorType>SQRT</anchorType>
+                        <type>SQRT</type>
                     </equals>
                 </conditions>
                 <style>
@@ -85,7 +85,7 @@
 <!--              <latexStyleItem>
                 <conditions>
                     <equals>
-                        <anchorType>RELATION</anchorType>
+                        <type>RELATION</type>
                     </equals>
                 </conditions>
                 <style>
@@ -96,7 +96,7 @@
               <latexStyleItem>
                 <conditions>
                     <equals>
-                        <anchorType>DELIMITER</anchorType>
+                        <type>DELIMITER</type>
                     </equals>
                 </conditions>
                 <style>
@@ -109,7 +109,7 @@
             <latexStyleItem>
                 <conditions>
                     <equals>
-                        <anchorType>GREEK_LETTER</anchorType>
+                        <type>GREEK_LETTER</type>
                     </equals>
                 </conditions>
                 <style>
@@ -120,7 +120,7 @@
              <latexStyleItem>
                 <conditions>
                     <equals>
-                        <anchorType>CHAR</anchorType>
+                        <type>CHAR</type>
                     </equals>
                 </conditions>
                 <style>
@@ -131,7 +131,7 @@
              <latexStyleItem>
                 <conditions>
                     <equals>
-                        <anchorType>CHAR</anchorType>
+                        <type>CHAR</type>
                         <string>i</string>
                     </equals>
                 </conditions>
@@ -142,7 +142,7 @@
             <latexStyleItem>
                 <conditions>
                     <equals>
-                        <anchorType>CHAR</anchorType>
+                        <type>CHAR</type>
                         <string>e</string>
                     </equals>
                 </conditions>
@@ -154,7 +154,7 @@
           <latexStyleItem>
                 <conditions>
                     <equals>
-                        <anchorType>CHAR</anchorType>
+                        <type>CHAR</type>
                         <string>x</string>
                     </equals>
                 </conditions>
@@ -167,7 +167,7 @@
          <latexStyleItem>
                 <conditions>
                     <equals>
-                        <anchorType>CHAR</anchorType>
+                        <type>CHAR</type>
                         <string>y</string>
                     </equals>
                 </conditions>
@@ -179,7 +179,7 @@
           <latexStyleItem>
                 <conditions>
                     <equals>
-                        <anchorType>CHAR</anchorType>
+                        <type>CHAR</type>
                         <string>n</string>
                     </equals>
                 </conditions>
@@ -194,7 +194,7 @@
              <latexStyleItem>
                 <conditions>
                     <equals>
-                        <anchorType>NUMBER</anchorType>
+                        <type>NUMBER</type>
                     </equals>
                 </conditions>
                 <style>
@@ -205,7 +205,7 @@
                <latexStyleItem>
                 <conditions>
                     <equals>
-                        <anchorType>GREEK_LETTER</anchorType>
+                        <type>GREEK_LETTER</type>
                     </equals>
                 </conditions>
                 <style>
@@ -216,7 +216,7 @@
              <latexStyleItem>
                 <conditions>
                     <equals>
-                        <anchorType>NAMED_FUNCTION</anchorType>
+                        <type>NAMED_FUNCTION</type>
                     </equals>
                 </conditions>
                 <style>
@@ -229,7 +229,7 @@
              <latexStyleItem>
                 <conditions>
                     <equals>
-                        <anchorType>CHAR</anchorType>
+                        <type>CHAR</type>
                         <string>x</string>
                     </equals>
                 </conditions>
@@ -241,7 +241,7 @@
               <latexStyleItem>
                 <conditions>
                     <equals>
-                        <anchorType>CHAR</anchorType>
+                        <type>CHAR</type>
                         <string>y</string>
                     </equals>
                 </conditions>
@@ -250,10 +250,10 @@
                 </style>
             </latexStyleItem>
             
-<!--              <latexStyleItem>
+ <latexStyleItem>
                 <conditions>
                     <equals>
-                        <anchorType>CHAR</anchorType>
+                        <type>CHAR</type>
                         <string>n</string>
                     </equals>
                 </conditions>
@@ -265,18 +265,14 @@
               <latexStyleItem>
                 <conditions>
                     <equals>
-                        <anchorType>CHAR</anchorType>
+                        <type>CHAR</type>
                         <string>m</string>
                     </equals>
                 </conditions>
                 <style>
                     <color>magenta</color>
                 </style>
-            </latexStyleItem>-->
-            
-            
-            
-            
+            </latexStyleItem>
         </latexStyle>
     </latexStyles>
 </JMathAnimConfig>

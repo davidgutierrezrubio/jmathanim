@@ -233,9 +233,17 @@ public class AffineJTransform  {
         // det(A_xy)
         if (!mObject.getMp().isAbsoluteThickness()) {
             double det = matrix.getEntry(1, 1) * matrix.getEntry(2, 2) - matrix.getEntry(2, 1) * matrix.getEntry(1, 2);
-            final double sqrtDet = Math.sqrt(Math.abs(det));
-            mObject.getMp().multThickness(Math.sqrt(sqrtDet));
+            mObject.getMp().multThickness(thicknessCorrectionFactor());
         }
+    }
+
+    /**
+     * Returns the thickness correction factor for this transform
+     * @return The thickness correction
+     */
+    public double thicknessCorrectionFactor() {
+        double det = matrix.getEntry(1, 1) * matrix.getEntry(2, 2) - matrix.getEntry(2, 1) * matrix.getEntry(1, 2);
+        return Math.sqrt(Math.abs(det));
     }
 
     /**

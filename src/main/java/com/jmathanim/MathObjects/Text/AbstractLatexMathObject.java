@@ -98,13 +98,18 @@ public abstract class AbstractLatexMathObject<T extends AbstractLatexMathObject<
         changeVersion();
     }
 
+
     public void setLatexStyle(String latexStyleName) {
         HashMapUpper<String, LatexStyle> latexStyles = JMathAnimConfig.getConfig().getLatexStyles();
         if (latexStyles.containsKey(latexStyleName.toUpperCase())) {
             setLatexStyle(latexStyles.get(latexStyleName));
+            changeVersion();
+        }else {
+            JMathAnimScene.logger.warn("Latex style "+LogUtils.method(latexStyleName)+" not found");
         }
-        changeVersion();
+
     }
+
 
     @Override
     public T applyAffineTransform(AffineJTransform affineJTransform) {

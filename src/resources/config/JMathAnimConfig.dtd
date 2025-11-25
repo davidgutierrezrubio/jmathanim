@@ -45,7 +45,7 @@
 <!ELEMENT showPreviewWindow (#PCDATA)>
 
 
-<!--- Put your DTDDoc comment here. -->
+<!--- SVG Color name or #RRGGBB, #RRGGBBAA format-->
 
 <!ELEMENT color (#PCDATA)>
 
@@ -142,14 +142,14 @@
 
 <!ELEMENT conditions (equals|equalsPrev|equalsAfter|differs|differsPrev|differsAfter)*>
 
-<!ELEMENT equals (anchorType|subtype|string)*>
-<!ELEMENT equalsPrev (anchorType|subtype|string)*>
-<!ELEMENT equalsAfter (anchorType|subtype|string)*>
-<!ELEMENT differs (anchorType|subtype|string)*>
-<!ELEMENT differsPrev (anchorType|subtype|string)*>
-<!ELEMENT differsAfter (anchorType|subtype|string)*>
+<!ELEMENT equals (type|subtype|string)*>
+<!ELEMENT equalsPrev (type|subtype|string)*>
+<!ELEMENT equalsAfter (type|subtype|string)*>
+<!ELEMENT differs (type|subtype|string)*>
+<!ELEMENT differsPrev (type|subtype|string)*>
+<!ELEMENT differsAfter (type|subtype|string)*>
 
-<!ELEMENT anchorType (#PCDATA)>
+<!ELEMENT type (#PCDATA)>
 <!ELEMENT subtype (#PCDATA)>
 <!ELEMENT string (#PCDATA)>
 
