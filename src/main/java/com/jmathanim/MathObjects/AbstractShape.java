@@ -17,7 +17,6 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import javafx.scene.shape.Path;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public abstract class
 AbstractShape<T extends AbstractShape<T>>
@@ -288,10 +287,6 @@ AbstractShape<T extends AbstractShape<T>>
         absoluteSize = sh2.absoluteSize;
         isConvex = sh2.isConvex;
         showDebugPoints = sh2.showDebugPoints;
-        if (!Objects.equals(getDebugText(), "")) {
-            setDebugText(getDebugText() + "_copy");
-
-        }
     }
 
     @Override

@@ -294,7 +294,7 @@ public class JavaFXRenderer extends Renderer {
     @Override
     protected BufferedImage getRenderedImage(int frameCount) {
         WritableImage img2;
-        BufferedImage bi = new BufferedImage(config.getMediaWidth(), config.getMediaHeight(), BufferedImage.TYPE_INT_ARGB);
+        BufferedImage bufferedImage = new BufferedImage(config.getMediaWidth(), config.getMediaHeight(), BufferedImage.TYPE_INT_ARGB);
         JavaFXRenderer r = this;
         FutureTask<WritableImage> task = new FutureTask<>(() -> {
             fxScene.setFill(JavaFXRendererUtils.getFXPaint(config.getBackgroundColor(), r, camera));
@@ -339,13 +339,13 @@ public class JavaFXRenderer extends Renderer {
         Platform.runLater(task);
         try {
             img2 = task.get();
-            bi = SwingFXUtils.fromFXImage(img2, null);
+            bufferedImage = SwingFXUtils.fromFXImage(img2, null);
         } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
 //        fxnodes.clear();
         debugFXnodes.clear();
-        return bi;
+        return bufferedImage;
     }
 
     @Override

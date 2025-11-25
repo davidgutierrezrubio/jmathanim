@@ -797,7 +797,7 @@ public class Arrow extends Constructible<Arrow> {
         label.setProperty("upperSide", upperSide);//This will be useful when copying labels
         label.setDistanceToShape(.1);
         label.setDistanceToShapeRelative(true);
-//        label.setSlopeDirection((upperSide ? SlopeDirectionType.POSITIVE : SlopeDirectionType.NEGATIVE));
+        label.setSlopeDirection((upperSide ? SlopeDirectionType.POSITIVE : SlopeDirectionType.NEGATIVE));
         label.setAnchor(AnchorType.LOWER);
         registerLabel(label);
 
