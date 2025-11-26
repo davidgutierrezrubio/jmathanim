@@ -71,7 +71,7 @@ public class JavaFXRenderer extends Renderer {
 
 
     private static final double MIN_THICKNESS = .2d;
-    private static final double THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH = 5000;
+    private static final double THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH = 4*JMathAnimScene.THICKNESS_EQUIVALENT_TO_MATH_UNIT;
     public final Camera camera;
     public final Camera fixedCamera;
     protected final HashMap<Drawable, Node> drawablesToNodes;
@@ -530,11 +530,11 @@ public class JavaFXRenderer extends Renderer {
         // width 4
         // In a 800x600, it should mean 1 pixel
 //        path.setStrokeWidth(th);
-        if (mobj.getMp().isAbsoluteThickness()) {
-            path.setStrokeWidth(mobj.getMp().getThickness() * mobj.getCamera().getMathView().getWidth() / 5000);
-        } else {
-            path.setStrokeWidth(mobj.getMp().getThickness() * 4 / 5000);
-        }
+//        if (mobj.getMp().isAbsoluteThickness()) {
+//            path.setStrokeWidth(mobj.getMp().getThickness() * mobj.getCamera().getMathView().getWidth() / 4000);
+//        } else {
+//            path.setStrokeWidth(mobj.getMp().getThickness() * 4 / 4000);
+//        }
 
         // Fill color
         path.setFill(JavaFXRendererUtils.getFXPaint(mobj.getMp().getFillColor(), this, camera));

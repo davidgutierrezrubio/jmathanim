@@ -289,7 +289,7 @@ public abstract class AbstractMultiShapeObject<
     @Override
     public S applyAffineTransform(AffineJTransform affineJTransform) {
         for (T sh : shapes) {
-            sh.applyAffineTransform(affineJTransform);
+            sh.getPath().applyAffineTransform(affineJTransform);
         }
         affineJTransform.applyTransformsToDrawingProperties(this);
         return (S) this;

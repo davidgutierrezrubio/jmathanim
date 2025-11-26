@@ -28,6 +28,7 @@ import com.jmathanim.Styling.*;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.GaussianBlur;
@@ -51,7 +52,7 @@ import java.util.logging.Logger;
 public class JavaFXRendererUtils {
 
     public static double EPSILON = 0.0001;
-
+    private static final double THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH = 4d* JMathAnimScene.THICKNESS_EQUIVALENT_TO_MATH_UNIT;
 
     public static Text javaFXText(String text, double x, double y) {
         Text t = new Text(text);
@@ -540,9 +541,9 @@ public class JavaFXRendererUtils {
                 AbstractShape<?> mobj = (AbstractShape<?>) rc.object;
                 Path path = (Path) node;
                 if (mobj.getMp().isAbsoluteThickness()) {
-                    path.setStrokeWidth(mobj.getMp().getThickness() * mobj.getCamera().getMathView().getWidth() / 5000);
+                    path.setStrokeWidth(mobj.getMp().getThickness() * mobj.getCamera().getMathView().getWidth() / THICKNESS_EQUIVALENT_TO_SCREEN_WIDTH);
                 } else {
-                    path.setStrokeWidth(mobj.getMp().getThickness() * 4 / 5000);
+                    path.setStrokeWidth(mobj.getMp().getThickness() / JMathAnimScene.THICKNESS_EQUIVALENT_TO_MATH_UNIT);
                 }
             }
 

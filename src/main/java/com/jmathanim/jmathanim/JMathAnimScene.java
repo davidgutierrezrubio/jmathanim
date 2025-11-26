@@ -45,6 +45,7 @@ import java.util.stream.Collectors;
  */
 public abstract class JMathAnimScene {
 
+    public static final double THICKNESS_EQUIVALENT_TO_MATH_UNIT = 1000;
     public static long globalVersion = 0;
     /**
      * Logger class

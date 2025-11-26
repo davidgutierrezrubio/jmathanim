@@ -215,7 +215,7 @@ public class SVGImport {
 //        double porc= th/width;//% de ancho pantalla
 //        System.out.println("SVG Import: svgTh:"+th+" thickness:"+th / width*5000);
         double v = currentTransform.thicknessCorrectionFactor();
-        return th* v *5000;/// width*5000;
+        return th* v * JMathAnimScene.THICKNESS_EQUIVALENT_TO_MATH_UNIT;/// width*5000;
 
     }
 
@@ -292,7 +292,8 @@ public class SVGImport {
                             if (!path.getJmPathPoints().isEmpty()) {
                                 shape = new Shape(path);
                                 shape.getMp().copyFrom(mpCopy);
-                                transfCopy.applyTransform(shape);
+//                                transfCopy.applyTransform(shape);
+                                shape.getPath().applyAffineTransform(transfCopy);
                                 msh.add(shape);
                             }
                         } catch (Exception ex) {
@@ -303,7 +304,8 @@ public class SVGImport {
                         try {
                             Shape pol = processPolygonPoints(el.getAttribute("points"), true);
                             if (!pol.isEmpty()) {
-                                transfCopy.applyTransform(pol);
+//                                transfCopy.applyTransform(pol);
+                                pol.getPath().applyAffineTransform(transfCopy);
                                 pol.getMp().copyFrom(mpCopy);
                                 msh.add(pol);
                             }
@@ -316,7 +318,8 @@ public class SVGImport {
                             Shape pol = processPolygonPoints(el.getAttribute("points"), false);
                             pol.getPath().openPath();
                             if (!pol.isEmpty()) {
-                                transfCopy.applyTransform(pol);
+//                                transfCopy.applyTransform(pol);
+                                pol.getPath().applyAffineTransform(transfCopy);
                                 pol.getMp().copyFrom(mpCopy);
                                 msh.add(pol);
                             }
@@ -330,7 +333,18 @@ public class SVGImport {
                         double w = Double.parseDouble(el.getAttribute("width"));
                         double h = -Double.parseDouble(el.getAttribute("height"));
                         shape = Shape.rectangle(Vec.to(x, y), Vec.to(x + w, y + h)).setMp(mpCopy);
-                        transfCopy.applyTransform(shape);
+//                        transfCopy.applyTransform(shape);
+                        shape.getPath().applyAffineTransform(transfCopy);
+                        msh.add(shape);
+                        break;
+                    case "line":
+                        double x1 = Double.parseDouble(el.getAttribute("x1"));
+                        double y1 = -Double.parseDouble(el.getAttribute("y1"));
+                        double x2 = Double.parseDouble(el.getAttribute("x2"));
+                        double y2 = -Double.parseDouble(el.getAttribute("y2"));
+                        shape = Shape.segment(Vec.to(x1, y1), Vec.to(x2, y2)).setMp(mpCopy);
+//                        transfCopy.applyTransform(shape);
+                        shape.getPath().applyAffineTransform(transfCopy);
                         msh.add(shape);
                         break;
                     case "circle":
@@ -338,7 +352,8 @@ public class SVGImport {
                         double cy = -Double.parseDouble(el.getAttribute("cy"));
                         double radius = Double.parseDouble(el.getAttribute("r"));
                         shape = Shape.circle().scale(radius).shift(cx, cy).setMp(mpCopy);
-                        transfCopy.applyTransform(shape);
+//                        transfCopy.applyTransform(shape);
+                        shape.getPath().applyAffineTransform(transfCopy);
                         msh.add(shape);
                         break;
                     case "ellipse":
@@ -347,7 +362,8 @@ public class SVGImport {
                         double rxe = Double.parseDouble(el.getAttribute("rx"));
                         double rye = -Double.parseDouble(el.getAttribute("ry"));
                         shape = Shape.circle().scale(rxe, rye).shift(cxe, cye).setMp(mpCopy);
-                        transfCopy.applyTransform(shape);
+//                        transfCopy.applyTransform(shape);
+                        shape.getPath().applyAffineTransform(transfCopy);
                         msh.add(shape);
                         break;
                     case "defs":
@@ -452,8 +468,9 @@ public class SVGImport {
                 case "stroke-width":
                     double th = Double.parseDouble(decl[1]);
                     //Esto no es correcto!
-                    double th2 = scene.getRenderer().MathWidthToThickness(th);
-                    ShMp.setThickness(computeThicknessFromSVGThickness(th, currentTransform));
+                    double th2 = computeThicknessFromSVGThickness(th, currentTransform);
+                    ShMp.setThickness(th2);
+                    System.out.println("th="+th+" th2="+th2);
 
             }
 
