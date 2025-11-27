@@ -251,6 +251,7 @@ public class Vec implements Dependable, HasDirection, Coordinates<Vec>, AffineTr
         version = ++JMathAnimScene.globalVersion;
     }
 
+
     @Override
     public long getVersion() {
         return version;

@@ -40,8 +40,6 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
         mpPoint = JMathAnimConfig.getConfig().getDefaultMP();
         mpPoint.copyFrom(JMathAnimConfig.getConfig().getStyles().get("dotdefault"));
         mpPoint.setAbsoluteThickness(true);
-        addDependency(this.v);
-        addDependency(mpPoint);
         generateDotShape();
     }
 
@@ -62,7 +60,7 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
         v.x = pNew.getEntry(0, 1);
         v.y = pNew.getEntry(0, 2);
         v.z = pNew.getEntry(0, 3);
-        affineJTransform.applyTransformsToDrawingProperties(this);
+//        affineJTransform.applyTransformsToDrawingProperties(this);
         return (T) this;
     }
 
@@ -83,7 +81,7 @@ public abstract class AbstractPoint<T extends AbstractPoint<T>> extends MathObje
             dotShape.setAbsoluteSize(v);
         }
         if (getMp().getVersion()>mpVersion) {
-            generateDotShape();
+//            generateDotShape();
             generateStyleForDot();
             dotShape.setAbsoluteSize(v);
             mpVersion=getMp().getVersion();

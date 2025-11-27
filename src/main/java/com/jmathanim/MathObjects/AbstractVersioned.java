@@ -33,12 +33,6 @@ public abstract class AbstractVersioned implements Dependable, Updatable {
 
     @Override
     public boolean needsUpdate() {
-//        List<Dependable> deps = getDependencies();
-//        long maxDep = 0;
-//        for (int i = 0, n = deps.size(); i < n; i++) {
-//            long v = deps.get(i).getVersion();
-//            if (v > maxDep) maxDep = v;
-//        }
         newLastMaxDependencyVersion = DependableUtils.maxVersion(getDependencies());
         if (dirty) return true;
         if (getDependencies().isEmpty()) return false;
@@ -95,6 +89,11 @@ public abstract class AbstractVersioned implements Dependable, Updatable {
 
     public abstract void performUpdateBoundingBox();
 
+    /**
+     * Apply given updater
+     * @param previousToObjectUpdate If true, applies updating methods previous to object update. If false, applies methods after object update.
+     * @return True if an effective change has been made
+     */
     protected abstract boolean applyUpdaters(boolean previousToObjectUpdate);
 
 

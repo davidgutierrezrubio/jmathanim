@@ -45,6 +45,7 @@ public class Point extends AbstractPoint<Point> {
      */
     protected Point(Vec v) {
         super(v);
+        update();
     }
 //
 //    /**
