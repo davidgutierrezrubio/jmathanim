@@ -2,6 +2,7 @@ package com.jmathanim;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Enum.AnchorType;
 import com.jmathanim.MathObjects.Coordinates;
 import com.jmathanim.MathObjects.Shape;
 import com.jmathanim.MathObjects.Shapes.JMPath;
@@ -13,18 +14,23 @@ import com.jmathanim.MathObjects.Updaters.Updater;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.DrawStyleProperties;
 import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.CircularArrayList;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 public abstract class AbstractDelimiter<T extends AbstractDelimiter<T>> extends Constructible<AbstractDelimiter<T>> {
+    private LabelTypeEnum labelType;
+
+    protected enum LabelTypeEnum {NORMAL, DISTANCE, COORDS}
     protected final Shape delimiterShape;
-    protected final JMPath pathForLabelTip;
     protected Vec A;
     protected Vec B;
     public LabelTip labelTip;
-    double amplitudeScale;
+    private double amplitudeScale;
     private TextUpdaterFactory textUpdaterFactory;
+    protected final CircularArrayList<JMPath> pathsForLabelsTips;
+    protected int defaultPathForLabelTip=0;
 
     protected AbstractDelimiter(Coordinates<?> a, Coordinates<?> b) {
         this.A = a.getVec();
@@ -32,7 +38,7 @@ public abstract class AbstractDelimiter<T extends AbstractDelimiter<T>> extends 
         addDependency(a);
         addDependency(b);
         delimiterShape = new Shape();
-        pathForLabelTip = new JMPath();
+        pathsForLabelsTips = new CircularArrayList<>();
         amplitudeScale=1;
     }
 
@@ -41,11 +47,26 @@ public abstract class AbstractDelimiter<T extends AbstractDelimiter<T>> extends 
         return delimiterShape.getMp();
     }
 
-    public LabelTip makeLengthLabelTip(String format) {
-        LabelTip labelTip = LabelTip.makeLabelTip(pathForLabelTip, .5, "{#0}", true);
+
+
+    public JMPath getPathForLabelTip(int index) {
+        return pathsForLabelsTips.get(index);
+    }
+
+    public LabelTip addLabelTip(String text) {
+        labelTip = LabelTip.makeLabelTip(getPathForLabelTip(defaultPathForLabelTip), .5, text, true);
         labelTip.setDistanceToShapeRelative(true);
         labelTip.setDistanceToShape(.1);
-        labelTip.getLaTeXObject().setArgumentsFormat(format);
+        rebuildShape();
+        return labelTip;
+    }
+    public LabelTip addLengthLabelTip(String format) {
+
+        labelTip = LabelTip.makeLabelTip(getPathForLabelTip(defaultPathForLabelTip), .5, "{#0}",true);
+        labelTip.setDistanceToShape(.1);
+        labelTip.setDistanceToShapeRelative(true);
+        labelTip.setAnchor(AnchorType.LOWER);
+        labelType = LabelTypeEnum.DISTANCE;
         labelTip.addDependency(this.A);
         labelTip.addDependency(this.B);
 
@@ -54,77 +75,32 @@ public abstract class AbstractDelimiter<T extends AbstractDelimiter<T>> extends 
 
         labelTip.registerUpdater(new Updater() {
 
-
-            @Override
-            public void applyAfter() {
-
-            }
             @Override
             public void applyBefore() {
-//                if (labelTip.isDirty()) {
-//                    labelTip.tipObjectRigidBox.scale(A.to(B).norm());
-//                }
                 labelTip.getLaTeXObject().getArg(0).setValue(A.to(B).norm());
-            }
-        });
-        labelTip.registerUpdater(new Updater() {
-            long version = -1;
-
-            @Override
-            public void applyBefore() {
-
+                labelTip.scale(getAmplitudeScale());
+                labelTip.getLaTeXObject().update();
             }
 
             @Override
             public void applyAfter() {
-                if (labelTip.isDirty()) {
-                    labelTip.tipObjectRigidBox.scale(labelTip.getMarkLabelLocation(),A.to(B).norm());
-                    System.out.println("change scale");
-                }
+
             }
         });
-
-
         t.update();
         return labelTip;
     }
 
 
-    public JMPath getPathForLabelTip() {
-        return pathForLabelTip;
-    }
 
-    public LabelTip addLabelTip(String text) {
-        labelTip = LabelTip.makeLabelTip(pathForLabelTip, .5, text, true);
-        labelTip.setDistanceToShapeRelative(true);
-        labelTip.setDistanceToShape(.1);
-        rebuildShape();
-        return labelTip;
-    }
-
-    public LabelTip addLengthLabelTip(
-            String format) {
-        labelTip = LabelTip.makeLabelTip(pathForLabelTip, .5, "{#0}", true);
-        labelTip.setDistanceToShapeRelative(true);
-        labelTip.setDistanceToShape(.1);
-//        AbstractLatexMathObject<?> t = labelTip.getLaTeXObject();
-//        textUpdaterFactory = new LengthUpdaterFactory( t, A, B, format);
-//        textUpdaterFactory.registerUpdaters();
-//        t.markDirty();
-//        labelTip.update();
-//        rebuildShape();
-
-        return labelTip;
-    }
-
-
-    public LabelTip getLabelTip() {
-        return labelTip;
-    }
-
-    public void setLabelTip(LabelTip labelTip) {
-        this.labelTip = labelTip;
-    }
+//
+//    public LabelTip getLabelTip() {
+//        return labelTip;
+//    }
+//
+//    public void setLabelTip(LabelTip labelTip) {
+//        this.labelTip = labelTip;
+//    }
 
     @Override
     public AbstractDelimiter<T> setFreeMathObject(boolean isMathObjectFree) {
@@ -158,7 +134,6 @@ public abstract class AbstractDelimiter<T extends AbstractDelimiter<T>> extends 
             rebuildShape();
         }
         if (labelTip != null) {
-            pathForLabelTip.update();//No need to do this
             labelTip.update();
         }
     }
