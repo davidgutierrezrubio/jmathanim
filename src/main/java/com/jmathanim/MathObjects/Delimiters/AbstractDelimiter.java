@@ -73,6 +73,8 @@ public abstract class AbstractDelimiter<T extends AbstractDelimiter<T>> extends 
         AbstractLatexMathObject<?> t = labelTip.getLaTeXObject();
         t.setArgumentsFormat(format);
 
+//        LengthUpdaterFactory updaterFactory = new LengthUpdaterFactory(t, this.A, this.B, format);
+//        updaterFactory.registerUpdaters();
         labelTip.registerUpdater(new Updater() {
 
             @Override
